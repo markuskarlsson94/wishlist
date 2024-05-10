@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import passport from "passport";
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 import users from "./users.js";
 
 dotenv.config();
@@ -41,13 +42,17 @@ app.post("/login", (req, res) => {
         return res.status(401).json({ message: 'Invalid username or password' });
     }
 
-    if (user.password !== password) {
-        return res.status(401).json({ message: 'Invalid username or password' });
-    }
+    bcrypt.compare(password, user.password, (error, match) => {
+        if (error) return res.status(500).json({ message: 'Server error' });
 
-    const payload = { username };
-    const token = jwt.sign(payload, process.env.ACCESS_SECRET_KEY, { expiresIn: '1h' });
-    res.json({ token });
+        if (match) {
+            const payload = { username };
+            const token = jwt.sign(payload, process.env.ACCESS_SECRET_KEY, { expiresIn: '1h' });
+            res.json({ token });
+        } else {
+            res.status(401).json({ message: 'Invalid username or password' });
+        }
+    });
 });
 
 app.get('/protected', passport.authenticate('jwt', { session: false }), (req, res) => {
