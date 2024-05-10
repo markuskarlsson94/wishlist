@@ -102,7 +102,11 @@ app.post("/refresh", (req, res) => {
     }
 });
 
-app.get('/protected', passport.authenticate('jwt', { session: false }), (req, res) => {
+const isAuthenticated = () => {
+    return passport.authenticate('jwt', { session: false });
+}
+
+app.get('/protected', isAuthenticated(), (req, res) => {
     res.json({ 
         message: 'Success', 
         username: req.username 
