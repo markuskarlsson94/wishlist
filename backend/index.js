@@ -46,13 +46,35 @@ app.post("/login", (req, res) => {
         if (error) return res.status(500).json({ message: 'Server error' });
 
         if (match) {
-            const payload = { username };
-            const token = jwt.sign(payload, process.env.ACCESS_SECRET_KEY, { expiresIn: '1h' });
-            res.json({ token });
+            const accessToken = generateAccessToken(user);
+            const refreshToken = generateRefreshToken(user);
+            res.json({ accessToken, refreshToken });
         } else {
             res.status(401).json({ message: 'Invalid username or password' });
         }
     });
+});
+
+app.post("/refresh", (req, res) => {
+    const { refreshToken } = req.body;
+
+    if (!refreshToken) {
+        return res.status(400).json({ message: 'Refresh token required' });
+    }
+
+    try {
+        const decoded = jwt.verify(refreshToken, process.env.REFRESH_SECRET_KEY);
+        const user = users.find((u) => u.username === decoded.username);
+
+        if (!user) {
+            return res.status(401).json({ message: 'Invalid refresh token' });
+        }
+
+        const accessToken = generateAccessToken(user);
+        res.json({ accessToken });
+    } catch (error) {
+        return res.status(401).json({ message: 'Invalid refresh token' });
+    }
 });
 
 app.get('/protected', passport.authenticate('jwt', { session: false }), (req, res) => {
@@ -61,3 +83,13 @@ app.get('/protected', passport.authenticate('jwt', { session: false }), (req, re
         username: req.username 
     });
 });
+
+const generateAccessToken = (user) => {
+    const payload = { username: user.username };
+    return jwt.sign(payload, process.env.ACCESS_SECRET_KEY, { expiresIn: '30s' });
+}
+
+const generateRefreshToken = (user) => {
+    const payload = { username: user.username };
+    return jwt.sign(payload, process.env.REFRESH_SECRET_KEY, { expiresIn: '7d' });
+}
