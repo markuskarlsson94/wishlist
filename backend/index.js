@@ -4,7 +4,9 @@ import passport from "passport";
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+
 import users from "./users.js";
+import userRoles from "./roles.js";
 
 dotenv.config();
 
@@ -69,7 +71,8 @@ app.post("/register", async (req, res) => {
 
         const newUser = {
             username,
-            password: hashedPassword
+            password: hashedPassword,
+            role: userRoles.CUSTOMER
         };
 
         users.push(newUser);
@@ -106,7 +109,35 @@ const isAuthenticated = () => {
     return passport.authenticate('jwt', { session: false });
 }
 
-app.get('/protected', isAuthenticated(), (req, res) => {
+const isAuthenticatedAdmin = () => {
+    return (req, res, next) => {
+        const authMiddleware = isAuthenticated();
+
+        authMiddleware(req, res, (err) => {
+            if (err) {
+                return next(err);
+            }
+
+            if (req.user && req.user.role === userRoles.ADMIN) {
+                return next();
+            } else {
+                return res.status(403).json({ 
+                    message: "Access denied: Insufficient privileges" 
+                });
+            }
+        });
+    }
+}
+
+app.get('/customerData', isAuthenticated(), (req, res) => {
+    res.json({ 
+        message: 'Success', 
+        username: req.username 
+    });
+});
+
+
+app.get('/adminData', isAuthenticatedAdmin(), (req, res) => {
     res.json({ 
         message: 'Success', 
         username: req.username 
