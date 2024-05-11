@@ -1,39 +1,23 @@
 import express, { json } from "express";
 import dotenv from "dotenv";
-import passport from "passport";
-import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
 import users from "./users.js";
 import userRoles from "./roles.js";
+import passport, { passportInit, isAuthenticated, isAuthenticatedAdmin } from "./passport.js";
 
 dotenv.config();
 
-const options = {
-    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-    secretOrKey: process.env.ACCESS_SECRET_KEY
-};
-
-passport.use(new JwtStrategy(options, (payload, done) => {
-    const user = users.find(u => u.username === payload.username);
-
-    if (user) {
-        return done(null, user);
-    }
-
-    return done(null, false)
-}));
-
 const app = express();
-
 app.use(json());
+passportInit();
 app.use(passport.initialize());
 
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
-    console.log(`Server started on port ${port}.`);
+    console.log(`Server started and listening on port ${port}.`);
 });
 
 app.post("/login", (req, res) => {
@@ -104,30 +88,6 @@ app.post("/refresh", (req, res) => {
         return res.status(401).json({ message: 'Invalid refresh token' });
     }
 });
-
-const isAuthenticated = () => {
-    return passport.authenticate('jwt', { session: false });
-}
-
-const isAuthenticatedAdmin = () => {
-    return (req, res, next) => {
-        const authMiddleware = isAuthenticated();
-
-        authMiddleware(req, res, (err) => {
-            if (err) {
-                return next(err);
-            }
-
-            if (req.user && req.user.role === userRoles.ADMIN) {
-                return next();
-            } else {
-                return res.status(403).json({ 
-                    message: "Access denied: Insufficient privileges" 
-                });
-            }
-        });
-    }
-}
 
 app.get('/customerData', isAuthenticated(), (req, res) => {
     res.json({ 
