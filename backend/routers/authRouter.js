@@ -29,11 +29,11 @@ authRouter.post("/login", (req, res) => {
 });
 
 authRouter.post("/register", async (req, res) => {
-    const { username, password } = req.body;
+    const { username, email, password } = req.body;
 
-    const existingUser = users.find(u => u.username === username);
+    const existingUser = users.find(u => u.username === username || u.email === email);
     if (existingUser) {
-        res.status(400).json({ message: 'Username already exists' });
+        res.status(400).json({ message: 'User already exists' });
         return;
     }
 
@@ -42,6 +42,7 @@ authRouter.post("/register", async (req, res) => {
 
         const newUser = {
             username,
+            email,
             password: hashedPassword,
             role: userRoles.CUSTOMER
         };
