@@ -38,7 +38,7 @@ authRouter.post("/register", async (req, res) => {
     }
 
     try {
-        const hashedPassword = await bcrypt.hash(password, 10);
+        const hashedPassword = await generatePassword(password);
 
         const newUser = {
             username,
@@ -50,6 +50,7 @@ authRouter.post("/register", async (req, res) => {
 
         res.status(201).json({ message: 'User registered successfully' });
     } catch (error) {
+        console.log(error);
         res.status(500).json({ message: 'Server error' });
     }
 });
@@ -84,6 +85,10 @@ const generateAccessToken = (user) => {
 const generateRefreshToken = (user) => {
     const payload = { username: user.username };
     return jwt.sign(payload, process.env.REFRESH_SECRET_KEY, { expiresIn: '7d' });
+}
+
+const generatePassword = async (password) => {
+    return (await bcrypt.hash(password, 10));
 }
 
 export default authRouter;
