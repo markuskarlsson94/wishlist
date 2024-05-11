@@ -11,8 +11,11 @@ passportInit();
 const app = express();
 app.use(json());
 app.use(passport.initialize());
-app.use("/auth", authRouter);
-app.use("/data", dataRouter);
+
+const router = express.Router();
+router.use("/auth", authRouter);
+router.use("/data", dataRouter);
+app.use("/api/v1", router);
 
 const port = process.env.PORT || 3000;
 
