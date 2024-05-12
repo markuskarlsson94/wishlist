@@ -80,7 +80,7 @@ authRouter.post("/refresh", (req, res) => {
 
 const generateAccessToken = (user) => {
     const payload = { username: user.username };
-    return jwt.sign(payload, process.env.ACCESS_SECRET_KEY, { expiresIn: '30s' });
+    return jwt.sign(payload, process.env.ACCESS_SECRET_KEY, { expiresIn: '1m' });
 }
 
 const generateRefreshToken = (user) => {
