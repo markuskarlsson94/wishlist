@@ -2,15 +2,14 @@ import express from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
-import { addUser, getUsers } from "../users.js";
-import userRoles from "../roles.js";
+import { addUser, findUserById, findUserByUsername, getUsers } from "../users.js";
 import { isAuthenticated } from "../passport.js";
 
 const authRouter = express.Router();
 
 authRouter.post("/login", (req, res) => {
     const { username, password } = req.body;
-    const user = getUsers().find(u => u.username === username);
+    const user = findUserByUsername(username);
 
     if (!user) {
         return res.status(401).json({ message: 'Invalid username or password' });
@@ -57,7 +56,7 @@ authRouter.post("/refresh", (req, res) => {
 
     try {
         const decoded = jwt.verify(refreshToken, process.env.REFRESH_SECRET_KEY);
-        const user = getUsers().find((u) => u.username === decoded.username);
+        const user = findUserById(decoded.id);
 
         if (!user) {
             return res.status(401).json({ message: 'Invalid refresh token' });
@@ -87,12 +86,12 @@ authRouter.post("/updatePassword", isAuthenticated(), (req, res) => {
 });
 
 const generateAccessToken = (user) => {
-    const payload = { username: user.username };
+    const payload = { id: user.id };
     return jwt.sign(payload, process.env.ACCESS_SECRET_KEY, { expiresIn: '1m' });
 }
 
 const generateRefreshToken = (user) => {
-    const payload = { username: user.username };
+    const payload = { id: user.id };
     return jwt.sign(payload, process.env.REFRESH_SECRET_KEY, { expiresIn: '7d' });
 }
 

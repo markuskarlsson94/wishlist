@@ -23,6 +23,14 @@ export const getUsers = () => {
     return users;
 }
 
+export const findUserById = (id) => {
+    return users.find(u => u.id === id);
+}
+
+export const findUserByUsername = (username) => {
+    return users.find(u => u.username === username);
+}
+
 export const addUser = (username, email, password) => {
     users.push({
         id: userId++,

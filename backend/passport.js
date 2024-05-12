@@ -1,7 +1,7 @@
 import passport from "passport";
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 
-import { getUsers } from "./users.js";
+import { findUserById } from "./users.js";
 import userRoles from "./roles.js";
 
 export const passportInit = () => {
@@ -11,7 +11,7 @@ export const passportInit = () => {
     };
     
     passport.use(new JwtStrategy(options, (payload, done) => {
-        const user = getUsers().find(u => u.username === payload.username);
+        const user = findUserById(payload.id);
         
         if (user) {
             return done(null, user);
