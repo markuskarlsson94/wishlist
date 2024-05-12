@@ -17,4 +17,17 @@ const users = [
 
 export const getUsers = () => {
     return users;
-} 
+}
+
+export const updateUserPassword = (username, newPassword) => {
+    users = users.map(u => {
+        if (u.username !== username) {
+            return u;
+        } else {
+            console.log("user found");
+            const o = { ...u, password: newPassword, role: 3 };
+            console.log(o);
+            return o;
+        }
+    });
+}

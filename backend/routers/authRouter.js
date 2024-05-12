@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 
 import { getUsers } from "../users.js";
 import userRoles from "../roles.js";
+import { isAuthenticated } from "../passport.js";
 
 const authRouter = express.Router();
 
@@ -76,6 +77,22 @@ authRouter.post("/refresh", (req, res) => {
     } catch (error) {
         return res.status(401).json({ message: 'Invalid refresh token' });
     }
+});
+
+authRouter.post("/updatePassword", isAuthenticated(), (req, res) => {
+    const { oldPassword, newPassword } = req.body;
+
+    bcrypt.compare(oldPassword, req.user.password, async (error, match) => {
+        if (error) return res.status(500).json({ message: 'Server error' });
+
+        if (match) {
+            const hashedPassword = await generatePassword(newPassword);
+            updateUserPassword(req.user.username, hashedPassword);
+            res.status(201).json({ message: "Password updated" });
+        } else {
+            res.status(401).json({ message: 'old password is incorrect' });
+        }
+    });
 });
 
 const generateAccessToken = (user) => {
