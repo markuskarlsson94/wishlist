@@ -2,7 +2,7 @@ import express from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
-import { getUsers } from "../users.js";
+import { addUser, getUsers } from "../users.js";
 import userRoles from "../roles.js";
 import { isAuthenticated } from "../passport.js";
 
@@ -40,16 +40,7 @@ authRouter.post("/register", async (req, res) => {
 
     try {
         const hashedPassword = await generatePassword(password);
-
-        const newUser = {
-            username,
-            email,
-            password: hashedPassword,
-            role: userRoles.CUSTOMER
-        };
-
-        getUsers().push(newUser);
-
+        addUser(username, email, hashedPassword);
         res.status(201).json({ message: 'User registered successfully' });
     } catch (error) {
         console.log(error);
