@@ -15,4 +15,6 @@ const users = [
     }
 ];
 
-export default users;
+export const getUsers = () => {
+    return users;
+} 

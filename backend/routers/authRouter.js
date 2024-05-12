@@ -2,14 +2,14 @@ import express from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
-import users from "../users.js";
+import { getUsers } from "../users.js";
 import userRoles from "../roles.js";
 
 const authRouter = express.Router();
 
 authRouter.post("/login", (req, res) => {
     const { username, password } = req.body;
-    const user = users.find(u => u.username === username);
+    const user = getUsers().find(u => u.username === username);
 
     if (!user) {
         return res.status(401).json({ message: 'Invalid username or password' });
@@ -31,7 +31,7 @@ authRouter.post("/login", (req, res) => {
 authRouter.post("/register", async (req, res) => {
     const { username, email, password } = req.body;
 
-    const existingUser = users.find(u => u.username === username || u.email === email);
+    const existingUser = getUsers().find(u => u.username === username || u.email === email);
     if (existingUser) {
         res.status(400).json({ message: 'User already exists' });
         return;
@@ -47,7 +47,7 @@ authRouter.post("/register", async (req, res) => {
             role: userRoles.CUSTOMER
         };
 
-        users.push(newUser);
+        getUsers().push(newUser);
 
         res.status(201).json({ message: 'User registered successfully' });
     } catch (error) {
@@ -65,7 +65,7 @@ authRouter.post("/refresh", (req, res) => {
 
     try {
         const decoded = jwt.verify(refreshToken, process.env.REFRESH_SECRET_KEY);
-        const user = users.find((u) => u.username === decoded.username);
+        const user = getUsers().find((u) => u.username === decoded.username);
 
         if (!user) {
             return res.status(401).json({ message: 'Invalid refresh token' });

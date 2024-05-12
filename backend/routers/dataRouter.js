@@ -1,6 +1,7 @@
 import express from "express";
 
 import { isAuthenticated, isAuthenticatedAdmin } from "../passport.js"
+import { getUsers } from "../users.js";
 
 const dataRouter = express.Router();
 
@@ -17,6 +18,10 @@ dataRouter.get('/admin', isAuthenticatedAdmin(), (req, res) => {
         message: 'Success', 
         username: req.username 
     });
+});
+
+dataRouter.get("/users", (req, res) => {
+    res.json(getUsers());
 });
 
 export default dataRouter;
