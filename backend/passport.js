@@ -15,7 +15,8 @@ export const passportInit = () => {
         const user = findUserById(payload.id);
         
         if (user) {
-            return done(null, user);
+            // passport sets req.user to user.id.
+            return done(null, user.id);
         }
         
         return done(null, false)
