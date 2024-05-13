@@ -1,5 +1,6 @@
 import passport from "passport";
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
+import jwt from "jsonwebtoken";
 
 import { findUserById } from "./users.js";
 import userRoles from "./roles.js";
@@ -42,6 +43,33 @@ export const isAuthenticatedAdmin = () => {
                 });
             }
         });
+    }
+}
+
+/*
+    Verifies that the issuedAtLogin flag is set in the jwt.
+    This is only true when the access token is generated at
+    user login and makes sure that it wasn't issued by the 
+    refresh token. Use to authorize sensitive requests.
+*/
+export const verifyRecentLogin = () => {
+    return (req, res, next) => {
+        const authorizationHeader = req.headers.authorization;
+
+        if (!authorizationHeader || !authorizationHeader.startsWith('Bearer ')) {
+            return res.status(401).json({ message: 'Unauthorized: Missing or invalid access token' });
+        }
+
+        const accessToken = authorizationHeader.split(' ')[1];
+        const decoded = jwt.decode(accessToken, process.env.ACCESS_SECRET_KEY);
+
+        if (decoded.issuedAtLogin) {
+            return next();
+        } else {
+            return res.status(403).json({ 
+                message: "Access expired: Login to request new access token" 
+            });
+        }
     }
 }
 

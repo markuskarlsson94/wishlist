@@ -19,7 +19,7 @@ authRouter.post("/login", (req, res) => {
         if (error) return res.status(500).json({ message: 'Server error' });
 
         if (match) {
-            const accessToken = generateAccessToken(user);
+            const accessToken = generateAccessToken(user, true);
             const refreshToken = generateRefreshToken(user);
             res.json({ accessToken, refreshToken });
         } else {
@@ -85,8 +85,8 @@ authRouter.post("/updatePassword", isAuthenticated(), (req, res) => {
     });
 });
 
-const generateAccessToken = (user) => {
-    const payload = { id: user.id };
+const generateAccessToken = (user, issuedAtLogin = false) => {
+    const payload = { id: user.id, issuedAtLogin };
     return jwt.sign(payload, process.env.ACCESS_SECRET_KEY, { expiresIn: '1m' });
 }
 
