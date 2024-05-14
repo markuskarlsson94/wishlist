@@ -8,7 +8,6 @@ const dataRouter = express.Router();
 dataRouter.get('/customer', isAuthenticated(), (req, res) => {
     res.json({ 
         message: 'Success', 
-        username: req.username 
     });
 });
 
@@ -16,7 +15,6 @@ dataRouter.get('/customer', isAuthenticated(), (req, res) => {
 dataRouter.get('/admin', isAuthenticatedAdmin(), (req, res) => {
     res.json({ 
         message: 'Success', 
-        username: req.username 
     });
 });
 
