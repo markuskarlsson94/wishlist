@@ -15,8 +15,11 @@ export const passportInit = () => {
         const user = findUserById(payload.id);
         
         if (user) {
-            // passport sets req.user to user.id.
-            return done(null, user.id);
+            // passport sets req.user to the object in the second parameter
+            return done(null, { 
+                userId: user.id, 
+                role: user.role 
+            });
         }
         
         return done(null, false)
