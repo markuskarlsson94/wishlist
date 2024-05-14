@@ -78,9 +78,9 @@ authRouter.post("/updatePassword", isAuthenticated(), (req, res) => {
         if (match) {
             const hashedPassword = await generatePassword(newPassword);
             updateUserPassword(req.user.username, hashedPassword);
-            res.status(201).json({ message: "Password updated" });
+            res.status(200).json({ message: "Password updated" });
         } else {
-            res.status(401).json({ message: 'old password is incorrect' });
+            res.status(400).json({ message: 'old password is incorrect' });
         }
     });
 });
