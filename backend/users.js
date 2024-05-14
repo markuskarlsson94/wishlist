@@ -45,9 +45,9 @@ export const removeUser = (userId) => {
     users = users.filter(u => u.id != userId);
 }
 
-export const updateUserPassword = (username, newPassword) => {
+export const updateUserPassword = (userId, newPassword) => {
     users = users.map(u => {
-        if (u.username !== username) {
+        if (u.id !== userId) {
             return u;
         } else {
             console.log("user found");

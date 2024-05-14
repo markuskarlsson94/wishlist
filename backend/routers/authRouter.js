@@ -2,7 +2,7 @@ import express from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
-import { addUser, findUserById, findUserByUsername, getUsers } from "../users.js";
+import { addUser, findUserById, findUserByUsername, getUsers, updateUserPassword } from "../users.js";
 import { isAuthenticated } from "../passport.js";
 
 const authRouter = express.Router();
@@ -70,14 +70,20 @@ authRouter.post("/refresh", (req, res) => {
 });
 
 authRouter.post("/updatePassword", isAuthenticated(), (req, res) => {
-    const { oldPassword, newPassword } = req.body;
+    const { oldPassword, newPassword, newPasswordRepeated } = req.body;
 
-    bcrypt.compare(oldPassword, req.user.password, async (error, match) => {
+    if (newPassword !== newPasswordRepeated) {
+        return res.status(400).json({ message: "New passwords does not match" });
+    }
+
+    const userPassword = findUserById(req.user.userId).password;
+
+    bcrypt.compare(oldPassword, userPassword, async (error, match) => {
         if (error) return res.status(500).json({ message: 'Server error' });
 
         if (match) {
             const hashedPassword = await generatePassword(newPassword);
-            updateUserPassword(req.user.username, hashedPassword);
+            updateUserPassword(req.user.userId, hashedPassword);
             res.status(200).json({ message: "Password updated" });
         } else {
             res.status(400).json({ message: 'old password is incorrect' });
