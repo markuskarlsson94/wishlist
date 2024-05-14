@@ -2,7 +2,7 @@ import userRoles from "./roles.js";
 
 let userId = 0;
 
-const users = [
+let users = [
     {
         id: userId++,
         username: "admin",
@@ -39,6 +39,10 @@ export const addUser = (username, email, password) => {
         password,
         role: userRoles.CUSTOMER
     });
+}
+
+export const removeUser = (userId) => {
+    users = users.filter(u => u.id != userId);
 }
 
 export const updateUserPassword = (username, newPassword) => {
