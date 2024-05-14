@@ -11,6 +11,7 @@ passportInit();
 const app = express();
 app.use(json());
 app.use(passport.initialize());
+app.disable("x-powered-by");
 
 const router = express.Router();
 router.use("/auth", authRouter);
