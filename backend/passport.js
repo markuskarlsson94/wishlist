@@ -17,7 +17,7 @@ export const passportInit = () => {
         if (user) {
             // passport sets req.user to the object in the second parameter
             return done(null, { 
-                userId: user.id, 
+                id: user.id, 
                 role: user.role 
             });
         }

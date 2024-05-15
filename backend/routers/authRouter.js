@@ -76,14 +76,14 @@ authRouter.post("/updatePassword", isAuthenticated(), (req, res) => {
         return res.status(400).json({ message: "New passwords does not match" });
     }
 
-    const userPassword = findUserById(req.user.userId).password;
+    const userPassword = findUserById(req.user.id).password;
 
     bcrypt.compare(oldPassword, userPassword, async (error, match) => {
         if (error) return res.status(500).json({ message: 'Server error' });
 
         if (match) {
             const hashedPassword = await generatePassword(newPassword);
-            updateUserPassword(req.user.userId, hashedPassword);
+            updateUserPassword(req.user.id, hashedPassword);
             res.status(200).json({ message: "Password updated" });
         } else {
             res.status(400).json({ message: 'old password is incorrect' });
