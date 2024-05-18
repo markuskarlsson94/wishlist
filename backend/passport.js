@@ -5,26 +5,24 @@ import jwt from "jsonwebtoken";
 import { findUserById } from "./users.js";
 import userRoles from "./roles.js";
 
-export const passportInit = () => {
-    const options = {
-        jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-        secretOrKey: process.env.ACCESS_SECRET_KEY
-    };
+const options = {
+    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+    secretOrKey: process.env.ACCESS_SECRET_KEY
+};
+
+passport.use(new JwtStrategy(options, (payload, done) => {
+    const user = findUserById(payload.id);
     
-    passport.use(new JwtStrategy(options, (payload, done) => {
-        const user = findUserById(payload.id);
-        
-        if (user) {
-            // passport sets req.user to the object in the second parameter
-            return done(null, { 
-                id: user.id, 
-                role: user.role 
-            });
-        }
-        
-        return done(null, false)
-    }));
-}
+    if (user) {
+        // passport sets req.user to the object in the second parameter
+        return done(null, { 
+            id: user.id, 
+            role: user.role 
+        });
+    }
+    
+    return done(null, false)
+}));
 
 export const isAuthenticated = () => {
     return passport.authenticate('jwt', { session: false });
