@@ -3,4 +3,4 @@ import logger from "./logger.js";
 
 dotenv.config();
 
-logger.info("Environment varaibles loaded.");
+logger.info("Environment variables loaded.");
