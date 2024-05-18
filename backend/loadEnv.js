@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
+import logger from "./logger.js";
 
 dotenv.config();
 
-console.log("Environment varaibles loaded.");
+logger.info("Environment varaibles loaded.");

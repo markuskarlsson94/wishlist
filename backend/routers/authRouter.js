@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 
 import { addUser, findUserById, findUserByUsername, getUsers, updateUserPassword } from "../users.js";
 import { isAuthenticated } from "../passport.js";
+import logger from "../logger.js";
 
 const authRouter = express.Router();
 
@@ -22,6 +23,7 @@ authRouter.post("/login", (req, res) => {
             const accessToken = generateAccessToken(user, true);
             const refreshToken = generateRefreshToken(user);
             res.json({ accessToken, refreshToken });
+            logger.info(`User ${user.username} logged in.`);
         } else {
             res.status(401).json({ message: 'Invalid username or password' });
         }
@@ -41,8 +43,9 @@ authRouter.post("/register", async (req, res) => {
         const hashedPassword = await generatePassword(password);
         addUser(username, email, hashedPassword);
         res.status(201).json({ message: 'User registered successfully' });
+        logger.info(`New user ${username} registred.`);
     } catch (error) {
-        console.log(error);
+        logger.error(error);
         res.status(500).json({ message: 'Server error' });
     }
 });

@@ -4,6 +4,7 @@ import passport from "./passport.js";
 import db from "./db.js";
 import authRouter from "./routers/authRouter.js";
 import dataRouter from "./routers/dataRouter.js";
+import logger from "./logger.js";
 
 db.connect();
 
@@ -20,5 +21,5 @@ app.use("/api/v1", router);
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
-    console.log(`Server started and listening on port ${port}.`);
+	logger.info(`Server started and listening on port ${port}.`);
 });
