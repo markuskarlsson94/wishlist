@@ -20,7 +20,8 @@
     "nodemon": "^3.1.0",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
-    "pg": "^8.11.5"
+    "pg": "^8.11.5",
+    "winston": "^3.13.0"
   },
   "type": "module"
 }
