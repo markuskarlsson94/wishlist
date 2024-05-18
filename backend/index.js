@@ -1,8 +1,11 @@
 import "./loadEnv.js";
 import express, { json } from "express";
 import passport from "./passport.js";
+import db from "./db.js";
 import authRouter from "./routers/authRouter.js";
 import dataRouter from "./routers/dataRouter.js";
+
+db.connect();
 
 const app = express();
 app.use(json());
