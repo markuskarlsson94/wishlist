@@ -3,7 +3,7 @@ import express, { json } from "express";
 import passport from "./passport.js";
 import db from "./db.js";
 import authRouter from "./routers/authRouter.js";
-import dataRouter from "./routers/dataRouter.js";
+import userRouter from "./routers/userRouter.js";
 import logger from "./logger.js";
 
 db.connect();
@@ -15,7 +15,7 @@ app.disable("x-powered-by");
 
 const router = express.Router();
 router.use("/auth", authRouter);
-router.use("/data", dataRouter);
+router.use("/user", userRouter);
 app.use("/api/v1", router);
 
 const port = process.env.PORT || 3000;

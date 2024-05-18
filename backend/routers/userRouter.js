@@ -3,22 +3,22 @@ import express from "express";
 import { isAuthenticated, isAuthenticatedAdmin, verifyRecentLogin } from "../passport.js"
 import dataService from "../services/dataService.js";
 
-const dataRouter = express.Router();
+const userRouter = express.Router();
 
-dataRouter.get('/customer', isAuthenticated(), (req, res) => {
+userRouter.get('/customer', isAuthenticated(), (req, res) => {
     res.json({ 
         message: 'Success', 
     });
 });
 
 
-dataRouter.get('/admin', isAuthenticatedAdmin(), (req, res) => {
+userRouter.get('/admin', isAuthenticatedAdmin(), (req, res) => {
     res.json({ 
         message: 'Success', 
     });
 });
 
-dataRouter.get("/users", (req, res) => {
+userRouter.get("/users", (req, res) => {
     try {
         const users = dataService.getUsers();
         res.json({ users });
@@ -27,7 +27,7 @@ dataRouter.get("/users", (req, res) => {
     }
 });
 
-dataRouter.delete("/users/:userId", isAuthenticated(), verifyRecentLogin(), (req, res) => {
+userRouter.delete("/users/:userId", isAuthenticated(), verifyRecentLogin(), (req, res) => {
     const userId = Number(req.user.id);
     const userToDeleteId = Number(req.params.userId);
 
@@ -39,7 +39,7 @@ dataRouter.delete("/users/:userId", isAuthenticated(), verifyRecentLogin(), (req
     }
 });
 
-dataRouter.post("/updatePassword", isAuthenticated(), async (req, res) => {
+userRouter.post("/updatePassword", isAuthenticated(), async (req, res) => {
     const { oldPassword, newPassword, newPasswordRepeated } = req.body;
 
     try {
@@ -56,4 +56,4 @@ dataRouter.post("/updatePassword", isAuthenticated(), async (req, res) => {
     }
 });
 
-export default dataRouter;
+export default userRouter;
