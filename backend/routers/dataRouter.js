@@ -1,7 +1,7 @@
 import express from "express";
 
 import { isAuthenticated, isAuthenticatedAdmin, verifyRecentLogin } from "../passport.js"
-import { findUserById, getUsers, removeUser } from "../users.js";
+import dataService from "../services/dataService.js";
 
 const dataRouter = express.Router();
 
@@ -19,23 +19,40 @@ dataRouter.get('/admin', isAuthenticatedAdmin(), (req, res) => {
 });
 
 dataRouter.get("/users", (req, res) => {
-    res.json(getUsers());
+    try {
+        const users = dataService.getUsers();
+        res.json({ users });
+    } catch (error) {   
+        res.status(error.status).json(error.message);
+    }
 });
 
 dataRouter.delete("/users/:userId", isAuthenticated(), verifyRecentLogin(), (req, res) => {
-    const userToDelete = findUserById(Number(req.params.userId))?.id;
+    const userId = Number(req.user.id);
+    const userToDeleteId = Number(req.params.userId);
 
-    if (userToDelete === undefined) {
-        return res.status(400).json({ message: "User not found" });
-    }
-
-    const currentUser = req.user.userId;
-
-    if (currentUser !== userToDelete) {
-        res.status(400).json({ message: "Unable to delete someone else" });
-    } else {
-        removeUser(userToDelete);
+    try {
+        dataService.deleteUser(userId, userToDeleteId);
         res.status(200).json({ message: "User successfully deleted" });
+    } catch (error) {
+        res.status(error.status).json(error.message);
+    }
+});
+
+dataRouter.post("/updatePassword", isAuthenticated(), async (req, res) => {
+    const { oldPassword, newPassword, newPasswordRepeated } = req.body;
+
+    try {
+        await dataService.updatePassword(
+            req.user.id, 
+            oldPassword, 
+            newPassword, 
+            newPasswordRepeated
+        );
+
+        res.status(200).json({ message: "Password updated" });
+    } catch (error) {
+        res.status(error.status).json(error.message);
     }
 });
 
