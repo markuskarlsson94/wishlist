@@ -1,18 +1,19 @@
 import jwt from "jsonwebtoken";
-import { addUser, getUsers, findUserByUsername, findUserById } from "../users.js";
 import logger from "../logger.js";
 import ErrorMessage from "../errors/ErrorMessage.js";
-import { generatePassword, passwordsMatching } from "../utilities/password.js";
+import { passwordsMatching } from "../utilities/password.js";
+import dataService from "./dataService.js";
 
 const authService = {
     register: async (username, email, password) => {
-        if (getUsers().find(u => u.username === username || u.email === email)) {
+        const userExists = await dataService.exists(username, email);
+        
+        if (userExists) {
             throw new ErrorMessage(400, "User already exist.");
         }
 
         try {
-            const hashedPassword = await generatePassword(password);
-            addUser(username, email, hashedPassword);
+            dataService.addUser(username, email, password);
             logger.info(`New user ${username} registred.`);
         } catch (error) {
             logger.debug(error);
@@ -21,13 +22,14 @@ const authService = {
     },
 
     login: async (username, password) => {
-        const user = findUserByUsername(username);
+        const user = await dataService.getByUsername(username);
 
         if (!user) {
             throw new ErrorMessage(401, "Invalid username or password");
         }
 
         let match = false;
+
         try {
             match = await passwordsMatching(password, user.password); 
         } catch (error) {
@@ -49,19 +51,20 @@ const authService = {
         }
     },
 
-    refresh: (refreshToken) => {
+    refresh: async (refreshToken) => {
         if (!refreshToken) {
             throw new ErrorMessage(400, "Refresh token required");
         }
     
         try {
             const decoded = jwt.verify(refreshToken, process.env.REFRESH_SECRET_KEY);
-            const user = findUserById(decoded.id);
+            const user = await dataService.getById(decoded.id);
     
             if (!user) {
                 throw new ErrorMessage(401, "Invalid refresh token");
             }
     
+            logger.info(`User (id = ${user.id}) requested new refresh token.`);
             return generateAccessToken(user);
         } catch (error) {
             throw new ErrorMessage(401, "Invalid refresh token");

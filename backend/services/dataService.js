@@ -1,25 +1,62 @@
 import ErrorMessage from "../errors/ErrorMessage.js";
-import { findUserById, getUsers, removeUser, updateUserPassword } from "../users.js";
-import { generatePassword, passwordsMatching } from "../utilities/password.js";
+import { passwordsMatching } from "../utilities/password.js";
 import logger from "../logger.js";
+import db from "../db.js";
+import userRoles from "../roles.js";
 
 const dataService = {
-    getUsers: () => {
-        return getUsers();
+    getUsers: async () => {
+        return (await db.user.getAll());
     },
 
-    deleteUser: (userId, userToDeleteId) => {
+    getById: async (id) => {
+        try {
+            return await db.user.getById(id);
+        } catch (error) {
+            logger.error(error.message);
+            throw new ErrorMessage(500, "Server error");
+        }
+    },
+
+    getByUsername: async (username) => {
+        try {
+            return await db.user.getByUsername(username);
+        } catch (error) {
+            logger.error(error.message);
+            throw new ErrorMessage(500, "Server error");
+        }
+    },
+
+    addUser: async (username, email, plaintextPassword, role = userRoles.CUSTOMER) => {
+        try {
+            return (await db.user.add(username, email, plaintextPassword, role));
+        } catch (error) {
+            logger.error(error?.message);
+            throw new ErrorMessage(500, "Unable to add new user.");
+        }
+    },
+
+    removeUser: async (userId, userToDeleteId) => {
         if (userId !== userToDeleteId) {
             throw new ErrorMessage(401, "Unauthorized to delete other user.");
         }
 
-        const userToDelete = findUserById(userToDeleteId)?.id;
+        const userToDelete = (await db.user.getById(userToDeleteId))?.id;
 
         // TODO: Admin should be able to delete other user.
         if (userToDelete === undefined) {
             throw new ErrorMessage(400, "User for deletion not found.");
         } else {
-            removeUser(userToDelete);
+            await db.user.remove(userToDelete);
+        }
+    },
+
+    exists: async (username, email) => {
+        try {
+            return (await db.user.exists(username, email));
+        } catch (error) {
+            logger.error(error.message);
+            throw new ErrorMessage(500, "Server error.");
         }
     },
 
@@ -28,7 +65,7 @@ const dataService = {
             throw new ErrorMessage(400, "New passwords does not match.");
         }
     
-        const userPassword = findUserById(userId).password;
+        const userPassword = (await db.user.getById(userId)).password;
 
         let match = false;
         try {
@@ -39,8 +76,12 @@ const dataService = {
         }
 
         if (match) {
-            const hashedPassword = await generatePassword(newPassword);
-            updateUserPassword(userId, hashedPassword);
+            try {    
+                await db.user.updatePassword(userId, newPassword);
+            } catch (error) {
+                logger.error(error.message);
+                throw new ErrorMessage(500, "Server error")
+            }
         } else {
             throw new ErrorMessage(400, "old password is incorrect.");
         }

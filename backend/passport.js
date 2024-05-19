@@ -1,17 +1,16 @@
 import passport from "passport";
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 import jwt from "jsonwebtoken";
-
-import { findUserById } from "./users.js";
 import userRoles from "./roles.js";
+import dataService from "./services/dataService.js";
 
 const options = {
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
     secretOrKey: process.env.ACCESS_SECRET_KEY
 };
 
-passport.use(new JwtStrategy(options, (payload, done) => {
-    const user = findUserById(payload.id);
+passport.use(new JwtStrategy(options, async (payload, done) => {
+    const user = await dataService.getById(payload.id);
     
     if (user) {
         // passport sets req.user to the object in the second parameter

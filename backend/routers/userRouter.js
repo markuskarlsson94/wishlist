@@ -18,21 +18,35 @@ userRouter.get('/admin', isAuthenticatedAdmin(), (req, res) => {
     });
 });
 
-userRouter.get("/users", (req, res) => {
+userRouter.get("/users", async (_req, res) => {
     try {
-        const users = dataService.getUsers();
+        const users = await dataService.getUsers();
         res.json({ users });
     } catch (error) {   
         res.status(error.status).json(error.message);
     }
 });
 
-userRouter.delete("/users/:userId", isAuthenticated(), verifyRecentLogin(), (req, res) => {
+userRouter.post("/add", async (req, res) => {
+    try {
+        const { username, email, password } = req.body;
+        const id = await dataService.addUser(username, email, password);
+
+        res.status(201).json({ 
+            message: "User successfully created.",
+            id,
+        });
+    } catch (error) {
+        res.status(error.status).json(error.message);
+    }
+});
+
+userRouter.delete("/users/:userId", isAuthenticated(), verifyRecentLogin(), async (req, res) => {
     const userId = Number(req.user.id);
     const userToDeleteId = Number(req.params.userId);
 
     try {
-        dataService.deleteUser(userId, userToDeleteId);
+        await dataService.removeUser(userId, userToDeleteId);
         res.status(200).json({ message: "User successfully deleted" });
     } catch (error) {
         res.status(error.status).json(error.message);
