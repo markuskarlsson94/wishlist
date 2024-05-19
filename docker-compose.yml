@@ -1,4 +1,16 @@
 services:
+  db:
+    image: postgres:latest
+    container_name: postgres
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    ports:
+      - "${DB_PORT}:${DB_PORT}"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
   backend:
     build:
       context: ./backend
@@ -10,4 +22,11 @@ services:
       - /usr/src/app/node_modules
     environment:
       - PORT=${BACKEND_PORT_INTERNAL}
+    env_file:
+      - .env
     command: nodemon -L index.js
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:
