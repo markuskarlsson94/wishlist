@@ -4,8 +4,8 @@ import logger from "../logger.js";
 import db from "../db.js";
 import userRoles from "../roles.js";
 
-const dataService = {
-    getUsers: async () => {
+const userService = {
+    getAll: async () => {
         return (await db.user.getAll());
     },
 
@@ -27,7 +27,7 @@ const dataService = {
         }
     },
 
-    addUser: async (username, email, plaintextPassword, role = userRoles.CUSTOMER) => {
+    add: async (username, email, plaintextPassword, role = userRoles.CUSTOMER) => {
         try {
             return (await db.user.add(username, email, plaintextPassword, role));
         } catch (error) {
@@ -36,7 +36,7 @@ const dataService = {
         }
     },
 
-    removeUser: async (userId, userToDeleteId) => {
+    remove: async (userId, userToDeleteId) => {
         if (userId !== userToDeleteId) {
             throw new ErrorMessage(401, "Unauthorized to delete other user.");
         }
@@ -88,4 +88,4 @@ const dataService = {
     }
 };
 
-export default dataService;
+export default userService;

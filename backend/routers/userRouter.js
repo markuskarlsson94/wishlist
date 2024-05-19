@@ -1,7 +1,7 @@
 import express from "express";
 
 import { isAuthenticated, isAuthenticatedAdmin, verifyRecentLogin } from "../passport.js"
-import dataService from "../services/dataService.js";
+import userService from "../services/userService.js";
 
 const userRouter = express.Router();
 
@@ -20,7 +20,7 @@ userRouter.get('/admin', isAuthenticatedAdmin(), (req, res) => {
 
 userRouter.get("/users", async (_req, res) => {
     try {
-        const users = await dataService.getUsers();
+        const users = await userService.getAll();
         res.json({ users });
     } catch (error) {   
         res.status(error.status).json(error.message);
@@ -30,7 +30,7 @@ userRouter.get("/users", async (_req, res) => {
 userRouter.post("/add", async (req, res) => {
     try {
         const { username, email, password } = req.body;
-        const id = await dataService.addUser(username, email, password);
+        const id = await userService.add(username, email, password);
 
         res.status(201).json({ 
             message: "User successfully created.",
@@ -46,7 +46,7 @@ userRouter.delete("/users/:userId", isAuthenticated(), verifyRecentLogin(), asyn
     const userToDeleteId = Number(req.params.userId);
 
     try {
-        await dataService.removeUser(userId, userToDeleteId);
+        await userService.remove(userId, userToDeleteId);
         res.status(200).json({ message: "User successfully deleted" });
     } catch (error) {
         res.status(error.status).json(error.message);
@@ -57,7 +57,7 @@ userRouter.post("/updatePassword", isAuthenticated(), async (req, res) => {
     const { oldPassword, newPassword, newPasswordRepeated } = req.body;
 
     try {
-        await dataService.updatePassword(
+        await userService.updatePassword(
             req.user.id, 
             oldPassword, 
             newPassword, 

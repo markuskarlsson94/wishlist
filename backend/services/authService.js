@@ -2,18 +2,18 @@ import jwt from "jsonwebtoken";
 import logger from "../logger.js";
 import ErrorMessage from "../errors/ErrorMessage.js";
 import { passwordsMatching } from "../utilities/password.js";
-import dataService from "./dataService.js";
+import userService from "./userService.js";
 
 const authService = {
     register: async (username, email, password) => {
-        const userExists = await dataService.exists(username, email);
+        const userExists = await userService.exists(username, email);
         
         if (userExists) {
             throw new ErrorMessage(400, "User already exist.");
         }
 
         try {
-            dataService.addUser(username, email, password);
+            userService.add(username, email, password);
             logger.info(`New user ${username} registred.`);
         } catch (error) {
             logger.debug(error);
@@ -22,7 +22,7 @@ const authService = {
     },
 
     login: async (username, password) => {
-        const user = await dataService.getByUsername(username);
+        const user = await userService.getByUsername(username);
 
         if (!user) {
             throw new ErrorMessage(401, "Invalid username or password");
@@ -58,7 +58,7 @@ const authService = {
     
         try {
             const decoded = jwt.verify(refreshToken, process.env.REFRESH_SECRET_KEY);
-            const user = await dataService.getById(decoded.id);
+            const user = await userService.getById(decoded.id);
     
             if (!user) {
                 throw new ErrorMessage(401, "Invalid refresh token");
