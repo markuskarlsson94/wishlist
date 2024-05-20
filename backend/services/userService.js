@@ -31,7 +31,7 @@ const userService = {
         try {
             return (await db.user.add(email, firstName, lastName, plaintextPassword, role));
         } catch (error) {
-            logger.error(error?.message);
+            logger.error(error.message);
             throw new ErrorMessage(500, "Unable to add new user.");
         }
     },
@@ -71,7 +71,7 @@ const userService = {
         try {
             match = await passwordsMatching(oldPassword, userPassword);
         } catch (error) {
-            logger.debug(error);
+            logger.error(error.message);
             throw new ErrorMessage(500, "Server error.");
         }
 

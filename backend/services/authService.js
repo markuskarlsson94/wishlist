@@ -32,7 +32,7 @@ const authService = {
         try {
             match = await passwordsMatching(password, user.password); 
         } catch (error) {
-            logger.debug(error);
+            logger.error(error.message);
             throw new ErrorMessage(500, "Server error");
         }
         
@@ -46,6 +46,7 @@ const authService = {
                 refreshToken,
             } 
         } else {
+            logger.error(error.message);
             throw new ErrorMessage(401, "Invalid email or password");
         }
     },
@@ -66,6 +67,7 @@ const authService = {
             logger.info(`User (id = ${user.id}) requested new refresh token.`);
             return generateAccessToken(user);
         } catch (error) {
+            logger.error(error.message);
             throw new ErrorMessage(401, "Invalid refresh token");
         }
     }
