@@ -35,8 +35,8 @@ const db = {
                 table.increments("id").primary();
                 table.string("username").notNullable().unique();
                 table.string("email").notNullable().unique();
-                table.string("password");
-                table.integer("role");
+                table.string("password").notNullable();
+                table.integer("role").notNullable();
                 table.timestamps(true, true);
             });
 
