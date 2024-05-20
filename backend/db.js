@@ -51,7 +51,7 @@ const db = {
                 username: "customer",
                 email: "customer@mail.com",
                 password: "$2b$10$nxeNYaYGG0wtb5gDyok29ekEIOeT6t0UjQTy6hpexL2lv/3EQAADq",
-                role: userRoles.CUSTOMER,
+                role: userRoles.USER,
             });
 
             logger.info("Database initiated.");

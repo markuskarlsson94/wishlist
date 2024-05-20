@@ -27,7 +27,7 @@ const userService = {
         }
     },
 
-    add: async (username, email, plaintextPassword, role = userRoles.CUSTOMER) => {
+    add: async (username, email, plaintextPassword, role = userRoles.USER) => {
         try {
             return (await db.user.add(username, email, plaintextPassword, role));
         } catch (error) {
