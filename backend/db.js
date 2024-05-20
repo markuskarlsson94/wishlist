@@ -33,23 +33,26 @@ const db = {
             
             await dbClient.schema.createTable(userTable, (table) => {
                 table.increments("id").primary();
-                table.string("username").notNullable().unique();
                 table.string("email").notNullable().unique();
+                table.string("firstName").notNullable();
+                table.string("lastName").notNullable();
                 table.string("password").notNullable();
                 table.integer("role").notNullable();
                 table.timestamps(true, true);
             });
 
             await dbClient(userTable).insert({
-                username: "admin",
                 email: "admin@mail.com",
+                firstName: "Admin",
+                lastName: "Adminsson",
                 password: "$2b$10$VBOsAZiw9kVAjdixWVSD9.cRMbttIjulDWlWRQJh0j2L6YPJS5G/i",
                 role: userRoles.ADMIN,
             });
 
             await dbClient(userTable).insert({
-                username: "customer",
-                email: "customer@mail.com",
+                email: "user@mail.com",
+                firstName: "User",
+                lastName: "Usersson",
                 password: "$2b$10$nxeNYaYGG0wtb5gDyok29ekEIOeT6t0UjQTy6hpexL2lv/3EQAADq",
                 role: userRoles.USER,
             });
@@ -61,13 +64,14 @@ const db = {
     },
 
     user: {
-        add: async (username, email, plaintextPassword, role) => {
+        add: async (email, firstName, lastName, plaintextPassword, role) => {
             const hashedPassword = await generatePassword(plaintextPassword);
 
             return (await dbClient(userTable)
-                .insert({ 
-                    username,
+                .insert({
                     email,
+                    firstName,
+                    lastName,
                     password: hashedPassword,
                     role,
                 })
@@ -88,26 +92,25 @@ const db = {
                 .first()
             );
         },
-        
-        getByUsername: async (username) => {
+
+        getByEmail: async (email) => {
             return (await dbClient(userTable)
                 .select("*")
-                .where({ username })
+                .where({ email })
                 .first()
             );
         },
 
         getAll: async () => {
             return (await dbClient(userTable)
-                .select("id", "username", "email", "created_at")
+                .select("id", "email", "firstName", "lastName", "created_at")
             );
         },
 
-        exists: async (username, email) => {
+        exists: async (email) => {
             const res = await dbClient(userTable)
                 .select("id")
-                .where({ username })
-                .orWhere({ email });
+                .where({ email });  
 
             return res.length > 0;
         },

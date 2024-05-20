@@ -17,19 +17,19 @@ const userService = {
             throw new ErrorMessage(500, "Server error");
         }
     },
-
-    getByUsername: async (username) => {
+    
+    getByEmail: async (email) => {
         try {
-            return await db.user.getByUsername(username);
+            return await db.user.getByEmail(email);
         } catch (error) {
             logger.error(error.message);
             throw new ErrorMessage(500, "Server error");
         }
     },
 
-    add: async (username, email, plaintextPassword, role = userRoles.USER) => {
+    add: async (email, firstName, lastName, plaintextPassword, role = userRoles.USER) => {
         try {
-            return (await db.user.add(username, email, plaintextPassword, role));
+            return (await db.user.add(email, firstName, lastName, plaintextPassword, role));
         } catch (error) {
             logger.error(error?.message);
             throw new ErrorMessage(500, "Unable to add new user.");
@@ -51,9 +51,9 @@ const userService = {
         }
     },
 
-    exists: async (username, email) => {
+    exists: async (email) => {
         try {
-            return (await db.user.exists(username, email));
+            return (await db.user.exists(email));
         } catch (error) {
             logger.error(error.message);
             throw new ErrorMessage(500, "Server error.");

@@ -5,27 +5,26 @@ import { passwordsMatching } from "../utilities/password.js";
 import userService from "./userService.js";
 
 const authService = {
-    register: async (username, email, password) => {
-        const userExists = await userService.exists(username, email);
-        
+    register: async (email, firstName, lastName, password) => {
+        const userExists = await userService.exists(email);
         if (userExists) {
             throw new ErrorMessage(400, "User already exist.");
         }
 
         try {
-            userService.add(username, email, password);
-            logger.info(`New user ${username} registred.`);
+            userService.add(email, firstName, lastName, password);
+            logger.info(`New user ${email} registred.`);
         } catch (error) {
-            logger.debug(error);
+            logger.error(error.message);
             throw new ErrorMessage(500, "Server error");
         }
     },
 
-    login: async (username, password) => {
-        const user = await userService.getByUsername(username);
+    login: async (email, password) => {
+        const user = await userService.getByEmail(email);
 
         if (!user) {
-            throw new ErrorMessage(401, "Invalid username or password");
+            throw new ErrorMessage(401, "Invalid email or password");
         }
 
         let match = false;
@@ -40,14 +39,14 @@ const authService = {
         if (match) {
             const accessToken = generateAccessToken(user, true);
             const refreshToken = generateRefreshToken(user);
-            logger.info(`User ${user.username} logged in.`);
+            logger.info(`User ${user.email} logged in.`);
             
             return {
                 accessToken,
                 refreshToken,
             } 
         } else {
-            throw new ErrorMessage(401, "Invalid username or password");
+            throw new ErrorMessage(401, "Invalid email or password");
         }
     },
 

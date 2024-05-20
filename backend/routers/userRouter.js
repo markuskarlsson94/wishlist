@@ -29,8 +29,8 @@ userRouter.get("/users", async (_req, res) => {
 
 userRouter.post("/add", async (req, res) => {
     try {
-        const { username, email, password } = req.body;
-        const id = await userService.add(username, email, password);
+        const { email, firstName, lastName, password } = req.body;
+        const id = await userService.add(email, firstName, lastName, password);
 
         res.status(201).json({ 
             message: "User successfully created.",
