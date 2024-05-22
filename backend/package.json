@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest",
     "devStart": "nodemon index.js",
     "generateRandomHex": "node -e \"console.log(require('crypto').randomBytes(64).toString('hex'))\""
   },
@@ -23,5 +23,8 @@
     "pg": "^8.11.5",
     "winston": "^3.13.0"
   },
-  "type": "module"
+  "type": "module",
+  "devDependencies": {
+    "vitest": "^1.6.0"
+  }
 }
