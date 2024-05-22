@@ -12,7 +12,7 @@ const authService = {
         }
 
         try {
-            userService.add(email, firstName, lastName, password);
+            await userService.add(email, firstName, lastName, password);
             logger.info(`New user ${email} registred.`);
         } catch (error) {
             logger.error(error.message);
@@ -46,7 +46,6 @@ const authService = {
                 refreshToken,
             } 
         } else {
-            logger.error(error.message);
             throw new ErrorMessage(401, "Invalid email or password");
         }
     },
