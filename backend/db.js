@@ -13,7 +13,7 @@ const db = {
     connect: async () => {
         try {
             dbClient = knex(config[environment]);
-            logger.info("Connected to database.");
+            logger.info(`Connected to database. Environment: ${environment}.`);
         } catch (error) {
             logger.error("Error connecting to database:", error);
         }
