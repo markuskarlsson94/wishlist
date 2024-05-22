@@ -1,3 +1,4 @@
+import "./loadEnv.js";
 import knex from "knex";
 import config from "./knexfile.js";
 import logger from "./logger.js";
@@ -41,26 +42,28 @@ const db = {
                 table.timestamps(true, true);
             });
 
-            await dbClient(userTable).insert({
-                email: "admin@mail.com",
-                firstName: "Admin",
-                lastName: "Adminsson",
-                password: "$2b$10$VBOsAZiw9kVAjdixWVSD9.cRMbttIjulDWlWRQJh0j2L6YPJS5G/i",
-                role: userRoles.ADMIN,
-            });
-
-            await dbClient(userTable).insert({
-                email: "user@mail.com",
-                firstName: "User",
-                lastName: "Usersson",
-                password: "$2b$10$nxeNYaYGG0wtb5gDyok29ekEIOeT6t0UjQTy6hpexL2lv/3EQAADq",
-                role: userRoles.USER,
-            });
-
             logger.info("Database initiated.");
         } catch (error) {
             logger.error(error.message);
         }
+    },
+
+    populate: async () => {
+        await dbClient(userTable).insert({
+            email: "admin@mail.com",
+            firstName: "Admin",
+            lastName: "Adminsson",
+            password: "$2b$10$VBOsAZiw9kVAjdixWVSD9.cRMbttIjulDWlWRQJh0j2L6YPJS5G/i",
+            role: userRoles.ADMIN,
+        });
+
+        await dbClient(userTable).insert({
+            email: "user@mail.com",
+            firstName: "User",
+            lastName: "Usersson",
+            password: "$2b$10$nxeNYaYGG0wtb5gDyok29ekEIOeT6t0UjQTy6hpexL2lv/3EQAADq",
+            role: userRoles.USER,
+        });
     },
 
     user: {
