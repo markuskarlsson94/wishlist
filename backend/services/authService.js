@@ -3,12 +3,13 @@ import logger from "../logger.js";
 import ErrorMessage from "../errors/ErrorMessage.js";
 import { passwordsMatching } from "../utilities/password.js";
 import userService from "./userService.js";
+import errorMessages from "../errors/errorMessages.js";
 
 const authService = {
     register: async (email, firstName, lastName, password) => {
         const userExists = await userService.exists(email);
         if (userExists) {
-            throw new ErrorMessage(400, "User already exist.");
+            throw new ErrorMessage(errorMessages.userAlreadyExists);
         }
 
         try {
@@ -16,7 +17,7 @@ const authService = {
             logger.info(`New user ${email} registred.`);
         } catch (error) {
             logger.error(error.message);
-            throw new ErrorMessage(500, "Server error");
+            throw new ErrorMessage(errorMessages.serverError);
         }
     },
 
@@ -24,7 +25,7 @@ const authService = {
         const user = await userService.getByEmail(email);
 
         if (!user) {
-            throw new ErrorMessage(401, "Invalid email or password");
+            throw new ErrorMessage(errorMessages.invalidEmailOrPassword);
         }
 
         let match = false;
@@ -33,7 +34,7 @@ const authService = {
             match = await passwordsMatching(password, user.password); 
         } catch (error) {
             logger.error(error.message);
-            throw new ErrorMessage(500, "Server error");
+            throw new ErrorMessage(errorMessages.serverError);
         }
         
         if (match) {
@@ -46,13 +47,13 @@ const authService = {
                 refreshToken,
             } 
         } else {
-            throw new ErrorMessage(401, "Invalid email or password");
+            throw new ErrorMessage(errorMessages.invalidEmailOrPassword);
         }
     },
 
     refresh: async (refreshToken) => {
         if (!refreshToken) {
-            throw new ErrorMessage(400, "Refresh token required");
+            throw new ErrorMessage(errorMessages.refreshTokenRequired);
         }
     
         try {
@@ -60,14 +61,14 @@ const authService = {
             const user = await userService.getById(decoded.id);
     
             if (!user) {
-                throw new ErrorMessage(401, "Invalid refresh token");
+                throw new ErrorMessage(errorMessages.invalidRefreshToken);
             }
     
             logger.info(`User (id = ${user.id}) requested new refresh token.`);
             return generateAccessToken(user);
         } catch (error) {
             logger.error(error.message);
-            throw new ErrorMessage(401, "Invalid refresh token");
+            throw new ErrorMessage(errorMessages.invalidRefreshToken);
         }
     }
 };

@@ -1,6 +1,7 @@
 import { afterAll, beforeAll, expect, describe, it } from 'vitest'
 import userService from "./userService";
 import db from "../db";
+import errorMessages from '../errors/errorMessages';
 
 let userId1;
 let userId2;
@@ -44,7 +45,7 @@ describe("adding user", () => {
     it("should not allow adding user with existing email", async () => {
         await expect((async () => {
             await userService.add(email1, "Foo", "Bar", "abc");
-        })()).rejects.toThrowError("Unable to add new user.");
+        })()).rejects.toThrowError(errorMessages.unableToAddNewUser.message);
     });
 
     it("should add user with different email but same name", async () => {
@@ -83,13 +84,13 @@ describe("removing user", async () => {
     it("should not allow user to remove someone else", async () => {
         await expect((async () => {
             await userService.remove(userId1, userId2);
-        })()).rejects.toThrowError("Unauthorized to delete other user.");
+        })()).rejects.toThrowError(errorMessages.unauthorizedToDeleteOtherUser.message);
     });
 
     it("should not allow user to remove nonexisiting user", async () => {
         await expect((async () => {
             await userService.remove(userId1, 0);
-        })()).rejects.toThrowError("Unauthorized to delete other user.");
+        })()).rejects.toThrowError(errorMessages.unauthorizedToDeleteOtherUser.message);
     });
 
     it("should allow removing same user", async () => {

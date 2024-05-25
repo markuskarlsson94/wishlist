@@ -1,7 +1,7 @@
 class ErrorMessage extends Error {
-    constructor(status, message) {
-        super(message);
-        this.status = status;
+    constructor(errorMessage) {
+        super(errorMessage.message);
+        this.status = errorMessage.status;
     }
 }
 

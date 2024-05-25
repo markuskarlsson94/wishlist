@@ -3,6 +3,7 @@ import { passwordsMatching } from "../utilities/password.js";
 import logger from "../logger.js";
 import db from "../db.js";
 import userRoles from "../roles.js";
+import errorMessages from "../errors/errorMessages.js";
 
 const userService = {
     getAll: async () => {
@@ -14,7 +15,7 @@ const userService = {
             return await db.user.getById(id);
         } catch (error) {
             logger.error(error.message);
-            throw new ErrorMessage(500, "Server error");
+            throw new ErrorMessage(errorMessages.serverError);
         }
     },
     
@@ -23,7 +24,7 @@ const userService = {
             return await db.user.getByEmail(email);
         } catch (error) {
             logger.error(error.message);
-            throw new ErrorMessage(500, "Server error");
+            throw new ErrorMessage(errorMessages.serverError);
         }
     },
 
@@ -32,20 +33,20 @@ const userService = {
             return (await db.user.add(email, firstName, lastName, plaintextPassword, role));
         } catch (error) {
             logger.error(error.message);
-            throw new ErrorMessage(500, "Unable to add new user.");
+            throw new ErrorMessage(errorMessages.unableToAddNewUser);
         }
     },
 
     remove: async (userId, userToDeleteId) => {
         if (userId !== userToDeleteId) {
-            throw new ErrorMessage(401, "Unauthorized to delete other user.");
+            throw new ErrorMessage(errorMessages.unauthorizedToDeleteOtherUser);
         }
 
         const userToDelete = (await db.user.getById(userToDeleteId))?.id;
 
         // TODO: Admin should be able to delete other user.
         if (userToDelete === undefined) {
-            throw new ErrorMessage(400, "User for deletion not found.");
+            throw new ErrorMessage(errorMessages.userNotFound);
         } else {
             await db.user.remove(userToDelete);
         }
@@ -56,13 +57,13 @@ const userService = {
             return (await db.user.exists(email));
         } catch (error) {
             logger.error(error.message);
-            throw new ErrorMessage(500, "Server error.");
+            throw new ErrorMessage(errorMessages.serverError);
         }
     },
 
     updatePassword: async (userId, oldPassword, newPassword, newPasswordRepeated) => {        
         if (newPassword !== newPasswordRepeated) {
-            throw new ErrorMessage(400, "New passwords does not match.");
+            throw new ErrorMessage(errorMessages.passwordsDontMatch);
         }
     
         const userPassword = (await db.user.getById(userId)).password;
@@ -72,7 +73,7 @@ const userService = {
             match = await passwordsMatching(oldPassword, userPassword);
         } catch (error) {
             logger.error(error.message);
-            throw new ErrorMessage(500, "Server error.");
+            throw new ErrorMessage(errorMessages.serverError);
         }
 
         if (match) {
@@ -80,10 +81,10 @@ const userService = {
                 await db.user.updatePassword(userId, newPassword);
             } catch (error) {
                 logger.error(error.message);
-                throw new ErrorMessage(500, "Server error")
+                throw new ErrorMessage(errorMessages.serverError)
             }
         } else {
-            throw new ErrorMessage(400, "old password is incorrect.");
+            throw new ErrorMessage(errorMessages.oldPasswordIncorrect);
         }
     }
 };
