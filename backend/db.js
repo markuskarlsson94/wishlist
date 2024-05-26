@@ -10,10 +10,10 @@ const userTable = "users";
 let dbClient;
 
 const db = {
-    connect: async () => {
+    connect: async (env = environment) => {
         try {
-            dbClient = knex(config[environment]);
-            logger.info(`Connected to database. Environment: ${environment}.`);
+            dbClient = knex(config[env]);
+            logger.info(`Connected to database. Environment: ${env}.`);
         } catch (error) {
             logger.error("Error connecting to database:", error);
         }
