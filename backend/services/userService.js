@@ -86,6 +86,15 @@ const userService = {
         } else {
             throw new ErrorMessage(errorMessages.oldPasswordIncorrect);
         }
+    },
+
+    getUserRoles: async () => {
+        try {
+            return db.userRoles.getAll();
+        } catch (error) {
+            logger.error(error.message);
+            throw new ErrorMessage(errorMessages.serverError);
+        }
     }
 };
 

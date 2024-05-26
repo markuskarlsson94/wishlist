@@ -2,11 +2,12 @@ import "./loadEnv.js";
 import knex from "knex";
 import config from "./knexfile.js";
 import logger from "./logger.js";
-import userRoles from "./roles.js";
 import { generatePassword } from "./utilities/password.js";
+import userService from "./services/userService.js";
 
 const environment = process.env.NODE_ENV || 'development';
 const userTable = "users";
+const userRolesTable = "userRoles";
 let dbClient;
 
 const db = {
@@ -31,6 +32,12 @@ const db = {
     init: async () => {
         try {
             await dbClient.schema.dropTableIfExists(userTable);
+            await dbClient.schema.dropTableIfExists(userRolesTable);
+
+            await dbClient.schema.createTable(userRolesTable, (table) => {
+                table.increments("id").primary().unique();
+                table.string("name").notNullable();
+            });
             
             await dbClient.schema.createTable(userTable, (table) => {
                 table.increments("id").primary();
@@ -39,6 +46,8 @@ const db = {
                 table.string("lastName").notNullable();
                 table.string("password").notNullable();
                 table.integer("role").notNullable();
+
+                table.foreign("role").references("id").inTable(userRolesTable);
                 table.timestamps(true, true, true);
             });
 
@@ -49,12 +58,25 @@ const db = {
     },
 
     populate: async () => {
+        await dbClient(userRolesTable).insert([
+            { name: "admin" }, 
+            { name: "user" },
+        ]);
+        
+        await dbClient(userRolesTable).insert({
+            name: "user",
+        });
+
+        const userRoles = await userService.getUserRoles();
+        const adminRole = userRoles.find((role) => role.name === "admin").id;
+        const userRole = userRoles.find((role) => role.name === "user").id;
+
         await dbClient(userTable).insert({
             email: "admin@mail.com",
             firstName: "Admin",
             lastName: "Adminsson",
             password: "$2b$10$VBOsAZiw9kVAjdixWVSD9.cRMbttIjulDWlWRQJh0j2L6YPJS5G/i",
-            role: userRoles.ADMIN,
+            role: adminRole,
         });
 
         await dbClient(userTable).insert({
@@ -62,7 +84,7 @@ const db = {
             firstName: "User",
             lastName: "Usersson",
             password: "$2b$10$nxeNYaYGG0wtb5gDyok29ekEIOeT6t0UjQTy6hpexL2lv/3EQAADq",
-            role: userRoles.USER,
+            role: userRole,
         });
 
         logger.info("Database populated");
@@ -108,7 +130,7 @@ const db = {
 
         getAll: async () => {
             return (await dbClient(userTable)
-                .select("id", "email", "firstName", "lastName", "createdAt")
+                .select("id", "email", "firstName", "lastName", "role", "createdAt")
             );
         },
 
@@ -126,6 +148,12 @@ const db = {
             await dbClient(userTable)
                 .update({ password: hashedPassword })
                 .where({ id });
+        },
+    },
+
+    userRoles: {
+        getAll: async () => {
+            return (await dbClient(userRolesTable).select("*"));
         },
     }
 };

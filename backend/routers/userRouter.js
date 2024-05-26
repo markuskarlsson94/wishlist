@@ -58,6 +58,15 @@ userRouter.post("/updatePassword", isAuthenticated(), async (req, res) => {
     }
 });
 
+userRouter.get("/roles", isAuthenticated(), async (_req, res) => {
+    try {
+        const roles = await userService.getUserRoles();
+        res.status(200).json({ roles });
+    } catch (error) {
+        res.status(error.status).json(error.message);
+    };
+});
+
 userRouter.delete("/:userId", isAuthenticated(), verifyRecentLogin(), async (req, res) => {
     const userId = Number(req.user.id);
     const userToDeleteId = Number(req.params.userId);

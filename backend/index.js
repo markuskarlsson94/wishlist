@@ -5,6 +5,7 @@ import db from "./db.js";
 import authRouter from "./routers/authRouter.js";
 import userRouter from "./routers/userRouter.js";
 import logger from "./logger.js";
+import { initUserRoles } from "./roles.js";
 
 db.connect();
 
@@ -23,3 +24,5 @@ const port = process.env.PORT || 3000;
 app.listen(port, () => {
 	logger.info(`Server started and listening on port ${port}.`);
 });
+
+await initUserRoles();
