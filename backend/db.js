@@ -64,6 +64,8 @@ const db = {
             password: "$2b$10$nxeNYaYGG0wtb5gDyok29ekEIOeT6t0UjQTy6hpexL2lv/3EQAADq",
             role: userRoles.USER,
         });
+
+        logger.info("Database populated");
     },
 
     user: {
