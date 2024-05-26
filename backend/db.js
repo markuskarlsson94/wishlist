@@ -39,7 +39,7 @@ const db = {
                 table.string("lastName").notNullable();
                 table.string("password").notNullable();
                 table.integer("role").notNullable();
-                table.timestamps(true, true);
+                table.timestamps(true, true, true);
             });
 
             logger.info("Database initiated.");
@@ -106,7 +106,7 @@ const db = {
 
         getAll: async () => {
             return (await dbClient(userTable)
-                .select("id", "email", "firstName", "lastName", "created_at")
+                .select("id", "email", "firstName", "lastName", "createdAt")
             );
         },
 
