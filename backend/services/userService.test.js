@@ -5,10 +5,10 @@ import errorMessages from '../errors/errorMessages';
 
 let userId1;
 let userId2;
-const email1 = "test1@mail.com";
-const email2 = "test2@mail.com";
-const firstName = "Test";
-const lastName = "Testsson";
+const email1 = "userServiceTest1@mail.com";
+const email2 = "userServiceTest2@mail.com";
+const firstName = "UserServiceFirstName";
+const lastName = "UserServiceLastName";
 
 beforeAll(async () => {
     await db.connect();

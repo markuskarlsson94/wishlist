@@ -4,10 +4,10 @@ import db from "../db";
 import userService from "./userService";
 import errorMessages from "../errors/errorMessages";
 
-const email1 = "test1@mail.com";
-const email2 = "test2@mail.com";
-const firstName = "Test";
-const lastName = "Testsson";
+const email1 = "authServiceTest1@mail.com";
+const email2 = "authServiceTest2@mail.com";
+const firstName = "AuthServiceFirstName";
+const lastName = "AuthServiceLastName";
 const password = "abc";
 let refreshToken;
 const invalidRefreshToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
