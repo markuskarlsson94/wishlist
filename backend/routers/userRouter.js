@@ -2,6 +2,7 @@ import express from "express";
 
 import { isAuthenticated, isAuthenticatedAdmin, verifyRecentLogin } from "../passport.js"
 import userService from "../services/userService.js";
+import wishlistService from "../services/wishlistService.js";
 
 const userRouter = express.Router();
 
@@ -65,6 +66,24 @@ userRouter.get("/roles", isAuthenticated(), async (_req, res) => {
     } catch (error) {
         res.status(error.status).json(error.message);
     };
+});
+
+userRouter.get("/:userId/wishlists", isAuthenticated(), async (req, res) => {
+    try {
+        const wishlists = await wishlistService.getByUserId(req.params.userId);
+        res.status(200).json({ wishlists });
+    } catch (error) {
+        res.status(error.status).json(error.message);
+    }
+});
+
+userRouter.get("/wishlists", isAuthenticated(), async (_req, res) => {
+    try {
+        const wishlists = await wishlistService.getAll();
+        res.status(200).json({ wishlists });
+    } catch (error) {
+        res.status(error.status).json(error.message);
+    }
 });
 
 userRouter.delete("/:userId", isAuthenticated(), verifyRecentLogin(), async (req, res) => {

@@ -9,6 +9,11 @@ const errorMessages = {
         message: "User not found",
     },
 
+    wishlistNotFound: {
+        status: 404,
+        message: "Wishlist not found",
+    },
+
     refreshTokenRequired: {
         status: 400,
         message: "Refresh token required",
@@ -38,6 +43,11 @@ const errorMessages = {
         status: 401,
         message: "Unauthorized to delete other user",
     },
+
+    unauthorizedToDeleteWishlist: {
+        status: 401,
+        message: "Unauthorized to delete wishlist",
+    },
     
     serverError: {
         status: 500,
@@ -47,6 +57,16 @@ const errorMessages = {
     unableToAddNewUser: {
         status: 500,
         message: "Unable to add new user",
+    },
+
+    unableToCreateWishlist: {
+        status: 500,
+        message: "Unable to create wishlist",
+    },
+
+    unableToGetWishlistsForUser: {
+        status: 500,
+        message: "UnableToGetWishlistsForUser",
     }
 };
 

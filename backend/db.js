@@ -8,6 +8,8 @@ import userService from "./services/userService.js";
 const environment = process.env.NODE_ENV || 'development';
 const userTable = "users";
 const userRolesTable = "userRoles";
+const wishlistTable = "wishlists";
+
 let dbClient;
 
 const db = {
@@ -31,6 +33,7 @@ const db = {
 
     init: async () => {
         try {
+            await dbClient.schema.dropTableIfExists(wishlistTable);
             await dbClient.schema.dropTableIfExists(userTable);
             await dbClient.schema.dropTableIfExists(userRolesTable);
 
@@ -53,6 +56,16 @@ const db = {
                 table.integer("role").notNullable();
 
                 table.foreign("role").references("id").inTable(userRolesTable);
+                table.timestamps(true, true, true);
+            });
+
+            await dbClient.schema.createTable(wishlistTable, (table) => {
+                table.increments("id").primary();
+                table.integer("owner").notNullable();
+                table.string("title").notNullable();
+                table.string("description");
+
+                table.foreign("owner").references("id").inTable(userTable).onDelete("CASCADE");
                 table.timestamps(true, true, true);
             });
 
@@ -151,6 +164,54 @@ const db = {
         getAll: async () => {
             return (await dbClient(userRolesTable).select("*"));
         },
+    },
+
+    wishlist: {
+        add: async (userId, title, description) => {
+            return (await dbClient(wishlistTable)
+                .insert({
+                    owner: userId,
+                    title,
+                    description,
+                })
+                .returning("id")
+            )[0].id;
+        },
+
+        remove: async (id) => {
+            await dbClient(wishlistTable)
+                .delete()
+                .where({ id });
+        },
+
+        getById: async (id) => {
+            return (await dbClient(wishlistTable)
+                .select("id", "owner", "title", "description")
+                .where({ id })
+                .first()
+            );
+        },
+
+        getByUserId: async (userId) => {
+            return (await dbClient(wishlistTable)
+                .select("id", "title", "description")
+                .where({ owner: userId })
+            );
+        },
+
+        getAll: async () => {
+            return (await dbClient(wishlistTable)
+                .select("*")
+            );
+        },
+
+        getOwner: async (id) => {
+            return (await dbClient(wishlistTable)
+                .select("owner")
+                .where({ id })
+                .first()
+            ).owner;
+        }
     }
 };
 
