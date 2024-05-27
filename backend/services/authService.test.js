@@ -3,6 +3,7 @@ import authService from "./authService";
 import db from "../db";
 import userService from "./userService";
 import errorMessages from "../errors/errorMessages";
+import { initUserRoles } from "../roles";
 
 const email1 = "authServiceTest1@mail.com";
 const email2 = "authServiceTest2@mail.com";
@@ -15,6 +16,7 @@ const invalidRefreshToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMj
 beforeAll(async () => {
     await db.connect();
     await db.init();
+    await initUserRoles();
 });
 
 afterAll(async () => {

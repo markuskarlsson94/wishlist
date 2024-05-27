@@ -2,6 +2,7 @@ import { afterAll, beforeAll, expect, describe, it } from 'vitest'
 import userService from "./userService";
 import db from "../db";
 import errorMessages from '../errors/errorMessages';
+import { initUserRoles } from '../roles';
 
 let userId1;
 let userId2;
@@ -13,6 +14,7 @@ const lastName = "UserServiceLastName";
 beforeAll(async () => {
     await db.connect();
     await db.init();
+    await initUserRoles();
 });
 
 afterAll(async () => {

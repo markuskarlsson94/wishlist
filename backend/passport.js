@@ -1,7 +1,7 @@
 import passport from "passport";
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 import jwt from "jsonwebtoken";
-import userRoles from "./roles.js";
+import { adminRole } from "./roles.js";
 import userService from "./services/userService.js";
 
 const options = {
@@ -36,7 +36,7 @@ export const isAuthenticatedAdmin = () => {
                 return next(err);
             }
 
-            if (req.user && req.user.role === userRoles.ADMIN) {
+            if (req.user && req.user.role === adminRole()) {
                 return next();
             } else {
                 return res.status(403).json({ 

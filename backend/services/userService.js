@@ -2,7 +2,7 @@ import ErrorMessage from "../errors/ErrorMessage.js";
 import { passwordsMatching } from "../utilities/password.js";
 import logger from "../logger.js";
 import db from "../db.js";
-import userRoles from "../roles.js";
+import { userRole } from "../roles.js";
 import errorMessages from "../errors/errorMessages.js";
 
 const userService = {
@@ -28,7 +28,7 @@ const userService = {
         }
     },
 
-    add: async (email, firstName, lastName, plaintextPassword, role = userRoles.USER) => {
+    add: async (email, firstName, lastName, plaintextPassword, role = userRole()) => {
         try {
             return (await db.user.add(email, firstName, lastName, plaintextPassword, role));
         } catch (error) {
