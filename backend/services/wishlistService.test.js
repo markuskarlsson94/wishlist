@@ -3,6 +3,7 @@ import db from "../db";
 import wishlistService from "./wishlistService";
 import { initUserRoles, adminRole, userRole } from "../roles";
 import errorMessages from "../errors/errorMessages";
+import { initWishlistTypes, publicType } from "../wishlistTypes";
 
 let adminId;
 let userId;
@@ -15,6 +16,7 @@ beforeAll(async () => {
     await db.connect();
     await db.init();
     await initUserRoles();    
+    await initWishlistTypes();
 });
 
 afterAll(async () => {
@@ -69,18 +71,21 @@ describe("adding wishlist", () => {
         expect(wishlistAdmin.id).toBe(wishlistAdminId);
         expect(wishlistAdmin.title).toBe(titleAdmin);
         expect(wishlistAdmin.description).toBe(description);
+        expect(wishlistAdmin.type).toBe(publicType());
         
         const wishlistUser1 = await wishlistService.getById(wishlistUserId1);
-
+        
         expect(wishlistUser1.id).toBe(wishlistUserId1);
         expect(wishlistUser1.title).toBe(titleUser);
         expect(wishlistUser1.description).toBe(description);
+        expect(wishlistUser1.type).toBe(publicType());
         
         const wishlistUser2 = await wishlistService.getById(wishlistUserId2);
-
+        
         expect(wishlistUser2.id).toBe(wishlistUserId2);
         expect(wishlistUser2.title).toBe(titleUser);
         expect(wishlistUser2.description).toBe(description);
+        expect(wishlistUser2.type).toBe(publicType());
     });
 });
 

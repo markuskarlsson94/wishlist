@@ -6,6 +6,7 @@ import authRouter from "./routers/authRouter.js";
 import userRouter from "./routers/userRouter.js";
 import logger from "./logger.js";
 import { initUserRoles } from "./roles.js";
+import { initWishlistTypes } from "./wishlistTypes.js";
 
 db.connect();
 
@@ -26,3 +27,4 @@ app.listen(port, () => {
 });
 
 await initUserRoles();
+await initWishlistTypes();

@@ -3,11 +3,12 @@ import ErrorMessage from "../errors/ErrorMessage.js";
 import errorMessages from "../errors/errorMessages.js";
 import logger from "../logger.js";
 import { adminRole } from "../roles.js";
+import { publicType } from "../wishlistTypes.js";
 
 const wishlistService = {
-    add: async (userId, title, description) => {
+    add: async (userId, title, description, type = publicType()) => {
         try {
-            return (await db.wishlist.add(userId, title, description));
+            return (await db.wishlist.add(userId, title, description, type));
         } catch (error) {
             logger.error(error.message);
             throw new ErrorMessage(errorMessages.unableToCreateWishlist);
@@ -49,6 +50,15 @@ const wishlistService = {
     getAll: async () => {
         try {
             return (await db.wishlist.getAll());
+        } catch (error) {
+            logger.error(error.message);
+            throw new ErrorMessage(errorMessages.serverError);
+        }
+    },
+
+    getTypes: async () => {
+        try {
+            return (await db.wishlist.getTypes());
         } catch (error) {
             logger.error(error.message);
             throw new ErrorMessage(errorMessages.serverError);

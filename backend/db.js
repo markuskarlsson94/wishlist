@@ -9,6 +9,7 @@ const environment = process.env.NODE_ENV || 'development';
 const userTable = "users";
 const userRolesTable = "userRoles";
 const wishlistTable = "wishlists";
+const wishlistTypeTable = "wishlistTypes";
 
 let dbClient;
 
@@ -36,6 +37,7 @@ const db = {
             await dbClient.schema.dropTableIfExists(wishlistTable);
             await dbClient.schema.dropTableIfExists(userTable);
             await dbClient.schema.dropTableIfExists(userRolesTable);
+            await dbClient.schema.dropTableIfExists(wishlistTypeTable);
 
             await dbClient.schema.createTable(userRolesTable, (table) => {
                 table.increments("id").primary();
@@ -45,6 +47,18 @@ const db = {
             await dbClient(userRolesTable).insert([
                 { name: "admin" }, 
                 { name: "user" },
+            ]);
+
+            await dbClient.schema.createTable(wishlistTypeTable, (table) => {
+                table.increments("id").primary();
+                table.string("name").notNullable().unique();
+            });
+
+            await dbClient(wishlistTypeTable).insert([
+                { name: "public" },
+                { name: "friends" },
+                { name: "invite" },
+                { name: "hidden" },
             ]);
             
             await dbClient.schema.createTable(userTable, (table) => {
@@ -64,8 +78,10 @@ const db = {
                 table.integer("owner").notNullable();
                 table.string("title").notNullable();
                 table.string("description");
+                table.integer("type");
 
                 table.foreign("owner").references("id").inTable(userTable).onDelete("CASCADE");
+                table.foreign("type").references("id").inTable(wishlistTypeTable);
                 table.timestamps(true, true, true);
             });
 
@@ -167,12 +183,13 @@ const db = {
     },
 
     wishlist: {
-        add: async (userId, title, description) => {
+        add: async (userId, title, description, type) => {
             return (await dbClient(wishlistTable)
                 .insert({
                     owner: userId,
                     title,
                     description,
+                    type,
                 })
                 .returning("id")
             )[0].id;
@@ -186,7 +203,7 @@ const db = {
 
         getById: async (id) => {
             return (await dbClient(wishlistTable)
-                .select("id", "owner", "title", "description")
+                .select("id", "owner", "title", "description", "type")
                 .where({ id })
                 .first()
             );
@@ -194,7 +211,7 @@ const db = {
 
         getByUserId: async (userId) => {
             return (await dbClient(wishlistTable)
-                .select("id", "title", "description")
+                .select("id", "title", "description", "type")
                 .where({ owner: userId })
             );
         },
@@ -211,7 +228,13 @@ const db = {
                 .where({ id })
                 .first()
             ).owner;
-        }
+        },
+
+        getTypes: async () => {
+            return (await dbClient(wishlistTypeTable)
+                .select("*")
+            );
+        },
     }
 };
 
