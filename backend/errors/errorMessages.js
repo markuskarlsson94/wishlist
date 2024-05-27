@@ -5,7 +5,7 @@ const errorMessages = {
     },
 
     userNotFound: {
-        status: 400,
+        status: 404,
         message: "User not found",
     },
 
