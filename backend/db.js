@@ -35,9 +35,14 @@ const db = {
             await dbClient.schema.dropTableIfExists(userRolesTable);
 
             await dbClient.schema.createTable(userRolesTable, (table) => {
-                table.increments("id").primary().unique();
-                table.string("name").notNullable();
+                table.increments("id").primary();
+                table.string("name").notNullable().unique();
             });
+
+            await dbClient(userRolesTable).insert([
+                { name: "admin" }, 
+                { name: "user" },
+            ]);
             
             await dbClient.schema.createTable(userTable, (table) => {
                 table.increments("id").primary();
@@ -58,15 +63,6 @@ const db = {
     },
 
     populate: async () => {
-        await dbClient(userRolesTable).insert([
-            { name: "admin" }, 
-            { name: "user" },
-        ]);
-        
-        await dbClient(userRolesTable).insert({
-            name: "user",
-        });
-
         const userRoles = await userService.getUserRoles();
         const adminRole = userRoles.find((role) => role.name === "admin").id;
         const userRole = userRoles.find((role) => role.name === "user").id;
