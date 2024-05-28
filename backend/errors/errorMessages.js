@@ -4,6 +4,11 @@ const errorMessages = {
         message: "User already exists",
     },
 
+    wishlistTypeNotFound: {
+        status: 400,
+        message: "Wishlist type not found",
+    },
+
     userNotFound: {
         status: 404,
         message: "User not found",
@@ -44,9 +49,19 @@ const errorMessages = {
         message: "Unauthorized to delete other user",
     },
 
+    unauthorizedToAddWishlist: {
+        status: 401,
+        message: "Unauthorized to add wishlist",
+    },
+
     unauthorizedToDeleteWishlist: {
         status: 401,
         message: "Unauthorized to delete wishlist",
+    },
+
+    unauthorizedToUpdateWishlist: {
+        status: 401,
+        message: "Unauthorized to update wishlist",
     },
     
     serverError: {

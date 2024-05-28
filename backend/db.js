@@ -227,7 +227,7 @@ const db = {
                 .select("owner")
                 .where({ id })
                 .first()
-            ).owner;
+            )?.owner;
         },
 
         getTypes: async () => {
@@ -235,6 +235,20 @@ const db = {
                 .select("*")
             );
         },
+
+        getType: async (id) => {
+            return (await dbClient(wishlistTable)
+                .select("type")
+                .where({ id })
+                .first()
+            )?.type;
+        },
+
+        setType: async (id, type) => {
+            await dbClient(wishlistTable)
+                .update({ type })
+                .where({ id });
+        }
     }
 };
 

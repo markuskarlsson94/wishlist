@@ -7,13 +7,13 @@ export const initWishlistTypes = async () => {
     const pub = types.find((type) => type.name === "public").id;
     const friends = types.find((type) => type.name === "friends").id;
     const invite = types.find((type) => type.name === "invite").id;
-    const priv = types.find((type) => type.name === "hidden").id;
+    const hidden = types.find((type) => type.name === "hidden").id;
 
     wishlistTypes = {
         PUBLIC: pub,
         FRIEND: friends,
         INVITE: invite,
-        PRIVATE: priv,
+        HIDDEN: hidden,
     };
 };
 
@@ -29,6 +29,15 @@ export const inviteType = () => {
     return wishlistTypes.INVITE;
 };
 
-export const privateType = () => {
-    return wishlistTypes.PRIVATE;
+export const hiddenType = () => {
+    return wishlistTypes.HIDDEN;
 };
+
+export const allTypes = () => {
+    return [ 
+        wishlistTypes.PUBLIC, 
+        wishlistTypes.FRIEND, 
+        wishlistTypes.INVITE, 
+        wishlistTypes.HIDDEN
+    ];
+}
