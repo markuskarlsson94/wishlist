@@ -4,6 +4,7 @@ import wishlistService from "./wishlistService";
 import { initUserRoles, adminRole, userRole } from "../roles";
 import errorMessages from "../errors/errorMessages";
 import { initWishlistTypes, publicType, hiddenType } from "../wishlistTypes";
+import userService from "./userService";
 
 let adminId;
 let user1Id;
@@ -178,10 +179,20 @@ describe("removing wishlists", () => {
         );
     });
 
-    it("should allow admins to remove any wishlisst", async () => {
+    it("should allow admins to remove any wishlist", async () => {
         await wishlistService.remove(
             admin,
             wishlistUser1Id2
         );
-    })
+    });
+
+    it("should remove wishlists when user is removed", async () => {
+        await wishlistService.add(user1, user1Id, "User2Wishlist", "test");
+        let wishlists = await wishlistService.getByUserId(user1, user1Id);
+        expect(wishlists.length).toBe(1);
+        
+        await userService.remove(user1Id, user1Id);
+        wishlists = await wishlistService.getByUserId(user1, user1Id);
+        expect(wishlists.length).toBe(0);
+    });
 });
