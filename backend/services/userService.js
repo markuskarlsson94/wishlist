@@ -4,6 +4,7 @@ import logger from "../logger.js";
 import db from "../db.js";
 import { userRole } from "../roles.js";
 import errorMessages from "../errors/errorMessages.js";
+import { adminRole } from "../roles.js";
 
 const userService = {
     getAll: async () => {
@@ -37,14 +38,13 @@ const userService = {
         }
     },
 
-    remove: async (userId, userToDeleteId) => {
-        if (userId !== userToDeleteId) {
+    remove: async (user, userToDeleteId) => {
+        if (!canManageUser(user, userToDeleteId)) {
             throw new ErrorMessage(errorMessages.unauthorizedToDeleteOtherUser);
-        }
+        } 
 
         const userToDelete = (await db.user.getById(userToDeleteId))?.id;
 
-        // TODO: Admin should be able to delete other user.
         if (userToDelete === undefined) {
             throw new ErrorMessage(errorMessages.userNotFound);
         } else {
@@ -96,6 +96,10 @@ const userService = {
             throw new ErrorMessage(errorMessages.serverError);
         }
     }
+};
+
+const canManageUser = (user, userId) => {
+    return (user.role === adminRole() || user.id === userId);
 };
 
 export default userService;

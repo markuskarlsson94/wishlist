@@ -191,7 +191,7 @@ describe("removing wishlists", () => {
         let wishlists = await wishlistService.getByUserId(user1, user1Id);
         expect(wishlists.length).toBe(1);
         
-        await userService.remove(user1Id, user1Id);
+        await userService.remove(user1, user1Id);
         wishlists = await wishlistService.getByUserId(user1, user1Id);
         expect(wishlists.length).toBe(0);
     });
