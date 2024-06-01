@@ -125,7 +125,6 @@ const canManageWishlist = async (user, wishlistId) => {
     return user.id === owner;
 };
 
-
 const canViewWishlist = async (user, wishlistId) => {
     const type = await db.wishlist.getType(wishlistId) ?? hiddenType();
     if (user.role === adminRole() || type === publicType()) return true;
