@@ -19,6 +19,11 @@ const errorMessages = {
         message: "Wishlist not found",
     },
 
+    wishlistItemNotFound: {
+        status: 404,
+        message: "Wishlist item not found",
+    },
+
     refreshTokenRequired: {
         status: 400,
         message: "Refresh token required",
@@ -32,6 +37,11 @@ const errorMessages = {
     oldPasswordIncorrect: {
         status: 400,
         message: "Old password is incorrect",
+    },
+
+    unableToAddLessThanOneItem: {
+        status: 400,
+        message: "Unable to add less than one item",
     },
 
     invalidEmailOrPassword: {

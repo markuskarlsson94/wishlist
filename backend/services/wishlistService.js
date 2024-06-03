@@ -35,6 +35,14 @@ const wishlistService = {
         }
     },
 
+    getItems: async (user, id) => {
+        if (!(await canViewWishlist(user, id))) {
+            throw new ErrorMessage(errorMessages.wishlistNotFound);
+        }
+
+        return (await db.wishlist.getItems(id));
+    },
+
     getById: async (user, id) => {
         if (!(await canViewWishlist(user, id))) {
             throw new ErrorMessage(errorMessages.wishlistNotFound);
@@ -117,15 +125,69 @@ const wishlistService = {
             throw new ErrorMessage(errorMessages.serverError);
         }
     },
+
+    item: {
+        add: async (user, wishlist, title, description, amount = 1) => {
+            if (!(await canViewWishlist(user, wishlist))) {
+                throw new ErrorMessage(errorMessages.wishlistNotFound);
+            }
+
+            if (!(await canManageWishlist(user, wishlist))) {
+                throw new ErrorMessage(errorMessages.unauthorizedToUpdateWishlist);
+            }
+
+            if (amount < 1) {
+                throw new ErrorMessage(errorMessages.unableToAddLessThanOneItem);
+            }
+
+            return (await db.wishlist.item.add(wishlist, title, description, amount));
+        },
+
+        remove: async (user, id) => {
+            const wishlistId = await db.wishlist.item.getWishlist(id);
+            
+            if (!(await canViewWishlist(user, wishlistId))) {
+                throw new ErrorMessage(errorMessages.wishlistItemNotFound);
+            }
+
+            if (!(await canManageWishlist(user, wishlistId))) {
+                throw new ErrorMessage(errorMessages.unauthorizedToUpdateWishlist);
+            }
+
+            await db.wishlist.item.remove(id);
+        },
+
+        getById: async (user, id) => {
+            const wishlistId = await db.wishlist.item.getWishlist(id);
+            
+            if (!(await canViewWishlist(user, wishlistId))) {
+                throw new ErrorMessage(errorMessages.wishlistItemNotFound);
+            }
+
+            return (await db.wishlist.item.getById(id));
+        },
+
+        getByWishlistId: async (user, id) => {
+            if (!(await canViewWishlist(user, id))) {
+                throw new ErrorMessage(errorMessages.wishlistNotFound);
+            }
+
+            return (await db.wishlist.item.getByWishlistId(id));
+        }
+    }
 };
 
 const canManageWishlist = async (user, wishlistId) => {
+    if (!user || !wishlistId) return false;
+
     if (user.role === adminRole()) return true;
     const owner = await db.wishlist.getOwner(wishlistId);
     return user.id === owner;
 };
 
 const canViewWishlist = async (user, wishlistId) => {
+    if (!user || !wishlistId) return false;
+
     const type = await db.wishlist.getType(wishlistId) ?? hiddenType();
     if (user.role === adminRole() || type === publicType()) return true;
     

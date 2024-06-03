@@ -214,6 +214,13 @@ const db = {
                 .where({ id });
         },
 
+        getItems: async (id) => {
+            return (await dbClient(wishlistItemTable)
+                .select("*")
+                .where({ id })
+            )
+        },
+
         getById: async (id) => {
             return (await dbClient(wishlistTable)
                 .select("id", "owner", "title", "description", "type")
@@ -261,6 +268,56 @@ const db = {
             await dbClient(wishlistTable)
                 .update({ type })
                 .where({ id });
+        },
+
+        item: {
+            add: async (wishlist, title, description, amount) => {
+                return (await dbClient(wishlistItemTable)
+                    .insert({
+                        wishlist,
+                        title,
+                        description,
+                        amount
+                    })
+                    .returning("id") 
+                )[0].id;
+            },
+
+            remove: async (id) => {
+                await dbClient(wishlistItemTable)
+                    .delete()
+                    .where({ id })
+            },
+
+            getById: async (id) => {
+                return (await dbClient(wishlistItemTable)
+                    .select("*")
+                    .where({ id })
+                    .first()
+                );
+            },
+
+            getByWishlistId: async (id) => {
+                return (await dbClient(wishlistItemTable)
+                    .select("*")
+                    .where({ wishlist: id })
+                );
+            },
+
+            getWishlist: async (id) => {
+                return (await dbClient(wishlistItemTable)
+                    .select("wishlist")
+                    .where({ id })
+                    .first()
+                )?.wishlist
+            },
+
+            getAll: async () => {
+                return (
+                    await dbClient(wishlistItemTable)
+                        .select("*")
+                );
+            }
         }
     }
 };
