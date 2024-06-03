@@ -18,6 +18,9 @@ let wishlistAdminId;
 let wishlistUser1Id1;
 let wishlistUser1Id2;
 
+let item1user1Id;
+let item2user1Id;
+
 beforeAll(async () => {
     await db.connect();
     await db.init();
@@ -115,6 +118,56 @@ describe("adding wishlist", () => {
     });
 });
 
+describe("adding wishlist items", () => {
+    it("should add items with correct info", async () => {
+        item1user1Id = await wishlistService.item.add(
+            user1, 
+            wishlistUser1Id1, 
+            "user1Item1", 
+            "test"
+        );
+        
+        expect(item1user1Id).toBeGreaterThan(0);
+
+        const item = await wishlistService.item.getById(user1, item1user1Id);
+        expect(item.id).toBe(item1user1Id);
+    });
+
+    it("should not allow adding items to other users wishlists", async () => {
+        await expect((async () => {
+            await wishlistService.item.add(
+                user2,
+                wishlistUser1Id1,
+                "title",
+                "description"
+            );
+        })()).rejects.toThrowError(errorMessages.unauthorizedToUpdateWishlist.message);
+    });
+
+    it("should allow admins to add items to other users wishlists", async () => {
+        const item2user1Id = await wishlistService.item.add(
+            admin, 
+            wishlistUser1Id1, 
+            "user1Item1", 
+            "test"
+        );
+        
+        expect(item2user1Id).toBeGreaterThan(0);
+    });
+
+    it("should not allow adding less than one item", async () => {
+        await expect((async () => {
+            await wishlistService.item.add(
+                user1,
+                wishlistUser1Id1,
+                "title",
+                "description",
+                0
+            );
+        })()).rejects.toThrowError(errorMessages.unableToAddLessThanOneItem.message);
+    });
+});
+
 describe("finding wishlists", () => {
     it("should find all wishlists", async () => {
         const wishlists = await wishlistService.getAll();
@@ -159,6 +212,81 @@ describe("finding wishlists", () => {
                 -1
             );
         })()).rejects.toThrowError(expectedErrorMessage);
+    });
+});
+
+describe("finding wishlist items", async () => {
+    // Note: wishlistUser1Id2 is hidden
+
+    it("should find items in wishlist", async () => {
+        item2user1Id = await wishlistService.item.add(
+            user1, 
+            wishlistUser1Id2, 
+            "user1Item1", 
+            "test"
+        );
+
+        const items = await wishlistService.getItems(user1, wishlistUser1Id2);
+        expect(items.length).toBe(1);
+    });
+    
+    it("should not find items of hidden wishlist unless admin or owner through getItems", async () => {
+        await expect((async () => {
+            await wishlistService.getItems(user2, wishlistUser1Id2);
+        })()).rejects.toThrowError(errorMessages.wishlistNotFound.message);
+        
+        const items = await wishlistService.getItems(admin, wishlistUser1Id2);
+        expect(items.length).toBe(1);
+    });
+
+    it("should not find items of hidden wishlist unless admin or owner through item.getBy* functions", async () => {
+        await expect((async () => {
+            await wishlistService.item.getById(user2, item2user1Id);
+        })()).rejects.toThrowError(errorMessages.wishlistItemNotFound.message);
+        
+        const item = await wishlistService.item.getById(admin, item2user1Id);
+        expect(item.id).toBe(item2user1Id);
+        
+        await expect((async () => {
+            await wishlistService.item.getByWishlistId(user2, wishlistUser1Id2);
+        })()).rejects.toThrowError(errorMessages.wishlistNotFound.message);
+        
+        const items = await wishlistService.item.getByWishlistId(admin, wishlistUser1Id2);
+        expect(items.length).toBe(1);
+    });
+
+    it("should generate same error when finding hidden as well as nonexisting wishlist item", async () => {
+        const expectedErrorMessage = errorMessages.wishlistItemNotFound.message;
+
+        await expect((async () => {
+            await wishlistService.item.getById(
+                user2,
+                wishlistUser1Id2
+            );
+        })()).rejects.toThrowError(expectedErrorMessage);
+        
+        await expect((async () => {
+            await wishlistService.item.getById(
+                user2,
+                -1
+            );
+        })()).rejects.toThrowError(expectedErrorMessage);
+    });
+});
+
+describe("removing wishlist items", () => {
+    it("should not allow user to remove others wishlist items", async () => {
+        await expect((async () => {
+            await wishlistService.item.remove(user2, item1user1Id);
+        })()).rejects.toThrowError(errorMessages.unauthorizedToUpdateWishlist.message);
+    });
+
+    it("should allow removing own wishlist items", async () => {
+        await wishlistService.item.remove(user1, item1user1Id);
+    });
+    
+    it("should allow admin to remove wishlist items", async () => {
+        await wishlistService.item.remove(admin, item2user1Id);
     });
 });
 
