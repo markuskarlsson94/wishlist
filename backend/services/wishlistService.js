@@ -144,13 +144,11 @@ const wishlistService = {
         },
 
         remove: async (user, id) => {
-            const wishlistId = await db.wishlist.item.getWishlist(id);
-            
-            if (!(await canViewWishlist(user, wishlistId))) {
+            if (!(await canViewWishlistItem(user, id))) {
                 throw new ErrorMessage(errorMessages.wishlistItemNotFound);
             }
 
-            if (!(await canManageWishlist(user, wishlistId))) {
+            if (!(await canManageWishlistItem(user, id))) {
                 throw new ErrorMessage(errorMessages.unauthorizedToUpdateWishlist);
             }
 
@@ -195,6 +193,16 @@ const canViewWishlist = async (user, wishlistId) => {
     if (user.id === owner) return true;
 
     return false;
+};
+
+const canViewWishlistItem = async (user, itemId) => {
+    const wishlistId = await db.wishlist.item.getWishlist(itemId);
+    return (await canViewWishlist(user, wishlistId));
+};
+
+const canManageWishlistItem = async (user, itemId) => {
+    const wishlistId = await db.wishlist.item.getWishlist(itemId);
+    return (await canManageWishlist(user, wishlistId));
 };
 
 export default wishlistService;
