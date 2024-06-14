@@ -21,6 +21,7 @@
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "pg": "^8.11.5",
+    "postgres-error-codes": "^0.0.3",
     "winston": "^3.13.0"
   },
   "type": "module",
