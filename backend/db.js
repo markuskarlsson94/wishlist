@@ -217,8 +217,8 @@ const db = {
         getItems: async (id) => {
             return (await dbClient(wishlistItemTable)
                 .select("*")
-                .where({ id })
-            )
+                .where({ wishlist: id })
+            );
         },
 
         getById: async (id) => {
