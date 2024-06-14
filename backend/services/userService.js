@@ -98,7 +98,7 @@ const userService = {
     }
 };
 
-const canManageUser = (user, userId) => {
+export const canManageUser = (user, userId) => {
     return (user.role === adminRole() || user.id === userId);
 };
 
