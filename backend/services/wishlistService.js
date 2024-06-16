@@ -4,6 +4,8 @@ import errorMessages from "../errors/errorMessages.js";
 import logger from "../logger.js";
 import { adminRole } from "../roles.js";
 import { publicType, allTypes, hiddenType } from "../wishlistTypes.js";
+import { PG_UNIQUE_VIOLATION } from "postgres-error-codes";
+import { canManageUser } from "./userService.js";
 
 const wishlistService = {
     add: async (user, userId, title, description, type = publicType()) => {
@@ -40,7 +42,16 @@ const wishlistService = {
             throw new ErrorMessage(errorMessages.wishlistNotFound);
         }
 
-        return (await db.wishlist.getItems(id));
+        const items = await db.wishlist.item.getByWishlistId(id);
+            const filteredItems = [];
+
+            for (const item of items) {
+                try {
+                    filteredItems.push(await createFilteredWishlistItem(user, item));
+                } catch (error) {}
+            };
+
+        return filteredItems;
     },
 
     getById: async (user, id) => {
@@ -155,22 +166,109 @@ const wishlistService = {
             await db.wishlist.item.remove(id);
         },
 
-        getById: async (user, id) => {
-            const wishlistId = await db.wishlist.item.getWishlist(id);
-            
-            if (!(await canViewWishlist(user, wishlistId))) {
+        reserve: async (user, id, amount = 1) => {
+            if (!(await canViewWishlistItem(user, id))) {
                 throw new ErrorMessage(errorMessages.wishlistItemNotFound);
             }
 
-            return (await db.wishlist.item.getById(id));
-        },
-
-        getByWishlistId: async (user, id) => {
-            if (!(await canViewWishlist(user, id))) {
-                throw new ErrorMessage(errorMessages.wishlistNotFound);
+            if ((await userOwnsItem(user, id))) {
+                throw new ErrorMessage(errorMessages.unableToReserveOwnItem);
             }
 
-            return (await db.wishlist.item.getByWishlistId(id));
+            if (amount < 1) {
+                throw new ErrorMessage(errorMessages.amountToReserveTooSmall);
+            }
+
+            const item = await db.wishlist.item.getById(id);
+            const reservations = await db.reservation.getByItemId(id);
+
+            let reservedAmount = 0;
+            reservations.forEach(r => {
+                reservedAmount += r.amount
+            });
+
+            if (item.amount < reservedAmount + amount) {
+                throw new ErrorMessage(errorMessages.amountToReserveTooLarge);
+            }
+
+            let reservation;
+
+            try {
+                reservation = await db.wishlist.item.reserve(user.id, id, amount);
+            } catch (error) {
+                logger.error(error.message);
+                
+                if (error?.code === PG_UNIQUE_VIOLATION) {
+                    throw new ErrorMessage(errorMessages.itemAlreadyReservedByUser);
+                }
+
+                throw new ErrorMessage(errorMessages.serverError);
+            }
+            
+            return reservation;
+        },
+
+        getById: async (user, id) => {
+            if (!(await canViewWishlistItem(user, id))) {
+                throw new ErrorMessage(errorMessages.wishlistItemNotFound);
+            }
+
+            const item = await db.wishlist.item.getById(id);
+            let filteredItem;
+            
+            try {
+                filteredItem = await createFilteredWishlistItem(user, item);
+            } catch (error) {
+                throw new ErrorMessage(errorMessages.wishlistItemNotFound);
+            }
+
+            return filteredItem
+        },
+    },
+
+    reservation: {
+        getById: async (user, id) => {
+            if (!(await canViewReservation(user, id))) {
+                throw new ErrorMessage(errorMessages.reservationNotFound);
+            }
+
+            return (await db.reservation.getById(id));
+        },
+
+        getByUserId: async (user, id) => {
+            if (!(await canViewUser(user, id))) {
+                throw new ErrorMessage(errorMessages.reservationNotFound);
+            }
+
+            return (await db.reservation.getByUserId(id));
+        },
+
+        getByItemId: async (user, id) => {
+            if (user.role !== adminRole()) {
+                throw new ErrorMessage(errorMessages.unauthorizedToViewReservations);
+            }
+
+            return db.reservation.getByItemId(id);
+        },
+
+        clearByUserId: async (user, userId) => {
+            if (!canManageUser(user, userId)) {
+                throw new ErrorMessage(errorMessages.unauthorizedToClearReservations);
+            }
+
+            await db.reservation.clearByUserId(userId);
+        },
+
+        remove: async (user, id) => {
+            if (!(await canViewReservation(user, id))) {
+                throw new ErrorMessage(errorMessages.reservationNotFound);
+            }
+
+            if (!(await canManageReservation(user, id))) {
+                throw new ErrorMessage(errorMessages.unauthorizedToRemoveReservation);
+            }
+
+            await db.reservation.remove(id);
         }
     }
 };
@@ -203,6 +301,67 @@ const canViewWishlistItem = async (user, itemId) => {
 const canManageWishlistItem = async (user, itemId) => {
     const wishlistId = await db.wishlist.item.getWishlist(itemId);
     return (await canManageWishlist(user, wishlistId));
+};
+
+const canViewReservation = async (user, reservationId) => {
+    const userId = await db.reservation.getUser(reservationId);
+    return (user.role === adminRole() || user.id === userId);
+};
+
+const canManageReservation = async (user, reservationId) => {
+    const userId = await db.reservation.getUser(reservationId);
+    return (user.role === adminRole() || user.id === userId);
+};
+
+const canViewUser = async (user, userId) => {
+    if (!user || !userId) return false;
+    return (user.role === adminRole() || user.id === userId);
+}
+
+const userOwnsItem = async (user, itemId) => {
+    if (!user || !itemId) return false;
+
+    const owner = await db.wishlist.item.getOwner(itemId);
+    return user.id === owner;
+};
+
+const userHasReservedItem = async (user, itemId) => {
+    if (!user || !itemId) return false;
+
+    const reservation = await db.reservation.getByUserIdAndItemId(user.id, itemId);
+    return reservation !== undefined;
+};
+
+const createFilteredWishlistItem = async (user, item) => {
+    const isAdmin = user.role === adminRole();
+    
+    if (!isAdmin && (await userOwnsItem(user, item.id))) {
+        return item;
+    }
+    
+    const reservations = await db.reservation.getByItemId(item.id);
+    let reservedAmount = 0;
+    
+    reservations.forEach(r => {
+        reservedAmount += r.amount;
+    });
+    
+    const reservedByUser = await userHasReservedItem(user, item.id);
+
+    if (reservedAmount >= item.amount && !reservedByUser && !isAdmin) {
+        throw new Error(errorMessages.amountToReserveTooLarge.message);
+    }
+
+    const obj = {
+        ...item,
+        amount: item.amount - reservedAmount,
+    };
+
+    if (isAdmin) {
+        obj.originalAmount = item.amount;
+    }
+
+    return obj;
 };
 
 export default wishlistService;

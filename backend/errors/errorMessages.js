@@ -24,6 +24,11 @@ const errorMessages = {
         message: "Wishlist item not found",
     },
 
+    reservationNotFound: {
+        status: 404,
+        message: "Reservation not found",
+    },
+
     refreshTokenRequired: {
         status: 400,
         message: "Refresh token required",
@@ -42,6 +47,26 @@ const errorMessages = {
     unableToAddLessThanOneItem: {
         status: 400,
         message: "Unable to add less than one item",
+    },
+
+    amountToReserveTooSmall: {
+        status: 400,
+        message: "Amount to reserve is too small",
+    },
+
+    amountToReserveTooLarge: {
+        status: 400,
+        message: "Amount to reserve is too large",
+    },
+
+    unableToReserveOwnItem: {
+        status: 400,
+        message: "Unable to reserve own item",
+    },
+
+    itemAlreadyReservedByUser: {
+        status: 400,
+        message: "Item already reserved by user",
     },
 
     invalidEmailOrPassword: {
@@ -72,6 +97,21 @@ const errorMessages = {
     unauthorizedToUpdateWishlist: {
         status: 401,
         message: "Unauthorized to update wishlist",
+    },
+
+    unauthorizedToClearReservations: {
+        status: 401,
+        message: "Unauthorized to clear reservations",
+    },
+
+    unauthorizedToRemoveReservation: {
+        status: 401,
+        message: "Unauthorized to remove reservation",
+    },
+
+    unauthorizedToViewReservations: {
+        status: 401,
+        message: "Unauthorized to view reservations",
     },
     
     serverError: {

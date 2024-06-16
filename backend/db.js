@@ -303,6 +303,28 @@ const db = {
                     .where({ id })
             },
 
+            reserve: async (user, id, amount) => {
+                return (await dbClient(reservationsTable)
+                    .insert({
+                        user,
+                        item: id,
+                        amount,
+                    })
+                    .returning("id")
+                )[0].id;
+            },
+
+            getOwner: async (id) => {
+                return (
+                    await dbClient(`${wishlistItemTable} as i`)
+                        .select("u.id as userId")
+                        .innerJoin(`${wishlistTable} as w`, `w.id`, "wishlist")
+                        .innerJoin(`${userTable} as u`, "u.id", "w.owner")
+                        .where("i.id", "=", id)
+                        .first()
+                )?.userId;
+            },
+
             getById: async (id) => {
                 return (await dbClient(wishlistItemTable)
                     .select("*")
@@ -332,7 +354,72 @@ const db = {
                         .select("*")
                 );
             }
-        }
+        },
+    },
+
+    reservation: {
+        getItem: async (id) => {
+            return (
+                await dbClient(reservationsTable)
+                    .select("item")
+                    .where({ id })
+                    .first()
+            )?.item;
+        },
+
+        getById: async (id) => {
+            return (
+                await dbClient(reservationsTable)
+                    .select("*")
+                    .where({ id })
+                    .first()
+            );
+        },
+
+        getByItemId: async (id) => {
+            return (await dbClient(reservationsTable)
+                .select("*")
+                .where({ item: id })
+            );
+        },
+
+        getByUserId: async (id) => {
+            return (await dbClient(reservationsTable)
+                .select("*")
+                .where({ user: id })
+            );
+        },
+
+        getByUserIdAndItemId: async (userId, itemId) => {
+            return (await dbClient(reservationsTable)
+                .select("*")
+                .where({
+                    user: userId,
+                    item: itemId
+                })
+                .first()
+            );
+        },
+
+        getUser: async (id) => {
+            return (await dbClient(reservationsTable)
+                .select("user")
+                .where({ id })
+                .first()
+            )?.user;
+        },
+
+        clearByUserId: async (userId) => {
+            await dbClient(reservationsTable)
+                .del()
+                .where({ user: userId });
+        },
+
+        remove: async (id) => {
+            await dbClient(reservationsTable)
+                .del()
+                .where({ id });
+        },
     }
 };
 
