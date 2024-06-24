@@ -4,7 +4,7 @@ import errorMessages from "../errors/errorMessages.js";
 import logger from "../logger.js";
 import { adminRole } from "../roles.js";
 import { publicType, allTypes, hiddenType } from "../wishlistTypes.js";
-import { PG_UNIQUE_VIOLATION } from "postgres-error-codes";
+import { PostgresError } from "pg-error-enum";
 import { canManageUser } from "./userService.js";
 
 const wishlistService = {
@@ -198,7 +198,7 @@ const wishlistService = {
             } catch (error) {
                 logger.error(error.message);
                 
-                if (error?.code === PG_UNIQUE_VIOLATION) {
+                if (error?.code === PostgresError.UNIQUE_VIOLATION) {
                     throw new ErrorMessage(errorMessages.itemAlreadyReservedByUser);
                 }
 
