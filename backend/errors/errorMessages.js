@@ -131,7 +131,7 @@ const errorMessages = {
 
     unableToGetWishlistsForUser: {
         status: 500,
-        message: "UnableToGetWishlistsForUser",
+        message: "Unable to get wishlists for user",
     }
 };
 
