@@ -151,7 +151,12 @@ const wishlistService = {
                 throw new ErrorMessage(errorMessages.unableToAddLessThanOneItem);
             }
 
-            return (await db.wishlist.item.add(wishlist, title, description, amount));
+            try {
+                return (await db.wishlist.item.add(wishlist, title, description, amount));
+            } catch (error) {
+                logger.error(error.message);
+                throw new ErrorMessage(errorMessages.unableToAddItem);
+            }
         },
 
         remove: async (user, id) => {

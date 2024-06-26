@@ -44,6 +44,11 @@ const errorMessages = {
         message: "Old password is incorrect",
     },
 
+    unableToAddItem: {
+        status: 400,
+        message: "Unable to add item",
+    },
+
     unableToAddLessThanOneItem: {
         status: 400,
         message: "Unable to add less than one item",
