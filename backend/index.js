@@ -4,6 +4,7 @@ import passport from "./passport.js";
 import db from "./db.js";
 import authRouter from "./routers/authRouter.js";
 import userRouter from "./routers/userRouter.js";
+import wishlistRouter from "./routers/wishlistRouter.js";
 import logger from "./logger.js";
 import { initUserRoles } from "./roles.js";
 import { initWishlistTypes } from "./wishlistTypes.js";
@@ -18,6 +19,7 @@ app.disable("x-powered-by");
 const router = express.Router();
 router.use("/auth", authRouter);
 router.use("/user", userRouter);
+router.use("/", wishlistRouter);
 app.use("/api/v1", router);
 
 const port = process.env.PORT || 3000;
