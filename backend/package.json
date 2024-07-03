@@ -26,6 +26,8 @@
   },
   "type": "module",
   "devDependencies": {
+    "@types/node": "^20.14.9",
+    "typescript": "^5.5.3",
     "vitest": "^1.6.0"
   }
 }
