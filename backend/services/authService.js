@@ -75,7 +75,7 @@ const authService = {
 
 const generateAccessToken = (user, issuedAtLogin = false) => {
     const payload = { id: user.id, issuedAtLogin };
-    return jwt.sign(payload, process.env.ACCESS_SECRET_KEY, { expiresIn: '1m' });
+    return jwt.sign(payload, process.env.ACCESS_SECRET_KEY, { expiresIn: '10m' });
 };
 
 const generateRefreshToken = (user) => {
