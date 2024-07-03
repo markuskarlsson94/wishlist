@@ -77,6 +77,15 @@ userRouter.get("/:userId/wishlists", isAuthenticated(), async (req, res) => {
     }
 });
 
+userRouter.get("/:userId/reservations", isAuthenticated(), async (req, res) => {
+    try {
+        const reservations = await wishlistService.reservation.getByUserId(req.user, Number(req.params.userId));
+        res.status(200).json({ reservations });
+    } catch (error) {
+        res.status(error.status).json(error.message);
+    }
+});
+
 userRouter.get("/wishlists", isAuthenticated(), async (_req, res) => {
     try {
         const wishlists = await wishlistService.getAll();
