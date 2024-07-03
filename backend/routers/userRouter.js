@@ -86,15 +86,6 @@ userRouter.get("/:userId/reservations", isAuthenticated(), async (req, res) => {
     }
 });
 
-userRouter.get("/wishlists", isAuthenticated(), async (_req, res) => {
-    try {
-        const wishlists = await wishlistService.getAll();
-        res.status(200).json({ wishlists });
-    } catch (error) {
-        res.status(error.status).json(error.message);
-    }
-});
-
 userRouter.delete("/:userId", isAuthenticated(), verifyRecentLogin(), async (req, res) => {
     const userId = Number(req.user.id);
     const userToDeleteId = Number(req.params.userId);

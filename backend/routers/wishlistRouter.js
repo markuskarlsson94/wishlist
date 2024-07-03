@@ -5,6 +5,15 @@ import logger from "../logger.js";
 
 const wishlistRouter = express.Router();
 
+wishlistRouter.get("/wishlists", isAuthenticated(), async (_req, res) => {
+    try {
+        const wishlists = await wishlistService.getAll();
+        res.status(200).json({ wishlists });
+    } catch (error) {
+        res.status(error.status).json(error.message);
+    }
+});
+
 wishlistRouter.post("/wishlist", isAuthenticated(), async (req, res) => {
     try {
         const { title, description, type } = req.body;
