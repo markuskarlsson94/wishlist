@@ -2,10 +2,10 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "test": "vitest",
-    "devStart": "nodemon index.js",
+    "devStart": "nodemon src/index.js",
     "generateRandomHex": "node -e \"console.log(require('crypto').randomBytes(64).toString('hex'))\""
   },
   "keywords": [],
