@@ -1,7 +1,7 @@
 import express from "express";
-import wishlistService from "../services/wishlistService.js";
+import wishlistService from "../services/wishlistService";
 import { isAuthenticated } from "../passport.js";
-import logger from "../logger.js";
+import logger from "../logger";
 
 const wishlistRouter = express.Router();
 

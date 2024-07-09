@@ -1,9 +1,9 @@
 import { afterAll, beforeAll, expect, describe, it } from "vitest";
-import db from "../db";
+import db from "../../db";
 import wishlistService from "./wishlistService";
-import { initUserRoles, adminRole, userRole } from "../roles";
-import errorMessages from "../errors/errorMessages";
-import { initWishlistTypes, publicType, hiddenType } from "../wishlistTypes";
+import { initUserRoles, adminRole, userRole } from "../../roles";
+import errorMessages from "../../errors/errorMessages";
+import { initWishlistTypes, publicType, hiddenType } from "../../wishlistTypes";
 import userService from "./userService";
 
 let adminId;

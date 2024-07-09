@@ -1,8 +1,7 @@
 import express from "express";
-
-import { isAuthenticated, isAuthenticatedAdmin, verifyRecentLogin } from "../passport.js"
-import userService from "../services/userService.js";
-import wishlistService from "../services/wishlistService.js";
+import { isAuthenticated, isAuthenticatedAdmin, verifyRecentLogin } from "../passport.js";
+import userService from "../services/userService";
+import wishlistService from "../services/wishlistService";
 
 const userRouter = express.Router();
 

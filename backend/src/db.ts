@@ -1,9 +1,9 @@
 import "./loadEnv.js";
 import knex from "knex";
-import config from "./knexfile.js";
-import logger from "./logger.js";
+import config from "./knexfile";
+import logger from "./logger";
 import { generatePassword } from "./utilities/password.js";
-import userService from "./services/userService.js";
+import userService from "./services/userService";
 
 const environment = process.env.NODE_ENV || 'development';
 const userTable = "users";
@@ -13,7 +13,7 @@ const wishlistTypeTable = "wishlistTypes";
 const wishlistItemTable = "wishlistItems";
 const reservationsTable = "reservations";
 
-let dbClient;
+let dbClient: any;
 
 const db = {
     connect: async (env = environment) => {

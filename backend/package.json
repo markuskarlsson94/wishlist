@@ -2,10 +2,11 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
     "test": "vitest",
-    "devStart": "nodemon index.js",
+    "devStart": "nodemon --exec ts-node src/index.ts",
+    "devStartNew": "nodemon --exec 'npx ts-node --loader ts-node/esm' src/index.ts",
     "generateRandomHex": "node -e \"console.log(require('crypto').randomBytes(64).toString('hex'))\""
   },
   "keywords": [],
@@ -24,9 +25,13 @@
     "pg-error-enum": "^0.7.1",
     "winston": "^3.13.0"
   },
-  "type": "module",
   "devDependencies": {
+    "@types/express": "^4.17.21",
     "@types/node": "^20.14.9",
+    "@types/passport": "^1.0.16",
+    "@types/passport-jwt": "^4.0.1",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
     "typescript": "^5.5.3",
     "vitest": "^1.6.0"
   }

@@ -1,9 +1,9 @@
 import { afterAll, beforeAll, expect, describe, it, expectTypeOf } from "vitest";
 import authService from "./authService";
-import db from "../db";
+import db from "../../db";
 import userService from "./userService";
-import errorMessages from "../errors/errorMessages";
-import { initUserRoles } from "../roles";
+import errorMessages from "../../errors/errorMessages";
+import { initUserRoles } from "../../roles";
 
 const email1 = "authServiceTest1@mail.com";
 const email2 = "authServiceTest2@mail.com";

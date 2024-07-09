@@ -1,8 +1,8 @@
 import { afterAll, beforeAll, expect, describe, it } from 'vitest'
 import userService from "./userService";
-import db from "../db";
-import errorMessages from '../errors/errorMessages';
-import { initUserRoles } from '../roles';
+import db from "../../db";
+import errorMessages from '../../errors/errorMessages';
+import { initUserRoles } from '../../roles';
 
 let user1;
 let user2;

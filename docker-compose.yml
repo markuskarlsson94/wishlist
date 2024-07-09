@@ -36,7 +36,7 @@ services:
       - PORT=${BACKEND_PORT_INTERNAL}
     env_file:
       - .env
-    command: nodemon -L index.js
+    command: nodemon -L index.ts
     depends_on:
       - db
 
