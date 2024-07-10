@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "test": "vitest",
+    "test": "vitest --config src/vitest.config.js",
     "devStart": "nodemon src/index.js",
     "generateRandomHex": "node -e \"console.log(require('crypto').randomBytes(64).toString('hex'))\""
   },
