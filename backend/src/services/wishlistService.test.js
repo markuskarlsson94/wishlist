@@ -3,8 +3,8 @@ import db from "../db";
 import wishlistService from "./wishlistService";
 import { initUserRoles, adminRole, userRole } from "../roles";
 import errorMessages from "../errors/errorMessages";
-import { initWishlistTypes, publicType, hiddenType } from "../wishlistTypes";
-import userService from "./userService";
+import { initWishlistTypes, publicType, hiddenType, friendType } from "../wishlistTypes";
+import userService, { usersAreFriends } from "./userService";
 
 let adminId;
 let user1Id;
@@ -228,6 +228,29 @@ describe("finding wishlists", () => {
                 -1
             );
         })()).rejects.toThrowError(expectedErrorMessage);
+    });
+
+    it("should not find friends-only wishlists unless user id owner, friend, or admin", async () => {
+        const wishlistId = await wishlistService.add(user1, user1Id, "friendTest", "test", friendType());
+
+        expect(await usersAreFriends(user1Id, user2Id)).toBeFalsy();
+
+        await expect((async () => {
+            await wishlistService.getById(user2, wishlistId);
+        })()).rejects.toThrowError(errorMessages.wishlistNotFound.message);
+        
+        let wishlist = await wishlistService.getById(user1, wishlistId);
+        expect(wishlist.id).toBe(wishlistId);
+
+        wishlist = await wishlistService.getById(admin, wishlistId);
+        expect(wishlist.id).toBe(wishlistId);
+        
+        await userService.friend.add(user1, user1Id, user2Id);
+        
+        wishlist = await wishlistService.getById(user2, wishlistId);
+        expect(wishlist.id).toBe(wishlistId);
+        
+        await wishlistService.remove(user1, wishlistId);
     });
 });
 
