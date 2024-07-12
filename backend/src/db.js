@@ -12,6 +12,7 @@ const wishlistTable = "wishlists";
 const wishlistTypeTable = "wishlistTypes";
 const wishlistItemTable = "wishlistItems";
 const reservationsTable = "reservations";
+const friendsTable = "friends";
 
 let dbClient;
 
@@ -36,6 +37,7 @@ const db = {
 
     init: async () => {
         try {
+            await dbClient.schema.dropTableIfExists(friendsTable);
             await dbClient.schema.dropTableIfExists(reservationsTable);
             await dbClient.schema.dropTableIfExists(wishlistItemTable);
             await dbClient.schema.dropTableIfExists(wishlistTable);
@@ -109,6 +111,17 @@ const db = {
                 table.foreign("user").references("id").inTable(userTable).onDelete("CASCADE");
                 table.foreign("item").references("id").inTable(wishlistItemTable).onDelete("CASCADE");
                 table.unique(["user", "item"]);
+                table.timestamps(true, true, true);
+            });
+
+            await dbClient.schema.createTable(friendsTable, (table) => {
+                table.increments("id").primary();
+                table.integer("user1").notNullable();
+                table.integer("user2").notNullable();
+
+                table.foreign("user1").references("id").inTable(userTable).onDelete("CASCADE");
+                table.foreign("user2").references("id").inTable(userTable).onDelete("CASCADE");
+                table.unique(["user1", "user2"]);
                 table.timestamps(true, true, true);
             });
 
