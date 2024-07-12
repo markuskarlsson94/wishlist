@@ -230,7 +230,7 @@ describe("finding wishlists", () => {
         })()).rejects.toThrowError(expectedErrorMessage);
     });
 
-    it("should not find friends-only wishlists unless user id owner, friend, or admin", async () => {
+    it("should not find friends-only wishlists unless user is owner, friend, or admin", async () => {
         const wishlistId = await wishlistService.add(user1, user1Id, "friendTest", "test", friendType());
 
         expect(await usersAreFriends(user1Id, user2Id)).toBeFalsy();
