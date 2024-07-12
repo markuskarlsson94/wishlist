@@ -3,9 +3,9 @@ import ErrorMessage from "../errors/ErrorMessage.js";
 import errorMessages from "../errors/errorMessages.js";
 import logger from "../logger.js";
 import { adminRole } from "../roles.js";
-import { publicType, allTypes, hiddenType } from "../wishlistTypes.js";
+import { publicType, allTypes, hiddenType, friendType } from "../wishlistTypes.js";
 import { PostgresError } from "pg-error-enum";
-import { canManageUser } from "./userService.js";
+import { canManageUser, usersAreFriends } from "./userService.js";
 
 const wishlistService = {
     add: async (user, userId, title, description, type = publicType()) => {
@@ -293,6 +293,12 @@ const canViewWishlist = async (user, wishlistId) => {
     if (user.role === adminRole() || type === publicType()) return true;
     
     const owner = await db.wishlist.getOwner(wishlistId);
+    
+    if (type === friendType()) {
+        if (user.id === owner) return true;
+        return (await usersAreFriends(user.id, owner));
+    }
+    
     if (user.id === owner) return true;
 
     return false;
