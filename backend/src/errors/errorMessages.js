@@ -73,6 +73,26 @@ const errorMessages = {
         status: 400,
         message: "Item already reserved by user",
     },
+    
+    userAlreadyAddedAsFriend: {
+        status: 400,
+        message: "User already added as friend",
+    },
+
+    unableToRemoveFriend: {
+        status: 400,
+        message: "Unable to remove friend",
+    },
+
+    unableToAddSameUserAsFriend: {
+        status: 400,
+        message: "Unable to add same user as friend",
+    },
+    
+    unableToRemoveSameUserAsFriend: {
+        status: 400,
+        message: "Unable to remove same user as friend",
+    },
 
     invalidEmailOrPassword: {
         status: 401,
@@ -117,6 +137,21 @@ const errorMessages = {
     unauthorizedToViewReservations: {
         status: 401,
         message: "Unauthorized to view reservations",
+    },
+
+    unauthorizedToAddFriend: {
+        status: 401,
+        message: "Unauthorized to add friend",
+    },
+    
+    unauthorizedToRemoveFriend: {
+        status: 401,
+        message: "Unauthorized to remove friend",
+    },
+
+    unauthorizedToViewFriends: {
+        status: 401,
+        message: "Unauthorized to view friends",
     },
     
     serverError: {

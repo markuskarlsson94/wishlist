@@ -214,6 +214,74 @@ const db = {
                 .update({ password: hashedPassword })
                 .where({ id });
         },
+
+        friend: {
+            add: async (user1Id, user2Id) => {
+                let user1 = user1Id;
+                let user2 = user2Id;
+
+                if (user1Id > user2Id) {
+                    user1 = user2Id;
+                    user2 = user1Id;
+                }
+
+                await dbClient(friendsTable)
+                .insert({
+                    user1,
+                    user2,
+                });
+            },
+
+            remove: async (id, userId) => {
+                await dbClient(friendsTable)
+                    .delete()
+                    .where({
+                        user1: id,
+                        user2: userId,
+                    })
+                    .orWhere({
+                        user1: userId,
+                        user2: id
+                    });
+            },
+
+            with: async (id, userId) => {
+                const res = await dbClient(friendsTable)
+                    .select("id")
+                    .where({
+                        user1: id,
+                        user2: userId,
+                    })
+                    .orWhere({
+                        user1: userId,
+                        user2: id,
+                    })
+                    .first();
+
+                return res !== undefined;
+            },
+
+            getByUserId: async (id) => {
+                const users1 = (await dbClient(friendsTable)
+                    .select("user2")
+                    .where({ user1: id }))
+                    .map(user => user.user2);
+                
+                const users2 = (await dbClient(friendsTable)
+                    .select("user1")
+                    .where({ user2: id }))
+                    .map(user => user.user1);
+
+                let users = users1.concat(users2);
+                users = users.filter((user, index) => users.indexOf(user) === index); // Remove duplicate
+                users = users.filter(user => user.id !== id); // Remove requested id
+                return users;
+            },
+
+            getAll: async () => {
+                return (await dbClient(friendsTable).select("*"));
+            }
+        }
     },
 
     userRoles: {

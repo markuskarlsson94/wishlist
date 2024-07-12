@@ -5,6 +5,7 @@ import db from "../db.js";
 import { userRole } from "../roles.js";
 import errorMessages from "../errors/errorMessages.js";
 import { adminRole } from "../roles.js";
+import { PostgresError } from "pg-error-enum";
 
 const userService = {
     getAll: async () => {
@@ -95,11 +96,79 @@ const userService = {
             logger.error(error.message);
             throw new ErrorMessage(errorMessages.serverError);
         }
+    },
+
+    friend: {
+        add: async (user, user1Id, user2Id) => {
+            // User has to be able to manage one of the user ids
+            if (!(canManageUser(user, user1Id) || canManageUser(user, user2Id))) {
+                throw new ErrorMessage(errorMessages.unauthorizedToAddFriend);
+            }
+
+            if (user1Id === user2Id) {
+                throw new ErrorMessage(errorMessages.unableToAddSameUserAsFriend);
+            }
+            
+            try {
+                await db.user.friend.add(user1Id, user2Id);
+            } catch (error) {
+                logger.error(error.message);
+                
+                if (error?.code === PostgresError.UNIQUE_VIOLATION) {
+                    throw new ErrorMessage(errorMessages.userAlreadyAddedAsFriend);
+                }
+                
+                throw new ErrorMessage(errorMessages.serverError);
+            }
+        },
+
+        remove: async (user, user1Id, user2Id) => {
+            // TODO: Error when trying to remove non existing user?
+            if (!(canManageUser(user, user1Id) || canManageUser(user, user2Id))) {
+                throw new ErrorMessage(errorMessages.unauthorizedToRemoveFriend);
+            }
+
+            if (user1Id === user2Id) {
+                throw new ErrorMessage(errorMessages.unableToRemoveSameUserAsFriend);
+            }
+            
+            try {
+                await db.user.friend.remove(user1Id, user2Id);
+            } catch (error) {
+                logger.error(error.message);
+                throw new ErrorMessage(errorMessages.unableToRemoveFriend);
+            }
+        },
+
+        getByUserId: async (user, userId) => {
+            if (!canManageUser(user, userId)) {
+                if (!(await usersAreFriends(user.id, userId))) {
+                    throw new ErrorMessage(errorMessages.unauthorizedToViewFriends);
+                }
+            }
+
+            try {
+                return (await db.user.friend.getByUserId(userId));
+            } catch (error) {
+                logger.error(error.message);
+                throw new ErrorMessage(errorMessages.serverError);
+            }
+        },
+
+        with: async (user1Id, user2Id) => {
+            return (await db.user.friend.with(user1Id, user2Id));
+        },
     }
+    
+
 };
 
 export const canManageUser = (user, userId) => {
     return (user.role === adminRole() || user.id === userId);
 };
+
+export const usersAreFriends = async (user1Id, user2Id) => {
+    return (await db.user.friend.with(user1Id, user2Id));
+}
 
 export default userService;
