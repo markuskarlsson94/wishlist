@@ -94,6 +94,11 @@ const errorMessages = {
         message: "Unable to remove same user as friend",
     },
 
+    unableToCreateFriendRequestWithSelf: {
+        status: 400,
+        message: "Unable to create friend request with self",
+    },
+
     invalidEmailOrPassword: {
         status: 401,
         message: "Invalid email or password",
@@ -153,6 +158,26 @@ const errorMessages = {
         status: 401,
         message: "Unauthorized to view friends",
     },
+
+    unauthorizedToCreateFriendRequest: {
+        status: 401,
+        message: "Unauthorized to create friend request",
+    },
+    
+    unauthorizedToRemoveFriendRequest: {
+        status: 401,
+        message: "Unauthorized to remove friend request",
+    },
+    
+    unauthorizedToAcceptFriendRequest: {
+        status: 401,
+        message: "Unauthorized to accept friend request",
+    },
+
+    unauthorizedToGetFriendRequests: {
+        status: 401,
+        message: "Unauthorized to get friend requests",
+    },
     
     serverError: {
         status: 500,
@@ -172,7 +197,27 @@ const errorMessages = {
     unableToGetWishlistsForUser: {
         status: 500,
         message: "Unable to get wishlists for user",
-    }
+    },
+
+    unableToCreateFriendRequest: {
+        status: 500,
+        message: "Unable to create friend request",
+    },
+    
+    unableToRemoveFriendRequest: {
+        status: 500,
+        message: "Unable to remove friend request",
+    },
+    
+    unableToAcceptFriendRequest: {
+        status: 500,
+        message: "Unable to accept friend request",
+    },
+    
+    unableToGetFriendRequests: {
+        status: 500,
+        message: "Unable to get friend requests",
+    },
 };
 
 export default errorMessages;

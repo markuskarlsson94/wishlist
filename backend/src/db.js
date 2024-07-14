@@ -294,7 +294,60 @@ const db = {
             getAll: async () => {
                 return (await dbClient(friendsTable).select("*"));
             }
-        }
+        },
+
+        friendRequest: {
+            add: async (senderId, receiverId) => {
+                const res = await db.user.friendRequest.getBySenderAndReceiverId(receiverId, senderId);
+                if (res !== undefined) throw new Error("Friend request already exists for users");
+
+                return (await dbClient(friendRequestsTable)
+                    .insert({
+                        sender: senderId,
+                        receiver: receiverId,
+                    })
+                    .returning("id"))[0].id;
+            },
+
+            remove: async (id) => {
+                await dbClient(friendRequestsTable)
+                    .delete()
+                    .where({ id });
+            },
+
+            getById: async (id) => {
+                return (await dbClient(friendRequestsTable)
+                    .select("*")
+                    .where({ id })
+                    .first()
+                );
+            },
+
+            getBySenderId: async (id) => {
+                return (await dbClient(friendRequestsTable)
+                    .select("*")
+                    .where({ sender: id })
+                );
+            },
+            
+            getByReceiverId: async (id) => {
+                return (await dbClient(friendRequestsTable)
+                    .select("*")
+                    .where({ receiver: id })
+                );
+            },
+
+            getBySenderAndReceiverId: async (senderId, receiverId) => {
+                return (await dbClient(friendRequestsTable)
+                    .select("*")
+                    .where({ 
+                        sender: senderId,
+                        receiver: receiverId,
+                    })
+                    .first()
+                );
+            },
+        },
     },
 
     userRoles: {

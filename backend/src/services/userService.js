@@ -158,9 +158,121 @@ const userService = {
         with: async (user1Id, user2Id) => {
             return (await db.user.friend.with(user1Id, user2Id));
         },
-    }
-    
+    },
 
+    friendRequest: {
+        add: async (user, senderId, receiverId) => {
+            if (!canManageUser(user, senderId)) {
+                throw new ErrorMessage(errorMessages.unauthorizedToCreateFriendRequest);
+            }
+
+            if (user.id === receiverId) {
+                throw new ErrorMessage(errorMessages.unableToCreateFriendRequestWithSelf);
+            }
+
+            if ((await usersAreFriends(senderId, receiverId))) {
+                throw new ErrorMessage(errorMessages.userAlreadyAddedAsFriend);
+            }
+
+            try {
+                return (await db.user.friendRequest.add(senderId, receiverId));
+            } catch (error) {
+                logger.error(error.message);
+                throw new ErrorMessage(errorMessages.unableToCreateFriendRequest);
+            }
+        },
+
+        remove: async (user, id) => {
+            const request = await db.user.friendRequest.getById(id);
+
+            if (request === undefined) {
+                throw new ErrorMessage(errorMessages.unauthorizedToRemoveFriendRequest);
+            }
+
+            const { sender, receiver } = request;
+
+            if (!(canManageUser(user, sender) || canManageUser(user, receiver))) {
+                throw new ErrorMessage(errorMessages.unauthorizedToRemoveFriendRequest);
+            }
+
+            try {
+                await db.user.friendRequest.remove(id);
+            } catch (error) {
+                logger.error(error.message);
+                throw new ErrorMessage(errorMessages.unableToRemoveFriendRequest);
+            }
+        },
+
+        accept: async (user, id) => {
+            const request = await db.user.friendRequest.getById(id);
+
+            if (request === undefined) {
+                throw new ErrorMessage(errorMessages.unauthorizedToAcceptFriendRequest);
+            }
+
+            const { sender, receiver } = request;
+
+            if (!canManageUser(user, receiver)) {
+                throw new ErrorMessage(errorMessages.unauthorizedToAcceptFriendRequest);
+            }
+
+            try {
+                await db.user.friend.add(sender, receiver);
+                await db.user.friendRequest.remove(id);
+            } catch (error) {
+                logger.error(error.message);
+                throw new ErrorMessage(errorMessages.unableToAcceptFriendRequest);
+            }
+        },
+
+        getById: async (user, id) => {
+            let request;
+            
+            try {
+                request = await db.user.friendRequest.getById(id);
+            } catch (error) {
+                logger.error(error.message);
+                throw new ErrorMessage(errorMessages.unableToGetFriendRequests);
+            }
+
+            if (request === undefined) {
+                throw new ErrorMessage(errorMessages.unauthorizedToGetFriendRequests);
+            }
+            
+            const { sender, receiver } = request;
+            if (!(canManageUser(user, sender) || canManageUser(user, receiver))) {
+                throw new ErrorMessage(errorMessages.unauthorizedToGetFriendRequests);
+            }
+
+            return request;
+        },
+
+        getBySenderId: async (user, id) => {
+            if (!canManageUser(user, id)) {
+                throw new ErrorMessage(errorMessages.unauthorizedToGetFriendRequests);
+            }
+
+            try {
+                return (await db.user.friendRequest.getBySenderId(id));
+            } catch (error) {
+                logger.error(error.message);
+                throw new ErrorMessage(errorMessages.unableToGetFriendRequests);
+            }
+        },
+        
+        getByReceiverId: async (user, id) => {
+            if (!canManageUser(user, id)) {
+                throw new ErrorMessage(errorMessages.unauthorizedToGetFriendRequests);
+            }
+
+            try {
+                return (await db.user.friendRequest.getByReceiverId(id));
+            } catch (error) {
+                logger.error(error.message);
+                throw new ErrorMessage(errorMessages.unableToGetFriendRequests);
+            }
+        },
+    }
 };
 
 export const canManageUser = (user, userId) => {
