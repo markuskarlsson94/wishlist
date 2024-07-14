@@ -206,6 +206,12 @@ const db = {
             );
         },
 
+        getByFullName: async (name, limit = 20, offset = 0) => {
+            return (await dbClient.raw(`SELECT id FROM ${userTable} WHERE CONCAT("firstName", ' ', "lastName") ILIKE ? ORDER BY id LIMIT ? OFFSET ?`, [`%${name}%`, limit, offset]))
+                    .rows
+                    .map(user => user.id);
+        },
+
         getAll: async () => {
             return (await dbClient(userTable)
                 .select("id", "email", "firstName", "lastName", "role", "createdAt")

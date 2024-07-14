@@ -30,6 +30,15 @@ const userService = {
         }
     },
 
+    getByFullName: async (name, limit = 20, offset = 0) => {
+        try {
+            return (await db.user.getByFullName(name, limit, offset));
+        } catch (error) {
+            logger.error(error.message);
+            throw new ErrorMessage(errorMessages.unableToGetUsers);
+        }
+    },
+
     add: async (email, firstName, lastName, plaintextPassword, role = userRole()) => {
         try {
             return (await db.user.add(email, firstName, lastName, plaintextPassword, role));

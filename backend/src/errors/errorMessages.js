@@ -218,6 +218,11 @@ const errorMessages = {
         status: 500,
         message: "Unable to get friend requests",
     },
+
+    unableToGetUsers: {
+        status: 500,
+        message: "Unable to get users",
+    },
 };
 
 export default errorMessages;
