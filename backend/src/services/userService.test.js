@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, expect, describe, it } from 'vitest'
-import userService from "./userService";
+import userService, { usersAreFriends } from "./userService";
 import db from "../db";
 import errorMessages from '../errors/errorMessages';
 import { adminRole, initUserRoles } from '../roles';
@@ -262,5 +262,249 @@ describe("friends", () => {
                 await userService.friend.remove(user1, user1Id, user2Id);
             })()).rejects.toThrowError(errorMessages.unableToRemoveSameUserAsFriend.message);
         });*/
+    });
+});
+
+describe("friend requests", () => {
+    let requestId;
+
+    beforeAll(async () => {
+        user3Id = await userService.add(email3, firstName, lastName, "abc");
+        user3 = await userService.getById(user3Id);
+    });
+
+    describe("creating requests", () => {
+        it("should not allow creating friend request for other user", async () => {
+            await expect((async () => {
+                await userService.friendRequest.add(user1, user2Id, user1Id);
+            })()).rejects.toThrowError(errorMessages.unauthorizedToCreateFriendRequest.message);
+        });
+        
+        it("should not allow creating friend request for same user", async () => {
+            await expect((async () => {
+                await userService.friendRequest.add(user1, user1Id, user1Id);
+            })()).rejects.toThrowError(errorMessages.unableToCreateFriendRequestWithSelf.message);
+        });
+        
+        it("should not allow creating friend request for non existing user", async () => {
+            await expect((async () => {
+                await userService.friendRequest.add(user1, user1Id, -1);
+            })()).rejects.toThrowError(errorMessages.unableToCreateFriendRequest.message);
+        });
+
+        it("should successfully create friend request", async () => {
+            requestId = await userService.friendRequest.add(user1, user1Id, user2Id);
+            expect(requestId).toBeGreaterThan(0);
+        });
+        
+        it("should not create friend request if one already exists for both users", async () => {
+            await expect((async () => {
+                await userService.friendRequest.add(user1, user1Id, user2Id);
+            })()).rejects.toThrowError(errorMessages.unableToCreateFriendRequest.message);
+        });
+        
+        it("should not create friend request if one already exists for both users and order is reversed", async () => {
+            await expect((async () => {
+                await userService.friendRequest.add(user2, user2Id, user1Id);
+            })()).rejects.toThrowError(errorMessages.unableToCreateFriendRequest.message);
+        });
+
+        it("should not allow creating friend request for existing friend", async () => {
+            await userService.friend.add(user1, user1Id, user2Id);
+            
+            await expect((async () => {
+                await userService.friendRequest.add(user1, user1Id, user2Id);
+            })()).rejects.toThrowError(errorMessages.userAlreadyAddedAsFriend.message);
+            
+            await userService.friend.remove(user1, user1Id, user2Id);
+        });
+
+        it("should allow admin to create request for other user", async () => {
+            let id = await userService.friendRequest.add(admin, user2Id, user3Id);
+            expect(id).toBeGreaterThan(0);
+        });
+    });
+
+    describe("viewing requests", () => {
+        it("should allow viewing own sent requests", async () => {
+            let request = await userService.friendRequest.getById(user1, requestId);
+            expect(request.id).toBe(requestId);
+            expect(request.sender).toBe(user1Id);
+            expect(request.receiver).toBe(user2Id);
+
+            let requests = await userService.friendRequest.getBySenderId(user1, user1Id);
+            expect(requests.length).toBe(1);
+
+            request = requests[0];
+            expect(request.id).toBe(requestId);
+            expect(request.sender).toBe(user1Id);
+            expect(request.receiver).toBe(user2Id);
+            
+            requests = await userService.friendRequest.getBySenderId(user2, user2Id);
+            expect(requests.length).toBe(1);
+            
+            request = requests[0];
+            expect(request.sender).toBe(user2Id);
+            expect(request.receiver).toBe(user3Id);
+        });
+        
+        it("should allow viewing own receiving requests", async () => {
+            let request = await userService.friendRequest.getById(user2, requestId);
+            expect(request.id).toBe(requestId);
+            expect(request.sender).toBe(user1Id);
+            expect(request.receiver).toBe(user2Id);
+
+            let requests = await userService.friendRequest.getByReceiverId(user1, user1Id);
+            expect(requests.length).toBe(0);
+
+            requests = await userService.friendRequest.getByReceiverId(user2, user2Id);
+            expect(requests.length).toBe(1);
+
+            request = requests[0];
+            expect(request.sender).toBe(user1Id);
+            expect(request.receiver).toBe(user2Id);
+        });
+
+        it("should not allow viewing requests for other user", async () => {
+            await expect((async () => {
+                await userService.friendRequest.getByReceiverId(user1, user2Id);
+            })()).rejects.toThrowError(errorMessages.unauthorizedToGetFriendRequests.message);
+            
+            await expect((async () => {
+                await userService.friendRequest.getBySenderId(user2, user1Id);
+            })()).rejects.toThrowError(errorMessages.unauthorizedToGetFriendRequests.message);
+        });
+
+        it("should not allow viewing requests for non existing user", async () => {
+            await expect((async () => {
+                await userService.friendRequest.getByReceiverId(user1, -1);
+            })()).rejects.toThrowError(errorMessages.unauthorizedToGetFriendRequests.message);
+            
+            await expect((async () => {
+                await userService.friendRequest.getBySenderId(user1, -1);
+            })()).rejects.toThrowError(errorMessages.unauthorizedToGetFriendRequests.message);
+        });
+        
+        it("should not allow viewing non existing request", async () => {
+            await expect((async () => {
+                await userService.friendRequest.getById(user1, -1);
+            })()).rejects.toThrowError(errorMessages.unauthorizedToGetFriendRequests.message);
+        });
+
+        it("should allow admin to view other users requests", async () => {
+            let requests = await userService.friendRequest.getBySenderId(admin, user1Id);
+            expect(requests.length).toBe(1);
+
+            requests = await userService.friendRequest.getByReceiverId(admin, user2Id);
+            expect(requests.length).toBe(1);
+        });
+    });
+
+    describe("removing requests", () => {
+        it("should not allow removing non existing request", async () => {
+            await expect((async () => {
+                await userService.friendRequest.remove(user1, -1);
+            })()).rejects.toThrowError(errorMessages.unauthorizedToRemoveFriendRequest.message);
+        });
+        
+        it("should not allow removing request if user is not sender or receiver", async () => {
+            await expect((async () => {
+                await userService.friendRequest.remove(user3, requestId);
+            })()).rejects.toThrowError(errorMessages.unauthorizedToRemoveFriendRequest.message);
+        });
+        
+        it("should allow sender to remove request", async () => {
+            await userService.friendRequest.remove(user1, requestId);
+        });
+        
+        it("should allow receiver to remove request", async () => {
+            requestId = await userService.friendRequest.add(user1, user1Id, user2Id);
+            await userService.friendRequest.remove(user2, requestId);
+        });
+        
+        it("should allow admin to remove to remove request", async () => {
+            requestId = await userService.friendRequest.add(user1, user1Id, user2Id);
+            await userService.friendRequest.remove(admin, requestId);
+        });
+        
+        it("should not create friendship when request is removed", async () => {
+            requestId = await userService.friendRequest.add(user1, user1Id, user2Id);
+            expect(await usersAreFriends(user1Id, user2Id)).toBeFalsy();
+            
+            await userService.friendRequest.remove(user1, requestId);
+            expect(await usersAreFriends(user1Id, user2Id)).toBeFalsy();
+        });
+
+        it("should remove request if sender or receiver is removed", async () => {
+            const id = await userService.friendRequest.add(user1, user1Id, user3Id);
+            let request = await db.user.friendRequest.getById(id);
+            expect(request.id).toBe(id);
+            
+            await userService.remove(admin, user3Id);
+
+            await expect((async () => {
+                await userService.friendRequest.getById(admin, id);
+            })()).rejects.toThrowError(errorMessages.unauthorizedToGetFriendRequests.message);
+        });
+    });
+
+    describe("accepting requests", async () => {
+        beforeAll(async () => {
+            user3Id = await userService.add(email3, firstName, lastName, "abc");
+            user3 = await userService.getById(user3Id);
+        });
+
+        it("should not allow accepting non existing request", async () => {
+            await expect((async () => {
+                await userService.friendRequest.accept(user1, -1);
+            })()).rejects.toThrowError(errorMessages.unauthorizedToAcceptFriendRequest.message);
+        });
+        
+        it("should not allow accepting own sent request", async () => {
+            const id = await userService.friendRequest.add(user1, user1Id, user2Id);
+
+            await expect((async () => {
+                await userService.friendRequest.accept(user1, id);
+            })()).rejects.toThrowError(errorMessages.unauthorizedToAcceptFriendRequest.message);
+        });
+        
+        it("should not allow accepting other users request", async () => {
+            const id = await userService.friendRequest.add(user2, user2Id, user3Id);
+
+            await expect((async () => {
+                await userService.friendRequest.accept(user1, id);
+            })()).rejects.toThrowError(errorMessages.unauthorizedToAcceptFriendRequest.message);
+        });
+
+        it("should allow admin to accept other users request", async () => {
+            const request = await db.user.friendRequest.getBySenderAndReceiverId(user2Id, user3Id);
+            const { id } = request;
+            expect(id).toBeGreaterThan(0);
+
+            await userService.friendRequest.accept(admin, id);
+        });
+
+        it("should create friendship after accepting request", async () => {
+            expect((await usersAreFriends(user1Id, user2Id))).toBeFalsy();
+
+            const request = await db.user.friendRequest.getBySenderAndReceiverId(user1Id, user2Id);
+            const { id } = request;
+            expect(id).toBeGreaterThan(0);
+
+            await userService.friendRequest.accept(user2, id);
+            
+            expect((await usersAreFriends(user1Id, user2Id))).toBeTruthy();
+        });
+
+        it("should remove request after request is accepted", async () => {
+            await db.user.friend.remove(user1Id, user2Id);
+
+            let request = await userService.friendRequest.add(user1, user1Id, user2Id);
+            await userService.friendRequest.accept(user2, request);
+
+            await expect((async () => {
+                await userService.friendRequest.getById(user1, request);
+            })()).rejects.toThrowError(errorMessages.unauthorizedToGetFriendRequests.message);
+        });
     });
 });
