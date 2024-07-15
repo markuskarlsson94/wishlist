@@ -31,6 +31,10 @@ const userService = {
     },
 
     getByFullName: async (name, limit = 20, offset = 0) => {
+        if (name.length < 3) {
+            throw new ErrorMessage(errorMessages.userQueryTooShort);
+        }
+
         try {
             return (await db.user.getByFullName(name, limit, offset));
         } catch (error) {

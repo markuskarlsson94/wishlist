@@ -99,6 +99,11 @@ const errorMessages = {
         message: "Unable to create friend request with self",
     },
 
+    userQueryTooShort: {
+        status: 400,
+        message: "User query too short",
+    },
+
     invalidEmailOrPassword: {
         status: 401,
         message: "Invalid email or password",
