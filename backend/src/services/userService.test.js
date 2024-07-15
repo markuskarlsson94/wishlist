@@ -93,6 +93,56 @@ describe("searching for user", async () => {
         user = await userService.getByEmail("a@mail.com");
         expect(user).toBe(undefined);
     });
+
+    describe("searching by name", () => {
+        let id1;
+        let id2;
+        let id3;
+
+        beforeAll(async () => {
+            id1 = await userService.add("mail@mail.com", "Nils", "Malandsson", "abc");
+            id2 = await userService.add("mail2@mail.com", "Truls", "Minipizza", "abc");
+            id3 = await userService.add("mail3@mail.com", "Nils-Jörgen", "Json", "abc");
+        });
+
+        it("should find by searching for first name", async () => {
+            const users = await userService.getByFullName("Nils");
+            expect(users.length).toBe(2);
+            expect(users.includes(id1)).toBeTruthy();
+            expect(users.includes(id3)).toBeTruthy();
+        });
+
+        it("should find by searching for last name", async () => {
+            const users = await userService.getByFullName("Mini");
+            expect(users.length).toBe(1);
+            expect(users.includes(id2)).toBeTruthy();
+        });
+        
+        it("should find not be case sensitive", async () => {
+            const users = await userService.getByFullName("trULs");
+            expect(users.length).toBe(1);
+            expect(users.includes(id2)).toBeTruthy();
+        });
+        
+        it("should find by searching for part of first and last name", async () => {
+            const users = await userService.getByFullName("s m");
+            expect(users.length).toBe(2);
+            expect(users.includes(id1)).toBeTruthy();
+            expect(users.includes(id2)).toBeTruthy();
+        });
+
+        it("should not allow too short queries", async () => {
+            await expect((async () => {
+                await userService.getByFullName("ab");
+            })()).rejects.toThrowError(errorMessages.userQueryTooShort.message);
+        });
+
+        afterAll(async () => {
+            await db.user.remove(id1);
+            await db.user.remove(id2);
+            await db.user.remove(id3);
+        });
+    });
 });
 
 describe("removing user", async () => {
@@ -507,4 +557,10 @@ describe("friend requests", () => {
             })()).rejects.toThrowError(errorMessages.unauthorizedToGetFriendRequests.message);
         });
     });
+
+    /*it("a", async () => {
+        console.log("----------------------");
+        const res = await userService.getByFullName("name user");
+        console.log(res);
+    });*/
 });
