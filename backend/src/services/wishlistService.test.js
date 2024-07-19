@@ -755,3 +755,174 @@ describe("removing wishlists", () => {
         expect(wishlists.length).toBe(0);
     });
 });
+
+describe("comments", async () => {
+    let wishlistId;
+    let itemId;
+    let commentId;
+    let user4;
+    let user4Id;
+
+    beforeAll(async () => {
+        user1Id = await db.user.add("wishlistServiceTestUser1@mail.com", "User1", "Usersson", "abc", userRole());
+        user1 = { id: user1Id, role: userRole() };
+        
+        user4Id = await db.user.add("wishlistServiceTestUser4@mail.com", "User1", "Usersson", "abc", userRole());
+        user4 = { id: user4Id, role: userRole() };
+        
+        wishlistId = await db.wishlist.add(user1Id, "commentTest", "test", publicType());
+        itemId = await db.wishlist.item.add(wishlistId, "testItem", "test", 1);
+    });
+
+    it("should not allow adding comment for other user", async () => {
+        await expect((async () => {
+            await wishlistService.item.comment.add(user1, itemId, user2Id, "test comment");
+        })()).rejects.toThrowError(errorMessages.unauthorizedToAddComment.message);
+    });
+    
+    it("should not allow adding comment on hidden item", async () => {
+        await db.wishlist.setType(wishlistId, hiddenType());
+        
+        await expect((async () => {
+            await wishlistService.item.comment.add(user2, itemId, user2Id, "test comment");
+        })()).rejects.toThrowError(errorMessages.wishlistItemNotFound.message);
+        
+        await db.wishlist.setType(wishlistId, publicType());
+    });
+
+    it("should add comment successfully", async () => {
+        commentId = await wishlistService.item.comment.add(user1, itemId, user1Id, "yeehaw");
+        expect(commentId).toBeGreaterThan(0);
+
+        const comment = await wishlistService.item.comment.getById(user1, commentId);
+        expect(comment.id).toBe(commentId);
+        expect(comment.item).toBe(itemId);
+        expect(comment.user).toBe(user1Id);
+        expect(comment.comment).toBe("yeehaw");
+    });
+
+    it("should not allow removing comment for other user", async () => {
+        await expect((async () => {
+            await wishlistService.item.comment.remove(user2, commentId);
+        })()).rejects.toThrowError(errorMessages.unauthorizedToRemoveComment.message);
+    });
+    
+    it("should not allow updating comment for other user", async () => {
+        await expect((async () => {
+            await wishlistService.item.comment.update(user2, commentId, "yeehaw 2");
+        })()).rejects.toThrowError(errorMessages.unauthorizedToUpdateComment.message);
+    });
+
+    it("should allow user to update own comment", async () => {
+        await wishlistService.item.comment.update(user1, commentId, "yeehaw 2");
+        const comment = await wishlistService.item.comment.getById(user1, commentId);
+        expect(comment.comment).toBe("yeehaw 2");
+    });
+    
+    it("should allow user to remove own comment", async () => {
+        await wishlistService.item.comment.remove(user1, commentId);
+    });
+
+    it("should allow admin to add comment for user", async () => {
+        commentId = await wishlistService.item.comment.add(admin, itemId, user1Id, "yeehaw 3");
+        expect(commentId).toBeGreaterThan(0);
+    });
+
+    it("should allow admin to update comment for other user", async () => {
+        await wishlistService.item.comment.update(admin, commentId, "yeehaw 4");
+        const comment = await wishlistService.item.comment.getById(user1, commentId);
+        expect(comment.comment).toBe("yeehaw 4");
+    });
+
+    it("should allow admin to remove comment for other user", async () => {
+        await wishlistService.item.comment.remove(admin, commentId);
+        
+        await expect((async () => {
+            await wishlistService.item.comment.getById(admin, commentId);
+        })()).rejects.toThrowError(errorMessages.commentNotFound.message);
+    });
+
+    describe("anonymous comments", () => {
+        beforeAll(async () => {
+            await wishlistService.item.comment.add(user1, itemId, user1Id, "test comment 1"); // user1 is wishlist owner
+            await wishlistService.item.comment.add(user2, itemId, user2Id, "test comment 2");
+            await wishlistService.item.comment.add(user3, itemId, user3Id, "test comment 3");
+            await wishlistService.item.comment.add(user2, itemId, user2Id, "test comment 4");
+        });
+        
+        it("should anonymize comments successfully for other user", async () => {
+            const comments = await wishlistService.item.comment.getByItemId(user4, itemId);
+            expect(comments.length).toBe(4);
+            
+            expect(comments[0].anonymizedUserId).toBe(undefined);
+            expect(comments[1].anonymizedUserId).toBe(1);
+            expect(comments[2].anonymizedUserId).toBe(2);
+            expect(comments[3].anonymizedUserId).toBe(1);
+            
+            expect(comments[0].comment).toBe("test comment 1");
+            expect(comments[1].comment).toBe("test comment 2");
+            expect(comments[2].comment).toBe("test comment 3");
+            expect(comments[3].comment).toBe("test comment 4");
+            
+            expect(comments.every(c => c.user === undefined));
+            expect(comments.every(c => c.isOwnComment === undefined));
+        });
+        
+        it("should not anonymize own comment", async () => {
+            const comments = await wishlistService.item.comment.getByItemId(user3, itemId);
+            expect(comments.length).toBe(4);
+            
+            expect(comments[0].anonymizedUserId).toBe(undefined);
+            expect(comments[1].anonymizedUserId).toBe(1);
+            expect(comments[2].anonymizedUserId).toBe(undefined);
+            expect(comments[3].anonymizedUserId).toBe(1);
+            
+            expect(comments[0].isOwnComment).toBe(undefined);
+            expect(comments[1].isOwnComment).toBe(undefined);
+            expect(comments[2].isOwnComment).toBe(true);
+            expect(comments[3].isOwnComment).toBe(undefined);
+
+            expect(comments[0].isItemOwner).toBe(true);
+            expect(comments[1].isItemOwner).toBe(undefined);
+            expect(comments[2].isItemOwner).toBe(undefined);
+            expect(comments[3].isItemOwner).toBe(undefined);
+            
+            expect(comments[0].comment).toBe("test comment 1");
+            expect(comments[1].comment).toBe("test comment 2");
+            expect(comments[2].comment).toBe("test comment 3");
+            expect(comments[3].comment).toBe("test comment 4");
+
+            expect(comments.every(c => c.user === undefined));
+        });
+
+        it("should preserve original user for admin", async () => {
+            const comments = await wishlistService.item.comment.getByItemId(admin, itemId);
+            expect(comments.length).toBe(4);
+
+            expect(comments[0].user).toBe(user1Id);
+            expect(comments[1].user).toBe(user2Id);
+            expect(comments[2].user).toBe(user3Id);
+            expect(comments[3].user).toBe(user2Id);
+            
+            expect(comments[0].anonymizedUserId).toBe(undefined);
+            expect(comments[1].anonymizedUserId).toBe(1);
+            expect(comments[2].anonymizedUserId).toBe(2);
+            expect(comments[3].anonymizedUserId).toBe(1);
+            
+            expect(comments[0].isOwnComment).toBe(undefined);
+            expect(comments[1].isOwnComment).toBe(undefined);
+            expect(comments[2].isOwnComment).toBe(undefined);
+            expect(comments[3].isOwnComment).toBe(undefined);
+
+            expect(comments[0].isItemOwner).toBe(true);
+            expect(comments[1].isItemOwner).toBe(undefined);
+            expect(comments[2].isItemOwner).toBe(undefined);
+            expect(comments[3].isItemOwner).toBe(undefined);
+            
+            expect(comments[0].comment).toBe("test comment 1");
+            expect(comments[1].comment).toBe("test comment 2");
+            expect(comments[2].comment).toBe("test comment 3");
+            expect(comments[3].comment).toBe("test comment 4");
+        });
+    });
+});
