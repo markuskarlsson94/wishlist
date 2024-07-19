@@ -34,6 +34,11 @@ const errorMessages = {
         message: "Refresh token required",
     },
 
+    commentNotFound: {
+        status: 400,
+        message: "Comment not found",
+    },
+
     passwordsDontMatch: {
         status: 400,
         message: "New passwords do not match"
@@ -183,6 +188,26 @@ const errorMessages = {
         status: 401,
         message: "Unauthorized to get friend requests",
     },
+
+    unauthorizedToAddComment: {
+        status: 401,
+        message: "Unauthorized to add comment",
+    },
+    
+    unauthorizedToRemoveComment: {
+        status: 401,
+        message: "Unauthorized to remove comment",
+    },
+    
+    unauthorizedToUpdateComment: {
+        status: 401,
+        message: "Unauthorized to update comment",
+    },
+    
+    unauthorizedToGetComments: {
+        status: 401,
+        message: "Unauthorized to get comments",
+    },
     
     serverError: {
         status: 500,
@@ -228,6 +253,26 @@ const errorMessages = {
         status: 500,
         message: "Unable to get users",
     },
+
+    unableToAddComment: {
+        status: 500,
+        message: "Unable to add comment",
+    },
+
+    unableToUpdateComment: {
+        status: 500,
+        message: "Unable to update comment",
+    },
+    
+    unableToRemoveComment: {
+        status: 500,
+        message: "Unable to remove comment",
+    },
+
+    unableToGetComments: {
+        status: 500,
+        message: "Unable to get comments",
+    }
 };
 
 export default errorMessages;

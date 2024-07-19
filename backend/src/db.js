@@ -519,7 +519,69 @@ const db = {
                     await dbClient(wishlistItemTable)
                         .select("*")
                 );
-            }
+            },
+
+            comment: {
+                add: async (itemId, userId, comment) => {
+                    return (await dbClient(commentsTable)
+                        .insert({
+                            item: itemId,
+                            user: userId,
+                            comment,
+                        })
+                        .returning("id")
+                    )[0].id;
+                },
+
+                update: async (id, comment) => {
+                    await dbClient(commentsTable)
+                        .update({ comment })
+                        .where({ id });
+                },
+
+                remove: async (id) => {
+                    await dbClient(commentsTable)
+                        .delete()
+                        .where({ id });
+                },
+
+                removeByUserId: async (userId) => {
+                    await dbClient(commentsTable)
+                        .remove()
+                        .where({ user: userId });
+                },
+
+                getById: async (id) => {
+                    return (await dbClient(commentsTable)
+                        .select("*")
+                        .where({ id })
+                        .first()
+                    );
+                },
+
+                getByItemId: async (itemId) => {
+                    return (await dbClient(commentsTable)
+                        .select("id", "user", "comment", "createdAt", "updatedAt")
+                        .where({ item: itemId })
+                        .orderBy("createdAt", "asc"));
+                },
+
+                getItem: async (id) => {
+                    const item = (await dbClient(commentsTable)
+                        .select("item")
+                        .where({ id })
+                        .first()
+                    )?.item;
+
+                    return item;
+                },
+
+                getAll: async () => {
+                    return (await dbClient(commentsTable)
+                        .select("*")
+                    );
+                }
+            },
         },
     },
 

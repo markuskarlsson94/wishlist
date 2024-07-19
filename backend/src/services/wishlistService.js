@@ -229,6 +229,122 @@ const wishlistService = {
 
             return filteredItem
         },
+
+        comment: {
+            add: async (user, itemId, userId, comment) => {
+                if (!(await canViewWishlistItem(user, itemId))) {
+                    throw new ErrorMessage(errorMessages.wishlistItemNotFound);
+                }
+
+                if (!canManageUser(user, userId)) {
+                    throw new ErrorMessage(errorMessages.unauthorizedToAddComment);
+                }
+
+                try {
+                    return (await db.wishlist.item.comment.add(itemId, userId, comment));
+                } catch (error) {
+                    logger.error(error.message);
+                    throw new ErrorMessage(errorMessages.unableToAddComment);
+                }
+            },
+            
+            update: async (user, commentId, comment) => {
+                if (!(await canManageComment(user, commentId))) {
+                    throw new ErrorMessage(errorMessages.unauthorizedToUpdateComment);
+                }
+
+                try {
+                    await db.wishlist.item.comment.update(commentId, comment);
+                } catch (error) {
+                    logger.error(error.message);
+                    throw new ErrorMessage(errorMessages.unableToUpdateComment);
+                }
+            },
+
+            remove: async (user, commentId) => {
+                if (!(await canManageComment(user, commentId))) {
+                    throw new ErrorMessage(errorMessages.unauthorizedToRemoveComment);
+                }
+
+                try {
+                    await db.wishlist.item.comment.remove(commentId);
+                } catch (error) {
+                    logger.error(error.message);
+                    throw new ErrorMessage(errorMessages.unableToRemoveComment);
+                }
+            },
+
+            removeByUserId: async (user, userId) => {
+                if (!(await canManageComment(user, commentId))) {
+                    throw new ErrorMessage(errorMessages.unauthorizedToUpdateComment);
+                }
+
+                try {
+                    await db.wishlist.item.comment.removeByUserId(userId);
+                } catch (error) {
+                    logger.error(error.message);
+                    throw new ErrorMessage(errorMessages.unableToUpdateComment);
+                }
+            },
+
+            getById: async (user, id) => {
+                if (!(await canViewComment(user, id))) {
+                    throw new ErrorMessage(errorMessages.commentNotFound);
+                }
+
+                try {
+                    return (await db.wishlist.item.comment.getById(id));
+                } catch (error) {
+                    logger.error(error.message);
+                    throw new ErrorMessage(errorMessages.unableToGetComments);
+                }
+            },
+
+            getByItemId: async (user, itemId) => {
+                if (!(await canViewWishlistItem(user, itemId))) {
+                    throw new ErrorMessage(errorMessages.unauthorizedToGetComments);
+                }
+
+                const itemOwner = await db.wishlist.item.getOwner(itemId);
+
+                try {
+                    const comments = await db.wishlist.item.comment.getByItemId(itemId);
+                    const commentMap = new Map();
+                    let id = 1;
+
+                    return comments.map(comment => {
+                        const ownComment = comment.user === user.id;
+                        let anonymizedUserId;
+                        
+                        if (!ownComment) {
+                            if (comment.user === itemOwner) {
+                                comment.isItemOwner = true;
+                            } else {   
+                                anonymizedUserId = commentMap.get(comment.user); 
+                                
+                                if (anonymizedUserId === undefined) {
+                                    anonymizedUserId = id++;
+                                    commentMap.set(comment.user, anonymizedUserId);
+                                }
+
+                                comment.anonymizedUserId = anonymizedUserId;
+                            }
+                        } else {
+                            comment.isOwnComment = true;
+                        }
+                        
+                        if (user.role !== adminRole()) {
+                            delete comment.user;
+                        }
+
+                        return comment;
+                    });
+                } catch (error) {
+                    logger.error(error.message);
+                    throw new ErrorMessage(errorMessages.unableToGetComments);
+                }
+            },
+        },
     },
 
     reservation: {
@@ -327,7 +443,20 @@ const canManageReservation = async (user, reservationId) => {
 const canViewUser = async (user, userId) => {
     if (!user || !userId) return false;
     return (user.role === adminRole() || user.id === userId);
-}
+};
+
+const canViewComment = async (user, commentId) => {
+    const itemId = await db.wishlist.item.comment.getItem(commentId);
+    if (itemId === undefined) return false;
+    return (await canViewWishlistItem(user, itemId));
+};
+
+const canManageComment = async (user, commentId) => {
+    if (user.role === adminRole()) return true;
+
+    const comment = await db.wishlist.item.comment.getById(commentId);
+    return comment?.user === user.id;
+};
 
 const userOwnsItem = async (user, itemId) => {
     if (!user || !itemId) return false;
