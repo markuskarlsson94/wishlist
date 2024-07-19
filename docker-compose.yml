@@ -40,5 +40,14 @@ services:
     depends_on:
       - db
 
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "${FRONTEND_PORT}:${FRONTEND_PORT_INTERNAL}"
+    depends_on:
+      - backend
+
 volumes:
   postgres_data:
