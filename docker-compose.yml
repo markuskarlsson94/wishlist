@@ -46,6 +46,9 @@ services:
       dockerfile: Dockerfile
     ports:
       - "${FRONTEND_PORT}:${FRONTEND_PORT_INTERNAL}"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
     depends_on:
       - backend
 
