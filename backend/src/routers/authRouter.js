@@ -32,8 +32,8 @@ authRouter.post("/refresh", async (req, res) => {
     const { refreshToken } = req.body;
 
     try {
-        const accessToken = await authService.refresh(refreshToken);
-        res.json({ accessToken });
+        const tokens = await authService.refresh(refreshToken);
+        res.json({...tokens});
     } catch (error) {
         res.status(error.status).json(error.message);
     }

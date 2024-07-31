@@ -64,8 +64,15 @@ const authService = {
                 throw new ErrorMessage(errorMessages.invalidRefreshToken);
             }
     
-            logger.info(`User (id = ${user.id}) requested new refresh token.`);
-            return generateAccessToken(user);
+            logger.info(`User (id = ${user.id}) requested new tokens.`);
+
+            const accessToken = generateAccessToken(user);
+            const newRefreshToken = generateRefreshToken(user);
+
+            return {
+                accessToken,
+                refreshToken: newRefreshToken,
+            }
         } catch (error) {
             logger.error(error.message);
             throw new ErrorMessage(errorMessages.invalidRefreshToken);
@@ -75,12 +82,12 @@ const authService = {
 
 const generateAccessToken = (user, issuedAtLogin = false) => {
     const payload = { id: user.id, issuedAtLogin };
-    return jwt.sign(payload, process.env.ACCESS_SECRET_KEY, { expiresIn: '10m' });
+    return jwt.sign(payload, process.env.ACCESS_SECRET_KEY, { expiresIn: '30s' });
 };
 
 const generateRefreshToken = (user) => {
     const payload = { id: user.id };
-    return jwt.sign(payload, process.env.REFRESH_SECRET_KEY, { expiresIn: '7d' });
+    return jwt.sign(payload, process.env.REFRESH_SECRET_KEY, { expiresIn: '2m' });
 };
 
 export default authService;
