@@ -63,11 +63,10 @@ describe("logging in", () => {
 
     it("should log in user with correct password", async () => {
         const res = await authService.login(email1, password);
-        const accessToken = res.accessToken;
         refreshToken = res.refreshToken;
 
-        expectTypeOf(accessToken).toBeString();
-        expectTypeOf(refreshToken).toBeString();
+        expect(res).toHaveProperty("accessToken");
+        expect(res).toHaveProperty("refreshToken");
     });
 });
 
@@ -78,8 +77,9 @@ describe("refreshing token", () => {
         })()).rejects.toThrowError(errorMessages.invalidRefreshToken.message);
     });
 
-    it("should issue new access token with valid refresh token", async () => {
+    it("should issue new access and refresh token with valid refresh token", async () => {
         const res = await authService.refresh(refreshToken);
-        expectTypeOf(res.accessToken).toBeString(); 
+        expect(res).toHaveProperty("accessToken");
+        expect(res).toHaveProperty("refreshToken");
     });
 });
