@@ -6,6 +6,7 @@ import { generatePassword } from "./utilities/password.js";
 import userService from "./services/userService.js";
 
 const environment = process.env.NODE_ENV || 'development';
+const tokenTable = "tokens";
 const userTable = "users";
 const userRolesTable = "userRoles";
 const wishlistTable = "wishlists";
@@ -45,6 +46,7 @@ const db = {
             await dbClient.schema.dropTableIfExists(reservationsTable);
             await dbClient.schema.dropTableIfExists(wishlistItemTable);
             await dbClient.schema.dropTableIfExists(wishlistTable);
+            await dbClient.schema.dropTableIfExists(tokenTable);
             await dbClient.schema.dropTableIfExists(userTable);
             await dbClient.schema.dropTableIfExists(userRolesTable);
             await dbClient.schema.dropTableIfExists(wishlistTypeTable);
@@ -81,6 +83,14 @@ const db = {
 
                 table.foreign("role").references("id").inTable(userRolesTable);
                 table.timestamps(true, true, true);
+            });
+
+            await dbClient.schema.createTable(tokenTable, (table) => {
+                table.increments("id").primary();
+                table.integer("user").notNullable().unique();
+                table.string("token").notNullable();
+
+                table.foreign("user").references("id").inTable(userTable).onDelete("CASCADE");
             });
 
             await dbClient.schema.createTable(wishlistTable, (table) => {
