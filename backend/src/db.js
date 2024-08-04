@@ -191,6 +191,40 @@ const db = {
         logger.info("Database populated");
     },
 
+    token: {
+        add: async (user, token) => {
+            await dbClient(tokenTable)
+                .delete()
+                .where({ user });
+            
+            await dbClient(tokenTable)
+                .insert({
+                    user,
+                    token,
+                });
+        },
+
+        removeByUserId: async (id) => {
+            await dbClient(tokenTable)
+                .delete()
+                .where({ user: id });
+        },
+
+        getAll: async () => {
+            return (await dbClient(tokenTable).select("*"));
+        },
+
+        getByUserId: async (id) => {
+            return (await dbClient(tokenTable)
+                .select("token")
+                .where({
+                    user: id,
+                })
+                .first())
+                ?.token;
+        },
+    },
+
     user: {
         add: async (email, firstName, lastName, plaintextPassword, role) => {
             const hashedPassword = await generatePassword(plaintextPassword);

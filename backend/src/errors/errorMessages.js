@@ -208,6 +208,11 @@ const errorMessages = {
         status: 401,
         message: "Unauthorized to get comments",
     },
+
+    unauthorizedToLogout: {
+        status: 401,
+        message: "Unauthorized to logout",
+    },
     
     serverError: {
         status: 500,
@@ -272,7 +277,12 @@ const errorMessages = {
     unableToGetComments: {
         status: 500,
         message: "Unable to get comments",
-    }
+    },
+
+    unableToLogout: {
+        status: 500,
+        message: "Unable to logout",
+    },
 };
 
 export default errorMessages;

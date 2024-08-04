@@ -2,8 +2,9 @@ import jwt from "jsonwebtoken";
 import logger from "../logger.js";
 import ErrorMessage from "../errors/ErrorMessage.js";
 import { passwordsMatching } from "../utilities/password.js";
-import userService from "./userService.js";
+import userService, { canManageUser } from "./userService.js";
 import errorMessages from "../errors/errorMessages.js";
+import db from "../db.js";
 
 const authService = {
     register: async (email, firstName, lastName, password) => {
@@ -40,6 +41,14 @@ const authService = {
         if (match) {
             const accessToken = generateAccessToken(user, true);
             const refreshToken = generateRefreshToken(user);
+
+            try {
+                await db.token.add(user.id, refreshToken);
+            } catch (error) {
+                logger.error(error.message);
+                throw new Error("Unable to store token");
+            }
+
             logger.info(`User ${user.email} logged in.`);
             
             return {
@@ -48,6 +57,22 @@ const authService = {
             } 
         } else {
             throw new ErrorMessage(errorMessages.invalidEmailOrPassword);
+        }
+    },
+
+    logout: async (user, userId) => {
+        if (!canManageUser(user, userId)) {
+            throw new ErrorMessage(errorMessages.unauthorizedToLogout);
+        }
+
+        try {
+            await db.token.removeByUserId(userId);
+            const { email } = await db.user.getById(userId);
+
+            logger.info(`User ${email} logged out.`);
+        } catch (error) {
+            logger.error(error.message);
+            throw new ErrorMessage(errorMessages.unableToLogout);
         }
     },
 
@@ -63,11 +88,24 @@ const authService = {
             if (!user) {
                 throw new ErrorMessage(errorMessages.invalidRefreshToken);
             }
-    
-            logger.info(`User (id = ${user.id}) requested new tokens.`);
 
+            const storedToken = await db.token.getByUserId(decoded.id);
+            
+            if (!storedToken || storedToken !== refreshToken) {
+                throw new ErrorMessage(errorMessages.invalidRefreshToken);
+            }
+            
             const accessToken = generateAccessToken(user);
             const newRefreshToken = generateRefreshToken(user);
+            
+            try {
+                await db.token.add(user.id, newRefreshToken);
+            } catch (error) {
+                logger.error(error.message);
+                throw new Error("Unable to store token");
+            }
+
+            logger.info(`User (id = ${user.id}) requested new tokens.`);
 
             return {
                 accessToken,
