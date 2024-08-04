@@ -1,5 +1,6 @@
 import express from "express";
 import authService from "../services/authService.js";
+import { isAuthenticated } from "../passport.js";
 
 const authRouter = express.Router();
 
@@ -14,6 +15,15 @@ authRouter.post("/login", async (req, res) => {
         });
     } catch (error) {
         res.status(error.status).json(error.message)
+    }
+});
+
+authRouter.post("/logout", isAuthenticated(), async (req, res) => {
+    try {
+        await authService.logout(req.user.id);
+        res.status(200).json({ message: "User logged out" });
+    } catch (error) {
+        res.status(error.status).json(error.message);
     }
 });
 
