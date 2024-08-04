@@ -9,7 +9,7 @@ authRouter.post("/login", async (req, res) => {
 
     try {
         const { accessToken, refreshToken } = await authService.login(email, password);
-        return res.status(200).json({
+        res.status(200).json({
             accessToken,
             refreshToken,
         });
