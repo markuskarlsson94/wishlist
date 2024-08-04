@@ -32,7 +32,7 @@ authRouter.post("/register", async (req, res) => {
 
     try {
         await authService.register(email, firstName, lastName, password);
-        res.status(201).json({ message: 'User registered successfully' });
+        res.status(201).json({ message: "User registered successfully" });
     } catch (error) {
         res.status(error.status).json(error.message);
     }
