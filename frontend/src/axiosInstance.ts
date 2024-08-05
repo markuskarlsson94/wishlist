@@ -36,24 +36,20 @@ axiosInstance.interceptors.response.use(
 
             isRefreshing = true;
             originalRequest._retry = true;
-
-            await refreshAccessToken();
             
-            return (new Promise((resolve, reject) => {
+            return (new Promise(async (resolve, reject) => {
                 try {
+                    await refreshAccessToken();
                     resolve(axiosInstance(originalRequest));
-                } catch (error) {
-                    reject(error);
+                } catch (err) {
+                    reject(err)
                 } finally {
                     isRefreshing = false;
                 }
             }));
         }
 
-        return (new Promise((_resolve, reject) => {
-            reject("Refresh token not found");
-            isRefreshing = false;
-        }));
+        return Promise.reject(error);
     },
 );
 
