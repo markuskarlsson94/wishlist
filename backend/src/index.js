@@ -10,7 +10,7 @@ import { initUserRoles } from "./roles.js";
 import { initWishlistTypes } from "./wishlistTypes.js";
 import cors from "cors";
 
-db.connect();
+await db.connect();
 
 const app = express();
 app.use(cors({
