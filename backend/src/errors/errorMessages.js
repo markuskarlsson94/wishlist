@@ -110,7 +110,7 @@ const errorMessages = {
     },
 
     invalidEmailOrPassword: {
-        status: 401,
+        status: 403,
         message: "Invalid email or password",
     },
 
