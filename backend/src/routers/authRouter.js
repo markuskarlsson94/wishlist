@@ -49,4 +49,10 @@ authRouter.post("/refresh", async (req, res) => {
     }
 });
 
+authRouter.get("/me", isAuthenticated(), async (req, res) => {
+    res.json({
+        id: req.user.id
+    });
+});
+
 export default authRouter;
