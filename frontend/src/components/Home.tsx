@@ -1,38 +1,28 @@
 import { useNavigate } from "react-router-dom";
-import axiosInstance from "../axiosInstance";
-import { useMutation } from "@tanstack/react-query";
-import useUser from "../hooks/useUser";
+import { useAuth } from "../contexts/AuthContext";
+import { useLogout } from "../hooks/useLogout";
 
 const Home = () => {
     const navigate = useNavigate();
-    const { user, isSuccess, isFetching } = useUser();
+    const { isAuthenticated, userId } = useAuth();
 
-    const logoutMutation = useMutation({
-        mutationFn: async (): Promise<void> => {
-            return (await axiosInstance.post("/auth/logout", {
-                userId: user,
-            }));
-        },
-        onError: (error) => {
-            console.error("Logout failed:", error);
-        },
-        onSuccess: () => {
-            localStorage.removeItem("accessToken");
-            localStorage.removeItem("refreshToken");
-            navigate("/");
-        },
-    });
+    const onLogout = () => {
+        navigate("/");
+    }
 
-    const handleLogout = async () => {
-        logoutMutation.mutate();
+    const { logout } = useLogout({ onSuccess: onLogout });
+
+    const handleLogout = () => {
+        logout();
     }
 
     return (
         <>
             <h2>Home</h2>
             <p>Welcome!</p>
-            <button onClick={handleLogout} disabled={!isSuccess}>Logout</button>
-            {(isSuccess && !isFetching) && <div>{user}</div>}
+            <button onClick={handleLogout} disabled={!userId}>Logout</button>
+            {<div>User id: {userId}</div>}
+            {isAuthenticated ? <div>authenticated</div> : <div>not authenticated</div>}
         </>
     );
 };
