@@ -3,7 +3,7 @@ import axiosInstance from "../axiosInstance";
 
 type UserResponse = {
     data: {
-        id: string
+        id: number
     };
 }
 
