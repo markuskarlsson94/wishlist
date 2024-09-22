@@ -1,9 +1,12 @@
 import React, { useContext, createContext, useState, ReactNode, useEffect } from "react";
+import useUser from "../hooks/useUser";
 
 type AuthContextType = {
     isAuthenticated: boolean;
     setIsAuthenticated: (authenticated: boolean) => void;
     isLoadingAuthStatus: boolean;
+    userId: number | undefined;
+    setUserId: (userId: number | undefined) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -15,6 +18,8 @@ type AuthProviderProps = {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
     const [isLoadingAuthStatus, setIsLoadingAuthStatus] = useState<boolean>(true);
+    const [userId, setUserId] = useState<number | undefined>(undefined);
+    const { user, isLoading, isError } = useUser();
     
     useEffect(() => {
         const token = localStorage.getItem("accessToken");
@@ -25,9 +30,25 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
         setIsLoadingAuthStatus(false);
     }, []);
+
+    useEffect(() => {
+        if (user) {
+            setUserId(user);
+            setIsLoadingAuthStatus(false);
+        } else if (!isLoading && !isError) {
+            setUserId(undefined);
+            setIsLoadingAuthStatus(false);
+        }
+    }, [user, isLoading, isError]);
  
     return (
-        <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated, isLoadingAuthStatus }}>
+        <AuthContext.Provider value={{ 
+                isAuthenticated, 
+                setIsAuthenticated, 
+                isLoadingAuthStatus,
+                userId,
+                setUserId 
+            }}>
             {children}
         </AuthContext.Provider>
     );

@@ -1,7 +1,9 @@
-import { useMutation, UseMutationResult } from "@tanstack/react-query";
+import { useMutation, UseMutationResult, useQueryClient } from "@tanstack/react-query";
 import axiosInstance from "../axiosInstance";
 import { AxiosResponse } from "axios";
 import { useAuth } from "../contexts/AuthContext";
+import useUser from "./useUser";
+import { useEffect } from "react";
 
 type LoginCredentials = {
     email: string;
@@ -32,7 +34,8 @@ const login = async ({ email, password }: LoginCredentials): Promise<LoginRespon
 }
 
 export const useLogin = (config?: UseLoginConfig): UseLoginResult => {
-    const { setIsAuthenticated } = useAuth();
+    const { setIsAuthenticated, setUserId } = useAuth();
+    const queryClient = useQueryClient();
 
     const mutation = useMutation({
         mutationFn: login,
@@ -40,6 +43,8 @@ export const useLogin = (config?: UseLoginConfig): UseLoginResult => {
             localStorage.setItem("accessToken", data.accessToken);
             localStorage.setItem("refreshToken", data.refreshToken);
             setIsAuthenticated(true);
+
+            queryClient.invalidateQueries({ queryKey: ["user"] });
 
             if (config?.onSuccess) {
                 config.onSuccess(data);
@@ -54,6 +59,14 @@ export const useLogin = (config?: UseLoginConfig): UseLoginResult => {
             }
         },
     });
+
+    const { user } = useUser();
+
+    useEffect(() => {
+        if (user) {
+            setUserId(user);
+        }
+    }, [user, setUserId]);
 
     return { login: mutation.mutate, ...mutation };
 };
