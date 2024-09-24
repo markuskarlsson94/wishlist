@@ -455,8 +455,9 @@ const db = {
 
         getByUserId: async (userId) => {
             return (await dbClient(wishlistTable)
-                .select("id", "title", "description", "type")
+                .select("id", "title", "description", "type", "createdAt")
                 .where({ owner: userId })
+                .orderBy("createdAt", "asc")
             );
         },
 
