@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './components/Home';
 import ProtectedRoutes from './components/ProtectedRoutes';
 import { AuthProvider } from './contexts/AuthContext';
+import Wishlists from './components/Wishlists';
 
 function App() {
     return (
@@ -13,6 +14,7 @@ function App() {
                     <Route path="/" element={<Login />} />
                     <Route element={<ProtectedRoutes />}>
                         <Route path="/home" element={<Home />} />
+                        <Route path="/wishlists" element={<Wishlists />}/>
                     </Route>
                 </Routes>
             </Router>

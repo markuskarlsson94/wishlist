@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, NavLink } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { useLogout } from "../hooks/useLogout";
 
@@ -23,6 +23,7 @@ const Home = () => {
             <button onClick={handleLogout} disabled={!userId}>Logout</button>
             {<div>User id: {userId}</div>}
             {isAuthenticated ? <div>authenticated</div> : <div>not authenticated</div>}
+            <NavLink to={"/wishlists"}>Wishlists</NavLink>
         </>
     );
 };
