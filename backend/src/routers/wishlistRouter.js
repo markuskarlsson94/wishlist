@@ -97,9 +97,7 @@ wishlistRouter.post("/item/reserve", isAuthenticated(), async (req, res) => {
 
 wishlistRouter.get("/wishlist/types", isAuthenticated(), async (req, res) => {
     try {
-        console.log(1);
         const types = await wishlistService.getTypes();
-        console.log(2);
         
         res.status(200).json({
             types,
