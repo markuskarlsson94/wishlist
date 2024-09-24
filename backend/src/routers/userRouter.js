@@ -70,7 +70,7 @@ userRouter.get("/roles", isAuthenticated(), async (_req, res) => {
 
 userRouter.get("/:userId/wishlists", isAuthenticated(), async (req, res) => {
     try {
-        const wishlists = await wishlistService.getByUserId(req.params.userId);
+        const wishlists = await wishlistService.getByUserId(req.user, Number(req.params.userId));
         res.status(200).json({ wishlists });
     } catch (error) {
         res.status(error.status).json(error.message);
