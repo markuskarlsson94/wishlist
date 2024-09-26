@@ -63,6 +63,19 @@ wishlistRouter.post("/item", isAuthenticated(), async (req, res) => {
     }
 });
 
+wishlistRouter.get("/item/:id", isAuthenticated(), async (req, res) => {
+    try {
+        const user = req.user;
+        const item = await wishlistService.item.getById(user, req.params.id);
+
+        res.status(200).json({
+            item,
+        });
+    } catch (error) {
+        res.status(error.status).json(error.message);
+    }
+});
+
 wishlistRouter.delete("/item/:id", isAuthenticated(), async (req, res) => {
     try {
         const user = req.user;
