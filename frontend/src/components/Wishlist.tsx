@@ -50,7 +50,7 @@ const Wishlist = () => {
         <>
             <h2>Wishlist</h2>
             <button onClick={handleBack}>Back</button>
-            <p>{wishlist?.title}</p>
+            <h3>{wishlist?.title}</h3>
             <p>{wishlist?.description}</p>
             {items?.map(item => Item(item))}
         </>
