@@ -5,6 +5,7 @@ import Home from './components/Home';
 import ProtectedRoutes from './components/ProtectedRoutes';
 import { AuthProvider } from './contexts/AuthContext';
 import Wishlists from './components/Wishlists';
+import Wishlist from './components/Wishlist';
 
 function App() {
     return (
@@ -15,6 +16,7 @@ function App() {
                     <Route element={<ProtectedRoutes />}>
                         <Route path="/home" element={<Home />} />
                         <Route path="/wishlists" element={<Wishlists />}/>
+                        <Route path="/wishlist/:id" element={<Wishlist />}/>
                     </Route>
                 </Routes>
             </Router>
