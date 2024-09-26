@@ -3,17 +3,10 @@ import { useNavigate, NavLink } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import axiosInstance from "../axiosInstance";
 import { useAuth } from "../contexts/AuthContext";
-
-type Wishlist = {
-    id: number;
-    title: string;
-    description: string;
-    type: number;
-    createdAt: string
-};
+import WishlistType from "../types/WishlistType";
 
 const Wishlists = () => {
-    const [wishlists, setWishlists] = useState<Wishlist[]>([]);
+    const [wishlists, setWishlists] = useState<WishlistType[]>([]);
     const { userId } = useAuth();
     const navigate = useNavigate();
     
@@ -32,10 +25,10 @@ const Wishlists = () => {
         navigate(-1);
     };
 
-    const Wishlist = (wishlist: Wishlist) => {
+    const Wishlist = (wishlist: WishlistType) => {
         return (
-            <div>
-                <NavLink to={`/wishlist/${wishlist.id}`} key={wishlist.id}>
+            <div key={wishlist.id}>
+                <NavLink to={`/wishlist/${wishlist.id}`}>
                     {wishlist.title}
                 </NavLink>
             </div>
