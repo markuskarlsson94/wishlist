@@ -11,7 +11,7 @@ const Wishlists = () => {
     const navigate = useNavigate();
     
     const { data, isSuccess } = useQuery({
-        queryKey: [userId, "wishlists"],
+        queryKey: ["wishlists", userId],
         queryFn: () => axiosInstance.get(`user/${userId}/wishlists`),
     });
 

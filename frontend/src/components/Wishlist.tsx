@@ -11,12 +11,12 @@ const Wishlist = () => {
     const navigate = useNavigate();
 
     const { data, isSuccess } = useQuery({
-        queryKey: [id, "wishlist"],
+        queryKey: ["wishlist", id],
         queryFn: () => axiosInstance.get(`wishlist/${id}`),
     });
 
     const { data: itemData, isSuccess: isSuccessItems } = useQuery({
-        queryKey: [id, "items"],
+        queryKey: ["items", id],
         queryFn: () => axiosInstance.get(`wishlist/${id}/items`),
     });
 
