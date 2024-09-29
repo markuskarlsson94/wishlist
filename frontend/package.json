@@ -14,9 +14,11 @@
     "@tanstack/react-query-devtools": "^5.56.2",
     "axios": "^1.7.2",
     "dotenv": "^16.4.5",
+    "formik": "^2.4.6",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^6.26.0"
+    "react-router-dom": "^6.26.0",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",
