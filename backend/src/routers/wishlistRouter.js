@@ -34,8 +34,9 @@ wishlistRouter.post("/wishlist", isAuthenticated(), async (req, res) => {
 wishlistRouter.delete("/wishlist/:id", isAuthenticated(), async (req, res) => {
     try {
         const user = req.user;
+        const id = req.params.id;
 
-        await wishlistService.remove(user, req.params.id);
+        await wishlistService.remove(user, id);
         logger.info(`Wishlist (id: ${id}) removed by user (id: ${user.id})`);
         
         res.status(200).json({
