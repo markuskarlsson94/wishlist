@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import WishlistType from "../types/WishlistType";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axiosInstance from "../axiosInstance";
 import { useParams, useNavigate, NavLink } from "react-router-dom";
 
@@ -9,6 +9,7 @@ const Wishlist = () => {
     const [items, setItems] = useState<any[]>([]);
     const { id } = useParams();
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
 
     const { data, isSuccess } = useQuery({
         queryKey: ["wishlist", id],
@@ -32,6 +33,16 @@ const Wishlist = () => {
         }
     }, [itemData, isSuccessItems]);
 
+    const deleteWishlist = async () => {
+        await axiosInstance.delete(`/wishlist/${id}`);
+        queryClient.invalidateQueries({ queryKey: ["wishlists"] });
+        navigate("/wishlists");
+    };
+
+    const mutation = useMutation({
+        mutationFn: deleteWishlist,
+    });
+
     const Item = (item: any) => {
         return (
             <div key={item.id}>
@@ -40,7 +51,11 @@ const Wishlist = () => {
                 </NavLink>
             </div>
         );
-    }
+    };
+
+    const handleDelete = () => {
+        mutation.mutate();
+    };
 
     const handleBack = () => {
         navigate(-1);
@@ -53,6 +68,7 @@ const Wishlist = () => {
             <h3>{wishlist?.title}</h3>
             <p>{wishlist?.description}</p>
             {items?.map(item => Item(item))}
+            <button onClick={handleDelete}>Delete wishlist</button>
         </>
     );
 };
