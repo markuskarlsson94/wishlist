@@ -27,7 +27,7 @@ const Wishlists = () => {
         }
     }, [data, isSuccess]);
 
-    const createWishlist = async(input: WishlistInputType) => {
+    const createWishlist = async (input: WishlistInputType) => {
         await axiosInstance.post("/wishlist", {
             ...input
         });
