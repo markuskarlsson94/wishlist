@@ -1,14 +1,20 @@
 import { useState, useEffect } from "react";
 import { useNavigate, NavLink } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axiosInstance from "../axiosInstance";
 import { useAuth } from "../contexts/AuthContext";
 import WishlistType from "../types/WishlistType";
+import CreateWishlistForm from "../forms/CreateWishlistForm";
+import WishlistInputType from "../types/WishlistInputType";
+import useWishlistTypes from "../hooks/useWishlistTypes";
 
 const Wishlists = () => {
     const [wishlists, setWishlists] = useState<WishlistType[]>([]);
+    const [showCreate, setShowCreate] = useState<boolean>(false);
     const { userId } = useAuth();
     const navigate = useNavigate();
+    const { types } = useWishlistTypes();
+    const queryClient = useQueryClient();
     
     const { data, isSuccess } = useQuery({
         queryKey: ["wishlists", userId],
@@ -21,9 +27,34 @@ const Wishlists = () => {
         }
     }, [data, isSuccess]);
 
+    const createWishlist = async(input: WishlistInputType) => {
+        await axiosInstance.post("/wishlist", {
+            ...input
+        });
+
+        queryClient.invalidateQueries({ queryKey: ["wishlists", userId] });
+    };
+
+    const mutation = useMutation({
+        mutationFn: createWishlist
+    });
+
     const handleBack = () => {
         navigate(-1);
     };
+
+    const handleCreateNew = () => {
+        setShowCreate(true);
+    };
+
+    const handleAdd = (values: WishlistInputType) => {
+        mutation.mutate(values);
+        setShowCreate(false);
+    };
+
+    const handleCancel = () => {
+        setShowCreate(false);
+    }
 
     const Wishlist = (wishlist: WishlistType) => {
         return (
@@ -42,6 +73,12 @@ const Wishlists = () => {
             <div>
                 {wishlists.map(wishlist => Wishlist(wishlist))}
             </div>
+            {showCreate ? 
+                CreateWishlistForm(handleAdd, handleCancel, types) :
+                <>
+                    <button onClick={handleCreateNew}>Create new wishlist</button>
+                </>
+            }
         </>
     );
 };
