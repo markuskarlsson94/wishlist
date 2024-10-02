@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import WishlistType from "../types/WishlistType";
+import ItemInputType from "../types/ItemInputType";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axiosInstance from "../axiosInstance";
 import { useParams, useNavigate, NavLink } from "react-router-dom";
+import CreateItemForm from "../forms/CreateItemForm";
 
 const Wishlist = () => {
     const [wishlist, setWishlist] = useState<WishlistType>();
@@ -10,6 +12,7 @@ const Wishlist = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const queryClient = useQueryClient();
+    const [showCreate, setShowCreate] = useState<boolean>(false);
 
     const { data, isSuccess } = useQuery({
         queryKey: ["wishlist", id],
@@ -39,8 +42,21 @@ const Wishlist = () => {
         navigate("/wishlists");
     };
 
-    const mutation = useMutation({
+    const deleteWishlistMutation = useMutation({
         mutationFn: deleteWishlist,
+    });
+
+    const createItem = async (input: ItemInputType) => {
+        await axiosInstance.post("/item", {
+            ...input,
+            wishlistId: id,
+        });
+
+        queryClient.invalidateQueries({ queryKey: ["items", id] });
+    };
+
+    const createItemMutation = useMutation({
+        mutationFn: createItem,
     });
 
     const Item = (item: any) => {
@@ -53,8 +69,23 @@ const Wishlist = () => {
         );
     };
 
+    const handleCreateNew = () => {
+        setShowCreate(true);
+    };
+
+    const handleAddItem = (input: ItemInputType) => {
+        console.log(1);
+        createItemMutation.mutate(input);
+        setShowCreate(false);
+    };
+
+    const handleCancel = () => {
+        console.log("cancel");
+        setShowCreate(false);
+    }
+
     const handleDelete = () => {
-        mutation.mutate();
+        deleteWishlistMutation.mutate();
     };
 
     const handleBack = () => {
@@ -68,6 +99,10 @@ const Wishlist = () => {
             <h3>{wishlist?.title}</h3>
             <p>{wishlist?.description}</p>
             {items?.map(item => Item(item))}
+            {showCreate ?
+                CreateItemForm(handleAddItem, handleCancel) :
+                <button onClick={handleCreateNew}>Add item</button>
+            }
             <button onClick={handleDelete}>Delete wishlist</button>
         </>
     );
