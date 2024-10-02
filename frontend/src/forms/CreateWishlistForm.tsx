@@ -24,7 +24,7 @@ const validate = (values: WishlistInputType) => {
 };
 
 const CreateWishlistForm = (
-        handleAdd: (values: any) => void,
+        handleAdd: (values: WishlistInputType) => void,
         handleCancel: () => void,
         types: WishlistTypeType[],
     ) => {
