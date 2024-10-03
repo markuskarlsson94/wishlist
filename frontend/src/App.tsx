@@ -7,11 +7,13 @@ import { AuthProvider } from './contexts/AuthContext';
 import Wishlists from './components/Wishlists';
 import Wishlist from './components/Wishlist';
 import Item from './components/Item';
+import Sidebar from './components/Sidebar';
 
 function App() {
     return (
         <AuthProvider>
             <Router>
+                <Sidebar />
                 <Routes>
                     <Route path="/" element={<Login />} />
                     <Route element={<ProtectedRoutes />}>
