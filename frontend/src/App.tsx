@@ -8,6 +8,7 @@ import Wishlists from './components/Wishlists';
 import Wishlist from './components/Wishlist';
 import Item from './components/Item';
 import Sidebar from './components/Sidebar';
+import Users from './components/Users';
 
 function App() {
     return (
@@ -18,6 +19,7 @@ function App() {
                     <Route path="/" element={<Login />} />
                     <Route element={<ProtectedRoutes />}>
                         <Route path="/home" element={<Home />} />
+                        <Route path="/users" element={<Users />} />
                         <Route path="/:userId/wishlists" element={<Wishlists />}/>
                         <Route path="/wishlist/:id" element={<Wishlist />}/>
                         <Route path="/item/:id" element={<Item />}/>
