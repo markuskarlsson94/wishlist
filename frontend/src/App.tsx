@@ -16,7 +16,7 @@ function App() {
                     <Route path="/" element={<Login />} />
                     <Route element={<ProtectedRoutes />}>
                         <Route path="/home" element={<Home />} />
-                        <Route path="/wishlists" element={<Wishlists />}/>
+                        <Route path="/:userId/wishlists" element={<Wishlists />}/>
                         <Route path="/wishlist/:id" element={<Wishlist />}/>
                         <Route path="/item/:id" element={<Item />}/>
                     </Route>
