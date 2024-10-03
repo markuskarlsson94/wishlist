@@ -9,7 +9,12 @@ import { PostgresError } from "pg-error-enum";
 
 const userService = {
     getAll: async () => {
-        return (await db.user.getAll());
+        try {
+            return (await db.user.getAll());
+        } catch (error) {
+            logger.error(error.message);
+            throw new ErrorMessage(errorMessages.serverError);
+        }
     },
 
     getById: async (id) => {
