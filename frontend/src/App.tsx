@@ -10,6 +10,7 @@ import Item from './components/Item';
 import Friends from './components/Friends';
 import Users from './components/Users';
 import MainLayout from './components/MainLayout';
+import User from './components/User';
 
 function App() {
     return (
@@ -21,6 +22,7 @@ function App() {
                         <Route element={<MainLayout />}>
                             <Route path="/home" element={<Home />} />
                             <Route path="/users" element={<Users />} />
+                            <Route path="/user/:userId" element={<User />}/>
                             <Route path="/user/:userId/wishlists" element={<Wishlists />}/>
                             <Route path="/user/:userId/friends" element={<Friends />}/>
                             <Route path="/wishlist/:id" element={<Wishlist />}/>
