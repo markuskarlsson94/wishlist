@@ -23,7 +23,7 @@ const Home = () => {
             <button onClick={handleLogout} disabled={!userId}>Logout</button>
             {<div>User id: {userId}</div>}
             {isAuthenticated ? <div>authenticated</div> : <div>not authenticated</div>}
-            <NavLink to={`/${userId}/wishlists`}>Wishlists</NavLink>
+            <NavLink to={`/user/${userId}/wishlists`}>Wishlists</NavLink>
         </>
     );
 };

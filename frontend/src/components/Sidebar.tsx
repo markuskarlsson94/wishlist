@@ -7,10 +7,10 @@ const Sidebar = () => {
     return (
         <>
             <div>
-                <NavLink to={`${userId}/wishlists`}>Wishlists</NavLink>
+                <NavLink to={`user/${userId}/wishlists`}>Wishlists</NavLink>
             </div>
             <div>
-                <NavLink to={`${userId}/friends`}>Friends</NavLink>
+                <NavLink to={`user/${userId}/friends`}>Friends</NavLink>
             </div>
             <div>
                 <NavLink to={"/users"}>Users</NavLink>

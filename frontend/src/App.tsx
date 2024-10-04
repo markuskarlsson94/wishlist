@@ -21,8 +21,8 @@ function App() {
                         <Route element={<MainLayout />}>
                             <Route path="/home" element={<Home />} />
                             <Route path="/users" element={<Users />} />
-                            <Route path="/:userId/wishlists" element={<Wishlists />}/>
-                            <Route path="/:userId/friends" element={<Friends />}/>
+                            <Route path="/user/:userId/wishlists" element={<Wishlists />}/>
+                            <Route path="/user/:userId/friends" element={<Friends />}/>
                             <Route path="/wishlist/:id" element={<Wishlist />}/>
                             <Route path="/item/:id" element={<Item />}/>
                         </Route>
