@@ -5,7 +5,17 @@ const Sidebar = () => {
     const { userId } = useAuth();
 
     return (
-        <NavLink to={`${userId}/wishlists`}>Wishlists</NavLink>
+        <>
+            <div>
+                <NavLink to={`${userId}/wishlists`}>Wishlists</NavLink>
+            </div>
+            <div>
+                <NavLink to={`${userId}/friends`}>Friends</NavLink>
+            </div>
+            <div>
+                <NavLink to={"/users"}>Users</NavLink>
+            </div>
+        </>
     );
 };
 
