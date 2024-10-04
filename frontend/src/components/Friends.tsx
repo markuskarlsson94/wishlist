@@ -1,13 +1,12 @@
 import { useState, useEffect } from "react";
-import { useNavigate, NavLink } from "react-router-dom";
+import { useNavigate, NavLink, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import axiosInstance from "../axiosInstance";
-import { useAuth } from "../contexts/AuthContext";
 import UserType from "../types/UserType";
 
 const Friends = () => {
     const [friends, setFriends] = useState<UserType[]>([]);
-    const { userId } = useAuth();
+    const { userId } = useParams();
     const navigate = useNavigate();
 
     const { data, isSuccess } = useQuery({

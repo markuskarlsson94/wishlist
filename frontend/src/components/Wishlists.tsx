@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
-import { useNavigate, NavLink } from "react-router-dom";
+import { useNavigate, NavLink, useParams } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axiosInstance from "../axiosInstance";
-import { useAuth } from "../contexts/AuthContext";
 import WishlistType from "../types/WishlistType";
 import CreateWishlistForm from "../forms/CreateWishlistForm";
 import WishlistInputType from "../types/WishlistInputType";
@@ -11,7 +10,7 @@ import useWishlistTypes from "../hooks/useWishlistTypes";
 const Wishlists = () => {
     const [wishlists, setWishlists] = useState<WishlistType[]>([]);
     const [showCreate, setShowCreate] = useState<boolean>(false);
-    const { userId } = useAuth();
+    const { userId } = useParams();
     const navigate = useNavigate();
     const { types } = useWishlistTypes();
     const queryClient = useQueryClient();
