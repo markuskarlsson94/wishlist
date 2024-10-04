@@ -7,24 +7,25 @@ import { AuthProvider } from './contexts/AuthContext';
 import Wishlists from './components/Wishlists';
 import Wishlist from './components/Wishlist';
 import Item from './components/Item';
-import Sidebar from './components/Sidebar';
 import Friends from './components/Friends';
 import Users from './components/Users';
+import MainLayout from './components/MainLayout';
 
 function App() {
     return (
         <AuthProvider>
             <Router>
-                <Sidebar />
                 <Routes>
                     <Route path="/" element={<Login />} />
                     <Route element={<ProtectedRoutes />}>
-                        <Route path="/home" element={<Home />} />
-                        <Route path="/users" element={<Users />} />
-                        <Route path="/:userId/wishlists" element={<Wishlists />}/>
-                        <Route path="/:userId/friends" element={<Friends />}/>
-                        <Route path="/wishlist/:id" element={<Wishlist />}/>
-                        <Route path="/item/:id" element={<Item />}/>
+                        <Route element={<MainLayout />}>
+                            <Route path="/home" element={<Home />} />
+                            <Route path="/users" element={<Users />} />
+                            <Route path="/:userId/wishlists" element={<Wishlists />}/>
+                            <Route path="/:userId/friends" element={<Friends />}/>
+                            <Route path="/wishlist/:id" element={<Wishlist />}/>
+                            <Route path="/item/:id" element={<Item />}/>
+                        </Route>
                     </Route>
                 </Routes>
             </Router>
