@@ -86,6 +86,17 @@ userRouter.get("/:userId/reservations", isAuthenticated(), async (req, res) => {
     }
 });
 
+userRouter.get("/:userId/friends", isAuthenticated(), async (req, res) => {
+    const userId = req.params.userId;
+
+    try {
+        const friends = await userService.friend.getByUserId(req.user, userId);
+        res.status(200).json({ friends });
+    } catch (error) {
+        res.status(error.status).json(error.message);
+    }
+});
+
 userRouter.delete("/:userId", isAuthenticated(), verifyRecentLogin(), async (req, res) => {
     const userId = Number(req.user.id);
     const userToDeleteId = Number(req.params.userId);
