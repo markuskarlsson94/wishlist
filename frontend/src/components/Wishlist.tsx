@@ -74,7 +74,6 @@ const Wishlist = () => {
     };
 
     const handleAddItem = (input: ItemInputType) => {
-        console.log(1);
         createItemMutation.mutate(input);
         setShowCreate(false);
     };
