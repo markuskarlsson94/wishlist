@@ -3,6 +3,7 @@ type WishlistType = {
     title: string;
     description: string;
     type: number;
+    owner: number;
     createdAt: string
 };
 
