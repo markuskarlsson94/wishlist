@@ -5,14 +5,17 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axiosInstance from "../axiosInstance";
 import { useParams, useNavigate, NavLink } from "react-router-dom";
 import CreateItemForm from "../forms/CreateItemForm";
+import { useAuth } from "../contexts/AuthContext";
 
 const Wishlist = () => {
     const [wishlist, setWishlist] = useState<WishlistType>();
     const [items, setItems] = useState<any[]>([]);
+    const [isOwner, setIsOwner] = useState<boolean>(false);
     const { id } = useParams();
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const [showCreate, setShowCreate] = useState<boolean>(false);
+    const { userId } = useAuth();
 
     const { data, isSuccess } = useQuery({
         queryKey: ["wishlist", id],
@@ -26,7 +29,9 @@ const Wishlist = () => {
 
     useEffect(() => {
         if (isSuccess) {
-            setWishlist(data.data.wishlist);
+            const wishlist = data.data.wishlist;
+            setWishlist(wishlist);
+            setIsOwner(wishlist.owner === userId);
         }
     }, [data, isSuccess]);
 
@@ -98,11 +103,15 @@ const Wishlist = () => {
             <h3>{wishlist?.title}</h3>
             <p>{wishlist?.description}</p>
             {items?.map(item => Item(item))}
-            {showCreate ?
-                CreateItemForm(handleAddItem, handleCancel) :
-                <button onClick={handleCreateNew}>Add item</button>
+            {isOwner &&
+                <>
+                    {showCreate ?
+                        CreateItemForm(handleAddItem, handleCancel) :
+                        <button onClick={handleCreateNew}>Add item</button>
+                    }
+                    <button onClick={handleDelete}>Delete wishlist</button>
+                </>
             }
-            <button onClick={handleDelete}>Delete wishlist</button>
         </>
     );
 };

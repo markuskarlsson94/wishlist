@@ -6,14 +6,18 @@ import WishlistType from "../types/WishlistType";
 import CreateWishlistForm from "../forms/CreateWishlistForm";
 import WishlistInputType from "../types/WishlistInputType";
 import useWishlistTypes from "../hooks/useWishlistTypes";
+import { useAuth } from "../contexts/AuthContext";
 
 const Wishlists = () => {
     const [wishlists, setWishlists] = useState<WishlistType[]>([]);
     const [showCreate, setShowCreate] = useState<boolean>(false);
     const { userId } = useParams();
+    const { userId: viewer } = useAuth();
     const navigate = useNavigate();
     const { types } = useWishlistTypes();
     const queryClient = useQueryClient();
+
+    const isOwner: boolean = Number(userId) === viewer;
     
     const { data, isSuccess } = useQuery({
         queryKey: ["wishlists", userId],
@@ -72,10 +76,14 @@ const Wishlists = () => {
             <div>
                 {wishlists.map(wishlist => Wishlist(wishlist))}
             </div>
-            {showCreate ? 
-                CreateWishlistForm(handleAdd, handleCancel, types) :
+            {isOwner && 
                 <>
-                    <button onClick={handleCreateNew}>Create new wishlist</button>
+                    {showCreate ? 
+                        CreateWishlistForm(handleAdd, handleCancel, types) :
+                        <>
+                            <button onClick={handleCreateNew}>Create new wishlist</button>
+                        </>
+                    }
                 </>
             }
         </>
