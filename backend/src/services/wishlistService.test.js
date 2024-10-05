@@ -311,6 +311,33 @@ describe("finding wishlist items", async () => {
             );
         })()).rejects.toThrowError(expectedErrorMessage);
     });
+
+    it("should find owner of item", async () => {
+        const owner = await wishlistService.item.getOwner(user2, item1user1Id);
+        expect(owner).toBe(user1Id);
+    });
+
+    it("should not find owner of item if hidden for other user", async () => {
+        await expect((async () => {
+            await wishlistService.item.getOwner(user2, item2user1Id);
+        })()).rejects.toThrowError(errorMessages.wishlistItemNotFound.message);
+    });
+    
+    it("should not find owner of nonexisiting item", async () => {
+        await expect((async () => {
+            await wishlistService.item.getOwner(user1, -1);
+        })()).rejects.toThrowError(errorMessages.wishlistItemNotFound.message);
+    });
+
+    it("should find owner of item if hidden if admin or owner", async () => {
+        let owner = await wishlistService.item.getOwner(user1, item2user1Id);
+        expect(owner).toBe(user1Id);
+        
+        owner = await wishlistService.item.getOwner(admin, item2user1Id);
+        expect(owner).toBe(user1Id);
+    });
+
+    //TODO: find reserved item owner?
 });
 
 describe("reservations", () => {
