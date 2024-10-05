@@ -230,6 +230,19 @@ const wishlistService = {
             return filteredItem
         },
 
+        getOwner: async (user, id) => {
+            if (!(await canViewWishlistItem(user, id))) {
+                throw new ErrorMessage(errorMessages.wishlistItemNotFound);   
+            }
+
+            try {
+                return (await db.wishlist.item.getOwner(id));
+            } catch (error) {
+                logger.error(error.message);
+                throw new ErrorMessage(errorMessages.serverError);
+            }
+        },
+
         comment: {
             add: async (user, itemId, userId, comment) => {
                 if (!(await canViewWishlistItem(user, itemId))) {
