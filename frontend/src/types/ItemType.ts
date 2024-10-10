@@ -4,6 +4,7 @@ type ItemType = {
     description: string;
     wishlist: number;
     createdAt: string;
+    owner: number;
 };
 
 export default ItemType;
