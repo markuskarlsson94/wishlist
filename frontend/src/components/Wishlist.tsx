@@ -6,25 +6,23 @@ import axiosInstance from "../axiosInstance";
 import { useParams, useNavigate, NavLink } from "react-router-dom";
 import CreateItemForm from "../forms/CreateItemForm";
 import { useAuth } from "../contexts/AuthContext";
+import { useCreateItem, useGetItems } from "../hooks/item";
 
 const Wishlist = () => {
     const [wishlist, setWishlist] = useState<WishlistType>();
-    const [items, setItems] = useState<any[]>([]);
     const [isOwner, setIsOwner] = useState<boolean>(false);
-    const { id } = useParams();
+    const params = useParams<{ id: string }>();
+    const id = Number(params.id);
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const [showCreate, setShowCreate] = useState<boolean>(false);
     const { userId } = useAuth();
+    const { items } = useGetItems(id);
+    const { createItem } = useCreateItem();
 
     const { data, isSuccess } = useQuery({
         queryKey: ["wishlist", id],
         queryFn: () => axiosInstance.get(`wishlist/${id}`),
-    });
-
-    const { data: itemData, isSuccess: isSuccessItems } = useQuery({
-        queryKey: ["items", id],
-        queryFn: () => axiosInstance.get(`wishlist/${id}/items`),
     });
 
     useEffect(() => {
@@ -35,12 +33,6 @@ const Wishlist = () => {
         }
     }, [data, isSuccess]);
 
-    useEffect(() => {
-        if (isSuccessItems) {
-            setItems(itemData.data.items);
-        }
-    }, [itemData, isSuccessItems]);
-
     const deleteWishlist = async () => {
         await axiosInstance.delete(`/wishlist/${id}`);
         queryClient.invalidateQueries({ queryKey: ["wishlists"] });
@@ -49,19 +41,6 @@ const Wishlist = () => {
 
     const deleteWishlistMutation = useMutation({
         mutationFn: deleteWishlist,
-    });
-
-    const createItem = async (input: ItemInputType) => {
-        await axiosInstance.post("/item", {
-            ...input,
-            wishlistId: id,
-        });
-
-        queryClient.invalidateQueries({ queryKey: ["items", id] });
-    };
-
-    const createItemMutation = useMutation({
-        mutationFn: createItem,
     });
 
     const Item = (item: any) => {
@@ -78,13 +57,15 @@ const Wishlist = () => {
         setShowCreate(true);
     };
 
-    const handleAddItem = (input: ItemInputType) => {
-        createItemMutation.mutate(input);
+    const handleAddItem = (item: ItemInputType) => {
+        if (wishlist) {
+            createItem(item, wishlist.id);
+        }
+
         setShowCreate(false);
     };
 
     const handleCancel = () => {
-        console.log("cancel");
         setShowCreate(false);
     }
 
