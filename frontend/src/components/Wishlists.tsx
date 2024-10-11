@@ -1,46 +1,23 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate, NavLink, useParams } from "react-router-dom";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import axiosInstance from "../axiosInstance";
 import WishlistType from "../types/WishlistType";
 import CreateWishlistForm from "../forms/CreateWishlistForm";
 import WishlistInputType from "../types/WishlistInputType";
 import useWishlistTypes from "../hooks/useWishlistTypes";
 import { useAuth } from "../contexts/AuthContext";
+import { useCreateWishlist, useGetWishlists } from "../hooks/wishlist";
 
 const Wishlists = () => {
-    const [wishlists, setWishlists] = useState<WishlistType[]>([]);
     const [showCreate, setShowCreate] = useState<boolean>(false);
-    const { userId } = useParams();
+    const params = useParams<{ userId: string }>();
+    const userId = Number(params.userId);
     const { userId: viewer } = useAuth();
     const navigate = useNavigate();
     const { types } = useWishlistTypes();
-    const queryClient = useQueryClient();
+    const createWishlist = useCreateWishlist();
+    const { wishlists } = useGetWishlists(userId);
 
-    const isOwner: boolean = Number(userId) === viewer;
-    
-    const { data, isSuccess } = useQuery({
-        queryKey: ["wishlists", userId],
-        queryFn: () => axiosInstance.get(`user/${userId}/wishlists`),
-    });
-
-    useEffect(() => {
-        if (isSuccess && data) {
-            setWishlists(data.data.wishlists);
-        }
-    }, [data, isSuccess]);
-
-    const createWishlist = async (input: WishlistInputType) => {
-        await axiosInstance.post("/wishlist", {
-            ...input
-        });
-
-        queryClient.invalidateQueries({ queryKey: ["wishlists", userId] });
-    };
-
-    const mutation = useMutation({
-        mutationFn: createWishlist
-    });
+    const isOwner: boolean = userId === viewer;
 
     const handleBack = () => {
         navigate(-1);
@@ -51,7 +28,7 @@ const Wishlists = () => {
     };
 
     const handleAdd = (values: WishlistInputType) => {
-        mutation.mutate(values);
+        createWishlist(values, userId);
         setShowCreate(false);
     };
 
@@ -74,7 +51,7 @@ const Wishlists = () => {
             <h2>Wishlists</h2>
             <button onClick={handleBack}>Back</button>
             <div>
-                {wishlists.map(wishlist => Wishlist(wishlist))}
+                {wishlists?.map(wishlist => Wishlist(wishlist))}
             </div>
             {isOwner && 
                 <>
