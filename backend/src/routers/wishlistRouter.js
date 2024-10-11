@@ -106,12 +106,13 @@ wishlistRouter.delete("/item/:id", isAuthenticated(), async (req, res) => {
     }
 });
 
-wishlistRouter.post("/item/reserve", isAuthenticated(), async (req, res) => {
+wishlistRouter.post("/item/:id/reserve", isAuthenticated(), async (req, res) => {
     try {
-        const { id, amount } = req.body;
+        // const { amount } = req.body; // TODO: implement amount
+        const id = req.params.id;
         const user = req.user;
 
-        const reservation = await wishlistService.item.reserve(user, id, amount);
+        const reservation = await wishlistService.item.reserve(user, id);
         logger.info(`Wishlist item (id: ${id}) reserved by user (id: ${user.id})`);
         
         res.status(200).json({
