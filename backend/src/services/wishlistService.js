@@ -385,6 +385,27 @@ const wishlistService = {
             return db.reservation.getByItemId(id);
         },
 
+        getByUserIdAndItemId: async (user, userId, itemId) => {
+            const userOk = await canViewUser(user, userId);
+            const itemOk = await canViewWishlistItem(user, itemId);
+
+            if (!userOk || !itemOk) {
+                throw new ErrorMessage(errorMessages.reservationNotFound);
+            }
+
+            const reservation = await db.reservation.getByUserIdAndItemId(userId, itemId);
+
+            if (!reservation) {
+                return undefined;
+            }
+
+            if (!(await canViewReservation(user, reservation.id))) {
+                throw new ErrorMessage(errorMessages.reservationNotFound);
+            }
+
+            return reservation;
+        },
+
         clearByUserId: async (user, userId) => {
             if (!canManageUser(user, userId)) {
                 throw new ErrorMessage(errorMessages.unauthorizedToClearReservations);
