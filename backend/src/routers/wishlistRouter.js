@@ -90,6 +90,19 @@ wishlistRouter.get("/item/:id/owner", isAuthenticated(), async (req, res) => {
     }
 });
 
+wishlistRouter.get("/item/:id/reservation", isAuthenticated(), async (req, res) => {
+    try {
+        const itemId = req.params.id;
+        const user = req.user;
+
+        const data = await wishlistService.reservation.getByUserIdAndItemId(user, user.id, itemId);
+        
+        res.status(200).json({ reservation: data });
+    } catch (error) {
+        res.status(error.status).json(error.message);
+    }
+});
+
 wishlistRouter.delete("/item/:id", isAuthenticated(), async (req, res) => {
     try {
         const user = req.user;
