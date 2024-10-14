@@ -19,9 +19,15 @@ export const useGetItem = (id: number) => {
         queryFn: () => axiosInstance.get(`item/${id}/owner`),
         enabled: !!id,
     });
+    
+    const { data: dataReservation, isSuccess: isSuccessReservation } = useQuery({
+        queryKey: ["itemReservation", id],
+        queryFn: () => axiosInstance.get(`item/${id}/reservation`),
+        enabled: !!id,
+    });
 
     useEffect(() => {
-        if (isSuccessItem && isSuccessOwner) {
+        if (isSuccessItem && isSuccessOwner && isSuccessReservation) {
             const { 
                 id, 
                 title, 
@@ -37,13 +43,14 @@ export const useGetItem = (id: number) => {
                 wishlist,
                 createdAt,
                 owner: dataOwner.data.owner,
+                reservation: dataReservation.data.reservation?.id
             });
         }
-    }, [dataItem, dataOwner, isSuccessItem, isSuccessOwner]);
+    }, [dataItem, dataOwner, dataReservation, isSuccessItem, isSuccessOwner, isSuccessReservation]);
 
     return {
         item,
-        isSuccess: isSuccessItem && isSuccessOwner,
+        isSuccess: isSuccessItem && isSuccessOwner && isSuccessReservation,
     };
 };
 
