@@ -125,11 +125,14 @@ const wishlistService = {
             throw new ErrorMessage(errorMessages.unauthorizedToUpdateWishlist);
         }
 
-        if (!allTypes().includes(data.type)) {
+        if (data.type && !allTypes().includes(data.type)) {
             throw new ErrorMessage(errorMessages.wishlistTypeNotFound);            
         }
 
-        await db.wishlist.update(wishlistId, data);
+        const { id, owner, createdAt, updatedAt, ...rest } = data;
+        if (Object.keys(rest).length === 0) return;
+
+        await db.wishlist.update(wishlistId, rest);
     },
 
     item: {
