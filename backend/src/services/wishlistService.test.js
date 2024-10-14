@@ -35,6 +35,10 @@ let reservation1User1Id;
 let reservation2User1Id;
 let reservation1User2Id;
 
+const wishlsitTitleAdmin = "adminWishlist";
+const wishlistTitleUser = "userWishlist";
+const wishlistDescription = "test description";
+
 beforeAll(async () => {
     await db.connect();
     await db.init();
@@ -71,29 +75,25 @@ describe("sanity check", async () => {
 
 describe("adding wishlist", () => {
     it("It should add wishlist with correct info", async () => {
-        const titleAdmin = "adminWishlist1";
-        const titleUser = "userWishlist";
-        const description = "test";
-
         wishlistAdminId = await wishlistService.add(
             admin,
             adminId,
-            titleAdmin,
-            description,
+            wishlsitTitleAdmin,
+            wishlistDescription,
         );
         
         wishlistUser1Id1 = await wishlistService.add(
             user1,
             user1Id,
-            titleUser,
-            description,
+            wishlistTitleUser,
+            wishlistDescription,
         );
         
         wishlistUser1Id2 = await wishlistService.add(
             user1,
             user1Id,
-            titleUser,
-            description,
+            wishlistTitleUser,
+            wishlistDescription,
         );
 
         expect(wishlistAdminId).toBeGreaterThan(0);
@@ -103,22 +103,22 @@ describe("adding wishlist", () => {
         const wishlistAdmin = await wishlistService.getById(admin, wishlistAdminId);
 
         expect(wishlistAdmin.id).toBe(wishlistAdminId);
-        expect(wishlistAdmin.title).toBe(titleAdmin);
-        expect(wishlistAdmin.description).toBe(description);
+        expect(wishlistAdmin.title).toBe(wishlsitTitleAdmin);
+        expect(wishlistAdmin.description).toBe(wishlistDescription);
         expect(wishlistAdmin.type).toBe(publicType());
         
         const wishlistUser1 = await wishlistService.getById(user1, wishlistUser1Id1);
         
         expect(wishlistUser1.id).toBe(wishlistUser1Id1);
-        expect(wishlistUser1.title).toBe(titleUser);
-        expect(wishlistUser1.description).toBe(description);
+        expect(wishlistUser1.title).toBe(wishlistTitleUser);
+        expect(wishlistUser1.description).toBe(wishlistDescription);
         expect(wishlistUser1.type).toBe(publicType());
         
         const wishlistUser2 = await wishlistService.getById(user1, wishlistUser1Id2);
         
         expect(wishlistUser2.id).toBe(wishlistUser1Id2);
-        expect(wishlistUser2.title).toBe(titleUser);
-        expect(wishlistUser2.description).toBe(description);
+        expect(wishlistUser2.title).toBe(wishlistTitleUser);
+        expect(wishlistUser2.description).toBe(wishlistDescription);
         expect(wishlistUser2.type).toBe(publicType());
     });
 
@@ -131,6 +131,65 @@ describe("adding wishlist", () => {
                 "description",
             );
         })()).rejects.toThrowError(errorMessages.unauthorizedToAddWishlist.message);
+    });
+});
+
+describe("updating wishlists", () => {
+    it("should allow updating own wishlist", async () => {
+        let wishlist = await wishlistService.getById(user1, wishlistUser1Id1);
+        expect(wishlist.title).toBe(wishlistTitleUser);
+        expect(wishlist.description).toBe(wishlistDescription);
+        
+        await wishlistService.update(user1, wishlistUser1Id1, {
+            title: "New title",
+            description: "New description",
+        });
+            
+        wishlist = await wishlistService.getById(user1, wishlistUser1Id1);
+        expect(wishlist.title).toBe("New title");
+        expect(wishlist.description).toBe("New description");
+    });
+    
+    it("should allow admin to update other users wishlist", async () => {
+        let wishlist = await wishlistService.getById(admin, wishlistUser1Id1);
+        expect(wishlist.title).toBe("New title");
+        expect(wishlist.description).toBe("New description");
+        
+        await wishlistService.update(user1, wishlistUser1Id1, {
+            title: "New title 2",
+            description: "New description 2",
+        });
+            
+        wishlist = await wishlistService.getById(user1, wishlistUser1Id1);
+        expect(wishlist.title).toBe("New title 2");
+        expect(wishlist.description).toBe("New description 2");
+    });
+
+    it("should not allow user to update other users wishlist", async () => {
+        await expect((async () => {
+            await wishlistService.update(user2, wishlistUser1Id1, {
+                title: "test",
+                description: "test",
+            });
+        })()).rejects.toThrowError(errorMessages.unauthorizedToUpdateWishlist.message);
+    });
+
+    it("should not allow updating unallowed properties", async () => {
+        const {id, owner, createdAt, updatedAt} = await wishlistService.getById(admin, wishlistUser1Id1);
+        
+        await wishlistService.update(admin, wishlistUser1Id1, {
+            id: -1,
+            owner: -1,
+            createdAt: "",
+            updatedAt: "",
+        });
+        
+        const wishlist = await wishlistService.getById(admin, wishlistUser1Id1);
+        
+        expect(wishlist.id).toBe(id);
+        expect(wishlist.owner).toBe(owner);
+        expect(wishlist.createdAt).toBe(createdAt);
+        expect(wishlist.updatedAt).toBe(updatedAt);
     });
 });
 
