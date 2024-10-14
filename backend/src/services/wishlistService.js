@@ -116,25 +116,20 @@ const wishlistService = {
         }
     },
 
-    setType: async (user, id, type) => {
-        if (!(await canViewWishlist(user, id))) {
+    update: async (user, wishlistId, data) => {
+        if (!(await canViewWishlist(user, wishlistId))) {
             throw new ErrorMessage(errorMessages.wishlistNotFound);
         }
 
-        if (!(await canManageWishlist(user, id))) {
+        if (!(await canManageWishlist(user, wishlistId))) {
             throw new ErrorMessage(errorMessages.unauthorizedToUpdateWishlist);
         }
 
-        if (!allTypes().includes(type)) {
+        if (!allTypes().includes(data.type)) {
             throw new ErrorMessage(errorMessages.wishlistTypeNotFound);            
         }
 
-        try {
-            await db.wishlist.setType(id, type);
-        } catch (error) {
-            logger.error(error.message);
-            throw new ErrorMessage(errorMessages.serverError);
-        }
+        await db.wishlist.update(wishlistId, data);
     },
 
     item: {

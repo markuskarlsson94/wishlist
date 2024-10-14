@@ -489,9 +489,9 @@ const db = {
             )?.type;
         },
 
-        setType: async (id, type) => {
+        update: async (id, data) => {
             await dbClient(wishlistTable)
-                .update({ type })
+                .update({...data})
                 .where({ id });
         },
 
