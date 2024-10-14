@@ -11,6 +11,7 @@ import Friends from './components/Friends';
 import Users from './components/Users';
 import MainLayout from './components/MainLayout';
 import User from './components/User';
+import Reservations from './components/Reservations';
 
 function App() {
     return (
@@ -22,6 +23,7 @@ function App() {
                         <Route element={<MainLayout />}>
                             <Route path="/home" element={<Home />} />
                             <Route path="/users" element={<Users />} />
+                            <Route path="/reservations" element={<Reservations />} />
                             <Route path="/user/:userId" element={<User />}/>
                             <Route path="/user/:userId/wishlists" element={<Wishlists />}/>
                             <Route path="/user/:userId/friends" element={<Friends />}/>

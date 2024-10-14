@@ -10,6 +10,9 @@ const Sidebar = () => {
                 <NavLink to={`user/${userId}/wishlists`}>Wishlists</NavLink>
             </div>
             <div>
+                <NavLink to={"/reservations"}>Reservations</NavLink>
+            </div>
+            <div>
                 <NavLink to={`user/${userId}/friends`}>Friends</NavLink>
             </div>
             <div>
