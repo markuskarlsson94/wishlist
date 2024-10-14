@@ -200,7 +200,9 @@ describe("finding wishlists", () => {
 
     it("should not find hidden wishlists unless admin or owner", async () => {
         // Hide one of the two wishlists of user1
-        await wishlistService.setType(user1, wishlistUser1Id2, hiddenType());
+        await wishlistService.update(user1, wishlistUser1Id2, {
+            type: hiddenType(),
+        });
         
         let wishlists = await wishlistService.getByUserId(user2, user1Id);
         expect(wishlists.length).toBe(1);
@@ -379,13 +381,17 @@ describe("reservations", () => {
         });
         
         it("should not allow user to reserve hidden item", async () => {
-            await wishlistService.setType(admin, wishlistAdminId, hiddenType());
+            await wishlistService.update(admin, wishlistAdminId, {
+                type: hiddenType(),
+            });
             
             await expect((async () => {
                 await wishlistService.item.reserve(user1, item1AdminId);
             })()).rejects.toThrowError(errorMessages.wishlistItemNotFound.message);
             
-            await wishlistService.setType(admin, wishlistAdminId, publicType());
+            await wishlistService.update(admin, wishlistAdminId, {
+                type: publicType(),
+            });
         });
         
         it("should generate same error for trying to reserve hidden as well as nonexisting item", async () => {
@@ -395,13 +401,17 @@ describe("reservations", () => {
                 await wishlistService.reservation.getById(user1, 0);
             })()).rejects.toThrowError(expectedErrorMessage);
             
-            await wishlistService.setType(admin, wishlistAdminId, hiddenType());
+            await wishlistService.update(admin, wishlistAdminId, {
+                type: hiddenType(),
+            });
             
             await expect((async () => {
                 await wishlistService.reservation.getById(user1, item1AdminId);
             })()).rejects.toThrowError(expectedErrorMessage);
             
-            await wishlistService.setType(admin, wishlistAdminId, publicType());
+            await wishlistService.update(admin, wishlistAdminId, {
+                type: publicType(),
+            });
         });
     
         it("should not allow user to reserve same item more than once", async () => {
@@ -808,13 +818,17 @@ describe("comments", async () => {
     });
     
     it("should not allow adding comment on hidden item", async () => {
-        await db.wishlist.setType(wishlistId, hiddenType());
+        await wishlistService.update(admin, wishlistId, {
+            type: hiddenType(),
+        });
         
         await expect((async () => {
             await wishlistService.item.comment.add(user2, itemId, user2Id, "test comment");
         })()).rejects.toThrowError(errorMessages.wishlistItemNotFound.message);
         
-        await db.wishlist.setType(wishlistId, publicType());
+        await wishlistService.update(admin, wishlistId, {
+            type: publicType(),
+        });
     });
 
     it("should add comment successfully", async () => {
