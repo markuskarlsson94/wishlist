@@ -31,6 +31,18 @@ wishlistRouter.post("/wishlist", isAuthenticated(), async (req, res) => {
     }
 });
 
+wishlistRouter.patch("/wishlist/:id", async (req, res) => {
+    try {
+        await wishlistService.update(req.user, req.params.id, req.body);
+
+        res.status(200).json({
+            message: "Wishlist updated",
+        });
+    } catch (error) {    
+        res.status(error.status).json(error.message);
+    }
+});
+
 wishlistRouter.delete("/wishlist/:id", isAuthenticated(), async (req, res) => {
     try {
         const user = req.user;
