@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, NavLink, useParams } from "react-router-dom";
 import WishlistType from "../types/WishlistType";
-import CreateWishlistForm from "../forms/CreateWishlistForm";
+import WishlistForm from "../forms/WishlistForm";
 import WishlistInputType from "../types/WishlistInputType";
 import useWishlistTypes from "../hooks/useWishlistTypes";
 import { useAuth } from "../contexts/AuthContext";
@@ -46,6 +46,12 @@ const Wishlists = () => {
         );
     };
 
+    const initialWishlist: WishlistInputType = {
+        title: "",
+        description: "",
+        type: types[0]?.id,
+    }
+
     return (
         <>
             <h2>Wishlists</h2>
@@ -56,7 +62,7 @@ const Wishlists = () => {
             {isOwner && 
                 <>
                     {showCreate ? 
-                        CreateWishlistForm(handleAdd, handleCancel, types) :
+                        WishlistForm(initialWishlist, types, handleAdd, handleCancel) :
                         <>
                             <button onClick={handleCreateNew}>Create new wishlist</button>
                         </>
