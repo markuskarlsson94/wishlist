@@ -96,7 +96,7 @@ export const useDeleteWishlist = (config?: UseDeleteWishlistConfig) => {
             if (config?.onError) {
                 config.onError(error);
             }
-        }
+        },
     });
 
     const deleteWishlist = (id: number) => {
@@ -104,4 +104,38 @@ export const useDeleteWishlist = (config?: UseDeleteWishlistConfig) => {
     };
 
     return deleteWishlist;
+};
+
+type UseUpdateWishlistConfig = {
+    onSuccess?: () => void,
+    onError?: (error: Error) => void,
+};
+
+export const useUpdateWishlist = (config?: UseUpdateWishlistConfig) => {
+    const queryClient = useQueryClient();
+
+    const updateWishlistFn = async ({ id, data }: { id: number, data: WishlistInputType }) => {
+        await axiosInstance.patch(`/wishlist/${id}`, data);
+        queryClient.invalidateQueries({ queryKey: ["wishlist", id] });
+    };
+
+    const updateWishlistMutation = useMutation({
+        mutationFn: updateWishlistFn,
+        onSuccess: () => {
+            if (config?.onSuccess) {
+                config.onSuccess();
+            }
+        },
+        onError: (error: Error) => {
+            if (config?.onError) {
+                config.onError(error);
+            }
+        },
+    });
+
+    const updateWishlist = (id: number, data: WishlistInputType) => {
+        updateWishlistMutation.mutate({ id, data });
+    };
+
+    return updateWishlist;
 };
