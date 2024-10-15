@@ -96,7 +96,7 @@ const wishlistService = {
 
     getTypes: async () => {
         try {
-            return (await db.wishlist.getTypes());
+            return (await db.wishlist.getTypes()).filter(type => type.name !== "invite");
         } catch (error) {
             logger.error(error.message);
             throw new ErrorMessage(errorMessages.serverError);
