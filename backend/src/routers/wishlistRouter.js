@@ -31,7 +31,7 @@ wishlistRouter.post("/wishlist", isAuthenticated(), async (req, res) => {
     }
 });
 
-wishlistRouter.patch("/wishlist/:id", async (req, res) => {
+wishlistRouter.patch("/wishlist/:id", isAuthenticated(), async (req, res) => {
     try {
         await wishlistService.update(req.user, req.params.id, req.body);
 
