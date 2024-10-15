@@ -23,24 +23,19 @@ const validate = (values: WishlistInputType) => {
     }
 };
 
-const CreateWishlistForm = (
-        handleAdd: (values: WishlistInputType) => void,
-        handleCancel: () => void,
+const WishlistForm = (
+        initialValues: WishlistInputType,
         types: WishlistTypeType[],
+        handleSubmit: (values: WishlistInputType) => void,
+        handleCancel: () => void,
     ) => {
-    const initialValues: WishlistInputType = {
-        title: "",
-        description: "",
-        type: types[0].id,
-    }
-
     return (
         <Formik
             initialValues={initialValues}    
             validate={validate}
             onSubmit={(values, { setSubmitting }) => {
                 setSubmitting(false);
-                handleAdd(values);
+                handleSubmit(values);
             }}
         >
             {({ isSubmitting}) => (
@@ -78,4 +73,4 @@ const CreateWishlistForm = (
     );
 };
 
-export default CreateWishlistForm;
+export default WishlistForm;
