@@ -514,6 +514,12 @@ const db = {
                     .where({ id })
             },
 
+            update: async (id, data) => {
+                await dbClient(wishlistItemTable)
+                    .update({...data})
+                    .where({ id });
+            },
+
             reserve: async (user, id, amount) => {
                 return (await dbClient(reservationsTable)
                     .insert({

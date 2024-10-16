@@ -138,6 +138,11 @@ const errorMessages = {
         status: 401,
         message: "Unauthorized to update wishlist",
     },
+    
+    unauthorizedToUpdateWishlistItem: {
+        status: 401,
+        message: "Unauthorized to update wishlist item",
+    },
 
     unauthorizedToClearReservations: {
         status: 401,

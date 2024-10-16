@@ -169,6 +169,21 @@ const wishlistService = {
             await db.wishlist.item.remove(id);
         },
 
+        update: async (user, itemId, data) => {
+            if (!(await canViewWishlistItem(user, itemId))) {
+                throw new ErrorMessage(errorMessages.wishlistItemNotFound);
+            }
+
+            if (!(await canManageWishlistItem(user, itemId))) {
+                throw new ErrorMessage(errorMessages.unauthorizedToUpdateWishlistItem);
+            }
+
+            const { id, wishlist, amount, createdAt, updatedAt, ...rest } = data;
+            if (Object.keys(rest).length === 0) return;
+
+            await db.wishlist.item.update(itemId, rest);
+        },
+
         reserve: async (user, id, amount = 1) => {
             if (!(await canViewWishlistItem(user, id))) {
                 throw new ErrorMessage(errorMessages.wishlistItemNotFound);
