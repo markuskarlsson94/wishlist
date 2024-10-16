@@ -148,3 +148,37 @@ export const useDeleteItem = (config?: UseDeleteItemConfig) => {
 
     return { deleteItem };
 };
+
+type UseUpdateItemConfig = {
+    onSuccess?: () => void,
+    onError?: (error: Error) => void,
+};
+
+export const useUpdateItem = (config?: UseUpdateItemConfig) => {
+    const queryClient = useQueryClient();
+
+    const updateItemFn = async ({ id, data }: { id: number, data: ItemInputType }) => {
+        await axiosInstance.patch(`/item/${id}`, data);
+        queryClient.invalidateQueries({ queryKey: ["item", id] });
+    };
+
+    const updateItemMutation = useMutation({
+        mutationFn: updateItemFn,
+        onSuccess: () => {
+            if (config?.onSuccess) {
+                config.onSuccess();
+            }
+        },
+        onError: (error: Error) => {
+            if (config?.onError) {
+                config.onError(error);
+            }
+        },
+    });
+
+    const updateItem = (id: number, data: ItemInputType) => {
+        updateItemMutation.mutate({ id, data });
+    };
+
+    return updateItem;
+};
