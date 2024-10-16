@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import ItemInputType from "../types/ItemInputType";
 import { useParams, useNavigate, NavLink } from "react-router-dom";
-import CreateItemForm from "../forms/CreateItemForm";
+import ItemForm from "../forms/ItemForm";
 import { useAuth } from "../contexts/AuthContext";
 import { useCreateItem, useGetItems } from "../hooks/item";
 import { useDeleteWishlist, useGetWishlist, useUpdateWishlist } from "../hooks/wishlist";
@@ -81,6 +81,11 @@ const Wishlist = () => {
         navigate(-1);
     };
 
+    const itemValues: ItemInputType = {
+        title: "",
+        description: "",
+    };
+
     const wishlistValues: WishlistInputType = {
         title: wishlist?.title || "",
         description: wishlist?.description || "",
@@ -97,7 +102,7 @@ const Wishlist = () => {
             {isOwner &&
                 <>
                     {showCreateItem ?
-                        CreateItemForm(handleAddItem, handleCancel) :
+                        ItemForm(itemValues, handleAddItem, handleCancel) :
                         <button onClick={handleShowCreateItem}>Add item</button>
                     }
                     {showUpdateWishlist ?
