@@ -21,15 +21,11 @@ const validate = (values: ItemInputType) => {
     }
 };
 
-const CreateItemForm = (
+const ItemForm = (
+        initialValues: ItemInputType,
         handleAdd: (values: ItemInputType) => void,
         handleCancel: () => void,
-    ) => {
-    const initialValues: ItemInputType = {
-        title: "",
-        description: "",
-    }    
-
+    ) => { 
     return (
         <Formik
             initialValues={initialValues}
@@ -64,4 +60,4 @@ const CreateItemForm = (
     );
 };
 
-export default CreateItemForm;
+export default ItemForm;
