@@ -250,16 +250,16 @@ const userService = {
                 request = await db.user.friendRequest.getById(id);
             } catch (error) {
                 logger.error(error.message);
-                throw new ErrorMessage(errorMessages.unableToGetFriendRequests);
+                throw new ErrorMessage(errorMessages.unableToGetFriendRequest);
             }
 
             if (request === undefined) {
-                throw new ErrorMessage(errorMessages.unauthorizedToGetFriendRequests);
+                throw new ErrorMessage(errorMessages.unauthorizedToGetFriendRequest);
             }
             
             const { sender, receiver } = request;
             if (!(canManageUser(user, sender) || canManageUser(user, receiver))) {
-                throw new ErrorMessage(errorMessages.unauthorizedToGetFriendRequests);
+                throw new ErrorMessage(errorMessages.unauthorizedToGetFriendRequest);
             }
 
             return request;
