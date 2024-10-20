@@ -68,6 +68,51 @@ userRouter.get("/roles", isAuthenticated(), async (_req, res) => {
     };
 });
 
+userRouter.get("/:userId/sentfriendrequests", isAuthenticated(), async (req, res) => {
+    try {
+        const requests = await userService.friendRequest.getBySenderId(req.user, Number(req.params.userId))
+        res.status(200).json({ requests });
+    } catch (error) {
+        res.status(error.status).json(error.message);
+    }
+});
+
+userRouter.get("/:userId/receivedfriendrequests", isAuthenticated(), async (req, res) => {
+    try {
+        const requests = await userService.friendRequest.getByReceiverId(req.user, Number(req.params.userId))
+        res.status(200).json({ requests });
+    } catch (error) {
+        res.status(error.status).json(error.message);
+    }
+});
+
+userRouter.post("/friendrequest", isAuthenticated(), async (req, res) => {
+    try {
+        await userService.friendRequest.add(req.user, req.body.senderId, req.body.receiverId);
+        res.status(200).json({ message: "Friend request created" });
+    } catch (error) {
+        res.status(error.status).json(error.message);
+    }
+});
+
+userRouter.delete("/friendrequest/:id", isAuthenticated(), async (req, res) => {
+    try {
+        await userService.friendRequest.remove(req.user, req.params.id);
+        res.status(200).json({ message: "Friend request deleted" });
+    } catch (error) {
+        res.status(error.status).json(error.message);
+    }
+});
+
+userRouter.put("/friendrequest/:id/accept", isAuthenticated(), async (req, res) => {
+    try {
+        await userService.friendRequest.accept(req.user, req.params.id);
+        res.status(200).json({ message: "Friend request accepted" });
+    } catch (error) {
+        res.status(error.status).json(error.message);
+    }
+});
+
 userRouter.get("/:userId", isAuthenticated(), async (req, res) => {
     try {
         const user = await userService.getById(Number(req.params.userId))
@@ -101,6 +146,15 @@ userRouter.get("/:userId/friends", isAuthenticated(), async (req, res) => {
     try {
         const friends = await userService.friend.getByUserId(req.user, userId);
         res.status(200).json({ friends });
+    } catch (error) {
+        res.status(error.status).json(error.message);
+    }
+});
+
+userRouter.delete("/friend/:id", isAuthenticated(), async (req, res) => {
+    try {
+        await userService.friend.remove(req.user, req.user.id, Number(req.params.id));
+        res.status(200).json({ message: "Friend removed" });
     } catch (error) {
         res.status(error.status).json(error.message);
     }
