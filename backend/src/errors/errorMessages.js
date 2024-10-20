@@ -189,6 +189,11 @@ const errorMessages = {
         message: "Unauthorized to accept friend request",
     },
 
+    unauthorizedToGetFriendRequest: {
+        status: 401,
+        message: "Unauthorized to get friend request",
+    },
+    
     unauthorizedToGetFriendRequests: {
         status: 401,
         message: "Unauthorized to get friend requests",
@@ -254,6 +259,11 @@ const errorMessages = {
         message: "Unable to accept friend request",
     },
     
+    unableToGetFriendRequest: {
+        status: 500,
+        message: "Unable to get friend request",
+    },
+
     unableToGetFriendRequests: {
         status: 500,
         message: "Unable to get friend requests",
