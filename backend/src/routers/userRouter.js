@@ -141,7 +141,7 @@ userRouter.get("/:userId/reservations", isAuthenticated(), async (req, res) => {
 });
 
 userRouter.get("/:userId/friends", isAuthenticated(), async (req, res) => {
-    const userId = req.params.userId;
+    const userId = Number(req.params.userId);
 
     try {
         const friends = await userService.friend.getByUserId(req.user, userId);
