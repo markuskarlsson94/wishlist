@@ -125,7 +125,6 @@ export const useAcceptFriendRequest = (config?: UseAcceptFriendRequestConfig) =>
 
         await axiosInstance.put(`/user/friendrequest/${id}/accept`);
         invalidateReceivedFriendRequest(queryClient, config.userId);
-        queryClient.invalidateQueries({ queryKey: ["friends", config.userId] });
     };
 
     const acceptFriendRequestMutation = useMutation({
