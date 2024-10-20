@@ -438,7 +438,7 @@ describe("friend requests", () => {
         it("should not allow viewing non existing request", async () => {
             await expect((async () => {
                 await userService.friendRequest.getById(user1, -1);
-            })()).rejects.toThrowError(errorMessages.unauthorizedToGetFriendRequests.message);
+            })()).rejects.toThrowError(errorMessages.unauthorizedToGetFriendRequest.message);
         });
 
         it("should allow admin to view other users requests", async () => {
@@ -494,7 +494,7 @@ describe("friend requests", () => {
 
             await expect((async () => {
                 await userService.friendRequest.getById(admin, id);
-            })()).rejects.toThrowError(errorMessages.unauthorizedToGetFriendRequests.message);
+            })()).rejects.toThrowError(errorMessages.unauthorizedToGetFriendRequest.message);
         });
     });
 
@@ -554,7 +554,7 @@ describe("friend requests", () => {
 
             await expect((async () => {
                 await userService.friendRequest.getById(user1, request);
-            })()).rejects.toThrowError(errorMessages.unauthorizedToGetFriendRequests.message);
+            })()).rejects.toThrowError(errorMessages.unauthorizedToGetFriendRequest.message);
         });
     });
 
