@@ -1,34 +1,20 @@
 import { NavLink, useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import axiosInstance from "../axiosInstance";
-import { useEffect, useState } from "react";
-import UserType from "../types/UserType";
 import { useAcceptFriendRequest, useCreateFriendRequest, useDeleteFriendRequest, useGetFriendRequests } from "../hooks/friendRequest";
 import { useAuth } from "../contexts/AuthContext";
 import { useDeleteFriend, useGetFriends } from "../hooks/friend";
+import { useGetUser } from "../hooks/user";
 
 const User = () => {
-    const [user, setUser] = useState<UserType>();
     const params = useParams<{ userId: string }>();
     const userId = Number(params.userId);
     const { userId: viewer } = useAuth();
+    const { user } = useGetUser(userId);
     const createFriendRequest = useCreateFriendRequest({ userId });
     const { sentFriendRequests, receivedFriendRequests} = useGetFriendRequests(viewer);
     const acceptFriendRequest = useAcceptFriendRequest({ userId: viewer });
     const deleteFriendRequest = useDeleteFriendRequest({ userId: viewer });
     const { friends } = useGetFriends(viewer);
     const deleteFriend = useDeleteFriend({ userId: viewer });
-
-    const { data, isSuccess } = useQuery({
-        queryKey: ["user", userId],
-        queryFn: () => axiosInstance.get(`/user/${userId}`),
-    });
-
-    useEffect(() => {
-        if (isSuccess) {
-            setUser(data.data.user);
-        }
-    }, [data, isSuccess]);
 
     const sentFriendRequest = sentFriendRequests.find(r => r.sender === viewer && r.receiver === userId);
     const receivedFriendRequest = receivedFriendRequests.find(r => r.sender === userId && r.receiver === viewer);
