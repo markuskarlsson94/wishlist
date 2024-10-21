@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query"
+import { QueryClient, useQuery } from "@tanstack/react-query"
 import axiosInstance from "../axiosInstance";
 import { useEffect, useState } from "react";
 import ItemType from "../types/ItemType";
@@ -121,11 +121,9 @@ type UseDeleteItemConfig = {
 export const useDeleteItem = (config?: UseDeleteItemConfig) => {
     const queryClient = useQueryClient();
 
-    const deleteItemFn = async (id: number) => {
-        if (id) {
-            await axiosInstance.delete(`/item/${id}`);
-            queryClient.invalidateQueries({ queryKey: ["items", id] });
-        }
+    const deleteItemFn = async (item: ItemType) => {
+        await axiosInstance.delete(`/item/${item.id}`);
+        invalidateItems(queryClient, item.wishlist);
     };
 
     const deleteItemMutation = useMutation({
@@ -142,8 +140,8 @@ export const useDeleteItem = (config?: UseDeleteItemConfig) => {
         }
     });
 
-    const deleteItem = (id: number) => {
-        deleteItemMutation.mutate(id);
+    const deleteItem = (item: ItemType) => {
+        deleteItemMutation.mutate(item);
     };
 
     return { deleteItem };
@@ -159,7 +157,7 @@ export const useUpdateItem = (config?: UseUpdateItemConfig) => {
 
     const updateItemFn = async ({ id, data }: { id: number, data: ItemInputType }) => {
         await axiosInstance.patch(`/item/${id}`, data);
-        queryClient.invalidateQueries({ queryKey: ["item", id] });
+        invalidateItem(queryClient, id);
     };
 
     const updateItemMutation = useMutation({
@@ -181,4 +179,30 @@ export const useUpdateItem = (config?: UseUpdateItemConfig) => {
     };
 
     return updateItem;
+};
+
+const itemQueryKey = (id: number) => {
+    return ["item", id];
+};
+
+const itemsQueryKey = (id: number) => {
+    return ["items", id];
+};
+
+const itemOwnerQueryKey = (id: number) => {
+    return ["itemOwner", id];
+};
+
+const itemReservationQueryKey = (id: number) => {
+    return ["item", id];
+};
+
+const invalidateItems = (queryClient: QueryClient, wishlistId: number) => {
+    queryClient.invalidateQueries({ queryKey: itemsQueryKey(wishlistId) });
+};
+
+const invalidateItem = (queryClient: QueryClient, id: number) => {
+    queryClient.invalidateQueries({ queryKey: itemQueryKey(id) });
+    queryClient.invalidateQueries({ queryKey: itemOwnerQueryKey(id) });
+    queryClient.invalidateQueries({ queryKey: itemReservationQueryKey(id) });
 };

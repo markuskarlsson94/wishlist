@@ -33,7 +33,9 @@ const Item = () => {
     }, [item, isSuccess]);
 
     const handleDelete = () => {
-        deleteItem(Number(id));
+        if (item) {
+            deleteItem(item);
+        }
     };
 
     const handleReserve = () => {
