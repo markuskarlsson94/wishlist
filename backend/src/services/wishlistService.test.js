@@ -429,7 +429,7 @@ describe("finding wishlist items", async () => {
         await expect((async () => {
             await wishlistService.item.getById(
                 user2,
-                wishlistUser1Id2
+                item2user1Id
             );
         })()).rejects.toThrowError(expectedErrorMessage);
         
