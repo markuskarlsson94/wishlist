@@ -1,5 +1,5 @@
 import React, { useContext, createContext, useState, ReactNode, useEffect } from "react";
-import useUser from "../hooks/useUser";
+import { useCurrentUser } from "../hooks/user";
 
 type AuthContextType = {
     isAuthenticated: boolean;
@@ -19,7 +19,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
     const [isLoadingAuthStatus, setIsLoadingAuthStatus] = useState<boolean>(true);
     const [userId, setUserId] = useState<number | undefined>(undefined);
-    const { user, isLoading, isError } = useUser();
+    const { user, isLoading, isError } = useCurrentUser();
     
     useEffect(() => {
         const token = localStorage.getItem("accessToken");

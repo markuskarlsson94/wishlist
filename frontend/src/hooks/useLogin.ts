@@ -2,7 +2,7 @@ import { useMutation, UseMutationResult, useQueryClient } from "@tanstack/react-
 import axiosInstance from "../axiosInstance";
 import { AxiosResponse } from "axios";
 import { useAuth } from "../contexts/AuthContext";
-import useUser from "./useUser";
+import { useCurrentUser } from "./user";
 import { useEffect } from "react";
 
 type LoginCredentials = {
@@ -60,7 +60,7 @@ export const useLogin = (config?: UseLoginConfig): UseLoginResult => {
         },
     });
 
-    const { user } = useUser();
+    const { user } = useCurrentUser();
 
     useEffect(() => {
         if (user) {
