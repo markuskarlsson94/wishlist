@@ -181,8 +181,24 @@ const db = {
         });
 
         await dbClient(userTable).insert({
-            email: "user@mail.com",
-            firstName: "User",
+            email: "user1@mail.com",
+            firstName: "User1",
+            lastName: "Usersson",
+            password: "$2b$10$nxeNYaYGG0wtb5gDyok29ekEIOeT6t0UjQTy6hpexL2lv/3EQAADq",
+            role: userRole,
+        });
+        
+        await dbClient(userTable).insert({
+            email: "user2@mail.com",
+            firstName: "User2",
+            lastName: "Usersson",
+            password: "$2b$10$nxeNYaYGG0wtb5gDyok29ekEIOeT6t0UjQTy6hpexL2lv/3EQAADq",
+            role: userRole,
+        });
+        
+        await dbClient(userTable).insert({
+            email: "user3@mail.com",
+            firstName: "User3",
             lastName: "Usersson",
             password: "$2b$10$nxeNYaYGG0wtb5gDyok29ekEIOeT6t0UjQTy6hpexL2lv/3EQAADq",
             role: userRole,
