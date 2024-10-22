@@ -6,6 +6,7 @@ type ItemType = {
     createdAt: string;
     owner: number;
     reservation: number;
+    link: string | null,
 };
 
 export default ItemType;
