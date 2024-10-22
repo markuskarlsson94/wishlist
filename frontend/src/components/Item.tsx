@@ -5,6 +5,7 @@ import { useGetItem, useDeleteItem, useUpdateItem } from "../hooks/item";
 import { useCreateReservation, useDeleteReservation } from "../hooks/reservation";
 import ItemInputType from "../types/ItemInputType";
 import ItemForm from "../forms/ItemForm";
+import { NavLink } from "react-router-dom";
 
 const Item = () => {
     const [isOwner, setIsOwner] = useState<boolean>(false);
@@ -81,6 +82,7 @@ const Item = () => {
     const itemValues: ItemInputType = {
         title: item?.title || "",
         description: item?.description || "",
+        link: item?.link || "",
     };
 
     return (
@@ -89,6 +91,11 @@ const Item = () => {
             <button onClick={handleBack}>Back</button>
             <h3>{item?.title}</h3>
             <p>{item?.description}</p>
+            {item?.link && 
+                <div>
+                    <NavLink to={`${item.link}`}>{item.link}</NavLink>
+                </div>
+            }
             {isOwner && (showUpdateItem ? 
                 ItemForm(itemValues, handleUpdateItem, handleCancel) : 
                 <button onClick={handleShowUpdateItem}>Update item</button>)
