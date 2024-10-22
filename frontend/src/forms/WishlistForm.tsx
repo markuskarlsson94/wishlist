@@ -10,6 +10,7 @@ const schema = z.object({
 });
 
 const validate = (values: WishlistInputType) => {
+    values.type = Number(values.type);
     const result = schema.safeParse(values);
 
     if (!result.success) {
