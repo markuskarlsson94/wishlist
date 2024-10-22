@@ -84,6 +84,7 @@ const Wishlist = () => {
     const itemValues: ItemInputType = {
         title: "",
         description: "",
+        link: "",
     };
 
     const wishlistValues: WishlistInputType = {
