@@ -5,6 +5,7 @@ import ItemInputType from "../types/ItemInputType";
 const schema = z.object({
     title: z.string().min(1, "Title is required"),
     description: z.string(),
+    link: z.string().optional(),
 });
 
 const validate = (values: ItemInputType) => {
@@ -32,6 +33,7 @@ const ItemForm = (
             validate={validate}
             onSubmit={(values, { setSubmitting }) => {
                 setSubmitting(false);
+                if (values.link === "") values.link = null;
                 handleAdd(values);
             }}
         >
@@ -47,6 +49,12 @@ const ItemForm = (
                         <label htmlFor="description">Description</label>
                         <Field name="description" type="text"/>
                         <ErrorMessage name="description" component="div"/>
+                    </div>
+                    
+                    <div>
+                        <label htmlFor="link">Link</label>
+                        <Field name="link" type="text"/>
+                        <ErrorMessage name="link" component="div"/>
                     </div>
 
                     <button type="submit" disabled={isSubmitting}>
