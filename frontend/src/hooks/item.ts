@@ -31,7 +31,8 @@ export const useGetItem = (id: number) => {
             const { 
                 id, 
                 title, 
-                description, 
+                description,
+                link,
                 wishlist, 
                 createdAt
             } = dataItem.data.item; 
@@ -40,6 +41,7 @@ export const useGetItem = (id: number) => {
                 id,
                 title,
                 description,
+                link,
                 wishlist,
                 createdAt,
                 owner: dataOwner.data.owner,
