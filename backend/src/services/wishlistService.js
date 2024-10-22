@@ -136,7 +136,7 @@ const wishlistService = {
     },
 
     item: {
-        add: async (user, wishlist, title, description, amount = 1) => {
+        add: async (user, wishlist, title, description, link = undefined, amount = 1) => {
             if (!(await canViewWishlist(user, wishlist))) {
                 throw new ErrorMessage(errorMessages.wishlistNotFound);
             }
@@ -150,7 +150,7 @@ const wishlistService = {
             }
 
             try {
-                return (await db.wishlist.item.add(wishlist, title, description, amount));
+                return (await db.wishlist.item.add(wishlist, title, description, link, amount));
             } catch (error) {
                 logger.error(error.message);
                 throw new ErrorMessage(errorMessages.unableToAddItem);

@@ -110,6 +110,7 @@ const db = {
                 table.integer("wishlist").notNullable();
                 table.string("title").notNullable();
                 table.string("description").notNullable();
+                table.string("link");
                 table.integer("amount").notNullable();
 
                 table.foreign("wishlist").references("id").inTable(wishlistTable).onDelete("CASCADE");
@@ -512,13 +513,14 @@ const db = {
         },
 
         item: {
-            add: async (wishlist, title, description, amount) => {
+            add: async (wishlist, title, description, link, amount) => {
                 return (await dbClient(wishlistItemTable)
                     .insert({
                         wishlist,
                         title,
                         description,
-                        amount
+                        link,
+                        amount,
                     })
                     .returning("id") 
                 )[0].id;
