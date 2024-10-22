@@ -41,6 +41,7 @@ const wishlistDescription = "test description";
 
 const itemTitle = "Item title";
 const itemDescription = "Item description";
+const itemLink = "localhost";
 
 beforeAll(async () => {
     await db.connect();
@@ -202,13 +203,28 @@ describe("adding wishlist items", () => {
             user1, 
             wishlistUser1Id1, 
             itemTitle, 
-            itemDescription
+            itemDescription,
+            itemLink
         );
         
         expect(item1user1Id).toBeGreaterThan(0);
 
         const item = await wishlistService.item.getById(user1, item1user1Id);
         expect(item.id).toBe(item1user1Id);
+    });
+
+    it("should allow adding item without link", async () => {
+        const id = await wishlistService.item.add(
+            user1,
+            wishlistUser1Id1,
+            itemTitle,
+            itemDescription,
+        );
+
+        const item = await wishlistService.item.getById(user1, id);
+
+        expect(item.id).toBe(id);
+        expect(item.link).toBe(null);
     });
 
     it("should not allow adding items to other users wishlists", async () => {
@@ -240,6 +256,7 @@ describe("adding wishlist items", () => {
                 wishlistUser1Id1,
                 "title",
                 "description",
+                itemLink,
                 0
             );
         })()).rejects.toThrowError(errorMessages.unableToAddLessThanOneItem.message);
@@ -252,16 +269,19 @@ describe("updating wishlist items", () => {
         
         expect(item.title).toBe(itemTitle);
         expect(item.description).toBe(itemDescription);
+        expect(item.link).toBe(itemLink);
         
         await wishlistService.item.update(user1, item1user1Id, {
             title: "New title",
             description: "New description",
+            link: "New link",
         });
         
         item = await wishlistService.item.getById(user1, item1user1Id);
 
         expect(item.title).toBe("New title");
         expect(item.description).toBe("New description");
+        expect(item.link).toBe("New link");
     });
 
     it("should allow admin to update other users item", async () => {
@@ -471,10 +491,10 @@ describe("finding wishlist items", async () => {
 
 describe("reservations", () => {
     beforeAll(async () => {
-        item1AdminId = await wishlistService.item.add(admin, wishlistAdminId, "item1AdminId", "test", 1);
-        item2AdminId = await wishlistService.item.add(admin, wishlistAdminId, "item2AdminId", "test", 2);
-        item3AdminId = await wishlistService.item.add(admin, wishlistAdminId, "item3AdminId", "test", 3);
-        item4AdminId = await wishlistService.item.add(admin, wishlistAdminId, "item4AdminId", "test");
+        item1AdminId = await wishlistService.item.add(admin, wishlistAdminId, "item1AdminId", "test", itemLink, 1);
+        item2AdminId = await wishlistService.item.add(admin, wishlistAdminId, "item2AdminId", "test", itemLink, 2);
+        item3AdminId = await wishlistService.item.add(admin, wishlistAdminId, "item3AdminId", "test", itemLink, 3);
+        item4AdminId = await wishlistService.item.add(admin, wishlistAdminId, "item4AdminId", "test", itemLink);
     });
 
     it("should init items correctly", async () => {
@@ -628,7 +648,7 @@ describe("reservations", () => {
 
     describe("item amount after reservations", () => {
         it("should not change the amount for item owner after reservation", async () => {
-            item3user1Id = await wishlistService.item.add(user1, wishlistUser1Id1, "item3user1Id", "test", 2);
+            item3user1Id = await wishlistService.item.add(user1, wishlistUser1Id1, "item3user1Id", "test", itemLink, 2);
             let item = await wishlistService.item.getById(user1, item3user1Id);
             expect(item.amount).toBe(2);
             
@@ -660,7 +680,7 @@ describe("reservations", () => {
         });
         
         it("should not display item from wishlist if it has been fully reserved for other user", async () => {
-            item4user1Id = await wishlistService.item.add(user1, wishlistUser1Id1, "item4user1Id", "test", 1);
+            item4user1Id = await wishlistService.item.add(user1, wishlistUser1Id1, "item4user1Id", "test", itemLink, 1);
 
             await wishlistService.item.reserve(user2, item4user1Id);
             
@@ -695,8 +715,8 @@ describe("reservations", () => {
                 "test"
             );
 
-            item1Id = await wishlistService.item.add(user3, wishlist, "item1", "test");
-            item2Id = await wishlistService.item.add(user3, wishlist, "item2", "test", 2);
+            item1Id = await wishlistService.item.add(user3, wishlist, "item1", "test", itemLink);
+            item2Id = await wishlistService.item.add(user3, wishlist, "item2", "test", itemLink, 2);
         });
 
         afterAll(async () => {
@@ -935,7 +955,7 @@ describe("comments", async () => {
         user4 = { id: user4Id, role: userRole() };
         
         wishlistId = await db.wishlist.add(user1Id, "commentTest", "test", publicType());
-        itemId = await db.wishlist.item.add(wishlistId, "testItem", "test", 1);
+        itemId = await db.wishlist.item.add(wishlistId, "testItem", "test", itemLink, 1);
     });
 
     it("should not allow adding comment for other user", async () => {
