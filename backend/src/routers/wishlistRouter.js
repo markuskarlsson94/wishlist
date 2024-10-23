@@ -61,10 +61,16 @@ wishlistRouter.delete("/wishlist/:id", isAuthenticated(), async (req, res) => {
 
 wishlistRouter.post("/item", isAuthenticated(), async (req, res) => {
     try {
-        const { wishlistId, title, description } = req.body; // TODO: Add amount
+        const { wishlistId, title, description, link } = req.body; // TODO: Add amount
         const user = req.user;
 
-        const id = await wishlistService.item.add(user, wishlistId, title, description);
+        const id = await wishlistService.item.add({
+            user, 
+            wishlist: wishlistId, 
+            title, 
+            description,
+            link,
+        });
         logger.info(`Wishlist item (id: ${id}) created by user (id: ${user.id})`);
         
         res.status(201).json({

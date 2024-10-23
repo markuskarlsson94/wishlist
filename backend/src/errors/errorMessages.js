@@ -109,6 +109,11 @@ const errorMessages = {
         message: "User query too short",
     },
 
+    missingItemProperties: {
+        status: 400,
+        message: "Missing item properties",
+    },
+
     invalidEmailOrPassword: {
         status: 403,
         message: "Invalid email or password",

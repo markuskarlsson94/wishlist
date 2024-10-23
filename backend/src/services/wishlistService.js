@@ -136,7 +136,15 @@ const wishlistService = {
     },
 
     item: {
-        add: async (user, wishlist, title, description, link = undefined, amount = 1) => {
+        add: async (data) => {        
+            let { user, wishlist, title, description, link, amount } = data;
+            link = link ?? null;
+            amount = amount ?? 1;
+
+            if (!user || !wishlist || !title) {
+                throw new ErrorMessage(errorMessages.missingItemProperties);
+            }
+
             if (!(await canViewWishlist(user, wishlist))) {
                 throw new ErrorMessage(errorMessages.wishlistNotFound);
             }
