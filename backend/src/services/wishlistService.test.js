@@ -199,13 +199,13 @@ describe("updating wishlists", () => {
 
 describe("adding wishlist items", () => {
     it("should add items with correct info", async () => {
-        item1user1Id = await wishlistService.item.add(
-            user1, 
-            wishlistUser1Id1, 
-            itemTitle, 
-            itemDescription,
-            itemLink
-        );
+        item1user1Id = await wishlistService.item.add({
+            user: user1,
+            wishlist: wishlistUser1Id1,
+            title: itemTitle,
+            description: itemDescription,
+            link: itemLink,
+        });
         
         expect(item1user1Id).toBeGreaterThan(0);
 
@@ -214,12 +214,12 @@ describe("adding wishlist items", () => {
     });
 
     it("should allow adding item without link", async () => {
-        const id = await wishlistService.item.add(
-            user1,
-            wishlistUser1Id1,
-            itemTitle,
-            itemDescription,
-        );
+        const id = await wishlistService.item.add({
+            user: user1,
+            wishlist: wishlistUser1Id1,
+            title: itemTitle,
+            description: itemDescription,
+        });
 
         const item = await wishlistService.item.getById(user1, id);
 
@@ -229,37 +229,47 @@ describe("adding wishlist items", () => {
 
     it("should not allow adding items to other users wishlists", async () => {
         await expect((async () => {
-            await wishlistService.item.add(
-                user2,
-                wishlistUser1Id1,
-                "title",
-                "description"
-            );
+            await wishlistService.item.add({
+                user: user2,
+                wishlist: wishlistUser1Id1,
+                title: "title",
+                description: "description",
+            });
         })()).rejects.toThrowError(errorMessages.unauthorizedToUpdateWishlist.message);
     });
 
     it("should allow admins to add items to other users wishlists", async () => {
-        const item2user1Id = await wishlistService.item.add(
-            admin, 
-            wishlistUser1Id1, 
-            "user1Item1", 
-            "test"
-        );
+        const item2user1Id = await wishlistService.item.add({
+            user: admin,
+            wishlist: wishlistUser1Id1,
+            title: "user1Item1",
+            description: "test",
+        });
         
         expect(item2user1Id).toBeGreaterThan(0);
     });
 
     it("should not allow adding less than one item", async () => {
         await expect((async () => {
-            await wishlistService.item.add(
-                user1,
-                wishlistUser1Id1,
-                "title",
-                "description",
-                itemLink,
-                0
-            );
+            await wishlistService.item.add({
+                user: user1,
+                wishlist: wishlistUser1Id1,
+                title: "title",
+                description: "description",
+                link: itemLink,
+                amount: 0,
+            });
         })()).rejects.toThrowError(errorMessages.unableToAddLessThanOneItem.message);
+    });
+
+    it("should not allow adding item without title", async () => {
+        await expect((async () => {
+            await wishlistService.item.add({
+                user: user1,
+                wishlist: wishlistUser1Id1,
+                description: "description",
+            });
+        })()).rejects.toThrowError(errorMessages.missingItemProperties.message);
     });
 });
 
@@ -407,12 +417,12 @@ describe("finding wishlist items", async () => {
     // Note: wishlistUser1Id2 is hidden
 
     it("should find items in wishlist", async () => {
-        item2user1Id = await wishlistService.item.add(
-            user1, 
-            wishlistUser1Id2, 
-            "user1Item1", 
-            "test"
-        );
+        item2user1Id = await wishlistService.item.add({
+            user: user1,
+            wishlist: wishlistUser1Id2,
+            title: "user1Item1",
+            description: "test",
+        });
 
         const items = await wishlistService.getItems(user1, wishlistUser1Id2);
         expect(items.length).toBe(1);
@@ -491,10 +501,40 @@ describe("finding wishlist items", async () => {
 
 describe("reservations", () => {
     beforeAll(async () => {
-        item1AdminId = await wishlistService.item.add(admin, wishlistAdminId, "item1AdminId", "test", itemLink, 1);
-        item2AdminId = await wishlistService.item.add(admin, wishlistAdminId, "item2AdminId", "test", itemLink, 2);
-        item3AdminId = await wishlistService.item.add(admin, wishlistAdminId, "item3AdminId", "test", itemLink, 3);
-        item4AdminId = await wishlistService.item.add(admin, wishlistAdminId, "item4AdminId", "test", itemLink);
+        item1AdminId = await wishlistService.item.add({
+            user: admin, 
+            wishlist: wishlistAdminId, 
+            title: "item1AdminId", 
+            description: "test", 
+            link: itemLink, 
+            amount: 1,
+        });
+        
+        item2AdminId = await wishlistService.item.add({
+            user: admin, 
+            wishlist: wishlistAdminId, 
+            title: "item2AdminId", 
+            description: "test", 
+            link: itemLink, 
+            amount: 2,
+        });
+
+        item3AdminId = await wishlistService.item.add({
+            user: admin, 
+            wishlist: wishlistAdminId, 
+            title: "item3AdminId", 
+            description: "test", 
+            link: itemLink, 
+            amount: 3,
+        });
+
+        item4AdminId = await wishlistService.item.add({
+            user: admin, 
+            wishlist: wishlistAdminId, 
+            title: "item4AdminId", 
+            description: "test", 
+            link: itemLink,
+        });
     });
 
     it("should init items correctly", async () => {
@@ -648,7 +688,15 @@ describe("reservations", () => {
 
     describe("item amount after reservations", () => {
         it("should not change the amount for item owner after reservation", async () => {
-            item3user1Id = await wishlistService.item.add(user1, wishlistUser1Id1, "item3user1Id", "test", itemLink, 2);
+            item3user1Id = await wishlistService.item.add({
+                user: user1,
+                wishlist: wishlistUser1Id1, 
+                title: "item3user1Id", 
+                description: "test", 
+                link: itemLink, 
+                amount: 2,
+            });
+
             let item = await wishlistService.item.getById(user1, item3user1Id);
             expect(item.amount).toBe(2);
             
@@ -680,7 +728,14 @@ describe("reservations", () => {
         });
         
         it("should not display item from wishlist if it has been fully reserved for other user", async () => {
-            item4user1Id = await wishlistService.item.add(user1, wishlistUser1Id1, "item4user1Id", "test", itemLink, 1);
+            item4user1Id = await wishlistService.item.add({
+                user: user1, 
+                wishlist: wishlistUser1Id1, 
+                title: "item4user1Id", 
+                description: "test", 
+                link: itemLink, 
+                amount: 1,
+            });
 
             await wishlistService.item.reserve(user2, item4user1Id);
             
@@ -715,8 +770,22 @@ describe("reservations", () => {
                 "test"
             );
 
-            item1Id = await wishlistService.item.add(user3, wishlist, "item1", "test", itemLink);
-            item2Id = await wishlistService.item.add(user3, wishlist, "item2", "test", itemLink, 2);
+            item1Id = await wishlistService.item.add({
+                user: user3, 
+                wishlist: wishlist, 
+                title: "item1", 
+                description: "test", 
+                link: itemLink,
+            });
+            
+            item2Id = await wishlistService.item.add({
+                user: user3, 
+                wishlist, 
+                title: "item2", 
+                description: "test", 
+                link: itemLink, 
+                amount: 2,
+            });
         });
 
         afterAll(async () => {
@@ -866,7 +935,13 @@ describe("reservations", () => {
         
         it("should remove reservation if wishlist is removed", async () => {
             wishlist2AdminId = await wishlistService.add(admin, adminId, "wishlist2Admin", "test");
-            const itemId = await wishlistService.item.add(admin, wishlist2AdminId, "item", "test");
+            const itemId = await wishlistService.item.add({
+                user: admin, 
+                wishlist: wishlist2AdminId, 
+                title: "item", 
+                description: "test",
+            });
+            
             const reservationId = await wishlistService.item.reserve(user1, itemId);
             
             let reservation = await wishlistService.reservation.getById(user1, reservationId);
