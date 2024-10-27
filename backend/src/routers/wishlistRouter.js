@@ -167,6 +167,68 @@ wishlistRouter.post("/item/:id/reserve", isAuthenticated(), async (req, res) => 
     }
 });
 
+wishlistRouter.post("/item/:id/comment", isAuthenticated(), async (req, res) => {
+    try {
+        const id = req.params.id;
+        const user = req.user;
+        const { comment } = req.body;
+
+        await wishlistService.item.comment.add(user, id, user.id, comment);
+
+        res.status(200).json({
+            message: "Comment added",
+        });
+    } catch (error) {
+        res.status(error.status).json(error.message);
+    }
+});
+
+wishlistRouter.patch("/comment/:id", isAuthenticated(), async (req, res) => {
+    try {
+        const id = req.params.id;
+        const user = req.user;
+        const comment = req.body.comment;
+
+        await wishlistService.item.comment.update(user, id, comment);
+
+        res.status(200).json({
+            message: "Comment updated",
+        });
+    } catch (error) {
+        res.status(error.status).json(error.message);
+    }
+});
+
+wishlistRouter.delete("/comment/:id", isAuthenticated(), async (req, res) => {
+    try {
+        const id = req.params.id;
+        const user = req.user;
+
+        await wishlistService.item.comment.remove(user, id);
+
+        res.status(200).json({
+            message: "Comment removed",
+        });
+    } catch (error) {
+        res.status(error.status).json(error.message);
+    }
+});
+
+wishlistRouter.get("/item/:id/comments", isAuthenticated(), async (req, res) => {
+    try {
+        const id = req.params.id;
+        const user = req.user;
+
+        const comments = await wishlistService.item.comment.getByItemId(user, id);
+
+        res.status(200).json({
+            comments,
+        });
+    } catch (error) {
+        res.status(error.status).json(error.message);
+    }
+});
+
 wishlistRouter.get("/wishlist/types", isAuthenticated(), async (req, res) => {
     try {
         const types = await wishlistService.getTypes();
