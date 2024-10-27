@@ -6,6 +6,10 @@ import { useCreateReservation, useDeleteReservation } from "../hooks/reservation
 import ItemInputType from "../types/ItemInputType";
 import ItemForm from "../forms/ItemForm";
 import { NavLink } from "react-router-dom";
+import { useAddComment, useGetComments } from "../hooks/comment";
+import AddCommentForm from "../forms/AddCommentForm";
+import CommentInputType from "../types/CommentInputType";
+import Comment from "./Comment";
 
 const Item = () => {
     const [isOwner, setIsOwner] = useState<boolean>(false);
@@ -18,6 +22,8 @@ const Item = () => {
     const createReservation = useCreateReservation({ userId });
     const deleteReservation = useDeleteReservation({ userId });
     const updateItem = useUpdateItem();
+    const { comments } = useGetComments(id);
+    const addComment = useAddComment({ itemId: id });
 
     const onDeleteItem = () => {
         if (item?.wishlist) {
@@ -79,6 +85,10 @@ const Item = () => {
         setShowUpdateItem(false);
     };
 
+    const handleAddComment = (data: CommentInputType) => {
+        addComment(data.comment);
+    }
+
     const itemValues: ItemInputType = {
         title: item?.title || "",
         description: item?.description || "",
@@ -96,6 +106,9 @@ const Item = () => {
                     <NavLink to={`${item.link}`}>{item.link}</NavLink>
                 </div>
             }
+            <h3>Comments</h3>
+            {comments?.map(comment => <Comment key={comment.id} comment={comment} itemId={id}/>)}
+            {AddCommentForm(handleAddComment)}
             {isOwner && (showUpdateItem ? 
                 ItemForm(itemValues, handleUpdateItem, handleCancel) : 
                 <button onClick={handleShowUpdateItem}>Update item</button>)
