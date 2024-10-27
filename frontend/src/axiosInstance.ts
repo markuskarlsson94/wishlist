@@ -1,6 +1,7 @@
 import axios from "axios";
 
 let isRefreshing: boolean = false;
+let requestQueue: Array<(error?: any) => void> = [];
 
 const axiosInstance = axios.create({
     baseURL: `${import.meta.env.VITE_API_URL}/api/v1`,
@@ -30,23 +31,32 @@ axiosInstance.interceptors.response.use(
 
         if (error.response.status === 401 && !originalRequest._retry) {
             if (isRefreshing) {
-                // TODO: Add request queue.
-                return;
+                return new Promise((resolve, reject) => {
+                    requestQueue.push(() => {
+                        originalRequest._retry = true;
+                        axiosInstance(originalRequest)
+                            .then(resolve)
+                            .catch(reject);
+                    });
+                });
             }
 
             isRefreshing = true;
             originalRequest._retry = true;
             
-            return (new Promise(async (resolve, reject) => {
                 try {
                     await refreshAccessToken();
-                    resolve(axiosInstance(originalRequest));
+
+                    requestQueue.forEach(callback => callback());
+                    requestQueue = [];
+                    return axiosInstance(originalRequest);
                 } catch (err) {
-                    reject(err)
+                    requestQueue.forEach(callback => callback(Promise.reject(err)));
+                    requestQueue = [];
+                    return Promise.reject(err);
                 } finally {
                     isRefreshing = false;
                 }
-            }));
         }
 
         return Promise.reject(error);
