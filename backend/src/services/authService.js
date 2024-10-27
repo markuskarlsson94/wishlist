@@ -120,12 +120,12 @@ const authService = {
 
 const generateAccessToken = (user, issuedAtLogin = false) => {
     const payload = { id: user.id, issuedAtLogin };
-    return jwt.sign(payload, process.env.ACCESS_SECRET_KEY, { expiresIn: '1m' });
+    return jwt.sign(payload, process.env.ACCESS_SECRET_KEY, { expiresIn: '15m' });
 };
 
 const generateRefreshToken = (user) => {
     const payload = { id: user.id };
-    return jwt.sign(payload, process.env.REFRESH_SECRET_KEY, { expiresIn: '60m' });
+    return jwt.sign(payload, process.env.REFRESH_SECRET_KEY, { expiresIn: '1w' });
 };
 
 export default authService;
