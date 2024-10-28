@@ -12,6 +12,7 @@ import Users from './components/Users';
 import MainLayout from './components/MainLayout';
 import User from './components/User';
 import Reservations from './components/Reservations';
+import Register from './components/Register';
 
 function App() {
     return (
@@ -19,6 +20,7 @@ function App() {
             <Router>
                 <Routes>
                     <Route path="/" element={<Login />} />
+                    <Route path="/register" element={<Register />}/>
                     <Route element={<ProtectedRoutes />}>
                         <Route element={<MainLayout />}>
                             <Route path="/home" element={<Home />} />
