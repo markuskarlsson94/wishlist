@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLogin } from "../hooks/useLogin";
+import { NavLink } from "react-router-dom";
 
 const Login = () => {
     const [email, setEmail] = useState<string>("");
@@ -41,6 +42,7 @@ const Login = () => {
                 {isError && <p>Wrong email or password</p>}
                 <button type="submit">Login</button>
             </form>
+            <NavLink to={"/register"}>Register</NavLink>
         </>
     );
 };
