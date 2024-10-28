@@ -6,6 +6,17 @@ import wishlistService from "../services/wishlistService.js";
 
 const userRouter = express.Router();
 
+userRouter.post("/register", async (req, res) => {
+    const { email, firstName, lastName, password } = req.body;
+
+    try {
+        await userService.register(email, firstName, lastName, password);
+        res.status(201).json({ message: "User registered successfully" });
+    } catch (error) {
+        res.status(error.status).json(error.message);
+    }
+});
+
 userRouter.get('/userData', isAuthenticated(), (req, res) => {
     res.json({ 
         message: 'Success', 

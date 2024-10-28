@@ -49,6 +49,10 @@ const userService = {
     },
 
     add: async (email, firstName, lastName, plaintextPassword, role = userRole()) => {
+        if (await userService.exists(email)) {
+            throw new ErrorMessage(errorMessages.userAlreadyExists);
+        }
+
         try {
             return (await db.user.add(email, firstName, lastName, plaintextPassword, role));
         } catch (error) {

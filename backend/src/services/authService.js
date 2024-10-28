@@ -7,21 +7,6 @@ import errorMessages from "../errors/errorMessages.js";
 import db from "../db.js";
 
 const authService = {
-    register: async (email, firstName, lastName, password) => {
-        const userExists = await userService.exists(email);
-        if (userExists) {
-            throw new ErrorMessage(errorMessages.userAlreadyExists);
-        }
-
-        try {
-            await userService.add(email, firstName, lastName, password);
-            logger.info(`New user ${email} registred.`);
-        } catch (error) {
-            logger.error(error.message);
-            throw new ErrorMessage(errorMessages.serverError);
-        }
-    },
-
     login: async (email, password) => {
         const user = await userService.getByEmail(email);
 
