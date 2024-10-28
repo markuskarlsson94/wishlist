@@ -21,36 +21,14 @@ beforeAll(async () => {
     await db.init();
     await initUserRoles();
 
+    await userService.add(email1, firstName, lastName, password);
+    await userService.add(email2, firstName, lastName, password);
+
     admin = { role: adminRole() };
 });
 
 afterAll(async () => {
     await db.disconnect();
-});
-
-describe("registering user", () => {
-    it("DB should be empty before adding", async () => {
-        const res = await userService.getAll();
-        expect(res.length).toBe(0);
-    });
-
-    it("should create new user", async () => {
-        expect((await userService.exists(email1))).toBeFalsy();
-        await authService.register(email1, firstName, lastName, password);
-        expect((await userService.exists(email1))).toBeTruthy();
-    });
-
-    it("should not register exisiting user", async () => {
-        await expect((async () => {
-            await authService.register(email1, "Foo", "Bar", password);
-        })()).rejects.toThrowError(errorMessages.userAlreadyExists.message);
-    });
-
-    it("should register user with different mail but same name", async () => {
-        expect((await userService.exists(email2))).toBeFalsy();
-        await authService.register(email2, firstName, lastName, password);
-        expect((await userService.exists(email2))).toBeTruthy();
-    });
 });
 
 describe("logging in", () => {

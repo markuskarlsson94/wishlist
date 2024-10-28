@@ -58,7 +58,7 @@ describe("adding user", () => {
     it("should not allow adding user with existing email", async () => {
         await expect((async () => {
             await userService.add(email1, "Foo", "Bar", "abc");
-        })()).rejects.toThrowError(errorMessages.unableToAddNewUser.message);
+        })()).rejects.toThrowError(errorMessages.userAlreadyExists.message);
     });
 
     it("should add user with different email but same name", async () => {
