@@ -1131,13 +1131,13 @@ describe("comments", async () => {
             expect(comments.every(c => c.isOwnComment === undefined));
         });
         
-        it("should not anonymize own comment", async () => {
+        it("should anonymize own comment", async () => {
             const comments = await wishlistService.item.comment.getByItemId(user3, itemId);
             expect(comments.length).toBe(4);
             
             expect(comments[0].anonymizedUserId).toBe(undefined);
             expect(comments[1].anonymizedUserId).toBe(1);
-            expect(comments[2].anonymizedUserId).toBe(undefined);
+            expect(comments[2].anonymizedUserId).toBe(2);
             expect(comments[3].anonymizedUserId).toBe(1);
             
             expect(comments[0].isOwnComment).toBe(undefined);
