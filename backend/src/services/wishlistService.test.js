@@ -1140,15 +1140,15 @@ describe("comments", async () => {
             expect(comments[2].anonymizedUserId).toBe(2);
             expect(comments[3].anonymizedUserId).toBe(1);
             
-            expect(comments[0].isOwnComment).toBe(undefined);
-            expect(comments[1].isOwnComment).toBe(undefined);
+            expect(comments[0].isOwnComment).toBe(false);
+            expect(comments[1].isOwnComment).toBe(false);
             expect(comments[2].isOwnComment).toBe(true);
-            expect(comments[3].isOwnComment).toBe(undefined);
+            expect(comments[3].isOwnComment).toBe(false);
 
             expect(comments[0].isItemOwner).toBe(true);
-            expect(comments[1].isItemOwner).toBe(undefined);
-            expect(comments[2].isItemOwner).toBe(undefined);
-            expect(comments[3].isItemOwner).toBe(undefined);
+            expect(comments[1].isItemOwner).toBe(false);
+            expect(comments[2].isItemOwner).toBe(false);
+            expect(comments[3].isItemOwner).toBe(false);
             
             expect(comments[0].comment).toBe("test comment 1");
             expect(comments[1].comment).toBe("test comment 2");
@@ -1172,15 +1172,15 @@ describe("comments", async () => {
             expect(comments[2].anonymizedUserId).toBe(2);
             expect(comments[3].anonymizedUserId).toBe(1);
             
-            expect(comments[0].isOwnComment).toBe(undefined);
-            expect(comments[1].isOwnComment).toBe(undefined);
-            expect(comments[2].isOwnComment).toBe(undefined);
-            expect(comments[3].isOwnComment).toBe(undefined);
+            expect(comments[0].isOwnComment).toBe(false);
+            expect(comments[1].isOwnComment).toBe(false);
+            expect(comments[2].isOwnComment).toBe(false);
+            expect(comments[3].isOwnComment).toBe(false);
 
             expect(comments[0].isItemOwner).toBe(true);
-            expect(comments[1].isItemOwner).toBe(undefined);
-            expect(comments[2].isItemOwner).toBe(undefined);
-            expect(comments[3].isItemOwner).toBe(undefined);
+            expect(comments[1].isItemOwner).toBe(false);
+            expect(comments[2].isItemOwner).toBe(false);
+            expect(comments[3].isItemOwner).toBe(false);
             
             expect(comments[0].comment).toBe("test comment 1");
             expect(comments[1].comment).toBe("test comment 2");

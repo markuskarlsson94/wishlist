@@ -361,11 +361,10 @@ const wishlistService = {
                             }
 
                             comment.anonymizedUserId = anonymizedUserId;
+                            comment.isItemOwner = false;
                         }
 
-                        if (ownComment) {
-                            comment.isOwnComment = true;
-                        }
+                        comment.isOwnComment = ownComment;
                         
                         if (user.role !== adminRole()) {
                             delete comment.user;
