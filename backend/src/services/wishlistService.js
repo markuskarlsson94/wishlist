@@ -350,20 +350,20 @@ const wishlistService = {
                         const ownComment = comment.user === user.id;
                         let anonymizedUserId;
                         
-                        if (!ownComment) {
-                            if (comment.user === itemOwner) {
-                                comment.isItemOwner = true;
-                            } else {   
-                                anonymizedUserId = commentMap.get(comment.user); 
-                                
-                                if (anonymizedUserId === undefined) {
-                                    anonymizedUserId = id++;
-                                    commentMap.set(comment.user, anonymizedUserId);
-                                }
-
-                                comment.anonymizedUserId = anonymizedUserId;
+                        if (comment.user === itemOwner) {
+                            comment.isItemOwner = true;
+                        } else {   
+                            anonymizedUserId = commentMap.get(comment.user); 
+                            
+                            if (anonymizedUserId === undefined) {
+                                anonymizedUserId = id++;
+                                commentMap.set(comment.user, anonymizedUserId);
                             }
-                        } else {
+
+                            comment.anonymizedUserId = anonymizedUserId;
+                        }
+
+                        if (ownComment) {
                             comment.isOwnComment = true;
                         }
                         
