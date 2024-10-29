@@ -32,9 +32,14 @@ const Comment = ({ comment, itemId }: { comment: CommentType, itemId: number }) 
                 {showUpdate ? 
                     UpdateCommentForm(comment.comment, handleEdit, handleCancel) :
                     <>
+                        {comment.isItemOwner ?
                         <p>
                             You: {comment.comment}
+                        </p> :
+                        <p>
+                            Anonymous user {comment.anonymizedUserId} (You): {comment.comment}
                         </p>
+                        }
                         <button onClick={handleShowEdit}>Edit</button>
                         <button onClick={handleDelete}>Delete</button>
                     </>
