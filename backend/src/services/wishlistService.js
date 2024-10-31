@@ -346,18 +346,24 @@ const wishlistService = {
                     const commentMap = new Map();
                     let id = 1;
 
-                    return comments.map(comment => {
+                    for (const comment of comments) {
+                        const commenter = await db.user.getById(comment.user);
+                        const isAdmin = commenter.role === adminRole();
+                        comment.isAdmin = isAdmin;
+                        
                         const ownComment = comment.user === user.id;
                         let anonymizedUserId;
                         
                         if (comment.user === itemOwner) {
                             comment.isItemOwner = true;
-                        } else {   
-                            anonymizedUserId = commentMap.get(comment.user); 
+                        } else {
+                            if (!isAdmin) {
+                                anonymizedUserId = commentMap.get(comment.user); 
                             
-                            if (anonymizedUserId === undefined) {
-                                anonymizedUserId = id++;
-                                commentMap.set(comment.user, anonymizedUserId);
+                                if (anonymizedUserId === undefined) {
+                                    anonymizedUserId = id++;
+                                    commentMap.set(comment.user, anonymizedUserId);
+                                }
                             }
 
                             comment.anonymizedUserId = anonymizedUserId;
@@ -369,9 +375,9 @@ const wishlistService = {
                         if (user.role !== adminRole()) {
                             delete comment.user;
                         }
+                    };
 
-                        return comment;
-                    });
+                    return comments;
                 } catch (error) {
                     logger.error(error.message);
                     throw new ErrorMessage(errorMessages.unableToGetComments);
