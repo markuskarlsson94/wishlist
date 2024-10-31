@@ -5,8 +5,9 @@ type CommentType = {
     updatedAt: Date,
     user?: number,
     anonymizedUserId?: number,
-    isItemOwner?: boolean,
-    isOwnComment?: boolean,
+    isItemOwner: boolean,
+    isOwnComment: boolean,
+    isAdmin: boolean,
 };
 
 export default CommentType;

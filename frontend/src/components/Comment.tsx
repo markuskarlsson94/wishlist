@@ -26,20 +26,25 @@ const Comment = ({ comment, itemId }: { comment: CommentType, itemId: number }) 
         setShowUpdate(false);
     };
 
+    const isAdmin = comment.isAdmin;
+    const adminString = isAdmin ? " (Admin)" : "";
+    let ownCommentString;
+
+    if (comment.isItemOwner) {
+        ownCommentString = `You${adminString}: ${comment.comment}`;
+    } else {
+        ownCommentString = isAdmin ?
+            `You${adminString}: ${comment.comment}` :
+            `Anonymous user ${comment.anonymizedUserId} (You): ${comment.comment}`;
+    }
+
     if (comment.isOwnComment) {
         return (
             <> 
                 {showUpdate ? 
                     UpdateCommentForm(comment.comment, handleEdit, handleCancel) :
                     <>
-                        {comment.isItemOwner ?
-                        <p>
-                            You: {comment.comment}
-                        </p> :
-                        <p>
-                            Anonymous user {comment.anonymizedUserId} (You): {comment.comment}
-                        </p>
-                        }
+                        <p>{ownCommentString}</p>
                         <button onClick={handleShowEdit}>Edit</button>
                         <button onClick={handleDelete}>Delete</button>
                     </>
@@ -51,7 +56,15 @@ const Comment = ({ comment, itemId }: { comment: CommentType, itemId: number }) 
     if (comment.isItemOwner) {
         return (
             <p>
-                Owner: {comment.comment}
+                Owner{adminString}: {comment.comment}
+            </p>
+        );
+    }
+
+    if (comment.isAdmin) {
+        return (
+            <p>
+                Admin: {comment.comment}
             </p>
         );
     }
