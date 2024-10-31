@@ -98,7 +98,7 @@ const db = {
                 table.integer("owner").notNullable();
                 table.string("title").notNullable();
                 table.string("description");
-                table.integer("type");
+                table.integer("type").notNullable();
 
                 table.foreign("owner").references("id").inTable(userTable).onDelete("CASCADE");
                 table.foreign("type").references("id").inTable(wishlistTypeTable);
