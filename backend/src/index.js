@@ -13,9 +13,11 @@ import cors from "cors";
 await db.connect();
 
 const app = express();
-app.use(cors({
-	origin: `http://localhost:${process.env.FRONTEND_PORT}`
-}));
+app.use(
+	cors({
+		origin: `http://localhost:${process.env.FRONTEND_PORT}`,
+	}),
+);
 app.use(json());
 app.use(passport.initialize());
 app.disable("x-powered-by");

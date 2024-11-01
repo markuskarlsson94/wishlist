@@ -1,5 +1,5 @@
 type CommentInputType = {
-    comment: string,
+	comment: string;
 };
 
 export default CommentInputType;

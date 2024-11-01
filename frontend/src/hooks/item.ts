@@ -1,4 +1,4 @@
-import { QueryClient, useQuery } from "@tanstack/react-query"
+import { QueryClient, useQuery } from "@tanstack/react-query";
 import axiosInstance from "../axiosInstance";
 import { useEffect, useState } from "react";
 import ItemType from "../types/ItemType";
@@ -6,205 +6,198 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import ItemInputType from "../types/ItemInputType";
 
 export const useGetItem = (id: number) => {
-    const [item, setItem] = useState<ItemType | undefined>(undefined);
+	const [item, setItem] = useState<ItemType | undefined>(undefined);
 
-    const { data: dataItem, isSuccess: isSuccessItem } = useQuery({
-        queryKey: ["item", id],
-        queryFn: () => axiosInstance.get(`item/${id}`),
-        enabled: !!id,
-    });
-    
-    const { data: dataOwner, isSuccess: isSuccessOwner } = useQuery({
-        queryKey: ["itemOwner", id],
-        queryFn: () => axiosInstance.get(`item/${id}/owner`),
-        enabled: !!id,
-    });
-    
-    const { data: dataReservation, isSuccess: isSuccessReservation } = useQuery({
-        queryKey: ["itemReservation", id],
-        queryFn: () => axiosInstance.get(`item/${id}/reservation`),
-        enabled: !!id,
-    });
+	const { data: dataItem, isSuccess: isSuccessItem } = useQuery({
+		queryKey: ["item", id],
+		queryFn: () => axiosInstance.get(`item/${id}`),
+		enabled: !!id,
+	});
 
-    useEffect(() => {
-        if (isSuccessItem && isSuccessOwner && isSuccessReservation) {
-            const { 
-                id, 
-                title, 
-                description,
-                link,
-                wishlist, 
-                createdAt
-            } = dataItem.data.item; 
+	const { data: dataOwner, isSuccess: isSuccessOwner } = useQuery({
+		queryKey: ["itemOwner", id],
+		queryFn: () => axiosInstance.get(`item/${id}/owner`),
+		enabled: !!id,
+	});
 
-            setItem({
-                id,
-                title,
-                description,
-                link,
-                wishlist,
-                createdAt,
-                owner: dataOwner.data.owner,
-                reservation: dataReservation.data.reservation?.id
-            });
-        }
-    }, [dataItem, dataOwner, dataReservation, isSuccessItem, isSuccessOwner, isSuccessReservation]);
+	const { data: dataReservation, isSuccess: isSuccessReservation } = useQuery({
+		queryKey: ["itemReservation", id],
+		queryFn: () => axiosInstance.get(`item/${id}/reservation`),
+		enabled: !!id,
+	});
 
-    return {
-        item,
-        isSuccess: isSuccessItem && isSuccessOwner && isSuccessReservation,
-    };
+	useEffect(() => {
+		if (isSuccessItem && isSuccessOwner && isSuccessReservation) {
+			const { id, title, description, link, wishlist, createdAt } = dataItem.data.item;
+
+			setItem({
+				id,
+				title,
+				description,
+				link,
+				wishlist,
+				createdAt,
+				owner: dataOwner.data.owner,
+				reservation: dataReservation.data.reservation?.id,
+			});
+		}
+	}, [dataItem, dataOwner, dataReservation, isSuccessItem, isSuccessOwner, isSuccessReservation]);
+
+	return {
+		item,
+		isSuccess: isSuccessItem && isSuccessOwner && isSuccessReservation,
+	};
 };
 
 export const useGetItems = (wishlistId: number) => {
-    const [items, setItems] = useState<ItemType[]>([]);
+	const [items, setItems] = useState<ItemType[]>([]);
 
-    const { data, isSuccess } = useQuery({
-        queryKey: ["items", wishlistId],
-        queryFn: () => axiosInstance.get(`wishlist/${wishlistId}/items`),
-        enabled: !!wishlistId,
-    });
+	const { data, isSuccess } = useQuery({
+		queryKey: ["items", wishlistId],
+		queryFn: () => axiosInstance.get(`wishlist/${wishlistId}/items`),
+		enabled: !!wishlistId,
+	});
 
-    useEffect(() => {
-        if (isSuccess) {
-            setItems(data.data.items);
-        }
-    }, [data, isSuccess]);
+	useEffect(() => {
+		if (isSuccess) {
+			setItems(data.data.items);
+		}
+	}, [data, isSuccess]);
 
-    return {
-        items,
-        isSuccess,
-    };
+	return {
+		items,
+		isSuccess,
+	};
 };
 
 type UseCreateItemConfig = {
-    onSuccess?: () => void,
-    onError?: (error: Error) => void,
+	onSuccess?: () => void;
+	onError?: (error: Error) => void;
 };
 
 export const useCreateItem = (config?: UseCreateItemConfig) => {
-    const queryClient = useQueryClient();
+	const queryClient = useQueryClient();
 
-    const createItemFn = async ({ item, wishlistId }: { item: ItemInputType, wishlistId: number }) => {
-        await axiosInstance.post("/item", {
-            ...item,
-            wishlistId,
-        });
+	const createItemFn = async ({ item, wishlistId }: { item: ItemInputType; wishlistId: number }) => {
+		await axiosInstance.post("/item", {
+			...item,
+			wishlistId,
+		});
 
-        queryClient.invalidateQueries({ queryKey: ["items", wishlistId] });
-    };
+		queryClient.invalidateQueries({ queryKey: ["items", wishlistId] });
+	};
 
-    const createItemMutation = useMutation({
-        mutationFn: createItemFn,
-        onSuccess: () => {
-            if (config?.onSuccess) {
-                config.onSuccess();
-            }
-        },
-        onError: (error: Error) => {
-            if (config?.onError) {
-                config.onError(error);
-            }
-        }
-    });
+	const createItemMutation = useMutation({
+		mutationFn: createItemFn,
+		onSuccess: () => {
+			if (config?.onSuccess) {
+				config.onSuccess();
+			}
+		},
+		onError: (error: Error) => {
+			if (config?.onError) {
+				config.onError(error);
+			}
+		},
+	});
 
-    const createItem = (item: ItemInputType, wishlistId: number) => {
-        createItemMutation.mutate({ item, wishlistId });
-    };
+	const createItem = (item: ItemInputType, wishlistId: number) => {
+		createItemMutation.mutate({ item, wishlistId });
+	};
 
-    return { createItem };
+	return { createItem };
 };
 
 type UseDeleteItemConfig = {
-    onSuccess?: () => void,
-    onError?: (error: Error) => void,
+	onSuccess?: () => void;
+	onError?: (error: Error) => void;
 };
 
 export const useDeleteItem = (config?: UseDeleteItemConfig) => {
-    const queryClient = useQueryClient();
+	const queryClient = useQueryClient();
 
-    const deleteItemFn = async (item: ItemType) => {
-        await axiosInstance.delete(`/item/${item.id}`);
-        invalidateItems(queryClient, item.wishlist);
-    };
+	const deleteItemFn = async (item: ItemType) => {
+		await axiosInstance.delete(`/item/${item.id}`);
+		invalidateItems(queryClient, item.wishlist);
+	};
 
-    const deleteItemMutation = useMutation({
-        mutationFn: deleteItemFn,
-        onSuccess: () => {
-            if (config?.onSuccess) {
-                config.onSuccess();
-            }
-        },
-        onError: (error: Error) => {
-            if (config?.onError) {
-                config.onError(error);
-            }
-        }
-    });
+	const deleteItemMutation = useMutation({
+		mutationFn: deleteItemFn,
+		onSuccess: () => {
+			if (config?.onSuccess) {
+				config.onSuccess();
+			}
+		},
+		onError: (error: Error) => {
+			if (config?.onError) {
+				config.onError(error);
+			}
+		},
+	});
 
-    const deleteItem = (item: ItemType) => {
-        deleteItemMutation.mutate(item);
-    };
+	const deleteItem = (item: ItemType) => {
+		deleteItemMutation.mutate(item);
+	};
 
-    return { deleteItem };
+	return { deleteItem };
 };
 
 type UseUpdateItemConfig = {
-    onSuccess?: () => void,
-    onError?: (error: Error) => void,
+	onSuccess?: () => void;
+	onError?: (error: Error) => void;
 };
 
 export const useUpdateItem = (config?: UseUpdateItemConfig) => {
-    const queryClient = useQueryClient();
+	const queryClient = useQueryClient();
 
-    const updateItemFn = async ({ id, data }: { id: number, data: ItemInputType }) => {
-        await axiosInstance.patch(`/item/${id}`, data);
-        invalidateItem(queryClient, id);
-    };
+	const updateItemFn = async ({ id, data }: { id: number; data: ItemInputType }) => {
+		await axiosInstance.patch(`/item/${id}`, data);
+		invalidateItem(queryClient, id);
+	};
 
-    const updateItemMutation = useMutation({
-        mutationFn: updateItemFn,
-        onSuccess: () => {
-            if (config?.onSuccess) {
-                config.onSuccess();
-            }
-        },
-        onError: (error: Error) => {
-            if (config?.onError) {
-                config.onError(error);
-            }
-        },
-    });
+	const updateItemMutation = useMutation({
+		mutationFn: updateItemFn,
+		onSuccess: () => {
+			if (config?.onSuccess) {
+				config.onSuccess();
+			}
+		},
+		onError: (error: Error) => {
+			if (config?.onError) {
+				config.onError(error);
+			}
+		},
+	});
 
-    const updateItem = (id: number, data: ItemInputType) => {
-        updateItemMutation.mutate({ id, data });
-    };
+	const updateItem = (id: number, data: ItemInputType) => {
+		updateItemMutation.mutate({ id, data });
+	};
 
-    return updateItem;
+	return updateItem;
 };
 
 const itemQueryKey = (id: number) => {
-    return ["item", id];
+	return ["item", id];
 };
 
 const itemsQueryKey = (id: number) => {
-    return ["items", id];
+	return ["items", id];
 };
 
 const itemOwnerQueryKey = (id: number) => {
-    return ["itemOwner", id];
+	return ["itemOwner", id];
 };
 
 const itemReservationQueryKey = (id: number) => {
-    return ["item", id];
+	return ["item", id];
 };
 
 const invalidateItems = (queryClient: QueryClient, wishlistId: number) => {
-    queryClient.invalidateQueries({ queryKey: itemsQueryKey(wishlistId) });
+	queryClient.invalidateQueries({ queryKey: itemsQueryKey(wishlistId) });
 };
 
 const invalidateItem = (queryClient: QueryClient, id: number) => {
-    queryClient.invalidateQueries({ queryKey: itemQueryKey(id) });
-    queryClient.invalidateQueries({ queryKey: itemOwnerQueryKey(id) });
-    queryClient.invalidateQueries({ queryKey: itemReservationQueryKey(id) });
+	queryClient.invalidateQueries({ queryKey: itemQueryKey(id) });
+	queryClient.invalidateQueries({ queryKey: itemOwnerQueryKey(id) });
+	queryClient.invalidateQueries({ queryKey: itemReservationQueryKey(id) });
 };

@@ -3,39 +3,39 @@ import axiosInstance from "../axiosInstance";
 import { useAuth } from "../contexts/AuthContext";
 
 type UseLogoutConfig = {
-    onSuccess?: () => void,
-    onError?: (error: Error) => void,
+	onSuccess?: () => void;
+	onError?: (error: Error) => void;
 };
 
 const logout = async (userId: number): Promise<void> => {
-    return (await axiosInstance.post("/auth/logout", {
-        userId,
-    }));
-}
+	return await axiosInstance.post("/auth/logout", {
+		userId,
+	});
+};
 
 export const useLogout = (config?: UseLogoutConfig) => {
-    const { setIsAuthenticated, userId, setUserId } = useAuth();
+	const { setIsAuthenticated, userId, setUserId } = useAuth();
 
-    const mutation = useMutation({
-        mutationFn: () => logout(userId!),
-        onSuccess: () => {
-            localStorage.removeItem("accessToken");
-            localStorage.removeItem("refreshToken");
-            setIsAuthenticated(false);
-            setUserId(undefined);
+	const mutation = useMutation({
+		mutationFn: () => logout(userId!),
+		onSuccess: () => {
+			localStorage.removeItem("accessToken");
+			localStorage.removeItem("refreshToken");
+			setIsAuthenticated(false);
+			setUserId(undefined);
 
-            if (config?.onSuccess) {
-                config.onSuccess();
-            }
-        },
-        onError: (error: Error) => {
-            console.error("Logout failed:", error);
+			if (config?.onSuccess) {
+				config.onSuccess();
+			}
+		},
+		onError: (error: Error) => {
+			console.error("Logout failed:", error);
 
-            if (config?.onError) {
-                config.onError(error);
-            }
-        },
-    });
+			if (config?.onError) {
+				config.onError(error);
+			}
+		},
+	});
 
-    return { logout: mutation.mutate, ...mutation };
+	return { logout: mutation.mutate, ...mutation };
 };

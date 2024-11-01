@@ -1,6 +1,6 @@
 type WishlistTypeType = {
-    id: number;
-    name: string;
+	id: number;
+	name: string;
 };
 
 export default WishlistTypeType;

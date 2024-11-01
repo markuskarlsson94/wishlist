@@ -1,20 +1,20 @@
 {
-  "name": "wishlist",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/markuskarlsson94/wishlist.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/markuskarlsson94/wishlist/issues"
-  },
-  "homepage": "https://github.com/markuskarlsson94/wishlist#readme"
+	"name": "wishlist",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/markuskarlsson94/wishlist.git"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/markuskarlsson94/wishlist/issues"
+	},
+	"homepage": "https://github.com/markuskarlsson94/wishlist#readme"
 }

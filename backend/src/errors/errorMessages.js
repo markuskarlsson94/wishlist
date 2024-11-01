@@ -1,308 +1,308 @@
 const errorMessages = {
-    userAlreadyExists: {
-        status: 400,
-        message: "User already exists",
-    },
+	userAlreadyExists: {
+		status: 400,
+		message: "User already exists",
+	},
 
-    wishlistTypeNotFound: {
-        status: 400,
-        message: "Wishlist type not found",
-    },
+	wishlistTypeNotFound: {
+		status: 400,
+		message: "Wishlist type not found",
+	},
 
-    userNotFound: {
-        status: 404,
-        message: "User not found",
-    },
+	userNotFound: {
+		status: 404,
+		message: "User not found",
+	},
 
-    wishlistNotFound: {
-        status: 404,
-        message: "Wishlist not found",
-    },
+	wishlistNotFound: {
+		status: 404,
+		message: "Wishlist not found",
+	},
 
-    wishlistItemNotFound: {
-        status: 404,
-        message: "Wishlist item not found",
-    },
+	wishlistItemNotFound: {
+		status: 404,
+		message: "Wishlist item not found",
+	},
 
-    reservationNotFound: {
-        status: 404,
-        message: "Reservation not found",
-    },
+	reservationNotFound: {
+		status: 404,
+		message: "Reservation not found",
+	},
 
-    refreshTokenRequired: {
-        status: 400,
-        message: "Refresh token required",
-    },
+	refreshTokenRequired: {
+		status: 400,
+		message: "Refresh token required",
+	},
 
-    commentNotFound: {
-        status: 400,
-        message: "Comment not found",
-    },
+	commentNotFound: {
+		status: 400,
+		message: "Comment not found",
+	},
 
-    passwordsDontMatch: {
-        status: 400,
-        message: "New passwords do not match"
-    },
+	passwordsDontMatch: {
+		status: 400,
+		message: "New passwords do not match",
+	},
 
-    oldPasswordIncorrect: {
-        status: 400,
-        message: "Old password is incorrect",
-    },
+	oldPasswordIncorrect: {
+		status: 400,
+		message: "Old password is incorrect",
+	},
 
-    unableToAddItem: {
-        status: 400,
-        message: "Unable to add item",
-    },
+	unableToAddItem: {
+		status: 400,
+		message: "Unable to add item",
+	},
 
-    unableToAddLessThanOneItem: {
-        status: 400,
-        message: "Unable to add less than one item",
-    },
+	unableToAddLessThanOneItem: {
+		status: 400,
+		message: "Unable to add less than one item",
+	},
 
-    amountToReserveTooSmall: {
-        status: 400,
-        message: "Amount to reserve is too small",
-    },
+	amountToReserveTooSmall: {
+		status: 400,
+		message: "Amount to reserve is too small",
+	},
 
-    amountToReserveTooLarge: {
-        status: 400,
-        message: "Amount to reserve is too large",
-    },
+	amountToReserveTooLarge: {
+		status: 400,
+		message: "Amount to reserve is too large",
+	},
 
-    unableToReserveOwnItem: {
-        status: 400,
-        message: "Unable to reserve own item",
-    },
+	unableToReserveOwnItem: {
+		status: 400,
+		message: "Unable to reserve own item",
+	},
 
-    itemAlreadyReservedByUser: {
-        status: 400,
-        message: "Item already reserved by user",
-    },
-    
-    userAlreadyAddedAsFriend: {
-        status: 400,
-        message: "User already added as friend",
-    },
+	itemAlreadyReservedByUser: {
+		status: 400,
+		message: "Item already reserved by user",
+	},
 
-    unableToRemoveFriend: {
-        status: 400,
-        message: "Unable to remove friend",
-    },
+	userAlreadyAddedAsFriend: {
+		status: 400,
+		message: "User already added as friend",
+	},
 
-    unableToAddSameUserAsFriend: {
-        status: 400,
-        message: "Unable to add same user as friend",
-    },
-    
-    unableToRemoveSameUserAsFriend: {
-        status: 400,
-        message: "Unable to remove same user as friend",
-    },
+	unableToRemoveFriend: {
+		status: 400,
+		message: "Unable to remove friend",
+	},
 
-    unableToCreateFriendRequestWithSelf: {
-        status: 400,
-        message: "Unable to create friend request with self",
-    },
+	unableToAddSameUserAsFriend: {
+		status: 400,
+		message: "Unable to add same user as friend",
+	},
 
-    userQueryTooShort: {
-        status: 400,
-        message: "User query too short",
-    },
+	unableToRemoveSameUserAsFriend: {
+		status: 400,
+		message: "Unable to remove same user as friend",
+	},
 
-    missingItemProperties: {
-        status: 400,
-        message: "Missing item properties",
-    },
+	unableToCreateFriendRequestWithSelf: {
+		status: 400,
+		message: "Unable to create friend request with self",
+	},
 
-    invalidEmailOrPassword: {
-        status: 403,
-        message: "Invalid email or password",
-    },
+	userQueryTooShort: {
+		status: 400,
+		message: "User query too short",
+	},
 
-    invalidRefreshToken: {
-        status: 401,
-        message: "Invalid refresh token",
-    },
+	missingItemProperties: {
+		status: 400,
+		message: "Missing item properties",
+	},
 
-    unauthorizedToDeleteOtherUser: {
-        status: 401,
-        message: "Unauthorized to delete other user",
-    },
+	invalidEmailOrPassword: {
+		status: 403,
+		message: "Invalid email or password",
+	},
 
-    unauthorizedToAddWishlist: {
-        status: 401,
-        message: "Unauthorized to add wishlist",
-    },
+	invalidRefreshToken: {
+		status: 401,
+		message: "Invalid refresh token",
+	},
 
-    unauthorizedToDeleteWishlist: {
-        status: 401,
-        message: "Unauthorized to delete wishlist",
-    },
+	unauthorizedToDeleteOtherUser: {
+		status: 401,
+		message: "Unauthorized to delete other user",
+	},
 
-    unauthorizedToUpdateWishlist: {
-        status: 401,
-        message: "Unauthorized to update wishlist",
-    },
-    
-    unauthorizedToUpdateWishlistItem: {
-        status: 401,
-        message: "Unauthorized to update wishlist item",
-    },
+	unauthorizedToAddWishlist: {
+		status: 401,
+		message: "Unauthorized to add wishlist",
+	},
 
-    unauthorizedToClearReservations: {
-        status: 401,
-        message: "Unauthorized to clear reservations",
-    },
+	unauthorizedToDeleteWishlist: {
+		status: 401,
+		message: "Unauthorized to delete wishlist",
+	},
 
-    unauthorizedToRemoveReservation: {
-        status: 401,
-        message: "Unauthorized to remove reservation",
-    },
+	unauthorizedToUpdateWishlist: {
+		status: 401,
+		message: "Unauthorized to update wishlist",
+	},
 
-    unauthorizedToViewReservations: {
-        status: 401,
-        message: "Unauthorized to view reservations",
-    },
+	unauthorizedToUpdateWishlistItem: {
+		status: 401,
+		message: "Unauthorized to update wishlist item",
+	},
 
-    unauthorizedToAddFriend: {
-        status: 401,
-        message: "Unauthorized to add friend",
-    },
-    
-    unauthorizedToRemoveFriend: {
-        status: 401,
-        message: "Unauthorized to remove friend",
-    },
+	unauthorizedToClearReservations: {
+		status: 401,
+		message: "Unauthorized to clear reservations",
+	},
 
-    unauthorizedToViewFriends: {
-        status: 401,
-        message: "Unauthorized to view friends",
-    },
+	unauthorizedToRemoveReservation: {
+		status: 401,
+		message: "Unauthorized to remove reservation",
+	},
 
-    unauthorizedToCreateFriendRequest: {
-        status: 401,
-        message: "Unauthorized to create friend request",
-    },
-    
-    unauthorizedToRemoveFriendRequest: {
-        status: 401,
-        message: "Unauthorized to remove friend request",
-    },
-    
-    unauthorizedToAcceptFriendRequest: {
-        status: 401,
-        message: "Unauthorized to accept friend request",
-    },
+	unauthorizedToViewReservations: {
+		status: 401,
+		message: "Unauthorized to view reservations",
+	},
 
-    unauthorizedToGetFriendRequest: {
-        status: 401,
-        message: "Unauthorized to get friend request",
-    },
-    
-    unauthorizedToGetFriendRequests: {
-        status: 401,
-        message: "Unauthorized to get friend requests",
-    },
+	unauthorizedToAddFriend: {
+		status: 401,
+		message: "Unauthorized to add friend",
+	},
 
-    unauthorizedToAddComment: {
-        status: 401,
-        message: "Unauthorized to add comment",
-    },
-    
-    unauthorizedToRemoveComment: {
-        status: 401,
-        message: "Unauthorized to remove comment",
-    },
-    
-    unauthorizedToUpdateComment: {
-        status: 401,
-        message: "Unauthorized to update comment",
-    },
-    
-    unauthorizedToGetComments: {
-        status: 401,
-        message: "Unauthorized to get comments",
-    },
+	unauthorizedToRemoveFriend: {
+		status: 401,
+		message: "Unauthorized to remove friend",
+	},
 
-    unauthorizedToLogout: {
-        status: 401,
-        message: "Unauthorized to logout",
-    },
-    
-    serverError: {
-        status: 500,
-        message: "Server error",
-    },
+	unauthorizedToViewFriends: {
+		status: 401,
+		message: "Unauthorized to view friends",
+	},
 
-    unableToAddNewUser: {
-        status: 500,
-        message: "Unable to add new user",
-    },
+	unauthorizedToCreateFriendRequest: {
+		status: 401,
+		message: "Unauthorized to create friend request",
+	},
 
-    unableToCreateWishlist: {
-        status: 500,
-        message: "Unable to create wishlist",
-    },
+	unauthorizedToRemoveFriendRequest: {
+		status: 401,
+		message: "Unauthorized to remove friend request",
+	},
 
-    unableToGetWishlistsForUser: {
-        status: 500,
-        message: "Unable to get wishlists for user",
-    },
+	unauthorizedToAcceptFriendRequest: {
+		status: 401,
+		message: "Unauthorized to accept friend request",
+	},
 
-    unableToCreateFriendRequest: {
-        status: 500,
-        message: "Unable to create friend request",
-    },
-    
-    unableToRemoveFriendRequest: {
-        status: 500,
-        message: "Unable to remove friend request",
-    },
-    
-    unableToAcceptFriendRequest: {
-        status: 500,
-        message: "Unable to accept friend request",
-    },
-    
-    unableToGetFriendRequest: {
-        status: 500,
-        message: "Unable to get friend request",
-    },
+	unauthorizedToGetFriendRequest: {
+		status: 401,
+		message: "Unauthorized to get friend request",
+	},
 
-    unableToGetFriendRequests: {
-        status: 500,
-        message: "Unable to get friend requests",
-    },
+	unauthorizedToGetFriendRequests: {
+		status: 401,
+		message: "Unauthorized to get friend requests",
+	},
 
-    unableToGetUsers: {
-        status: 500,
-        message: "Unable to get users",
-    },
+	unauthorizedToAddComment: {
+		status: 401,
+		message: "Unauthorized to add comment",
+	},
 
-    unableToAddComment: {
-        status: 500,
-        message: "Unable to add comment",
-    },
+	unauthorizedToRemoveComment: {
+		status: 401,
+		message: "Unauthorized to remove comment",
+	},
 
-    unableToUpdateComment: {
-        status: 500,
-        message: "Unable to update comment",
-    },
-    
-    unableToRemoveComment: {
-        status: 500,
-        message: "Unable to remove comment",
-    },
+	unauthorizedToUpdateComment: {
+		status: 401,
+		message: "Unauthorized to update comment",
+	},
 
-    unableToGetComments: {
-        status: 500,
-        message: "Unable to get comments",
-    },
+	unauthorizedToGetComments: {
+		status: 401,
+		message: "Unauthorized to get comments",
+	},
 
-    unableToLogout: {
-        status: 500,
-        message: "Unable to logout",
-    },
+	unauthorizedToLogout: {
+		status: 401,
+		message: "Unauthorized to logout",
+	},
+
+	serverError: {
+		status: 500,
+		message: "Server error",
+	},
+
+	unableToAddNewUser: {
+		status: 500,
+		message: "Unable to add new user",
+	},
+
+	unableToCreateWishlist: {
+		status: 500,
+		message: "Unable to create wishlist",
+	},
+
+	unableToGetWishlistsForUser: {
+		status: 500,
+		message: "Unable to get wishlists for user",
+	},
+
+	unableToCreateFriendRequest: {
+		status: 500,
+		message: "Unable to create friend request",
+	},
+
+	unableToRemoveFriendRequest: {
+		status: 500,
+		message: "Unable to remove friend request",
+	},
+
+	unableToAcceptFriendRequest: {
+		status: 500,
+		message: "Unable to accept friend request",
+	},
+
+	unableToGetFriendRequest: {
+		status: 500,
+		message: "Unable to get friend request",
+	},
+
+	unableToGetFriendRequests: {
+		status: 500,
+		message: "Unable to get friend requests",
+	},
+
+	unableToGetUsers: {
+		status: 500,
+		message: "Unable to get users",
+	},
+
+	unableToAddComment: {
+		status: 500,
+		message: "Unable to add comment",
+	},
+
+	unableToUpdateComment: {
+		status: 500,
+		message: "Unable to update comment",
+	},
+
+	unableToRemoveComment: {
+		status: 500,
+		message: "Unable to remove comment",
+	},
+
+	unableToGetComments: {
+		status: 500,
+		message: "Unable to get comments",
+	},
+
+	unableToLogout: {
+		status: 500,
+		message: "Unable to logout",
+	},
 };
 
 export default errorMessages;

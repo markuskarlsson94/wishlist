@@ -3,20 +3,20 @@ import axiosInstance from "../axiosInstance";
 import WishlistTypeType from "../types/WishlistTypeType";
 
 type WishlistTypesRespons = {
-    data: {
-        types: WishlistTypeType[]
-    }
+	data: {
+		types: WishlistTypeType[];
+	};
 };
 
 const useWishlistTypes = () => {
-    const { data, ...rest } = useQuery<WishlistTypesRespons>({
-        queryKey: ["wishlistTypes"],
-        queryFn: () => axiosInstance.get("wishlist/types"),
-    });
+	const { data, ...rest } = useQuery<WishlistTypesRespons>({
+		queryKey: ["wishlistTypes"],
+		queryFn: () => axiosInstance.get("wishlist/types"),
+	});
 
-    const types = data?.data.types ?? [];
+	const types = data?.data.types ?? [];
 
-    return { types, ...rest };
+	return { types, ...rest };
 };
 
 export default useWishlistTypes;
