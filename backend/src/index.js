@@ -34,3 +34,9 @@ app.listen(port, () => {
 
 await initUserRoles();
 await initWishlistTypes();
+
+const resetDB = false;
+if (resetDB) {
+	await db.init();
+	await db.populate();
+}
