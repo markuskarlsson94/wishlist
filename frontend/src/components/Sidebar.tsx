@@ -5,7 +5,7 @@ const Sidebar = () => {
 	const { userId } = useAuth();
 
 	return (
-		<>
+		<div className="bg-white flex flex-col self-start p-3">
 			<div>
 				<NavLink to={`user/${userId}/wishlists`}>Wishlists</NavLink>
 			</div>
@@ -18,7 +18,7 @@ const Sidebar = () => {
 			<div>
 				<NavLink to={"/users"}>Users</NavLink>
 			</div>
-		</>
+		</div>
 	);
 };
 

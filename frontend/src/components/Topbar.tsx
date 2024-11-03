@@ -1,9 +1,5 @@
 const Topbar = () => {
-	return (
-		<>
-			<h2>Topbar</h2>
-		</>
-	);
+	return <div className="h-[50px] bg-slate-500"></div>;
 };
 
 export default Topbar;
