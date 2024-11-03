@@ -1,6 +1,7 @@
 import { useNavigate, NavLink } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { useLogout } from "../hooks/useLogout";
+import RoundedRect from "./RoundedRect";
 
 const Home = () => {
 	const navigate = useNavigate();
@@ -17,7 +18,7 @@ const Home = () => {
 	};
 
 	return (
-		<>
+		<RoundedRect>
 			<h2>Home</h2>
 			<p>Welcome!</p>
 			<button onClick={handleLogout} disabled={!userId}>
@@ -26,7 +27,7 @@ const Home = () => {
 			{<div>User id: {userId}</div>}
 			{isAuthenticated ? <div>authenticated</div> : <div>not authenticated</div>}
 			<NavLink to={`/user/${userId}/wishlists`}>Wishlists</NavLink>
-		</>
+		</RoundedRect>
 	);
 };
 

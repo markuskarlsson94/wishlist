@@ -10,6 +10,7 @@ import { useAddComment, useGetComments } from "../hooks/comment";
 import AddCommentForm from "../forms/AddCommentForm";
 import CommentInputType from "../types/CommentInputType";
 import Comment from "./Comment";
+import RoundedRect from "./RoundedRect";
 
 const Item = () => {
 	const [isOwner, setIsOwner] = useState<boolean>(false);
@@ -96,7 +97,7 @@ const Item = () => {
 	};
 
 	return (
-		<>
+		<RoundedRect>
 			<h2>Item</h2>
 			<button onClick={handleBack}>Back</button>
 			<h3>{item?.title}</h3>
@@ -107,7 +108,9 @@ const Item = () => {
 				</div>
 			)}
 			<h3>Comments</h3>
-			{comments?.map((comment) => <Comment key={comment.id} comment={comment} itemId={id} />)}
+			{comments?.map((comment) => (
+				<Comment key={comment.id} comment={comment} itemId={id} />
+			))}
 			{AddCommentForm(handleAddComment)}
 			{isOwner &&
 				(showUpdateItem ? (
@@ -117,7 +120,7 @@ const Item = () => {
 				))}
 			{isOwner && <button onClick={handleDelete}>Delete item</button>}
 			{!isOwner && (item?.reservation ? unreserveButton() : reserveButton())}
-		</>
+		</RoundedRect>
 	);
 };
 

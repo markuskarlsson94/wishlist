@@ -8,6 +8,7 @@ import {
 import { useAuth } from "../contexts/AuthContext";
 import { useDeleteFriend, useGetFriends } from "../hooks/friend";
 import { useGetUser } from "../hooks/user";
+import RoundedRect from "./RoundedRect";
 
 const User = () => {
 	const params = useParams<{ userId: string }>();
@@ -61,7 +62,7 @@ const User = () => {
 	};
 
 	return (
-		<>
+		<RoundedRect>
 			<h2>User</h2>
 			<p>
 				{user?.firstName} {user?.lastName}
@@ -73,7 +74,7 @@ const User = () => {
 			<div>
 				<NavLink to={`/user/${userId}/friends`}>Friends</NavLink>
 			</div>
-		</>
+		</RoundedRect>
 	);
 };
 

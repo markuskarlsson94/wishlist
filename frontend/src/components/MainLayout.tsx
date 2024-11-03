@@ -10,7 +10,7 @@ const MainLayout = () => {
 				<Topbar />
 				<div className="flex flex-grow flex-row mx-auto space-x-4 my-4">
 					<Sidebar />
-					<div className="w-[600px] bg-white">
+					<div className="w-[600px]">
 						<Outlet />
 					</div>
 				</div>

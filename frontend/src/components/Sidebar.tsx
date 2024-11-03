@@ -1,11 +1,12 @@
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import RoundedRect from "./RoundedRect";
 
 const Sidebar = () => {
 	const { userId } = useAuth();
 
 	return (
-		<div className="bg-white flex flex-col self-start p-3">
+		<RoundedRect className="flex flex-col self-start">
 			<div>
 				<NavLink to={`user/${userId}/wishlists`}>Wishlists</NavLink>
 			</div>
@@ -18,7 +19,7 @@ const Sidebar = () => {
 			<div>
 				<NavLink to={"/users"}>Users</NavLink>
 			</div>
-		</div>
+		</RoundedRect>
 	);
 };
 

@@ -3,6 +3,7 @@ import { useNavigate, NavLink } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import axiosInstance from "../axiosInstance";
 import UserType from "../types/UserType";
+import RoundedRect from "./RoundedRect";
 
 const Users = () => {
 	const [users, setUsers] = useState<UserType[]>([]);
@@ -34,11 +35,11 @@ const Users = () => {
 	};
 
 	return (
-		<>
+		<RoundedRect>
 			<h2>Users</h2>
 			<button onClick={handleBack}>Back</button>
 			{users.map((user) => User(user))}
-		</>
+		</RoundedRect>
 	);
 };
 

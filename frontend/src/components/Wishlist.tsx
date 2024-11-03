@@ -8,6 +8,7 @@ import { useDeleteWishlist, useGetWishlist, useUpdateWishlist } from "../hooks/w
 import WishlistForm from "../forms/WishlistForm";
 import useWishlistTypes from "../hooks/useWishlistTypes";
 import WishlistInputType from "../types/WishlistInputType";
+import RoundedRect from "./RoundedRect";
 
 const Wishlist = () => {
 	const [isOwner, setIsOwner] = useState<boolean>(false);
@@ -94,7 +95,7 @@ const Wishlist = () => {
 	};
 
 	return (
-		<>
+		<RoundedRect>
 			<h2>Wishlist</h2>
 			<button onClick={handleBack}>Back</button>
 			<h3>{wishlist?.title}</h3>
@@ -115,7 +116,7 @@ const Wishlist = () => {
 					<button onClick={handleDeleteWishlist}>Delete wishlist</button>
 				</>
 			)}
-		</>
+		</RoundedRect>
 	);
 };
 

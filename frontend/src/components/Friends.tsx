@@ -4,6 +4,7 @@ import FriendRequest from "../types/FriendRequesstType";
 import { useAuth } from "../contexts/AuthContext";
 import { useGetUser } from "../hooks/user";
 import { useGetFriends } from "../hooks/friend";
+import RoundedRect from "./RoundedRect";
 
 const ReceivedFriendRequest = ({ friendRequest }: { friendRequest: FriendRequest }) => {
 	const { userId } = useAuth();
@@ -89,7 +90,7 @@ const Friends = () => {
 	};
 
 	return (
-		<>
+		<RoundedRect>
 			<h2>Friends</h2>
 			<button onClick={handleBack}>Back</button>
 			{viewer === userId && friendRequests()}
@@ -97,7 +98,7 @@ const Friends = () => {
 			{friends.map((friend) => (
 				<Friend key={friend} friend={friend} />
 			))}
-		</>
+		</RoundedRect>
 	);
 };
 

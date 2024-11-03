@@ -6,6 +6,7 @@ import WishlistInputType from "../types/WishlistInputType";
 import useWishlistTypes from "../hooks/useWishlistTypes";
 import { useAuth } from "../contexts/AuthContext";
 import { useCreateWishlist, useGetWishlists } from "../hooks/wishlist";
+import RoundedRect from "./RoundedRect";
 
 const Wishlists = () => {
 	const [showCreate, setShowCreate] = useState<boolean>(false);
@@ -51,7 +52,7 @@ const Wishlists = () => {
 	};
 
 	return (
-		<>
+		<RoundedRect>
 			<h2>Wishlists</h2>
 			<button onClick={handleBack}>Back</button>
 			<div>{wishlists?.map((wishlist) => Wishlist(wishlist))}</div>
@@ -66,7 +67,7 @@ const Wishlists = () => {
 					)}
 				</>
 			)}
-		</>
+		</RoundedRect>
 	);
 };
 

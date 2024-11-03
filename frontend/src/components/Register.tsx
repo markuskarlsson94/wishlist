@@ -4,6 +4,7 @@ import useRegister from "../hooks/register";
 import RegisterInputType from "../types/RegisterInputType";
 import { AxiosError } from "axios";
 import { useState } from "react";
+import RoundedRect from "./RoundedRect";
 
 const Register = () => {
 	const [showError, setShowError] = useState<boolean>(false);
@@ -24,12 +25,14 @@ const Register = () => {
 	};
 
 	return (
-		<>
-			<h2>Register</h2>
-			{RegisterForm(handleRegister)}
-			<NavLink to={"/"}>Login</NavLink>
-			{showError && <p>User already exists</p>}
-		</>
+		<div className="bg-slate-200 flex min-h-screen">
+			<RoundedRect className="self-start">
+				<h2>Register</h2>
+				{RegisterForm(handleRegister)}
+				<NavLink to={"/"}>Login</NavLink>
+				{showError && <p>User already exists</p>}
+			</RoundedRect>
+		</div>
 	);
 };
 
