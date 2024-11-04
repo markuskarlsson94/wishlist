@@ -25,7 +25,7 @@ const Register = () => {
 	};
 
 	return (
-		<div className="bg-slate-200 flex min-h-screen">
+		<div className="bg-gray-200 flex min-h-screen">
 			<RoundedRect className="self-start">
 				<h2>Register</h2>
 				{RegisterForm(handleRegister)}

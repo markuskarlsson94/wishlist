@@ -6,7 +6,7 @@ import Bottombar from "./Bottombar";
 const MainLayout = () => {
 	return (
 		<>
-			<div className="bg-slate-200 flex flex-col min-h-screen">
+			<div className="bg-gray-200 flex flex-col min-h-screen">
 				<Topbar />
 				<div className="flex flex-grow flex-row mx-auto space-x-4 my-4">
 					<Sidebar />
