@@ -59,19 +59,15 @@ const WishlistForm = (config: WishlistFormConfig) => {
 					<FormField
 						control={form.control}
 						name="title"
-						render={({ field }) => {
-							console.log("field:", field);
-
-							return (
-								<FormItem>
-									<FormLabel>Title*</FormLabel>
-									<FormControl>
-										<Input placeholder="Title" {...field} />
-									</FormControl>
-									<FormMessage />
-								</FormItem>
-							);
-						}}
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel>Title*</FormLabel>
+								<FormControl>
+									<Input placeholder="Title" {...field} />
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
 					/>
 					<FormField
 						control={form.control}
