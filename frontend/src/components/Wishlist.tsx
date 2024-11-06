@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import ItemInputType from "../types/ItemInputType";
 import { useParams, useNavigate, NavLink } from "react-router-dom";
-import ItemForm from "../forms/ItemForm";
 import { useAuth } from "../contexts/AuthContext";
 import { useCreateItem, useGetItems } from "../hooks/item";
 import { useDeleteWishlist, useGetWishlist, useUpdateWishlist } from "../hooks/wishlist";
@@ -9,6 +8,7 @@ import useWishlistTypes from "../hooks/useWishlistTypes";
 import WishlistInputType from "../types/WishlistInputType";
 import RoundedRect from "./RoundedRect";
 import WishlistDialog from "./WishlistDialog";
+import ItemDialog from "./ItemDialog";
 
 const Wishlist = () => {
 	const [isOwner, setIsOwner] = useState<boolean>(false);
@@ -23,7 +23,6 @@ const Wishlist = () => {
 			navigate(`/user/${userId}/wishlists`, { replace: true });
 		},
 	});
-	const [showCreateItem, setShowCreateItem] = useState<boolean>(false);
 	const { items } = useGetItems(id);
 	const { createItem } = useCreateItem();
 	const { types } = useWishlistTypes();
@@ -42,24 +41,8 @@ const Wishlist = () => {
 		);
 	};
 
-	const handleShowCreateItem = () => {
-		setShowCreateItem(true);
-	};
-
-	const handleAddItem = (item: ItemInputType) => {
-		if (wishlist) {
-			createItem(item, wishlist.id);
-		}
-
-		setShowCreateItem(false);
-	};
-
 	const handleDeleteWishlist = () => {
 		deleteWishlist(id);
-	};
-
-	const handleCancel = () => {
-		setShowCreateItem(false);
 	};
 
 	const handleBack = () => {
@@ -70,6 +53,10 @@ const Wishlist = () => {
 		title: "",
 		description: "",
 		link: "",
+	};
+
+	const onSubmitItem = (input: ItemInputType) => {
+		if (wishlist) createItem(input, wishlist.id);
 	};
 
 	const onSubmit = (input: WishlistInputType) => {
@@ -91,11 +78,14 @@ const Wishlist = () => {
 			{items?.map((item) => Item(item))}
 			{isOwner && (
 				<>
-					{showCreateItem ? (
-						ItemForm(itemValues, handleAddItem, handleCancel)
-					) : (
-						<button onClick={handleShowCreateItem}>Add item</button>
-					)}
+					<ItemDialog
+						config={{
+							title: "Add item",
+							submitButtonTitle: "Add",
+							onSubmit: onSubmitItem,
+							values: itemValues,
+						}}
+					/>
 					<WishlistDialog
 						config={{
 							title: "Edit wishlist",

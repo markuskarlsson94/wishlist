@@ -4,17 +4,16 @@ import { useAuth } from "../contexts/AuthContext";
 import { useGetItem, useDeleteItem, useUpdateItem } from "../hooks/item";
 import { useCreateReservation, useDeleteReservation } from "../hooks/reservation";
 import ItemInputType from "../types/ItemInputType";
-import ItemForm from "../forms/ItemForm";
 import { NavLink } from "react-router-dom";
 import { useAddComment, useGetComments } from "../hooks/comment";
 import AddCommentForm from "../forms/AddCommentForm";
 import CommentInputType from "../types/CommentInputType";
 import Comment from "./Comment";
 import RoundedRect from "./RoundedRect";
+import ItemDialog from "./ItemDialog";
 
 const Item = () => {
 	const [isOwner, setIsOwner] = useState<boolean>(false);
-	const [showUpdateItem, setShowUpdateItem] = useState<boolean>(false);
 	const params = useParams<{ id: string }>();
 	const id = Number(params.id);
 	const navigate = useNavigate();
@@ -70,24 +69,12 @@ const Item = () => {
 		return <button onClick={handleUnreserve}>Unreserve</button>;
 	};
 
-	const handleShowUpdateItem = () => {
-		setShowUpdateItem(true);
-	};
-
-	const handleUpdateItem = (data: ItemInputType) => {
-		if (item) {
-			updateItem(item.id, data);
-		}
-
-		setShowUpdateItem(false);
-	};
-
-	const handleCancel = () => {
-		setShowUpdateItem(false);
-	};
-
 	const handleAddComment = (data: CommentInputType) => {
 		addComment(data.comment);
+	};
+
+	const onSubmitItem = (input: ItemInputType) => {
+		if (item) updateItem(item.id, input);
 	};
 
 	const itemValues: ItemInputType = {
@@ -112,12 +99,16 @@ const Item = () => {
 				<Comment key={comment.id} comment={comment} itemId={id} />
 			))}
 			{AddCommentForm(handleAddComment)}
-			{isOwner &&
-				(showUpdateItem ? (
-					ItemForm(itemValues, handleUpdateItem, handleCancel)
-				) : (
-					<button onClick={handleShowUpdateItem}>Update item</button>
-				))}
+			{isOwner && (
+				<ItemDialog
+					config={{
+						title: "Edit item",
+						submitButtonTitle: "Edit",
+						onSubmit: onSubmitItem,
+						values: itemValues,
+					}}
+				/>
+			)}
 			{isOwner && <button onClick={handleDelete}>Delete item</button>}
 			{!isOwner && (item?.reservation ? unreserveButton() : reserveButton())}
 		</RoundedRect>
