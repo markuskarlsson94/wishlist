@@ -1,78 +1,122 @@
-import { Formik, Form, Field, ErrorMessage } from "formik";
 import { z } from "zod";
-import WishlistInputType from "../types/WishlistInputType";
-import WishlistTypeType from "../types/WishlistTypeType";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { Button } from "@/components/ui/button";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { useEffect } from "react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import WishlistInputType from "@/types/WishlistInputType";
+import useWishlistTypes from "@/hooks/useWishlistTypes";
 
-const schema = z.object({
-	title: z.string().min(1, "Title is required"),
+const formSchema = z.object({
+	title: z.string().min(1, { message: "Title must be specified" }),
 	description: z.string(),
-	type: z.number(),
+	type: z.string(),
 });
 
-const validate = (values: WishlistInputType) => {
-	values.type = Number(values.type);
-	const result = schema.safeParse(values);
-
-	if (!result.success) {
-		const errors: any = {};
-
-		result.error.errors.forEach((error: any) => {
-			errors[error.path[0]] = error.message;
-		});
-
-		return errors;
-	}
+type WishlistFormConfig = {
+	open: boolean;
+	values: WishlistInputType;
+	onSubmit: (values: WishlistInputType) => void;
+	submitButtonTitle: string;
 };
 
-const WishlistForm = (
-	initialValues: WishlistInputType,
-	types: WishlistTypeType[],
-	handleSubmit: (values: WishlistInputType) => void,
-	handleCancel: () => void,
-) => {
+const WishlistForm = (config: WishlistFormConfig) => {
+	const { types } = useWishlistTypes();
+
+	const values = {
+		...config.values,
+		type: `${config.values.type}`,
+	};
+
+	const form = useForm<z.infer<typeof formSchema>>({
+		resolver: zodResolver(formSchema),
+		values,
+	});
+
+	const onSubmit = (values: z.infer<typeof formSchema>) => {
+		const newValues = {
+			...values,
+			type: Number(values.type),
+		};
+
+		config.onSubmit(newValues);
+		form.reset();
+	};
+
+	useEffect(() => {
+		if (!config.open) {
+			form.reset();
+		}
+	}, [config.open]);
+
 	return (
-		<Formik
-			initialValues={initialValues}
-			validate={validate}
-			onSubmit={(values, { setSubmitting }) => {
-				setSubmitting(false);
-				handleSubmit(values);
-			}}
-		>
-			{({ isSubmitting }) => (
-				<Form>
-					<div>
-						<label htmlFor="title">Title</label>
-						<Field name="title" type="text" />
-						<ErrorMessage name="title" component="div" />
-					</div>
+		<Form {...form}>
+			<form onSubmit={form.handleSubmit(onSubmit)}>
+				<div className="space-y-2">
+					<FormField
+						control={form.control}
+						name="title"
+						render={({ field }) => {
+							console.log("field:", field);
 
-					<div>
-						<label htmlFor="description">Description</label>
-						<Field name="description" type="text" />
-						<ErrorMessage name="description" component="div" />
-					</div>
+							return (
+								<FormItem>
+									<FormLabel>Title*</FormLabel>
+									<FormControl>
+										<Input placeholder="Title" {...field} />
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							);
+						}}
+					/>
+					<FormField
+						control={form.control}
+						name="description"
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel>Description</FormLabel>
+								<FormControl>
+									<Textarea placeholder="Description" {...field} />
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+					<FormField
+						control={form.control}
+						name="type"
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel>Visibility</FormLabel>
+								<FormControl>
+									<Select onValueChange={field.onChange} defaultValue={field.value}>
+										<SelectTrigger>
+											<SelectValue placeholder={types[0].name} />
+										</SelectTrigger>
+										<SelectContent>
+											{types.map((type) => (
+												<SelectItem key={type.id} value={`${type.id}`}>
+													{type.name}
+												</SelectItem>
+											))}
+										</SelectContent>
+									</Select>
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+				</div>
 
-					<div>
-						<label htmlFor="type">Type</label>
-						<Field as="select" name="type">
-							{types.map((type) => (
-								<option key={type.id} value={type.id}>
-									{type.name}
-								</option>
-							))}
-						</Field>
-						<ErrorMessage name="type" component="div" />
-					</div>
-
-					<button type="submit" disabled={isSubmitting}>
-						Submit
-					</button>
-
-					<button onClick={handleCancel}>Cancel</button>
-				</Form>
-			)}
-		</Formik>
+				<div className="mt-6 float-right">
+					<Button type="submit">{config.submitButtonTitle}</Button>
+				</div>
+			</form>
+		</Form>
 	);
 };
 
