@@ -49,21 +49,21 @@ const Wishlist = () => {
 		navigate(-1);
 	};
 
+	const onSubmitItem = (input: ItemInputType) => {
+		if (wishlist) createItem(input, wishlist.id);
+	};
+
+	const onSubmitWishlist = (input: WishlistInputType) => {
+		if (wishlist) updateWishlist(wishlist.id, input);
+	};
+
 	const itemValues: ItemInputType = {
 		title: "",
 		description: "",
 		link: "",
 	};
 
-	const onSubmitItem = (input: ItemInputType) => {
-		if (wishlist) createItem(input, wishlist.id);
-	};
-
-	const onSubmit = (input: WishlistInputType) => {
-		if (wishlist) updateWishlist(wishlist.id, input);
-	};
-
-	const values = {
+	const wishlistValues = {
 		title: wishlist?.title || "",
 		description: wishlist?.description || "",
 		type: wishlist?.type || types[0]?.id,
@@ -90,8 +90,8 @@ const Wishlist = () => {
 						config={{
 							title: "Edit wishlist",
 							submitButtonTitle: "Edit",
-							onSubmit,
-							values,
+							onSubmit: onSubmitWishlist,
+							values: wishlistValues,
 						}}
 					/>
 					<button onClick={handleDeleteWishlist}>Delete wishlist</button>
