@@ -1,24 +1,25 @@
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import RoundedRect from "./RoundedRect";
+import { Button } from "./ui/button";
 
 const Sidebar = () => {
 	const { userId } = useAuth();
 
 	return (
 		<RoundedRect className="flex flex-col self-start">
-			<div>
+			<Button variant={"ghost"}>
 				<NavLink to={`user/${userId}/wishlists`}>Wishlists</NavLink>
-			</div>
-			<div>
+			</Button>
+			<Button variant={"ghost"}>
 				<NavLink to={"/reservations"}>Reservations</NavLink>
-			</div>
-			<div>
+			</Button>
+			<Button variant={"ghost"}>
 				<NavLink to={`user/${userId}/friends`}>Friends</NavLink>
-			</div>
-			<div>
+			</Button>
+			<Button variant={"ghost"}>
 				<NavLink to={"/users"}>Users</NavLink>
-			</div>
+			</Button>
 		</RoundedRect>
 	);
 };
