@@ -1,70 +1,98 @@
-import { Formik, Form, Field, ErrorMessage } from "formik";
 import { z } from "zod";
-import ItemInputType from "../types/ItemInputType";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { Button } from "@/components/ui/button";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { useEffect } from "react";
+import { Textarea } from "@/components/ui/textarea";
+import ItemInputType from "@/types/ItemInputType";
 
-const schema = z.object({
-	title: z.string().min(1, "Title is required"),
+const formSchema = z.object({
+	title: z.string().min(1, { message: "Title must be specified" }),
 	description: z.string(),
-	link: z.string().optional(),
+	link: z.string().nullable(),
 });
 
-const validate = (values: ItemInputType) => {
-	const result = schema.safeParse(values);
-
-	if (!result.success) {
-		const errors: any = {};
-
-		result.error.errors.forEach((error: any) => {
-			errors[error.path[0]] = error.message;
-		});
-
-		return errors;
-	}
+type ItemFormConfig = {
+	open: boolean;
+	values: ItemInputType;
+	onSubmit: (values: ItemInputType) => void;
+	submitButtonTitle: string;
 };
 
-const ItemForm = (
-	initialValues: ItemInputType,
-	handleAdd: (values: ItemInputType) => void,
-	handleCancel: () => void,
-) => {
+const ItemForm = (config: ItemFormConfig) => {
+	const form = useForm<z.infer<typeof formSchema>>({
+		resolver: zodResolver(formSchema),
+		values: config.values,
+	});
+
+	const onSubmit = (values: z.infer<typeof formSchema>) => {
+		const newValues = {
+			...values,
+			link: values.link === "" ? null : values.link,
+		};
+
+		config.onSubmit(newValues);
+		form.reset();
+	};
+
+	useEffect(() => {
+		if (!config.open) {
+			form.reset();
+		}
+	}, [config.open]);
+
 	return (
-		<Formik
-			initialValues={initialValues}
-			validate={validate}
-			onSubmit={(values, { setSubmitting }) => {
-				setSubmitting(false);
-				if (values.link === "") values.link = null;
-				handleAdd(values);
-			}}
-		>
-			{({ isSubmitting }) => (
-				<Form>
-					<div>
-						<label htmlFor="title">Title</label>
-						<Field name="title" type="text" />
-						<ErrorMessage name="title" component="div" />
-					</div>
+		<Form {...form}>
+			<form onSubmit={form.handleSubmit(onSubmit)}>
+				<div className="space-y-2">
+					<FormField
+						control={form.control}
+						name="title"
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel>Title*</FormLabel>
+								<FormControl>
+									<Input placeholder="Title" {...field} />
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+					<FormField
+						control={form.control}
+						name="description"
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel>Description</FormLabel>
+								<FormControl>
+									<Textarea placeholder="Description" {...field} />
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+					<FormField
+						control={form.control}
+						name="link"
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel>Link</FormLabel>
+								<FormControl>
+									<Input placeholder="Link" {...field} value={field.value ?? ""} />
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+				</div>
 
-					<div>
-						<label htmlFor="description">Description</label>
-						<Field name="description" type="text" />
-						<ErrorMessage name="description" component="div" />
-					</div>
-
-					<div>
-						<label htmlFor="link">Link</label>
-						<Field name="link" type="text" />
-						<ErrorMessage name="link" component="div" />
-					</div>
-
-					<button type="submit" disabled={isSubmitting}>
-						Submit
-					</button>
-
-					<button onClick={handleCancel}>Cancel</button>
-				</Form>
-			)}
-		</Formik>
+				<div className="mt-6 float-right">
+					<Button type="submit">{config.submitButtonTitle}</Button>
+				</div>
+			</form>
+		</Form>
 	);
 };
 
