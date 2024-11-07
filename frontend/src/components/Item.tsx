@@ -11,6 +11,7 @@ import CommentInputType from "../types/CommentInputType";
 import Comment from "./Comment";
 import RoundedRect from "./RoundedRect";
 import ItemDialog from "./ItemDialog";
+import { Button } from "./ui/button";
 
 const Item = () => {
 	const [isOwner, setIsOwner] = useState<boolean>(false);
@@ -100,16 +101,20 @@ const Item = () => {
 			))}
 			{AddCommentForm(handleAddComment)}
 			{isOwner && (
-				<ItemDialog
-					config={{
-						title: "Edit item",
-						submitButtonTitle: "Edit",
-						onSubmit: onSubmitItem,
-						values: itemValues,
-					}}
-				/>
+				<>
+					<ItemDialog
+						config={{
+							title: "Edit item",
+							submitButtonTitle: "Edit",
+							onSubmit: onSubmitItem,
+							values: itemValues,
+						}}
+					/>
+					<Button variant="secondary" onClick={handleDelete}>
+						Delete item
+					</Button>
+				</>
 			)}
-			{isOwner && <button onClick={handleDelete}>Delete item</button>}
 			{!isOwner && (item?.reservation ? unreserveButton() : reserveButton())}
 		</RoundedRect>
 	);

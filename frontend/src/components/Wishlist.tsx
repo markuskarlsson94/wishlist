@@ -9,6 +9,7 @@ import WishlistInputType from "../types/WishlistInputType";
 import RoundedRect from "./RoundedRect";
 import WishlistDialog from "./WishlistDialog";
 import ItemDialog from "./ItemDialog";
+import { Button } from "./ui/button";
 
 const Wishlist = () => {
 	const [isOwner, setIsOwner] = useState<boolean>(false);
@@ -94,7 +95,9 @@ const Wishlist = () => {
 							values: wishlistValues,
 						}}
 					/>
-					<button onClick={handleDeleteWishlist}>Delete wishlist</button>
+					<Button variant="secondary" onClick={handleDeleteWishlist}>
+						Delete wishlist
+					</Button>
 				</>
 			)}
 		</RoundedRect>
