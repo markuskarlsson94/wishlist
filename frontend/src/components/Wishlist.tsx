@@ -89,7 +89,6 @@ const Wishlist = () => {
 
 	return (
 		<RoundedRect>
-			<h2>Wishlist</h2>
 			<BackButton onClick={handleBack} />
 			<h3>{wishlist?.title}</h3>
 			<p>{wishlist?.description}</p>

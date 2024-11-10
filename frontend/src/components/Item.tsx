@@ -105,7 +105,6 @@ const Item = () => {
 
 	return (
 		<RoundedRect>
-			<h2>Item</h2>
 			<BackButton onClick={handleBack} />
 			<h3>{item?.title}</h3>
 			<p>{item?.description}</p>

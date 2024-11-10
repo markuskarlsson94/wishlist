@@ -92,7 +92,6 @@ const Friends = () => {
 
 	return (
 		<RoundedRect>
-			<h2>Friends</h2>
 			<BackButton onClick={handleBack} />
 			{viewer === userId && friendRequests()}
 			<h3>Friends</h3>

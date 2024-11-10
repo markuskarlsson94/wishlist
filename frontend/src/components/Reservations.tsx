@@ -37,7 +37,6 @@ const Reservations = () => {
 
 	return (
 		<RoundedRect>
-			<h2>Reservations</h2>
 			<BackButton onClick={handleBack} />
 			{reservations?.map((reservation) => (
 				<ReservationItem key={reservation.id} reservation={reservation} />

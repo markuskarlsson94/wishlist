@@ -37,7 +37,6 @@ const Users = () => {
 
 	return (
 		<RoundedRect>
-			<h2>Users</h2>
 			<BackButton onClick={handleBack} />
 			{users.map((user) => User(user))}
 		</RoundedRect>

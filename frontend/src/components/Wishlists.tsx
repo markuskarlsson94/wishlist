@@ -44,7 +44,6 @@ const Wishlists = () => {
 
 	return (
 		<RoundedRect>
-			<h2>Wishlists</h2>
 			<BackButton onClick={handleBack} />
 			<div>{wishlists?.map((wishlist) => Wishlist(wishlist))}</div>
 			{isOwner && (
