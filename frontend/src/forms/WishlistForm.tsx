@@ -23,7 +23,7 @@ type WishlistFormConfig = {
 	submitButtonTitle: string;
 };
 
-const WishlistForm = (config: WishlistFormConfig) => {
+const WishlistForm = ({ config }: { config: WishlistFormConfig }) => {
 	const { types } = useWishlistTypes();
 
 	const values = {

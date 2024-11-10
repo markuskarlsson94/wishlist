@@ -28,12 +28,14 @@ const WishlistDialog = ({ config }: { config: WishlistDialogConfig }) => {
 				<DialogHeader>
 					<DialogTitle>{config.title}</DialogTitle>
 				</DialogHeader>
-				{WishlistForm({
-					open,
-					values: config.values,
-					onSubmit,
-					submitButtonTitle: config.submitButtonTitle,
-				})}
+				<WishlistForm
+					config={{
+						open,
+						values: config.values,
+						onSubmit,
+						submitButtonTitle: config.submitButtonTitle,
+					}}
+				/>
 			</DialogContent>
 		</Dialog>
 	);
