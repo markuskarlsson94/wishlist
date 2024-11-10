@@ -3,6 +3,7 @@ import { useDeleteComment, useUpdateComment } from "../hooks/comment";
 import CommentType from "../types/CommentType";
 import UpdateCommentForm from "../forms/UpdateCommentForm";
 import CommentInputType from "../types/CommentInputType";
+import { Button } from "./ui/button";
 
 const Comment = ({ comment, itemId }: { comment: CommentType; itemId: number }) => {
 	const deleteComment = useDeleteComment({ itemId });
@@ -46,8 +47,8 @@ const Comment = ({ comment, itemId }: { comment: CommentType; itemId: number }) 
 				) : (
 					<>
 						<p>{ownCommentString}</p>
-						<button onClick={handleShowEdit}>Edit</button>
-						<button onClick={handleDelete}>Delete</button>
+						<Button onClick={handleShowEdit}>Edit</Button>
+						<Button onClick={handleDelete}>Delete</Button>
 					</>
 				)}
 			</>
