@@ -10,7 +10,7 @@ import AddCommentForm from "../forms/AddCommentForm";
 import CommentInputType from "../types/CommentInputType";
 import Comment from "./Comment";
 import RoundedRect from "./RoundedRect";
-import { buttonVariants } from "./ui/button";
+import { Button, buttonVariants } from "./ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import IconButton from "./IconButton";
 import { EllipsisVertical, PencilLine, Trash2 } from "lucide-react";
@@ -109,9 +109,9 @@ const Item = () => {
 			<h3>{item?.title}</h3>
 			<p>{item?.description}</p>
 			{item?.link && (
-				<div>
+				<Button variant={"link"}>
 					<NavLink to={`${item.link}`}>{item.link}</NavLink>
-				</div>
+				</Button>
 			)}
 			<h3>Comments</h3>
 			{comments?.map((comment) => (
