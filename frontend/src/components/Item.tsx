@@ -27,6 +27,7 @@ import {
 	AlertDialogTitle,
 	AlertDialogTrigger,
 } from "./ui/alert-dialog";
+import BackButton from "./BackButton";
 
 const Item = () => {
 	const [isOwner, setIsOwner] = useState<boolean>(false);
@@ -105,7 +106,7 @@ const Item = () => {
 	return (
 		<RoundedRect>
 			<h2>Item</h2>
-			<button onClick={handleBack}>Back</button>
+			<BackButton onClick={handleBack} />
 			<h3>{item?.title}</h3>
 			<p>{item?.description}</p>
 			{item?.link && (

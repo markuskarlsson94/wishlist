@@ -5,8 +5,8 @@ import useWishlistTypes from "../hooks/useWishlistTypes";
 import { useAuth } from "../contexts/AuthContext";
 import { useCreateWishlist, useGetWishlists } from "../hooks/wishlist";
 import RoundedRect from "./RoundedRect";
-import { Button } from "./ui/button";
 import WishlistDialog from "./WishlistDialog";
+import BackButton from "./BackButton";
 
 const Wishlists = () => {
 	const params = useParams<{ userId: string }>();
@@ -45,7 +45,7 @@ const Wishlists = () => {
 	return (
 		<RoundedRect>
 			<h2>Wishlists</h2>
-			<Button onClick={handleBack}>Back</Button>
+			<BackButton onClick={handleBack} />
 			<div>{wishlists?.map((wishlist) => Wishlist(wishlist))}</div>
 			{isOwner && (
 				<WishlistDialog

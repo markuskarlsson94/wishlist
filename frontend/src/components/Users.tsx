@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import axiosInstance from "../axiosInstance";
 import UserType from "../types/UserType";
 import RoundedRect from "./RoundedRect";
+import BackButton from "./BackButton";
 
 const Users = () => {
 	const [users, setUsers] = useState<UserType[]>([]);
@@ -37,7 +38,7 @@ const Users = () => {
 	return (
 		<RoundedRect>
 			<h2>Users</h2>
-			<button onClick={handleBack}>Back</button>
+			<BackButton onClick={handleBack} />
 			{users.map((user) => User(user))}
 		</RoundedRect>
 	);

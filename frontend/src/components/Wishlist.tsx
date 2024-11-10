@@ -27,6 +27,7 @@ import {
 } from "./ui/alert-dialog";
 import { EllipsisVertical, PencilLine, Trash2 } from "lucide-react";
 import IconButton from "./IconButton";
+import BackButton from "./BackButton";
 
 const Wishlist = () => {
 	const [isOwner, setIsOwner] = useState<boolean>(false);
@@ -89,7 +90,7 @@ const Wishlist = () => {
 	return (
 		<RoundedRect>
 			<h2>Wishlist</h2>
-			<button onClick={handleBack}>Back</button>
+			<BackButton onClick={handleBack} />
 			<h3>{wishlist?.title}</h3>
 			<p>{wishlist?.description}</p>
 			{items?.map((item) => Item(item))}

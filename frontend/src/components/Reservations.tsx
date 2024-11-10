@@ -5,6 +5,7 @@ import ReservationType from "../types/ReservationType";
 import { useGetItem } from "../hooks/item";
 import { NavLink } from "react-router-dom";
 import RoundedRect from "./RoundedRect";
+import BackButton from "./BackButton";
 
 const ReservationItem = ({ reservation }: { reservation: ReservationType }) => {
 	const { userId } = useAuth();
@@ -37,7 +38,7 @@ const Reservations = () => {
 	return (
 		<RoundedRect>
 			<h2>Reservations</h2>
-			<button onClick={handleBack}>Back</button>
+			<BackButton onClick={handleBack} />
 			{reservations?.map((reservation) => (
 				<ReservationItem key={reservation.id} reservation={reservation} />
 			))}
