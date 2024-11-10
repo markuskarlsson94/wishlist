@@ -1,56 +1,51 @@
-import { Formik, Form, Field, ErrorMessage } from "formik";
 import { z } from "zod";
 import CommentInputType from "../types/CommentInputType";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
 
-const schema = z.object({
+const formSchema = z.object({
 	comment: z.string().min(1, "Comment is required"),
 });
 
-const validate = (values: CommentInputType) => {
-	const result = schema.safeParse(values);
-
-	if (!result.success) {
-		const errors: any = {};
-
-		result.error.errors.forEach((error: any) => {
-			errors[error.path[0]] = error.message;
-		});
-
-		return errors;
-	}
+type UpdateCommentFormConfig = {
+	comment: string;
+	onSubmit: (values: CommentInputType) => void;
 };
 
-const UpdateCommentForm = (
-	comment: string,
-	handleSubmit: (values: CommentInputType) => void,
-	handleCancel: () => void,
-) => {
+const UpdateCommentForm = ({ config }: { config: UpdateCommentFormConfig }) => {
+	const form = useForm<z.infer<typeof formSchema>>({
+		resolver: zodResolver(formSchema),
+		values: { comment: config.comment },
+	});
+
+	const onSubmit = (values: z.infer<typeof formSchema>) => {
+		config.onSubmit(values);
+		form.reset();
+	};
+
 	return (
-		<Formik
-			initialValues={{ comment }}
-			validate={validate}
-			onSubmit={(values, { setSubmitting, resetForm }) => {
-				setSubmitting(false);
-				handleSubmit(values);
-				resetForm();
-			}}
-		>
-			{({ isSubmitting }) => (
-				<Form>
-					<div>
-						<label htmlFor="comment">Comment</label>
-						<Field name="comment" type="text" />
-						<ErrorMessage name="comment" component="div" />
-					</div>
+		<Form {...form}>
+			<form onSubmit={form.handleSubmit(onSubmit)}>
+				<FormField
+					control={form.control}
+					name="comment"
+					render={({ field }) => (
+						<FormItem>
+							<FormControl>
+								<Textarea {...field} />
+							</FormControl>
+						</FormItem>
+					)}
+				></FormField>
 
-					<button type="submit" disabled={isSubmitting}>
-						Update comment
-					</button>
-
-					<button onClick={handleCancel}>Cancel</button>
-				</Form>
-			)}
-		</Formik>
+				<div className="mt-6 float-right">
+					<Button type="submit">Edit</Button>
+				</div>
+			</form>
+		</Form>
 	);
 };
 
