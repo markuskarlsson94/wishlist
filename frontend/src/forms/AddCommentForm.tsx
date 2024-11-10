@@ -38,7 +38,7 @@ const AddCommentForm = ({ config }: { config: AddCommentFormConfig }) => {
 						<FormItem>
 							<FormControl>
 								<Textarea
-									placeholder="Comment"
+									placeholder="Type your comment here"
 									{...field}
 									onChange={(e) => {
 										field.onChange(e);
