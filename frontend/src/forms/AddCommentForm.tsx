@@ -1,50 +1,62 @@
-import { Formik, Form, Field, ErrorMessage } from "formik";
 import { z } from "zod";
 import CommentInputType from "../types/CommentInputType";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
 
-const schema = z.object({
+const formSchema = z.object({
 	comment: z.string().min(1, "Comment is required"),
 });
 
-const validate = (values: CommentInputType) => {
-	const result = schema.safeParse(values);
-
-	if (!result.success) {
-		const errors: any = {};
-
-		result.error.errors.forEach((error: any) => {
-			errors[error.path[0]] = error.message;
-		});
-
-		return errors;
-	}
+type AddCommentFormConfig = {
+	onSubmit: (values: CommentInputType) => void;
 };
 
-const AddCommentForm = (handleSubmit: (values: CommentInputType) => void) => {
-	return (
-		<Formik
-			initialValues={{ comment: "" }}
-			validate={validate}
-			onSubmit={(values, { setSubmitting, resetForm }) => {
-				setSubmitting(false);
-				handleSubmit(values);
-				resetForm();
-			}}
-		>
-			{({ isSubmitting }) => (
-				<Form>
-					<div>
-						<label htmlFor="comment">Comment</label>
-						<Field name="comment" type="text" />
-						<ErrorMessage name="comment" component="div" />
-					</div>
+const AddCommentForm = ({ config }: { config: AddCommentFormConfig }) => {
+	const [comment, setComment] = useState<string>("");
 
-					<button type="submit" disabled={isSubmitting}>
+	const form = useForm<z.infer<typeof formSchema>>({
+		resolver: zodResolver(formSchema),
+		values: { comment: "" },
+	});
+
+	const onSubmit = (values: z.infer<typeof formSchema>) => {
+		config.onSubmit(values);
+		form.reset();
+	};
+
+	return (
+		<Form {...form}>
+			<form onSubmit={form.handleSubmit(onSubmit)}>
+				<FormField
+					control={form.control}
+					name="comment"
+					render={({ field }) => (
+						<FormItem>
+							<FormControl>
+								<Textarea
+									placeholder="Comment"
+									{...field}
+									onChange={(e) => {
+										field.onChange(e);
+										setComment(e.target.value);
+									}}
+								/>
+							</FormControl>
+						</FormItem>
+					)}
+				></FormField>
+
+				<div className="mt-2">
+					<Button disabled={comment.length === 0} type="submit">
 						Add comment
-					</button>
-				</Form>
-			)}
-		</Formik>
+					</Button>
+				</div>
+			</form>
+		</Form>
 	);
 };
 
