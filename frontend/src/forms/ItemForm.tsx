@@ -21,7 +21,7 @@ type ItemFormConfig = {
 	submitButtonTitle: string;
 };
 
-const ItemForm = (config: ItemFormConfig) => {
+const ItemForm = ({ config }: { config: ItemFormConfig }) => {
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		values: config.values,
