@@ -10,8 +10,23 @@ import AddCommentForm from "../forms/AddCommentForm";
 import CommentInputType from "../types/CommentInputType";
 import Comment from "./Comment";
 import RoundedRect from "./RoundedRect";
-import ItemDialog from "./ItemDialog";
-import { Button } from "./ui/button";
+import { buttonVariants } from "./ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
+import IconButton from "./IconButton";
+import { EllipsisVertical, PencilLine, Trash2 } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
+import ItemForm from "@/forms/ItemForm";
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+	AlertDialogTrigger,
+} from "./ui/alert-dialog";
 
 const Item = () => {
 	const [isOwner, setIsOwner] = useState<boolean>(false);
@@ -25,6 +40,8 @@ const Item = () => {
 	const updateItem = useUpdateItem();
 	const { comments } = useGetComments(id);
 	const addComment = useAddComment({ itemId: id });
+	const [isEditDialogOpen, setIsEditDialogOpen] = useState<boolean>(false);
+	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false);
 
 	const onDeleteItem = () => {
 		if (item?.wishlist) {
@@ -76,6 +93,7 @@ const Item = () => {
 
 	const onSubmitItem = (input: ItemInputType) => {
 		if (item) updateItem(item.id, input);
+		setIsEditDialogOpen(false);
 	};
 
 	const itemValues: ItemInputType = {
@@ -106,17 +124,72 @@ const Item = () => {
 			/>
 			{isOwner && (
 				<>
-					<ItemDialog
-						config={{
-							title: "Edit item",
-							submitButtonTitle: "Edit",
-							onSubmit: onSubmitItem,
-							values: itemValues,
-						}}
-					/>
-					<Button variant="secondary" onClick={handleDelete}>
-						Delete item
-					</Button>
+					<DropdownMenu>
+						<DropdownMenuTrigger asChild>
+							<IconButton variant={"ghost"}>
+								<EllipsisVertical />
+							</IconButton>
+						</DropdownMenuTrigger>
+						<DropdownMenuContent align="end">
+							<DropdownMenuItem
+								onClick={() => setIsEditDialogOpen(true)}
+								className="flex justify-between items-center"
+							>
+								<span>Edit</span>
+								<PencilLine />
+							</DropdownMenuItem>
+							<DropdownMenuItem
+								onClick={() => setIsDeleteDialogOpen(true)}
+								className="flex justify-between items-center"
+							>
+								<span>Delete</span>
+								<Trash2 />
+							</DropdownMenuItem>
+						</DropdownMenuContent>
+					</DropdownMenu>
+
+					<Dialog open={isEditDialogOpen} onOpenChange={() => setIsEditDialogOpen(!isEditDialogOpen)}>
+						<DialogTrigger></DialogTrigger>
+						<DialogContent>
+							<DialogHeader>
+								<DialogTitle>Edit item</DialogTitle>
+							</DialogHeader>
+							<ItemForm
+								config={{
+									open: isEditDialogOpen,
+									values: itemValues,
+									onSubmit: onSubmitItem,
+									submitButtonTitle: "Edit",
+								}}
+							/>
+						</DialogContent>
+					</Dialog>
+
+					<AlertDialog
+						open={isDeleteDialogOpen}
+						onOpenChange={() => setIsDeleteDialogOpen(!isDeleteDialogOpen)}
+					>
+						<AlertDialogTrigger asChild></AlertDialogTrigger>
+						<AlertDialogContent>
+							<AlertDialogHeader>
+								<AlertDialogTitle>Delete item</AlertDialogTitle>
+								<AlertDialogDescription>
+									Are you sure you want to permanently delete this item?
+								</AlertDialogDescription>
+							</AlertDialogHeader>
+							<AlertDialogFooter>
+								<AlertDialogCancel>Cancel</AlertDialogCancel>
+								<AlertDialogAction
+									className={buttonVariants({ variant: "destructive" })}
+									onClick={() => {
+										handleDelete();
+									}}
+								>
+									Delete
+								</AlertDialogAction>
+							</AlertDialogFooter>
+						</AlertDialogContent>
+					</AlertDialog>
 				</>
 			)}
 			{!isOwner && (item?.reservation ? unreserveButton() : reserveButton())}

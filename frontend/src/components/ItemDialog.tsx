@@ -28,12 +28,14 @@ const ItemDialog = ({ config }: { config: ItemDialogConfig }) => {
 				<DialogHeader>
 					<DialogTitle>{config.title}</DialogTitle>
 				</DialogHeader>
-				{ItemForm({
-					open,
-					values: config.values,
-					onSubmit,
-					submitButtonTitle: config.submitButtonTitle,
-				})}
+				<ItemForm
+					config={{
+						open,
+						values: config.values,
+						onSubmit,
+						submitButtonTitle: config.submitButtonTitle,
+					}}
+				/>
 			</DialogContent>
 		</Dialog>
 	);
