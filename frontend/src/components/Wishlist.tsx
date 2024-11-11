@@ -25,10 +25,12 @@ import {
 	AlertDialogTitle,
 	AlertDialogTrigger,
 } from "./ui/alert-dialog";
-import { EllipsisVertical, PencilLine, Trash2 } from "lucide-react";
+import { EllipsisVertical, MessageCircle, PencilLine, Trash2 } from "lucide-react";
 import IconButton from "./IconButton";
 import BackButton from "./BackButton";
 import { Card, CardDescription, CardHeader, CardTitle } from "./ui/card";
+import { useGetComments } from "@/hooks/comment";
+import ItemType from "@/types/ItemType";
 
 const Wishlist = () => {
 	const [isOwner, setIsOwner] = useState<boolean>(false);
@@ -55,14 +57,26 @@ const Wishlist = () => {
 		}
 	}, [wishlist, isSuccess]);
 
-	const Item = (item: any) => {
+	const Item = ({ item }: { item: ItemType }) => {
+		const { comments } = useGetComments(item.id);
+		const commentCount = comments?.length || 0;
+
 		return (
 			<div key={item.id}>
 				<NavLink to={`/item/${item.id}`}>
 					<Card>
 						<CardHeader>
-							<CardTitle>{item.title}</CardTitle>
-							<CardDescription>{item.description}</CardDescription>
+							<div className="flex justify-between">
+								<div>
+									<CardTitle>{item.title}</CardTitle>
+									<CardDescription>{item.description}</CardDescription>
+								</div>
+								{comments && commentCount > 0 && (
+									<div className="flex gap-x-1 float-right">
+										<MessageCircle /> {comments.length}
+									</div>
+								)}
+							</div>
 						</CardHeader>
 					</Card>
 				</NavLink>
@@ -100,7 +114,9 @@ const Wishlist = () => {
 			<BackButton onClick={handleBack} />
 			<h3>{wishlist?.title}</h3>
 			<p>{wishlist?.description}</p>
-			{items?.map((item) => Item(item))}
+			{items?.map((item) => (
+				<Item item={item} />
+			))}
 			{isOwner && (
 				<>
 					<ItemDialog
