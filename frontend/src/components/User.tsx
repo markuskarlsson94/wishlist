@@ -64,7 +64,6 @@ const User = () => {
 
 	return (
 		<RoundedRect>
-			<h2>User</h2>
 			<p>
 				{user?.firstName} {user?.lastName}
 			</p>
