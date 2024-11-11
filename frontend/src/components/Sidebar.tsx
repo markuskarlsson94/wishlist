@@ -9,13 +9,13 @@ const Sidebar = () => {
 	return (
 		<RoundedRect className="flex flex-col self-start">
 			<Button variant={"ghost"}>
-				<NavLink to={`user/${userId}/wishlists`}>Wishlists</NavLink>
+				<NavLink to={`user/${userId}/wishlists`}>My wishlists</NavLink>
 			</Button>
 			<Button variant={"ghost"}>
-				<NavLink to={"/reservations"}>Reservations</NavLink>
+				<NavLink to={"/reservations"}>My reservations</NavLink>
 			</Button>
 			<Button variant={"ghost"}>
-				<NavLink to={`user/${userId}/friends`}>Friends</NavLink>
+				<NavLink to={`user/${userId}/friends`}>My friends</NavLink>
 			</Button>
 			<Button variant={"ghost"}>
 				<NavLink to={"/users"}>Users</NavLink>
