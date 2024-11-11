@@ -81,11 +81,11 @@ const Item = () => {
 	};
 
 	const reserveButton = () => {
-		return <button onClick={handleReserve}>Reserve</button>;
+		return <Button onClick={handleReserve}>Reserve</Button>;
 	};
 
 	const unreserveButton = () => {
-		return <button onClick={handleUnreserve}>Unreserve</button>;
+		return <Button onClick={handleUnreserve}>Unreserve</Button>;
 	};
 
 	const handleAddComment = (data: CommentInputType) => {

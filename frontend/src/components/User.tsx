@@ -9,6 +9,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { useDeleteFriend, useGetFriends } from "../hooks/friend";
 import { useGetUser } from "../hooks/user";
 import RoundedRect from "./RoundedRect";
+import { Button } from "./ui/button";
 
 const User = () => {
 	const params = useParams<{ userId: string }>();
@@ -51,13 +52,13 @@ const User = () => {
 		if (!viewer || viewer === userId) return;
 
 		if (friends?.includes(userId)) {
-			return <button onClick={handleDeleteFriend}>Remove friend</button>;
+			return <Button onClick={handleDeleteFriend}>Remove friend</Button>;
 		} else if (sentFriendRequest) {
-			return <button onClick={handleCancelFriendRequest}>Cancel friend request</button>;
+			return <Button onClick={handleCancelFriendRequest}>Cancel friend request</Button>;
 		} else if (receivedFriendRequest) {
-			return <button onClick={handleAcceptFriendRequest}>Accept friend request</button>;
+			return <Button onClick={handleAcceptFriendRequest}>Accept friend request</Button>;
 		} else {
-			return <button onClick={handleSendFriendRequest}>Send friend request</button>;
+			return <Button onClick={handleSendFriendRequest}>Send friend request</Button>;
 		}
 	};
 
