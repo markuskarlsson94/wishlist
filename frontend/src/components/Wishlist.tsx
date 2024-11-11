@@ -28,6 +28,7 @@ import {
 import { EllipsisVertical, PencilLine, Trash2 } from "lucide-react";
 import IconButton from "./IconButton";
 import BackButton from "./BackButton";
+import { Card, CardDescription, CardHeader, CardTitle } from "./ui/card";
 
 const Wishlist = () => {
 	const [isOwner, setIsOwner] = useState<boolean>(false);
@@ -57,7 +58,14 @@ const Wishlist = () => {
 	const Item = (item: any) => {
 		return (
 			<div key={item.id}>
-				<NavLink to={`/item/${item.id}`}>{item.title}</NavLink>
+				<NavLink to={`/item/${item.id}`}>
+					<Card>
+						<CardHeader>
+							<CardTitle>{item.title}</CardTitle>
+							<CardDescription>{item.description}</CardDescription>
+						</CardHeader>
+					</Card>
+				</NavLink>
 			</div>
 		);
 	};

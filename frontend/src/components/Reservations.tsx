@@ -6,6 +6,8 @@ import { useGetItem } from "../hooks/item";
 import { NavLink } from "react-router-dom";
 import RoundedRect from "./RoundedRect";
 import BackButton from "./BackButton";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { Button } from "./ui/button";
 
 const ReservationItem = ({ reservation }: { reservation: ReservationType }) => {
 	const { userId } = useAuth();
@@ -19,10 +21,16 @@ const ReservationItem = ({ reservation }: { reservation: ReservationType }) => {
 	};
 
 	return (
-		<div>
-			<NavLink to={`/item/${item.id}`}>{item?.title}</NavLink>
-			<button onClick={handleDelete}>Unreserve</button>
-		</div>
+		<NavLink to={`/item/${item.id}`}>
+			<Card>
+				<CardHeader>
+					<CardTitle>{item?.title}</CardTitle>
+				</CardHeader>
+				<CardContent>
+					<Button onClick={handleDelete}>Unreserve</Button>
+				</CardContent>
+			</Card>
+		</NavLink>
 	);
 };
 

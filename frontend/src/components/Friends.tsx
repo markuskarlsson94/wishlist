@@ -6,6 +6,8 @@ import { useGetUser } from "../hooks/user";
 import { useGetFriends } from "../hooks/friend";
 import RoundedRect from "./RoundedRect";
 import BackButton from "./BackButton";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { Button } from "./ui/button";
 
 const ReceivedFriendRequest = ({ friendRequest }: { friendRequest: FriendRequest }) => {
 	const { userId } = useAuth();
@@ -23,11 +25,19 @@ const ReceivedFriendRequest = ({ friendRequest }: { friendRequest: FriendRequest
 
 	return (
 		<div key={friendRequest.id}>
-			<NavLink to={`/user/${friendRequest.sender}`}>
-				{user?.firstName} {user?.lastName}
-			</NavLink>
-			<button onClick={handleAccept}>Accept</button>
-			<button onClick={handleDecline}>Decline</button>
+			<Card>
+				<CardHeader>
+					<CardTitle>
+						<NavLink to={`/user/${friendRequest.sender}`}>
+							{user?.firstName} {user?.lastName}
+						</NavLink>
+					</CardTitle>
+				</CardHeader>
+				<CardContent>
+					<Button onClick={handleAccept}>Accept</Button>
+					<Button onClick={handleDecline}>Decline</Button>
+				</CardContent>
+			</Card>
 		</div>
 	);
 };
@@ -43,10 +53,18 @@ const SentFriendRequest = ({ friendRequest }: { friendRequest: FriendRequest }) 
 
 	return (
 		<div key={friendRequest.id}>
-			<NavLink to={`/user/${friendRequest.receiver}`}>
-				{user?.firstName} {user?.lastName}
-			</NavLink>
-			<button onClick={handleCancel}>Cancel</button>
+			<Card>
+				<CardHeader>
+					<CardTitle>
+						<NavLink to={`/user/${friendRequest.receiver}`}>
+							{user?.firstName} {user?.lastName}
+						</NavLink>
+					</CardTitle>
+				</CardHeader>
+				<CardContent>
+					<Button onClick={handleCancel}>Cancel</Button>
+				</CardContent>
+			</Card>
 		</div>
 	);
 };
@@ -55,11 +73,15 @@ const Friend = ({ friend }: { friend: number }) => {
 	const { user } = useGetUser(friend);
 
 	return (
-		<div>
-			<NavLink to={`/user/${friend}`}>
-				{user?.firstName} {user?.lastName}
-			</NavLink>
-		</div>
+		<Card>
+			<CardHeader>
+				<CardTitle>
+					<NavLink to={`/user/${friend}`}>
+						{user?.firstName} {user?.lastName}
+					</NavLink>
+				</CardTitle>
+			</CardHeader>
+		</Card>
 	);
 };
 
