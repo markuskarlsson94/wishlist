@@ -1,6 +1,7 @@
 import { QueryClient, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axiosInstance from "../axiosInstance";
 import FriendRequest from "../types/FriendRequesstType";
+import { invalidateFriends } from "./friend";
 
 type FriendRequestsResponse = {
 	data: {
@@ -125,6 +126,7 @@ export const useAcceptFriendRequest = (config?: UseAcceptFriendRequestConfig) =>
 
 		await axiosInstance.put(`/user/friendrequest/${id}/accept`);
 		invalidateReceivedFriendRequest(queryClient, config.userId);
+		invalidateFriends(queryClient, config.userId);
 	};
 
 	const acceptFriendRequestMutation = useMutation({

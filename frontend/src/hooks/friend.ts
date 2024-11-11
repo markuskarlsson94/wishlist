@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { QueryClient, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axiosInstance from "../axiosInstance";
 
 type FriendResponse = {
@@ -9,7 +9,7 @@ type FriendResponse = {
 
 export const useGetFriends = (userId: number | undefined) => {
 	const { data, isSuccess } = useQuery<FriendResponse>({
-		queryKey: ["friends", userId],
+		queryKey: friendsQueryKey(userId),
 		queryFn: () => axiosInstance.get(`/user/${userId}/friends`),
 		enabled: !!userId,
 	});
@@ -46,4 +46,12 @@ export const useDeleteFriend = (config?: UseDeleteFriendConfig) => {
 	};
 
 	return deleteFriend;
+};
+
+const friendsQueryKey = (userId: number | undefined) => {
+	return ["friends", userId];
+};
+
+export const invalidateFriends = (queryClient: QueryClient, userId: number | undefined) => {
+	queryClient.invalidateQueries({ queryKey: friendsQueryKey(userId) });
 };
