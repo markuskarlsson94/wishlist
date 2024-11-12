@@ -9,6 +9,8 @@ import WishlistDialog from "./WishlistDialog";
 import BackButton from "./BackButton";
 import { CardDescription, CardHeader, CardTitle } from "./ui/card";
 import HoverCard from "./HoverCard";
+import { useGetItems } from "@/hooks/item";
+import { Box } from "lucide-react";
 
 const Wishlists = () => {
 	const params = useParams<{ userId: string }>();
@@ -25,14 +27,26 @@ const Wishlists = () => {
 		navigate(-1);
 	};
 
-	const Wishlist = (wishlist: WishlistType) => {
+	const Wishlist = ({ wishlist }: { wishlist: WishlistType }) => {
+		const { items } = useGetItems(wishlist.id);
+		const itemCount = items.length || 0;
+
 		return (
 			<div key={wishlist.id}>
 				<NavLink to={`/wishlist/${wishlist.id}`}>
 					<HoverCard>
 						<CardHeader>
-							<CardTitle>{wishlist.title}</CardTitle>
-							<CardDescription>{wishlist.description}</CardDescription>
+							<div className="flex justify-between items-center">
+								<div>
+									<CardTitle>{wishlist.title}</CardTitle>
+									<CardDescription>{wishlist.description}</CardDescription>
+								</div>
+								{itemCount > 0 && (
+									<div className="flex gap-x-1 float-right">
+										<Box strokeWidth={1.5} opacity={0.5} /> {itemCount}
+									</div>
+								)}
+							</div>
 						</CardHeader>
 					</HoverCard>
 				</NavLink>
@@ -55,7 +69,9 @@ const Wishlists = () => {
 		<RoundedRect>
 			<BackButton onClick={handleBack} />
 			<div className="flex flex-col gap-y-3">
-				{wishlists?.map((wishlist) => Wishlist(wishlist))}
+				{wishlists?.map((wishlist) => (
+					<Wishlist wishlist={wishlist} />
+				))}
 				{isOwner && (
 					<WishlistDialog
 						config={{
