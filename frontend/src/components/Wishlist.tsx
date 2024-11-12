@@ -74,9 +74,9 @@ const Wishlist = () => {
 									<CardTitle>{item.title}</CardTitle>
 									<CardDescription>{item.description}</CardDescription>
 								</div>
-								{comments && commentCount > 0 && (
+								{commentCount > 0 && (
 									<div className="flex gap-x-1 float-right">
-										<MessageCircle strokeWidth={1.5} opacity={0.5} /> {comments.length}
+										<MessageCircle strokeWidth={1.5} opacity={0.5} /> {commentCount}
 									</div>
 								)}
 							</div>
