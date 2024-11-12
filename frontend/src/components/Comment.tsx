@@ -6,7 +6,7 @@ import CommentInputType from "../types/CommentInputType";
 import { buttonVariants } from "./ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import IconButton from "./IconButton";
-import { EllipsisVertical, PencilLine, Trash2 } from "lucide-react";
+import { EllipsisVertical } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
 import {
 	AlertDialog,
@@ -19,6 +19,8 @@ import {
 	AlertDialogTitle,
 	AlertDialogTrigger,
 } from "./ui/alert-dialog";
+import EditIcon from "./icons/EditIcon";
+import DeleteIcon from "./icons/DeleteIcon";
 
 const Comment = ({ comment, itemId }: { comment: CommentType; itemId: number }) => {
 	const deleteComment = useDeleteComment({ itemId });
@@ -62,14 +64,14 @@ const Comment = ({ comment, itemId }: { comment: CommentType; itemId: number }) 
 								className="flex justify-between items-center"
 							>
 								<span>Edit</span>
-								<PencilLine />
+								<EditIcon />
 							</DropdownMenuItem>
 							<DropdownMenuItem
 								onClick={() => setIsDeleteDialogOpen(true)}
 								className="flex justify-between items-center"
 							>
 								<span>Delete</span>
-								<Trash2 />
+								<DeleteIcon />
 							</DropdownMenuItem>
 						</DropdownMenuContent>
 					</DropdownMenu>

@@ -25,13 +25,15 @@ import {
 	AlertDialogTitle,
 	AlertDialogTrigger,
 } from "./ui/alert-dialog";
-import { EllipsisVertical, MessageCircle, PencilLine, Trash2 } from "lucide-react";
+import { EllipsisVertical, MessageCircle } from "lucide-react";
 import IconButton from "./IconButton";
 import BackButton from "./BackButton";
 import { CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { useGetComments } from "@/hooks/comment";
 import ItemType from "@/types/ItemType";
 import HoverCard from "./HoverCard";
+import EditIcon from "./icons/EditIcon";
+import DeleteIcon from "./icons/DeleteIcon";
 
 const Wishlist = () => {
 	const [isOwner, setIsOwner] = useState<boolean>(false);
@@ -128,14 +130,14 @@ const Wishlist = () => {
 									className="flex justify-between items-center"
 								>
 									<span>Edit</span>
-									<PencilLine opacity={0.7} />
+									<EditIcon />
 								</DropdownMenuItem>
 								<DropdownMenuItem
 									onClick={() => setIsDeleteDialogOpen(true)}
 									className="flex justify-between items-center"
 								>
 									<span>Delete</span>
-									<Trash2 opacity={0.7} />
+									<DeleteIcon />
 								</DropdownMenuItem>
 							</DropdownMenuContent>
 						</DropdownMenu>

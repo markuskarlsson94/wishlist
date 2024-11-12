@@ -13,7 +13,7 @@ import RoundedRect from "./RoundedRect";
 import { Button, buttonVariants } from "./ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import IconButton from "./IconButton";
-import { EllipsisVertical, PencilLine, Trash2 } from "lucide-react";
+import { EllipsisVertical } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
 import ItemForm from "@/forms/ItemForm";
 import {
@@ -28,6 +28,8 @@ import {
 	AlertDialogTrigger,
 } from "./ui/alert-dialog";
 import BackButton from "./BackButton";
+import EditIcon from "./icons/EditIcon";
+import DeleteIcon from "./icons/DeleteIcon";
 
 const Item = () => {
 	const [isOwner, setIsOwner] = useState<boolean>(false);
@@ -121,14 +123,14 @@ const Item = () => {
 									className="flex justify-between items-center"
 								>
 									<span>Edit</span>
-									<PencilLine />
+									<EditIcon />
 								</DropdownMenuItem>
 								<DropdownMenuItem
 									onClick={() => setIsDeleteDialogOpen(true)}
 									className="flex justify-between items-center"
 								>
 									<span>Delete</span>
-									<Trash2 />
+									<DeleteIcon />
 								</DropdownMenuItem>
 							</DropdownMenuContent>
 						</DropdownMenu>
