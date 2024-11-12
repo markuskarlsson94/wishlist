@@ -54,17 +54,19 @@ const Wishlists = () => {
 	return (
 		<RoundedRect>
 			<BackButton onClick={handleBack} />
-			<div>{wishlists?.map((wishlist) => Wishlist(wishlist))}</div>
-			{isOwner && (
-				<WishlistDialog
-					config={{
-						title: "Create new wishlist",
-						submitButtonTitle: "Create",
-						onSubmit,
-						values,
-					}}
-				/>
-			)}
+			<div className="flex flex-col gap-y-3">
+				{wishlists?.map((wishlist) => Wishlist(wishlist))}
+				{isOwner && (
+					<WishlistDialog
+						config={{
+							title: "Create new wishlist",
+							submitButtonTitle: "Create",
+							onSubmit,
+							values,
+						}}
+					/>
+				)}
+			</div>
 		</RoundedRect>
 	);
 };

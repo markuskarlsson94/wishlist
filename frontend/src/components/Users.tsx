@@ -46,7 +46,7 @@ const Users = () => {
 	return (
 		<RoundedRect>
 			<BackButton onClick={handleBack} />
-			{users.map((user) => User(user))}
+			<div className="flex flex-col gap-y-3">{users.map((user) => User(user))}</div>
 		</RoundedRect>
 	);
 };

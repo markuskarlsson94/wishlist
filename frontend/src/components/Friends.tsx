@@ -118,9 +118,11 @@ const Friends = () => {
 			<BackButton onClick={handleBack} />
 			{viewer === userId && friendRequests()}
 			<h3>Friends</h3>
-			{friends.map((friend) => (
-				<Friend key={friend} friend={friend} />
-			))}
+			<div className="flex flex-col gap-y-3">
+				{friends.map((friend) => (
+					<Friend key={friend} friend={friend} />
+				))}
+			</div>
 		</RoundedRect>
 	);
 };

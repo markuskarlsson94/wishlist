@@ -186,16 +186,18 @@ const Item = () => {
 				</Button>
 			)}
 			<h3>Comments</h3>
-			{comments?.map((comment) => (
-				<Comment key={comment.id} comment={comment} itemId={id} />
-			))}
-			<AddCommentForm
-				config={{
-					onSubmit: handleAddComment,
-				}}
-			/>
+			<div className="flex flex-col gap-y-3">
+				{comments?.map((comment) => (
+					<Comment key={comment.id} comment={comment} itemId={id} />
+				))}
+				<AddCommentForm
+					config={{
+						onSubmit: handleAddComment,
+					}}
+				/>
 
-			{!isOwner && (item?.reservation ? unreserveButton() : reserveButton())}
+				{!isOwner && (item?.reservation ? unreserveButton() : reserveButton())}
+			</div>
 		</RoundedRect>
 	);
 };
