@@ -6,7 +6,7 @@ import { useGetItem } from "../hooks/item";
 import { NavLink } from "react-router-dom";
 import RoundedRect from "./RoundedRect";
 import BackButton from "./BackButton";
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { Card, CardHeader, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
 
 const ReservationItem = ({ reservation }: { reservation: ReservationType }) => {
@@ -24,11 +24,11 @@ const ReservationItem = ({ reservation }: { reservation: ReservationType }) => {
 		<NavLink to={`/item/${item.id}`}>
 			<Card>
 				<CardHeader>
-					<CardTitle>{item?.title}</CardTitle>
+					<div className="flex justify-between">
+						<CardTitle>{item?.title}</CardTitle>
+						<Button onClick={handleDelete}>Unreserve</Button>
+					</div>
 				</CardHeader>
-				<CardContent>
-					<Button onClick={handleDelete}>Unreserve</Button>
-				</CardContent>
 			</Card>
 		</NavLink>
 	);
