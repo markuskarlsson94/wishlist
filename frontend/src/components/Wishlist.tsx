@@ -73,7 +73,7 @@ const Wishlist = () => {
 								</div>
 								{comments && commentCount > 0 && (
 									<div className="flex gap-x-1 float-right">
-										<MessageCircle /> {comments.length}
+										<MessageCircle strokeWidth={1.5} opacity={0.5} /> {comments.length}
 									</div>
 								)}
 							</div>
@@ -111,23 +111,10 @@ const Wishlist = () => {
 
 	return (
 		<RoundedRect>
-			<BackButton onClick={handleBack} />
-			<h3>{wishlist?.title}</h3>
-			<p>{wishlist?.description}</p>
-			{items?.map((item) => (
-				<Item item={item} />
-			))}
-			{isOwner && (
-				<>
-					<ItemDialog
-						config={{
-							title: "Add item",
-							submitButtonTitle: "Add",
-							onSubmit: onSubmitItem,
-							values: itemValues,
-						}}
-					/>
-					<>
+			<div className="flex justify-between">
+				<BackButton onClick={handleBack} />
+				{isOwner && (
+					<div>
 						<DropdownMenu>
 							<DropdownMenuTrigger asChild>
 								<IconButton variant={"ghost"}>
@@ -196,7 +183,24 @@ const Wishlist = () => {
 								</AlertDialogFooter>
 							</AlertDialogContent>
 						</AlertDialog>
-					</>
+					</div>
+				)}
+			</div>
+			<h3>{wishlist?.title}</h3>
+			<p>{wishlist?.description}</p>
+			{items?.map((item) => (
+				<Item item={item} />
+			))}
+			{isOwner && (
+				<>
+					<ItemDialog
+						config={{
+							title: "Add item",
+							submitButtonTitle: "Add",
+							onSubmit: onSubmitItem,
+							values: itemValues,
+						}}
+					/>
 				</>
 			)}
 		</RoundedRect>
