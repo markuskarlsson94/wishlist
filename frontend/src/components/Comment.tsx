@@ -40,17 +40,15 @@ const Comment = ({ comment, itemId }: { comment: CommentType; itemId: number }) 
 	let ownCommentString;
 
 	if (comment.isItemOwner) {
-		ownCommentString = `You${adminString}: ${comment.comment}`;
+		ownCommentString = `You${adminString}`;
 	} else {
-		ownCommentString = isAdmin
-			? `You${adminString}: ${comment.comment}`
-			: `Anonymous user ${comment.anonymizedUserId} (You): ${comment.comment}`;
+		ownCommentString = isAdmin ? `You${adminString}` : `Anonymous user ${comment.anonymizedUserId} (You)`;
 	}
 
 	if (comment.isOwnComment) {
 		return (
 			<div className="flex justify-between">
-				<p>{ownCommentString}</p>
+				{commentContent(ownCommentString, comment)}
 				<div>
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
@@ -122,21 +120,27 @@ const Comment = ({ comment, itemId }: { comment: CommentType; itemId: number }) 
 	}
 
 	if (comment.isItemOwner) {
-		return (
-			<p>
-				Owner{adminString}: {comment.comment}
-			</p>
-		);
+		return commentContent("Owner", comment);
 	}
 
 	if (comment.isAdmin) {
-		return <p>Admin: {comment.comment}</p>;
+		return commentContent("Admin", comment);
 	}
 
+	return commentContent(`Anonymous user ${comment.anonymizedUserId}`, comment);
+};
+
+const commentContent = (title: string, comment: CommentType) => {
 	return (
-		<p>
-			Anonymous user {comment.anonymizedUserId}: {comment.comment}
-		</p>
+		<div>
+			<p className="flex gap-x-2">
+				<span className="font-medium">{title}:</span>
+				<span className="font-small text-gray-400">{new Date(comment.createdAt).toLocaleDateString()}</span>
+			</p>
+			<div className="ml-4">
+				<p>{comment.comment}</p>
+			</div>
+		</div>
 	);
 };
 
