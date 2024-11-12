@@ -6,7 +6,7 @@ import { useGetUser } from "../hooks/user";
 import { useGetFriends } from "../hooks/friend";
 import RoundedRect from "./RoundedRect";
 import BackButton from "./BackButton";
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { Card, CardHeader, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
 import HoverCard from "./HoverCard";
 
@@ -29,15 +29,17 @@ const ReceivedFriendRequest = ({ friendRequest }: { friendRequest: FriendRequest
 			<Card>
 				<CardHeader>
 					<CardTitle>
-						<NavLink to={`/user/${friendRequest.sender}`}>
-							{user?.firstName} {user?.lastName}
-						</NavLink>
+						<div className="flex justify-between">
+							<NavLink to={`/user/${friendRequest.sender}`}>
+								{user?.firstName} {user?.lastName}
+							</NavLink>
+							<div className="flex gap-x-3">
+								<Button onClick={handleAccept}>Accept</Button>
+								<Button onClick={handleDecline}>Decline</Button>
+							</div>
+						</div>
 					</CardTitle>
 				</CardHeader>
-				<CardContent>
-					<Button onClick={handleAccept}>Accept</Button>
-					<Button onClick={handleDecline}>Decline</Button>
-				</CardContent>
 			</Card>
 		</div>
 	);
@@ -57,14 +59,14 @@ const SentFriendRequest = ({ friendRequest }: { friendRequest: FriendRequest }) 
 			<Card>
 				<CardHeader>
 					<CardTitle>
-						<NavLink to={`/user/${friendRequest.receiver}`}>
-							{user?.firstName} {user?.lastName}
-						</NavLink>
+						<div className="flex justify-between">
+							<NavLink to={`/user/${friendRequest.receiver}`}>
+								{user?.firstName} {user?.lastName}
+							</NavLink>
+							<Button onClick={handleCancel}>Cancel</Button>
+						</div>
 					</CardTitle>
 				</CardHeader>
-				<CardContent>
-					<Button onClick={handleCancel}>Cancel</Button>
-				</CardContent>
 			</Card>
 		</div>
 	);
