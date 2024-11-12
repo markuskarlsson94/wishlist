@@ -5,7 +5,8 @@ import axiosInstance from "../axiosInstance";
 import UserType from "../types/UserType";
 import RoundedRect from "./RoundedRect";
 import BackButton from "./BackButton";
-import { Card, CardHeader, CardTitle } from "./ui/card";
+import { CardHeader, CardTitle } from "./ui/card";
+import HoverCard from "./HoverCard";
 
 const Users = () => {
 	const [users, setUsers] = useState<UserType[]>([]);
@@ -30,13 +31,13 @@ const Users = () => {
 		return (
 			<div key={user.id}>
 				<NavLink to={`/user/${user.id}`}>
-					<Card>
+					<HoverCard>
 						<CardHeader>
 							<CardTitle>
 								{user.firstName} {user.lastName}
 							</CardTitle>
 						</CardHeader>
-					</Card>
+					</HoverCard>
 				</NavLink>
 			</div>
 		);

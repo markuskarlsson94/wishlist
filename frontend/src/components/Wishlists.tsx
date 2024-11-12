@@ -7,7 +7,8 @@ import { useCreateWishlist, useGetWishlists } from "../hooks/wishlist";
 import RoundedRect from "./RoundedRect";
 import WishlistDialog from "./WishlistDialog";
 import BackButton from "./BackButton";
-import { Card, CardDescription, CardHeader, CardTitle } from "./ui/card";
+import { CardDescription, CardHeader, CardTitle } from "./ui/card";
+import HoverCard from "./HoverCard";
 
 const Wishlists = () => {
 	const params = useParams<{ userId: string }>();
@@ -28,12 +29,12 @@ const Wishlists = () => {
 		return (
 			<div key={wishlist.id}>
 				<NavLink to={`/wishlist/${wishlist.id}`}>
-					<Card>
+					<HoverCard>
 						<CardHeader>
 							<CardTitle>{wishlist.title}</CardTitle>
 							<CardDescription>{wishlist.description}</CardDescription>
 						</CardHeader>
-					</Card>
+					</HoverCard>
 				</NavLink>
 			</div>
 		);

@@ -28,9 +28,10 @@ import {
 import { EllipsisVertical, MessageCircle, PencilLine, Trash2 } from "lucide-react";
 import IconButton from "./IconButton";
 import BackButton from "./BackButton";
-import { Card, CardDescription, CardHeader, CardTitle } from "./ui/card";
+import { CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { useGetComments } from "@/hooks/comment";
 import ItemType from "@/types/ItemType";
+import HoverCard from "./HoverCard";
 
 const Wishlist = () => {
 	const [isOwner, setIsOwner] = useState<boolean>(false);
@@ -64,9 +65,9 @@ const Wishlist = () => {
 		return (
 			<div key={item.id}>
 				<NavLink to={`/item/${item.id}`}>
-					<Card>
+					<HoverCard>
 						<CardHeader>
-							<div className="flex justify-between">
+							<div className="flex justify-between items-center">
 								<div>
 									<CardTitle>{item.title}</CardTitle>
 									<CardDescription>{item.description}</CardDescription>
@@ -78,7 +79,7 @@ const Wishlist = () => {
 								)}
 							</div>
 						</CardHeader>
-					</Card>
+					</HoverCard>
 				</NavLink>
 			</div>
 		);
@@ -127,14 +128,14 @@ const Wishlist = () => {
 									className="flex justify-between items-center"
 								>
 									<span>Edit</span>
-									<PencilLine />
+									<PencilLine opacity={0.7} />
 								</DropdownMenuItem>
 								<DropdownMenuItem
 									onClick={() => setIsDeleteDialogOpen(true)}
 									className="flex justify-between items-center"
 								>
 									<span>Delete</span>
-									<Trash2 />
+									<Trash2 opacity={0.7} />
 								</DropdownMenuItem>
 							</DropdownMenuContent>
 						</DropdownMenu>
@@ -150,7 +151,7 @@ const Wishlist = () => {
 										open: isEditDialogOpen,
 										values: wishlistValues,
 										onSubmit: onSubmitWishlist,
-										submitButtonTitle: "Edit",
+										submitButtonTitle: "Save",
 									}}
 								/>
 							</DialogContent>
@@ -188,21 +189,23 @@ const Wishlist = () => {
 			</div>
 			<h3>{wishlist?.title}</h3>
 			<p>{wishlist?.description}</p>
-			{items?.map((item) => (
-				<Item item={item} />
-			))}
-			{isOwner && (
-				<>
-					<ItemDialog
-						config={{
-							title: "Add item",
-							submitButtonTitle: "Add",
-							onSubmit: onSubmitItem,
-							values: itemValues,
-						}}
-					/>
-				</>
-			)}
+			<div className="flex flex-col gap-y-3">
+				{items?.map((item) => (
+					<Item item={item} />
+				))}
+				{isOwner && (
+					<>
+						<ItemDialog
+							config={{
+								title: "Add item",
+								submitButtonTitle: "Add",
+								onSubmit: onSubmitItem,
+								values: itemValues,
+							}}
+						/>
+					</>
+				)}
+			</div>
 		</RoundedRect>
 	);
 };

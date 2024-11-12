@@ -8,6 +8,7 @@ import RoundedRect from "./RoundedRect";
 import BackButton from "./BackButton";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
+import HoverCard from "./HoverCard";
 
 const ReceivedFriendRequest = ({ friendRequest }: { friendRequest: FriendRequest }) => {
 	const { userId } = useAuth();
@@ -73,15 +74,15 @@ const Friend = ({ friend }: { friend: number }) => {
 	const { user } = useGetUser(friend);
 
 	return (
-		<Card>
-			<CardHeader>
-				<CardTitle>
-					<NavLink to={`/user/${friend}`}>
+		<NavLink to={`/user/${friend}`}>
+			<HoverCard>
+				<CardHeader>
+					<CardTitle>
 						{user?.firstName} {user?.lastName}
-					</NavLink>
-				</CardTitle>
-			</CardHeader>
-		</Card>
+					</CardTitle>
+				</CardHeader>
+			</HoverCard>
+		</NavLink>
 	);
 };
 
