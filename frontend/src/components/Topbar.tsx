@@ -12,7 +12,7 @@ const Topbar = () => {
 	});
 
 	return (
-		<div className="h-[50px] bg-slate-800 flex items-center">
+		<div className="bg-slate-800 flex items-center p-2">
 			<Button variant={"secondary"} onClick={() => logout()} className="ml-auto">
 				Logout <LogOut />
 			</Button>
