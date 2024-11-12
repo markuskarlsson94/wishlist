@@ -7,7 +7,7 @@ const Sidebar = () => {
 	const { userId } = useAuth();
 
 	return (
-		<RoundedRect className="flex flex-col self-start">
+		<RoundedRect className="flex flex-col self-start gap-y-3">
 			<Button variant={"ghost"}>
 				<NavLink to={`user/${userId}/wishlists`}>My wishlists</NavLink>
 			</Button>
