@@ -105,7 +105,79 @@ const Item = () => {
 
 	return (
 		<RoundedRect>
-			<BackButton onClick={handleBack} />
+			<div className="flex justify-between">
+				<BackButton onClick={handleBack} />
+				{isOwner && (
+					<div>
+						<DropdownMenu>
+							<DropdownMenuTrigger asChild>
+								<IconButton variant={"ghost"}>
+									<EllipsisVertical />
+								</IconButton>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent align="end">
+								<DropdownMenuItem
+									onClick={() => setIsEditDialogOpen(true)}
+									className="flex justify-between items-center"
+								>
+									<span>Edit</span>
+									<PencilLine />
+								</DropdownMenuItem>
+								<DropdownMenuItem
+									onClick={() => setIsDeleteDialogOpen(true)}
+									className="flex justify-between items-center"
+								>
+									<span>Delete</span>
+									<Trash2 />
+								</DropdownMenuItem>
+							</DropdownMenuContent>
+						</DropdownMenu>
+
+						<Dialog open={isEditDialogOpen} onOpenChange={() => setIsEditDialogOpen(!isEditDialogOpen)}>
+							<DialogTrigger></DialogTrigger>
+							<DialogContent>
+								<DialogHeader>
+									<DialogTitle>Edit item</DialogTitle>
+								</DialogHeader>
+								<ItemForm
+									config={{
+										open: isEditDialogOpen,
+										values: itemValues,
+										onSubmit: onSubmitItem,
+										submitButtonTitle: "Edit",
+									}}
+								/>
+							</DialogContent>
+						</Dialog>
+
+						<AlertDialog
+							open={isDeleteDialogOpen}
+							onOpenChange={() => setIsDeleteDialogOpen(!isDeleteDialogOpen)}
+						>
+							<AlertDialogTrigger asChild></AlertDialogTrigger>
+							<AlertDialogContent>
+								<AlertDialogHeader>
+									<AlertDialogTitle>Delete item</AlertDialogTitle>
+									<AlertDialogDescription>
+										Are you sure you want to permanently delete this item?
+									</AlertDialogDescription>
+								</AlertDialogHeader>
+								<AlertDialogFooter>
+									<AlertDialogCancel>Cancel</AlertDialogCancel>
+									<AlertDialogAction
+										className={buttonVariants({ variant: "destructive" })}
+										onClick={() => {
+											handleDelete();
+										}}
+									>
+										Delete
+									</AlertDialogAction>
+								</AlertDialogFooter>
+							</AlertDialogContent>
+						</AlertDialog>
+					</div>
+				)}
+			</div>
 			<h3>{item?.title}</h3>
 			<p>{item?.description}</p>
 			{item?.link && (
@@ -122,76 +194,7 @@ const Item = () => {
 					onSubmit: handleAddComment,
 				}}
 			/>
-			{isOwner && (
-				<>
-					<DropdownMenu>
-						<DropdownMenuTrigger asChild>
-							<IconButton variant={"ghost"}>
-								<EllipsisVertical />
-							</IconButton>
-						</DropdownMenuTrigger>
-						<DropdownMenuContent align="end">
-							<DropdownMenuItem
-								onClick={() => setIsEditDialogOpen(true)}
-								className="flex justify-between items-center"
-							>
-								<span>Edit</span>
-								<PencilLine />
-							</DropdownMenuItem>
-							<DropdownMenuItem
-								onClick={() => setIsDeleteDialogOpen(true)}
-								className="flex justify-between items-center"
-							>
-								<span>Delete</span>
-								<Trash2 />
-							</DropdownMenuItem>
-						</DropdownMenuContent>
-					</DropdownMenu>
 
-					<Dialog open={isEditDialogOpen} onOpenChange={() => setIsEditDialogOpen(!isEditDialogOpen)}>
-						<DialogTrigger></DialogTrigger>
-						<DialogContent>
-							<DialogHeader>
-								<DialogTitle>Edit item</DialogTitle>
-							</DialogHeader>
-							<ItemForm
-								config={{
-									open: isEditDialogOpen,
-									values: itemValues,
-									onSubmit: onSubmitItem,
-									submitButtonTitle: "Edit",
-								}}
-							/>
-						</DialogContent>
-					</Dialog>
-
-					<AlertDialog
-						open={isDeleteDialogOpen}
-						onOpenChange={() => setIsDeleteDialogOpen(!isDeleteDialogOpen)}
-					>
-						<AlertDialogTrigger asChild></AlertDialogTrigger>
-						<AlertDialogContent>
-							<AlertDialogHeader>
-								<AlertDialogTitle>Delete item</AlertDialogTitle>
-								<AlertDialogDescription>
-									Are you sure you want to permanently delete this item?
-								</AlertDialogDescription>
-							</AlertDialogHeader>
-							<AlertDialogFooter>
-								<AlertDialogCancel>Cancel</AlertDialogCancel>
-								<AlertDialogAction
-									className={buttonVariants({ variant: "destructive" })}
-									onClick={() => {
-										handleDelete();
-									}}
-								>
-									Delete
-								</AlertDialogAction>
-							</AlertDialogFooter>
-						</AlertDialogContent>
-					</AlertDialog>
-				</>
-			)}
 			{!isOwner && (item?.reservation ? unreserveButton() : reserveButton())}
 		</RoundedRect>
 	);
