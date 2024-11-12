@@ -42,7 +42,7 @@ const UpdateCommentForm = ({ config }: { config: UpdateCommentFormConfig }) => {
 				></FormField>
 
 				<div className="mt-6 float-right">
-					<Button type="submit">Edit</Button>
+					<Button type="submit">Save</Button>
 				</div>
 			</form>
 		</Form>

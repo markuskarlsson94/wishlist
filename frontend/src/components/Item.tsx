@@ -146,7 +146,7 @@ const Item = () => {
 										open: isEditDialogOpen,
 										values: itemValues,
 										onSubmit: onSubmitItem,
-										submitButtonTitle: "Edit",
+										submitButtonTitle: "Save",
 									}}
 								/>
 							</DialogContent>
