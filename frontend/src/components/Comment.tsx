@@ -38,6 +38,95 @@ const Comment = ({ comment, itemId }: { comment: CommentType; itemId: number }) 
 		setIsEditDialogOpen(false);
 	};
 
+	const commentOptions = () => {
+		return (
+			<div>
+				<DropdownMenu>
+					<DropdownMenuTrigger asChild>
+						<IconButton variant={"ghost"}>
+							<EllipsisVertical />
+						</IconButton>
+					</DropdownMenuTrigger>
+					<DropdownMenuContent align="end">
+						<DropdownMenuItem
+							onClick={() => setIsEditDialogOpen(true)}
+							className="flex justify-between items-center"
+						>
+							<span>Edit</span>
+							<EditIcon />
+						</DropdownMenuItem>
+						<DropdownMenuItem
+							onClick={() => setIsDeleteDialogOpen(true)}
+							className="flex justify-between items-center"
+						>
+							<span>Delete</span>
+							<DeleteIcon />
+						</DropdownMenuItem>
+					</DropdownMenuContent>
+				</DropdownMenu>
+
+				<Dialog open={isEditDialogOpen} onOpenChange={() => setIsEditDialogOpen(!isEditDialogOpen)}>
+					<DialogTrigger></DialogTrigger>
+					<DialogContent>
+						<DialogHeader>
+							<DialogTitle>Edit comment</DialogTitle>
+						</DialogHeader>
+						<UpdateCommentForm
+							config={{
+								comment: comment.comment,
+								onSubmit: handleEdit,
+							}}
+						/>
+					</DialogContent>
+				</Dialog>
+
+				<AlertDialog open={isDeleteDialogOpen} onOpenChange={() => setIsDeleteDialogOpen(!isDeleteDialogOpen)}>
+					<AlertDialogTrigger asChild></AlertDialogTrigger>
+					<AlertDialogContent>
+						<AlertDialogHeader>
+							<AlertDialogTitle>Delete comment</AlertDialogTitle>
+							<AlertDialogDescription>
+								Are you sure you want to permanently delete this comment?
+							</AlertDialogDescription>
+						</AlertDialogHeader>
+						<AlertDialogFooter>
+							<AlertDialogCancel>Cancel</AlertDialogCancel>
+							<AlertDialogAction
+								className={buttonVariants({ variant: "destructive" })}
+								onClick={() => {
+									handleDelete();
+								}}
+							>
+								Delete
+							</AlertDialogAction>
+						</AlertDialogFooter>
+					</AlertDialogContent>
+				</AlertDialog>
+			</div>
+		);
+	};
+
+	const commentContent = (title: string, comment: CommentType) => {
+		return (
+			<div className="bg-gray-100 rounded-md py-2 px-4 relative">
+				<div className="absolute right-3">{comment.isOwnComment && commentOptions()}</div>
+				<div className="flex justify-between">
+					<p className="flex gap-x-2">
+						<span className="font-medium">{title}:</span>
+						<Tooltip tooltip={new Date(comment.createdAt).toUTCString()}>
+							<span className="font-small text-gray-400">
+								{new Date(comment.createdAt).toLocaleDateString()}
+							</span>
+						</Tooltip>
+					</p>
+				</div>
+				<div className="ml-4">
+					<p>{comment.comment}</p>
+				</div>
+			</div>
+		);
+	};
+
 	const isAdmin = comment.isAdmin;
 	const adminString = isAdmin ? " (Admin)" : "";
 	let ownCommentString;
@@ -49,77 +138,7 @@ const Comment = ({ comment, itemId }: { comment: CommentType; itemId: number }) 
 	}
 
 	if (comment.isOwnComment) {
-		return (
-			<div className="flex justify-between">
-				{commentContent(ownCommentString, comment)}
-				<div>
-					<DropdownMenu>
-						<DropdownMenuTrigger asChild>
-							<IconButton variant={"ghost"}>
-								<EllipsisVertical />
-							</IconButton>
-						</DropdownMenuTrigger>
-						<DropdownMenuContent align="end">
-							<DropdownMenuItem
-								onClick={() => setIsEditDialogOpen(true)}
-								className="flex justify-between items-center"
-							>
-								<span>Edit</span>
-								<EditIcon />
-							</DropdownMenuItem>
-							<DropdownMenuItem
-								onClick={() => setIsDeleteDialogOpen(true)}
-								className="flex justify-between items-center"
-							>
-								<span>Delete</span>
-								<DeleteIcon />
-							</DropdownMenuItem>
-						</DropdownMenuContent>
-					</DropdownMenu>
-
-					<Dialog open={isEditDialogOpen} onOpenChange={() => setIsEditDialogOpen(!isEditDialogOpen)}>
-						<DialogTrigger></DialogTrigger>
-						<DialogContent>
-							<DialogHeader>
-								<DialogTitle>Edit comment</DialogTitle>
-							</DialogHeader>
-							<UpdateCommentForm
-								config={{
-									comment: comment.comment,
-									onSubmit: handleEdit,
-								}}
-							/>
-						</DialogContent>
-					</Dialog>
-
-					<AlertDialog
-						open={isDeleteDialogOpen}
-						onOpenChange={() => setIsDeleteDialogOpen(!isDeleteDialogOpen)}
-					>
-						<AlertDialogTrigger asChild></AlertDialogTrigger>
-						<AlertDialogContent>
-							<AlertDialogHeader>
-								<AlertDialogTitle>Delete comment</AlertDialogTitle>
-								<AlertDialogDescription>
-									Are you sure you want to permanently delete this comment?
-								</AlertDialogDescription>
-							</AlertDialogHeader>
-							<AlertDialogFooter>
-								<AlertDialogCancel>Cancel</AlertDialogCancel>
-								<AlertDialogAction
-									className={buttonVariants({ variant: "destructive" })}
-									onClick={() => {
-										handleDelete();
-									}}
-								>
-									Delete
-								</AlertDialogAction>
-							</AlertDialogFooter>
-						</AlertDialogContent>
-					</AlertDialog>
-				</div>
-			</div>
-		);
+		return commentContent(ownCommentString, comment);
 	}
 
 	if (comment.isItemOwner) {
@@ -131,22 +150,6 @@ const Comment = ({ comment, itemId }: { comment: CommentType; itemId: number }) 
 	}
 
 	return commentContent(`Anonymous user ${comment.anonymizedUserId}`, comment);
-};
-
-const commentContent = (title: string, comment: CommentType) => {
-	return (
-		<div>
-			<p className="flex gap-x-2">
-				<span className="font-medium">{title}:</span>
-				<Tooltip tooltip={new Date(comment.createdAt).toUTCString()}>
-					<span className="font-small text-gray-400">{new Date(comment.createdAt).toLocaleDateString()}</span>
-				</Tooltip>
-			</p>
-			<div className="ml-4">
-				<p>{comment.comment}</p>
-			</div>
-		</div>
-	);
 };
 
 export default Comment;
