@@ -66,7 +66,7 @@ const Wishlist = () => {
 		const commentCount = comments?.length || 0;
 
 		return (
-			<div key={item.id}>
+			<div>
 				<NavLink to={`/item/${item.id}`}>
 					<HoverCard>
 						<CardHeader>
@@ -196,7 +196,7 @@ const Wishlist = () => {
 			<p>{wishlist?.description}</p>
 			<div className="flex flex-col gap-y-3">
 				{items?.map((item) => (
-					<Item item={item} />
+					<Item key={item.id} item={item} />
 				))}
 				{isOwner && (
 					<>

@@ -33,7 +33,7 @@ const Wishlists = () => {
 		const itemCount = items.length || 0;
 
 		return (
-			<div key={wishlist.id}>
+			<div>
 				<NavLink to={`/wishlist/${wishlist.id}`}>
 					<HoverCard>
 						<CardHeader>
@@ -73,7 +73,7 @@ const Wishlists = () => {
 			<BackButton onClick={handleBack} />
 			<div className="flex flex-col gap-y-3">
 				{wishlists?.map((wishlist) => (
-					<Wishlist wishlist={wishlist} />
+					<Wishlist key={wishlist.id} wishlist={wishlist} />
 				))}
 				{isOwner && (
 					<WishlistDialog
