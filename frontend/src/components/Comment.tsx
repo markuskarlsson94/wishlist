@@ -21,6 +21,7 @@ import {
 } from "./ui/alert-dialog";
 import EditIcon from "./icons/EditIcon";
 import DeleteIcon from "./icons/DeleteIcon";
+import Tooltip from "./Tooltip";
 
 const Comment = ({ comment, itemId }: { comment: CommentType; itemId: number }) => {
 	const deleteComment = useDeleteComment({ itemId });
@@ -137,7 +138,9 @@ const commentContent = (title: string, comment: CommentType) => {
 		<div>
 			<p className="flex gap-x-2">
 				<span className="font-medium">{title}:</span>
-				<span className="font-small text-gray-400">{new Date(comment.createdAt).toLocaleDateString()}</span>
+				<Tooltip tooltip={new Date(comment.createdAt).toUTCString()}>
+					<span className="font-small text-gray-400">{new Date(comment.createdAt).toLocaleDateString()}</span>
+				</Tooltip>
 			</p>
 			<div className="ml-4">
 				<p>{comment.comment}</p>

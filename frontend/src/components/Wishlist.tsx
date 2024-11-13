@@ -34,6 +34,7 @@ import ItemType from "@/types/ItemType";
 import HoverCard from "./HoverCard";
 import EditIcon from "./icons/EditIcon";
 import DeleteIcon from "./icons/DeleteIcon";
+import Tooltip from "./Tooltip";
 
 const Wishlist = () => {
 	const [isOwner, setIsOwner] = useState<boolean>(false);
@@ -74,11 +75,13 @@ const Wishlist = () => {
 									<CardTitle>{item.title}</CardTitle>
 									<CardDescription>{item.description}</CardDescription>
 								</div>
-								{commentCount > 0 && (
-									<div className="flex gap-x-1 float-right">
-										<MessageCircle strokeWidth={1.5} opacity={0.5} /> {commentCount}
-									</div>
-								)}
+								<Tooltip tooltip={`Contains ${commentCount} comments`}>
+									{commentCount > 0 && (
+										<div className="flex gap-x-1 float-right">
+											<MessageCircle strokeWidth={1.5} opacity={0.5} /> {commentCount}
+										</div>
+									)}
+								</Tooltip>
 							</div>
 						</CardHeader>
 					</HoverCard>

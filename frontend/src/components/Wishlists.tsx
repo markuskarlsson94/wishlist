@@ -11,6 +11,7 @@ import { CardDescription, CardHeader, CardTitle } from "./ui/card";
 import HoverCard from "./HoverCard";
 import { useGetItems } from "@/hooks/item";
 import { Box } from "lucide-react";
+import Tooltip from "./Tooltip";
 
 const Wishlists = () => {
 	const params = useParams<{ userId: string }>();
@@ -42,9 +43,11 @@ const Wishlists = () => {
 									<CardDescription>{wishlist.description}</CardDescription>
 								</div>
 								{itemCount > 0 && (
-									<div className="flex gap-x-1 float-right">
-										<Box strokeWidth={1.5} opacity={0.5} /> {itemCount}
-									</div>
+									<Tooltip tooltip={`Contains ${itemCount} items`}>
+										<div className="flex gap-x-1 float-right">
+											<Box strokeWidth={1.5} opacity={0.5} /> {itemCount}
+										</div>
+									</Tooltip>
 								)}
 							</div>
 						</CardHeader>
