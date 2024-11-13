@@ -42,7 +42,7 @@ const Comment = ({ comment, itemId }: { comment: CommentType; itemId: number }) 
 		return (
 			<div>
 				<DropdownMenu>
-					<DropdownMenuTrigger asChild>
+					<DropdownMenuTrigger asChild className="hover:bg-white">
 						<IconButton variant={"ghost"}>
 							<EllipsisVertical />
 						</IconButton>
