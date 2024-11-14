@@ -22,6 +22,7 @@ import {
 import EditIcon from "./icons/EditIcon";
 import DeleteIcon from "./icons/DeleteIcon";
 import Tooltip from "./Tooltip";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 
 const Comment = ({ comment, itemId }: { comment: CommentType; itemId: number }) => {
 	const deleteComment = useDeleteComment({ itemId });
@@ -42,7 +43,7 @@ const Comment = ({ comment, itemId }: { comment: CommentType; itemId: number }) 
 		return (
 			<div>
 				<DropdownMenu>
-					<DropdownMenuTrigger asChild className="hover:bg-white">
+					<DropdownMenuTrigger asChild>
 						<IconButton variant={"ghost"}>
 							<EllipsisVertical />
 						</IconButton>
@@ -106,24 +107,51 @@ const Comment = ({ comment, itemId }: { comment: CommentType; itemId: number }) 
 		);
 	};
 
+	const dateString = (comment: CommentType) => {
+		const date = new Date(comment.createdAt).toLocaleDateString();
+		const edited = comment.createdAt !== comment.updatedAt;
+
+		if (edited) {
+			return `${date}*`;
+		}
+
+		return date;
+	};
+
+	const dateTooltip = (comment: CommentType) => {
+		const date = new Date(comment.createdAt).toUTCString();
+		const edited = comment.createdAt !== comment.updatedAt;
+
+		if (edited) {
+			const dateEdited = new Date(comment.updatedAt).toUTCString();
+			return `${date}. Edited on ${dateEdited}`;
+		}
+
+		return date;
+	};
+
 	const commentContent = (title: string, comment: CommentType) => {
 		return (
-			<div className="bg-gray-100 rounded-md py-2 px-4 relative">
-				<div className="absolute right-3">{comment.isOwnComment && commentOptions()}</div>
-				<div className="flex justify-between">
-					<p className="flex gap-x-2">
-						<span className="font-medium">{title}:</span>
-						<Tooltip tooltip={new Date(comment.createdAt).toUTCString()}>
-							<span className="font-small text-gray-400">
-								{new Date(comment.createdAt).toLocaleDateString()}
-							</span>
-						</Tooltip>
-					</p>
-				</div>
-				<div className="ml-4">
-					<p>{comment.comment}</p>
-				</div>
-			</div>
+			<Card className="relative">
+				<CardHeader>
+					<CardTitle>
+						<div className="absolute right-3 top-2">{comment.isOwnComment && commentOptions()}</div>
+						<div className="flex justify-between">
+							<p className="flex gap-x-3">
+								<span>{title}</span>
+								<Tooltip tooltip={dateTooltip(comment)}>
+									<span className="font-normal text-gray-400">{dateString(comment)}</span>
+								</Tooltip>
+							</p>
+						</div>
+					</CardTitle>
+				</CardHeader>
+				<CardContent>
+					<div className="">
+						<p>{comment.comment}</p>
+					</div>
+				</CardContent>
+			</Card>
 		);
 	};
 
