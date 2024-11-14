@@ -192,11 +192,18 @@ const Item = () => {
 				{comments?.map((comment) => (
 					<Comment key={comment.id} comment={comment} itemId={id} />
 				))}
-				<AddCommentForm
-					config={{
-						onSubmit: handleAddComment,
-					}}
-				/>
+				<div className="flex flex-col gap-y-3 mt-5">
+					{!isOwner && (
+						<p className="flex m-auto text-sm text-gray-400">
+							Comment will be anonymous to the item owner and other users
+						</p>
+					)}
+					<AddCommentForm
+						config={{
+							onSubmit: handleAddComment,
+						}}
+					/>
+				</div>
 
 				{!isOwner && (item?.reservation ? unreserveButton() : reserveButton())}
 			</div>
