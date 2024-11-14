@@ -198,6 +198,11 @@ const Wishlist = () => {
 				<P>{wishlist?.description}</P>
 			</div>
 			<div className="flex flex-col gap-y-3">
+				{items && items.length === 0 && (
+					<div className="flex">
+						<p className="m-auto text-2xl font-medium text-gray-300">No items</p>
+					</div>
+				)}
 				{items?.map((item) => (
 					<Item key={item.id} item={item} />
 				))}

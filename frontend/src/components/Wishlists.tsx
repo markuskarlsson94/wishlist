@@ -72,6 +72,11 @@ const Wishlists = () => {
 		<RoundedRect>
 			<BackButton onClick={handleBack} />
 			<div className="flex flex-col gap-y-3">
+				{wishlists && wishlists.length === 0 && (
+					<div className="flex">
+						<p className="m-auto text-2xl font-medium text-gray-300">No wishlists</p>
+					</div>
+				)}
 				{wishlists?.map((wishlist) => (
 					<Wishlist key={wishlist.id} wishlist={wishlist} />
 				))}
