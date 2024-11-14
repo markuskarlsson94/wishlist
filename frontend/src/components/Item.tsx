@@ -30,6 +30,7 @@ import {
 import BackButton from "./BackButton";
 import EditIcon from "./icons/EditIcon";
 import DeleteIcon from "./icons/DeleteIcon";
+import { H3, P } from "./ui/typography";
 
 const Item = () => {
 	const [isOwner, setIsOwner] = useState<boolean>(false);
@@ -180,8 +181,10 @@ const Item = () => {
 					</div>
 				)}
 			</div>
-			<h3>{item?.title}</h3>
-			<p>{item?.description}</p>
+			<div className="my-5">
+				<H3>{item?.title}</H3>
+				<P>{item?.description}</P>
+			</div>
 			{item?.link && (
 				<Button variant={"link"}>
 					<NavLink to={`${item.link}`}>{item.link}</NavLink>

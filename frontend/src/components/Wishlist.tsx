@@ -35,6 +35,7 @@ import HoverCard from "./HoverCard";
 import EditIcon from "./icons/EditIcon";
 import DeleteIcon from "./icons/DeleteIcon";
 import Tooltip from "./Tooltip";
+import { H3, P } from "./ui/typography";
 
 const Wishlist = () => {
 	const [isOwner, setIsOwner] = useState<boolean>(false);
@@ -192,8 +193,10 @@ const Wishlist = () => {
 					</div>
 				)}
 			</div>
-			<h3>{wishlist?.title}</h3>
-			<p>{wishlist?.description}</p>
+			<div className="my-5">
+				<H3>{wishlist?.title}</H3>
+				<P>{wishlist?.description}</P>
+			</div>
 			<div className="flex flex-col gap-y-3">
 				{items?.map((item) => (
 					<Item key={item.id} item={item} />
