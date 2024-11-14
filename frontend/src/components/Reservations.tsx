@@ -46,6 +46,11 @@ const Reservations = () => {
 	return (
 		<RoundedRect>
 			<BackButton onClick={handleBack} />
+			{reservations && reservations.length === 0 && (
+				<div className="flex">
+					<p className="m-auto text-2xl font-medium text-gray-300">No reservations</p>
+				</div>
+			)}
 			{reservations?.map((reservation) => (
 				<ReservationItem key={reservation.id} reservation={reservation} />
 			))}
