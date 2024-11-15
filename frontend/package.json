@@ -26,11 +26,13 @@
 		"clsx": "^2.1.1",
 		"dotenv": "^16.4.5",
 		"formik": "^2.4.6",
+		"javascript-time-ago": "^2.5.11",
 		"lucide-react": "^0.454.0",
 		"react": "^18.3.1",
 		"react-dom": "^18.3.1",
 		"react-hook-form": "^7.53.1",
 		"react-router-dom": "^6.26.0",
+		"react-time-ago": "^7.3.3",
 		"tailwind-merge": "^2.5.4",
 		"tailwindcss-animate": "^1.0.7",
 		"zod": "^3.23.8"
