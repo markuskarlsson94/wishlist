@@ -1,4 +1,4 @@
-import React from "react";
+import { forwardRef } from "react";
 import { Tooltip as ShadcnTooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
 interface Props {
@@ -6,18 +6,18 @@ interface Props {
 	tooltip: string;
 }
 
-const Tooltip: React.FC<Props> = ({ children, tooltip }) => {
+const Tooltip = forwardRef<HTMLDivElement, Props>(({ children, tooltip }, ref) => {
 	return (
 		<>
 			<ShadcnTooltip>
 				<TooltipTrigger asChild>{children}</TooltipTrigger>
-				<TooltipContent>
+				<TooltipContent ref={ref}>
 					<p className="text-sm font-medium">{tooltip}</p>
 				</TooltipContent>
 			</ShadcnTooltip>
 		</>
 	);
-};
+});
 
 Tooltip.displayName = "Tooltip";
 
