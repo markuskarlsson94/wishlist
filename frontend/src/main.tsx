@@ -5,6 +5,7 @@ import "./index.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { TooltipProvider } from "./components/ui/tooltip.tsx";
+import "./TimeAgo.ts";
 
 const queryClient = new QueryClient({
 	defaultOptions: {
