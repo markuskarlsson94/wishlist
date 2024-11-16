@@ -24,7 +24,7 @@ const WishlistDialog = ({ config }: { config: WishlistDialogConfig }) => {
 			<DialogTrigger asChild>
 				<Button>{config.title}</Button>
 			</DialogTrigger>
-			<DialogContent className="sm:max-w-[425px]">
+			<DialogContent>
 				<DialogHeader>
 					<DialogTitle>{config.title}</DialogTitle>
 				</DialogHeader>
