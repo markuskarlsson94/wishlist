@@ -1,3 +1,4 @@
+import React from "react";
 import { useState } from "react";
 import { useDeleteComment, useUpdateComment } from "../hooks/comment";
 import CommentType from "../types/CommentType";
@@ -23,6 +24,7 @@ import EditIcon from "./icons/EditIcon";
 import DeleteIcon from "./icons/DeleteIcon";
 import Tooltip from "./Tooltip";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import ReactTimeAgo from "react-time-ago";
 
 const Comment = ({ comment, itemId }: { comment: CommentType; itemId: number }) => {
 	const deleteComment = useDeleteComment({ itemId });
@@ -107,28 +109,30 @@ const Comment = ({ comment, itemId }: { comment: CommentType; itemId: number }) 
 		);
 	};
 
-	const dateString = (comment: CommentType) => {
-		const date = new Date(comment.createdAt).toLocaleDateString();
+	const DateComponent = ({ comment }: { comment: CommentType }) => {
 		const edited = comment.createdAt !== comment.updatedAt;
 
-		if (edited) {
-			return `${date}*`;
-		}
+		const DateWrapperWithComment = (props: any) => <DateWrapper {...props} comment={comment} />;
 
-		return date;
+		return (
+			<span className="font-normal text-gray-400">
+				<ReactTimeAgo
+					date={new Date(comment.createdAt)}
+					tooltip={false}
+					wrapperComponent={DateWrapperWithComment}
+				/>
+				{edited && <span>*</span>}
+			</span>
+		);
 	};
 
-	const dateTooltip = (comment: CommentType) => {
-		const date = new Date(comment.createdAt).toUTCString();
-		const edited = comment.createdAt !== comment.updatedAt;
-
-		if (edited) {
-			const dateEdited = new Date(comment.updatedAt).toUTCString();
-			return `${date}. Edited on ${dateEdited}`;
-		}
-
-		return date;
-	};
+	const DateWrapper = React.forwardRef<HTMLDivElement, { comment: CommentType; children: React.ReactNode }>(
+		({ comment, children }, ref) => (
+			<Tooltip ref={ref} tooltip={new Date(comment.createdAt).toUTCString()}>
+				{children}
+			</Tooltip>
+		),
+	);
 
 	const commentContent = (title: string, comment: CommentType) => {
 		return (
@@ -139,9 +143,7 @@ const Comment = ({ comment, itemId }: { comment: CommentType; itemId: number }) 
 						<div className="flex justify-between">
 							<p className="flex gap-x-3">
 								<span>{title}</span>
-								<Tooltip tooltip={dateTooltip(comment)}>
-									<span className="font-normal text-gray-400">{dateString(comment)}</span>
-								</Tooltip>
+								<DateComponent comment={comment} />
 							</p>
 						</div>
 					</CardTitle>
