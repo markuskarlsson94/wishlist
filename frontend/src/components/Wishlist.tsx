@@ -25,7 +25,7 @@ import {
 	AlertDialogTitle,
 	AlertDialogTrigger,
 } from "./ui/alert-dialog";
-import { BookmarkCheck, EllipsisVertical, MessageCircle, SquareCheckBig } from "lucide-react";
+import { BookmarkCheck, EllipsisVertical, MessageCircle } from "lucide-react";
 import IconButton from "./IconButton";
 import BackButton from "./BackButton";
 import { CardDescription, CardHeader, CardTitle } from "./ui/card";
@@ -83,7 +83,7 @@ const Wishlist = () => {
 								<div className="flex gap-x-3">
 									{reserved && (
 										<Tooltip tooltip="Reserved by you">
-											<SquareCheckBig strokeWidth={1.5} opacity={0.5} />
+											<BookmarkCheck strokeWidth={1.5} opacity={0.5} />
 										</Tooltip>
 									)}
 									{commentCount > 0 && (
