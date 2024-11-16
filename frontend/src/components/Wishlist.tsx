@@ -67,7 +67,7 @@ const Wishlist = () => {
 
 	const Item = ({ item }: { item: ItemType }) => {
 		const { comments } = useGetComments(item.id);
-		const commentCount = comments?.length || 0;
+		const commentCount = comments.length;
 		const reserved = reservations.some((r: ReservationType) => r.item === item.id);
 
 		return (

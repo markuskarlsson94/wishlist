@@ -21,8 +21,10 @@ export const useGetComments = (itemId: number) => {
 		enabled: !!itemId,
 	});
 
+	const comments = data?.data.comments || [];
+
 	return {
-		comments: data?.data.comments,
+		comments,
 		isSuccess,
 	};
 };
