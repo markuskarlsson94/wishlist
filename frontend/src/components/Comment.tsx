@@ -25,8 +25,13 @@ import DeleteIcon from "./icons/DeleteIcon";
 import Tooltip from "./Tooltip";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import ReactTimeAgo from "react-time-ago";
+import ItemType from "@/types/ItemType";
+import { useGetUser } from "@/hooks/user";
 
-const Comment = ({ comment, itemId }: { comment: CommentType; itemId: number }) => {
+const Comment = ({ comment, item }: { comment: CommentType; item: ItemType }) => {
+	const { id: itemId, owner } = item;
+	const { user } = useGetUser(owner);
+	console.log(user);
 	const deleteComment = useDeleteComment({ itemId });
 	const updateComment = useUpdateComment({ itemId });
 	const [isEditDialogOpen, setIsEditDialogOpen] = useState<boolean>(false);
@@ -172,7 +177,7 @@ const Comment = ({ comment, itemId }: { comment: CommentType; itemId: number }) 
 	}
 
 	if (comment.isItemOwner) {
-		return commentContent("Owner", comment);
+		return commentContent(`${user?.firstName} ${user?.lastName}`, comment);
 	}
 
 	if (comment.isAdmin) {
