@@ -121,7 +121,7 @@ const Wishlist = () => {
 			<div className="flex justify-between">
 				<BackButton onClick={handleBack} />
 				{isOwner && (
-					<div>
+					<div className="float-right">
 						<DropdownMenu>
 							<DropdownMenuTrigger asChild>
 								<IconButton variant={"ghost"}>
