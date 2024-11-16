@@ -25,7 +25,7 @@ import {
 	AlertDialogTitle,
 	AlertDialogTrigger,
 } from "./ui/alert-dialog";
-import { EllipsisVertical, MessageCircle } from "lucide-react";
+import { BookmarkCheck, EllipsisVertical, MessageCircle, SquareCheckBig } from "lucide-react";
 import IconButton from "./IconButton";
 import BackButton from "./BackButton";
 import { CardDescription, CardHeader, CardTitle } from "./ui/card";
@@ -36,6 +36,8 @@ import EditIcon from "./icons/EditIcon";
 import DeleteIcon from "./icons/DeleteIcon";
 import Tooltip from "./Tooltip";
 import { H3, P } from "./ui/typography";
+import { useGetReservations } from "@/hooks/reservation";
+import ReservationType from "@/types/ReservationType";
 
 const Wishlist = () => {
 	const [isOwner, setIsOwner] = useState<boolean>(false);
@@ -55,6 +57,7 @@ const Wishlist = () => {
 	const { types } = useWishlistTypes();
 	const [isEditDialogOpen, setIsEditDialogOpen] = useState<boolean>(false);
 	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false);
+	const { reservations } = useGetReservations(userId);
 
 	useEffect(() => {
 		if (isSuccess) {
@@ -65,6 +68,7 @@ const Wishlist = () => {
 	const Item = ({ item }: { item: ItemType }) => {
 		const { comments } = useGetComments(item.id);
 		const commentCount = comments?.length || 0;
+		const reserved = reservations.some((r: ReservationType) => r.item === item.id);
 
 		return (
 			<div>
@@ -76,13 +80,20 @@ const Wishlist = () => {
 									<CardTitle>{item.title}</CardTitle>
 									<CardDescription>{item.description}</CardDescription>
 								</div>
-								<Tooltip tooltip={`Contains ${commentCount} comments`}>
-									{commentCount > 0 && (
-										<div className="flex gap-x-1 float-right">
-											<MessageCircle strokeWidth={1.5} opacity={0.5} /> {commentCount}
-										</div>
+								<div className="flex gap-x-3">
+									{reserved && (
+										<Tooltip tooltip="Reserved by you">
+											<SquareCheckBig strokeWidth={1.5} opacity={0.5} />
+										</Tooltip>
 									)}
-								</Tooltip>
+									{commentCount > 0 && (
+										<Tooltip tooltip={`Contains ${commentCount} comments`}>
+											<div className="flex gap-x-1 float-right">
+												<MessageCircle strokeWidth={1.5} opacity={0.5} /> {commentCount}
+											</div>
+										</Tooltip>
+									)}
+								</div>
 							</div>
 						</CardHeader>
 					</HoverCard>
