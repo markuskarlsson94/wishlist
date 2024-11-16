@@ -190,7 +190,9 @@ const Item = () => {
 					<NavLink to={`${item.link}`}>{item.link}</NavLink>
 				</Button>
 			)}
-			<h3>Comments</h3>
+			<div className="my-4">
+				<p className="text-base font-medium text-gray-500">Comments {`(${comments?.length}):`}</p>
+			</div>
 			<div className="flex flex-col gap-y-3">
 				{item && comments?.map((comment) => <Comment key={comment.id} comment={comment} item={item} />)}
 				<div className="flex flex-col gap-y-3 mt-5">
