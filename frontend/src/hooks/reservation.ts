@@ -12,8 +12,10 @@ export const useGetReservations = (userId: number | undefined) => {
 		enabled: !!userId,
 	});
 
+	const reservations = data || [];
+
 	return {
-		reservations: data,
+		reservations,
 		isSuccess,
 	};
 };
