@@ -9,49 +9,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import WishlistInputType from "@/types/WishlistInputType";
 import useWishlistTypes from "@/hooks/useWishlistTypes";
-import WishlistTypeType from "@/types/WishlistTypeType";
+import { findFormattedType, getFormattedType } from "@/utils/wishlist/utils";
+import WishlistTypeInfoType from "@/types/WishlistTypeInfoType";
 
 const formSchema = z.object({
-	title: z.string().min(1, { message: "Title must be specified" }),
+	title: z.string().min(1, { message: "Title must be specified" }).max(255, { message: "Title is too long" }),
 	description: z.string(),
 	type: z.string(),
 });
-
-type FormattedTypeType = {
-	id: number;
-	name: string;
-	description: string;
-};
-
-const findFormattedType = (types: FormattedTypeType[], id: string | number) => {
-	const i = Number(id);
-	return types.find((t) => t.id === i);
-};
-
-const getFormattedType = (type: WishlistTypeType): FormattedTypeType => {
-	switch (type.name) {
-		case "public":
-			return {
-				id: type.id,
-				name: "Public",
-				description: "Public wishlists can be seen by every user",
-			};
-		case "friends":
-			return {
-				id: type.id,
-				name: "Friends only",
-				description: "Friends only-wishlists can only be seen by your friends",
-			};
-		case "hidden":
-			return { id: type.id, name: "Private", description: "Private wishlists can only be seen by you" };
-		default:
-			return {
-				id: -1,
-				name: "N/A",
-				description: "N/A",
-			};
-	}
-};
 
 type WishlistFormConfig = {
 	open: boolean;
@@ -63,7 +28,7 @@ type WishlistFormConfig = {
 const WishlistForm = ({ config }: { config: WishlistFormConfig }) => {
 	const { types } = useWishlistTypes();
 	const formattedTypes = types.map((t) => getFormattedType(t));
-	const [type, setType] = useState<FormattedTypeType | undefined>(
+	const [type, setType] = useState<WishlistTypeInfoType | undefined>(
 		findFormattedType(formattedTypes, config.values.type),
 	);
 
@@ -159,6 +124,7 @@ const WishlistForm = ({ config }: { config: WishlistFormConfig }) => {
 				</div>
 
 				<div className="mt-6 float-right">
+					<Button variant={"secondary"}>Cancel</Button>
 					<Button type="submit">{config.submitButtonTitle}</Button>
 				</div>
 			</form>
