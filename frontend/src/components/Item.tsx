@@ -186,7 +186,7 @@ const Item = () => {
 				<P>{item?.description}</P>
 			</div>
 			{item?.link && (
-				<Button variant={"link"}>
+				<Button variant={"link"} className={"w-full whitespace-normal text-left"}>
 					<NavLink to={`${item.link}`}>{item.link}</NavLink>
 				</Button>
 			)}
