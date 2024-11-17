@@ -25,7 +25,7 @@ import {
 	AlertDialogTitle,
 	AlertDialogTrigger,
 } from "./ui/alert-dialog";
-import { BookmarkCheck, EllipsisVertical, MessageCircle } from "lucide-react";
+import { BookmarkCheck, EllipsisVertical, Info, MessageCircle } from "lucide-react";
 import IconButton from "./IconButton";
 import BackButton from "./BackButton";
 import { CardDescription, CardHeader, CardTitle } from "./ui/card";
@@ -38,6 +38,9 @@ import Tooltip from "./Tooltip";
 import { H3, P } from "./ui/typography";
 import { useGetReservations } from "@/hooks/reservation";
 import ReservationType from "@/types/ReservationType";
+import { findFormattedType, getFormattedType } from "@/utils/wishlist/utils";
+import WishlistTypeInfoType from "@/types/WishlistTypeInfoType";
+import { Badge } from "./ui/badge";
 
 const Wishlist = () => {
 	const [isOwner, setIsOwner] = useState<boolean>(false);
@@ -58,10 +61,13 @@ const Wishlist = () => {
 	const [isEditDialogOpen, setIsEditDialogOpen] = useState<boolean>(false);
 	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false);
 	const { reservations } = useGetReservations(userId);
+	const formattedTypes = types.map((t) => getFormattedType(t));
+	const [type, setType] = useState<WishlistTypeInfoType | undefined>(undefined);
 
 	useEffect(() => {
 		if (isSuccess) {
 			setIsOwner(wishlist?.owner === userId);
+			if (wishlist) setType(findFormattedType(formattedTypes, wishlist.type));
 		}
 	}, [wishlist, isSuccess]);
 
@@ -132,75 +138,87 @@ const Wishlist = () => {
 			<div className="flex justify-between">
 				<BackButton onClick={handleBack} />
 				{isOwner && (
-					<div className="float-right">
-						<DropdownMenu>
-							<DropdownMenuTrigger asChild>
-								<IconButton variant={"ghost"}>
-									<EllipsisVertical />
-								</IconButton>
-							</DropdownMenuTrigger>
-							<DropdownMenuContent align="end">
-								<DropdownMenuItem
-									onClick={() => setIsEditDialogOpen(true)}
-									className="flex justify-between items-center"
-								>
-									<span>Edit</span>
-									<EditIcon />
-								</DropdownMenuItem>
-								<DropdownMenuItem
-									onClick={() => setIsDeleteDialogOpen(true)}
-									className="flex justify-between items-center"
-								>
-									<span>Delete</span>
-									<DeleteIcon />
-								</DropdownMenuItem>
-							</DropdownMenuContent>
-						</DropdownMenu>
-
-						<Dialog open={isEditDialogOpen} onOpenChange={() => setIsEditDialogOpen(!isEditDialogOpen)}>
-							<DialogTrigger></DialogTrigger>
-							<DialogContent>
-								<DialogHeader>
-									<DialogTitle>Edit wishlist</DialogTitle>
-								</DialogHeader>
-								<WishlistForm
-									config={{
-										open: isEditDialogOpen,
-										values: wishlistValues,
-										onSubmit: onSubmitWishlist,
-										submitButtonTitle: "Save",
-									}}
-								/>
-							</DialogContent>
-						</Dialog>
-
-						<AlertDialog
-							open={isDeleteDialogOpen}
-							onOpenChange={() => setIsDeleteDialogOpen(!isDeleteDialogOpen)}
-						>
-							<AlertDialogTrigger asChild></AlertDialogTrigger>
-							<AlertDialogContent>
-								<AlertDialogHeader>
-									<AlertDialogTitle>Delete wishlist</AlertDialogTitle>
-									<AlertDialogDescription>
-										Are you sure you want to permanently delete this wishlist and all its items?
-									</AlertDialogDescription>
-								</AlertDialogHeader>
-								<AlertDialogFooter>
-									<AlertDialogCancel>Cancel</AlertDialogCancel>
-									<AlertDialogAction
-										className={buttonVariants({ variant: "destructive" })}
-										onClick={() => {
-											if (wishlist) {
-												deleteWishlist(wishlist.id);
-											}
-										}}
+					<div className="flex gap-x-3 items-center">
+						{type && (
+							<Badge variant={"secondary"}>
+								<Tooltip tooltip={type?.description}>
+									<div className="flex items-center gap-x-1">
+										<Info size={16} />
+										<p className="text-sm">{type?.name}</p>
+									</div>
+								</Tooltip>
+							</Badge>
+						)}
+						<div className="float-right">
+							<DropdownMenu>
+								<DropdownMenuTrigger asChild>
+									<IconButton variant={"ghost"}>
+										<EllipsisVertical />
+									</IconButton>
+								</DropdownMenuTrigger>
+								<DropdownMenuContent align="end">
+									<DropdownMenuItem
+										onClick={() => setIsEditDialogOpen(true)}
+										className="flex justify-between items-center"
 									>
-										Delete
-									</AlertDialogAction>
-								</AlertDialogFooter>
-							</AlertDialogContent>
-						</AlertDialog>
+										<span>Edit</span>
+										<EditIcon />
+									</DropdownMenuItem>
+									<DropdownMenuItem
+										onClick={() => setIsDeleteDialogOpen(true)}
+										className="flex justify-between items-center"
+									>
+										<span>Delete</span>
+										<DeleteIcon />
+									</DropdownMenuItem>
+								</DropdownMenuContent>
+							</DropdownMenu>
+
+							<Dialog open={isEditDialogOpen} onOpenChange={() => setIsEditDialogOpen(!isEditDialogOpen)}>
+								<DialogTrigger></DialogTrigger>
+								<DialogContent>
+									<DialogHeader>
+										<DialogTitle>Edit wishlist</DialogTitle>
+									</DialogHeader>
+									<WishlistForm
+										config={{
+											open: isEditDialogOpen,
+											values: wishlistValues,
+											onSubmit: onSubmitWishlist,
+											submitButtonTitle: "Save",
+										}}
+									/>
+								</DialogContent>
+							</Dialog>
+
+							<AlertDialog
+								open={isDeleteDialogOpen}
+								onOpenChange={() => setIsDeleteDialogOpen(!isDeleteDialogOpen)}
+							>
+								<AlertDialogTrigger asChild></AlertDialogTrigger>
+								<AlertDialogContent>
+									<AlertDialogHeader>
+										<AlertDialogTitle>Delete wishlist</AlertDialogTitle>
+										<AlertDialogDescription>
+											Are you sure you want to permanently delete this wishlist and all its items?
+										</AlertDialogDescription>
+									</AlertDialogHeader>
+									<AlertDialogFooter>
+										<AlertDialogCancel>Cancel</AlertDialogCancel>
+										<AlertDialogAction
+											className={buttonVariants({ variant: "destructive" })}
+											onClick={() => {
+												if (wishlist) {
+													deleteWishlist(wishlist.id);
+												}
+											}}
+										>
+											Delete
+										</AlertDialogAction>
+									</AlertDialogFooter>
+								</AlertDialogContent>
+							</AlertDialog>
+						</div>
 					</div>
 				)}
 			</div>
