@@ -4,17 +4,54 @@ import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import WishlistInputType from "@/types/WishlistInputType";
 import useWishlistTypes from "@/hooks/useWishlistTypes";
+import WishlistTypeType from "@/types/WishlistTypeType";
 
 const formSchema = z.object({
 	title: z.string().min(1, { message: "Title must be specified" }),
 	description: z.string(),
 	type: z.string(),
 });
+
+type FormattedTypeType = {
+	id: number;
+	name: string;
+	description: string;
+};
+
+const findFormattedType = (types: FormattedTypeType[], id: string | number) => {
+	const i = Number(id);
+	return types.find((t) => t.id === i);
+};
+
+const getFormattedType = (type: WishlistTypeType): FormattedTypeType => {
+	switch (type.name) {
+		case "public":
+			return {
+				id: type.id,
+				name: "Public",
+				description: "Public wishlists can be seen by every user",
+			};
+		case "friends":
+			return {
+				id: type.id,
+				name: "Friends only",
+				description: "Friends only-wishlists can only be seen by your friends",
+			};
+		case "hidden":
+			return { id: type.id, name: "Private", description: "Private wishlists can only be seen by you" };
+		default:
+			return {
+				id: -1,
+				name: "N/A",
+				description: "N/A",
+			};
+	}
+};
 
 type WishlistFormConfig = {
 	open: boolean;
@@ -25,6 +62,10 @@ type WishlistFormConfig = {
 
 const WishlistForm = ({ config }: { config: WishlistFormConfig }) => {
 	const { types } = useWishlistTypes();
+	const formattedTypes = types.map((t) => getFormattedType(t));
+	const [type, setType] = useState<FormattedTypeType | undefined>(
+		findFormattedType(formattedTypes, config.values.type),
+	);
 
 	const values = {
 		...config.values,
@@ -89,12 +130,18 @@ const WishlistForm = ({ config }: { config: WishlistFormConfig }) => {
 							<FormItem>
 								<FormLabel>Visibility</FormLabel>
 								<FormControl>
-									<Select onValueChange={field.onChange} defaultValue={field.value}>
+									<Select
+										onValueChange={(value) => {
+											field.onChange(value);
+											setType(findFormattedType(formattedTypes, value));
+										}}
+										defaultValue={field.value}
+									>
 										<SelectTrigger>
-											<SelectValue placeholder={types[0].name} />
+											<SelectValue placeholder={formattedTypes[0].name} />
 										</SelectTrigger>
 										<SelectContent>
-											{types.map((type) => (
+											{formattedTypes.map((type) => (
 												<SelectItem key={type.id} value={`${type.id}`}>
 													{type.name}
 												</SelectItem>
@@ -106,6 +153,9 @@ const WishlistForm = ({ config }: { config: WishlistFormConfig }) => {
 							</FormItem>
 						)}
 					/>
+					<div className="flex">
+						<p className="flex m-auto text-sm text-gray-400">{type?.description}</p>
+					</div>
 				</div>
 
 				<div className="mt-6 float-right">
