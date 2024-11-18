@@ -27,6 +27,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import ReactTimeAgo from "react-time-ago";
 import ItemType from "@/types/ItemType";
 import { useGetUser } from "@/hooks/user";
+import { Badge } from "./ui/badge";
 
 const Comment = ({ comment, item }: { comment: CommentType; item: ItemType }) => {
 	const { id: itemId, owner } = item;
@@ -120,7 +121,7 @@ const Comment = ({ comment, item }: { comment: CommentType; item: ItemType }) =>
 		const DateWrapperWithComment = (props: any) => <DateWrapper {...props} comment={comment} />;
 
 		return (
-			<span className="font-normal text-gray-400">
+			<span className="font-medium text-sm text-gray-500">
 				<ReactTimeAgo
 					date={new Date(comment.createdAt)}
 					tooltip={false}
@@ -146,10 +147,12 @@ const Comment = ({ comment, item }: { comment: CommentType; item: ItemType }) =>
 					<CardTitle>
 						<div className="absolute right-3 top-2">{comment.isOwnComment && commentOptions()}</div>
 						<div className="flex justify-between">
-							<p className="flex gap-x-3">
-								<span>{title}</span>
-								<DateComponent comment={comment} />
-							</p>
+							<div className="flex gap-x-3 items-center">
+								<p>{title}</p>
+								<Badge variant={"secondary"}>
+									<DateComponent comment={comment} />
+								</Badge>
+							</div>
 						</div>
 					</CardTitle>
 				</CardHeader>
