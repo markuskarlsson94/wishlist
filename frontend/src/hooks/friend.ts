@@ -1,9 +1,10 @@
 import { QueryClient, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axiosInstance from "../axiosInstance";
+import FriendType from "@/types/FriendType";
 
 type FriendResponse = {
 	data: {
-		friends: number[];
+		friends: FriendType[];
 	};
 };
 
