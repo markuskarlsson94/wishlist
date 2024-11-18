@@ -51,7 +51,7 @@ const User = () => {
 	const friendButton = () => {
 		if (!viewer || viewer === userId) return;
 
-		if (friends?.includes(userId)) {
+		if (friends?.some((f) => f.userId === userId)) {
 			return <Button onClick={handleDeleteFriend}>Remove friend</Button>;
 		} else if (sentFriendRequest) {
 			return <Button onClick={handleCancelFriendRequest}>Cancel friend request</Button>;
