@@ -9,6 +9,7 @@ import BackButton from "./BackButton";
 import { Card, CardHeader, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
 import HoverCard from "./HoverCard";
+import FriendType from "@/types/FriendType";
 
 const ReceivedFriendRequest = ({ friendRequest }: { friendRequest: FriendRequest }) => {
 	const { userId } = useAuth();
@@ -72,15 +73,18 @@ const SentFriendRequest = ({ friendRequest }: { friendRequest: FriendRequest }) 
 	);
 };
 
-const Friend = ({ friend }: { friend: number }) => {
-	const { user } = useGetUser(friend);
+const Friend = ({ friend }: { friend: FriendType }) => {
+	const { user } = useGetUser(friend.userId);
 
 	return (
-		<NavLink to={`/user/${friend}`}>
+		<NavLink to={`/user/${friend.userId}`}>
 			<HoverCard>
 				<CardHeader>
-					<CardTitle>
-						{user?.firstName} {user?.lastName}
+					<CardTitle className="flex justify-between items-center">
+						{user?.firstName} {user?.lastName}{" "}
+						<p className="text-sm text-gray-500">
+							Friends since {new Date(friend.createdAt).toLocaleDateString()}
+						</p>
 					</CardTitle>
 				</CardHeader>
 			</HoverCard>
@@ -122,7 +126,7 @@ const Friends = () => {
 				{viewer === userId && friendRequests()}
 				<h3>Friends</h3>
 				{friends.map((friend) => (
-					<Friend key={friend} friend={friend} />
+					<Friend key={friend.userId} friend={friend} />
 				))}
 			</div>
 		</RoundedRect>
