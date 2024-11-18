@@ -335,17 +335,27 @@ const db = {
 			},
 
 			getByUserId: async (id) => {
-				const users1 = (await dbClient(friendsTable).select("user2").where({ user1: id })).map(
-					(user) => user.user2,
+				const users1 = (await dbClient(friendsTable).select("user2", "createdAt").where({ user1: id })).map(
+					(user) => {
+						return {
+							userId: user.user2,
+							createdAt: user.createdAt,
+						};
+					},
 				);
 
-				const users2 = (await dbClient(friendsTable).select("user1").where({ user2: id })).map(
-					(user) => user.user1,
+				const users2 = (await dbClient(friendsTable).select("user1", "createdAt").where({ user2: id })).map(
+					(user) => {
+						return {
+							userId: user.user1,
+							createdAt: user.createdAt,
+						};
+					},
 				);
 
 				let users = users1.concat(users2);
 				users = users.filter((user, index) => users.indexOf(user) === index); // Remove duplicate
-				users = users.filter((user) => user.id !== id); // Remove requested id
+				users = users.filter((user) => user.userId !== id); // Remove requested id
 				return users;
 			},
 
