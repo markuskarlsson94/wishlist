@@ -143,8 +143,8 @@ const Wishlist = () => {
 							<Badge variant={"secondary"}>
 								<Tooltip tooltip={type?.description}>
 									<div className="flex items-center gap-x-1">
-										<Info size={16} />
-										<p className="text-sm">{type?.name}</p>
+										<Info size={16} opacity={0.5} />
+										<p className="text-sm text-gray-500">{type?.name}</p>
 									</div>
 								</Tooltip>
 							</Badge>
