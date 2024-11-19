@@ -163,11 +163,13 @@ const userService = {
 		},
 
 		getByUserId: async (user, userId) => {
-			if (!canManageUser(user, userId)) {
-				if (!(await usersAreFriends(user.id, userId))) {
-					throw new ErrorMessage(errorMessages.unauthorizedToViewFriends);
+			/* TODO: Should this be added again? 
+				if (!canManageUser(user, userId)) {
+					if (!(await usersAreFriends(user.id, userId))) {
+						throw new ErrorMessage(errorMessages.unauthorizedToViewFriends);
+					} 
 				}
-			}
+			*/
 
 			try {
 				return await db.user.friend.getByUserId(userId);

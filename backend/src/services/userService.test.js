@@ -260,12 +260,9 @@ describe("friends", () => {
 			expect(res.length).toBe(2);
 		});
 
-		it("should not allow to view friends of non friends", async () => {
-			await expect(
-				(async () => {
-					await userService.friend.getByUserId(user1, adminId);
-				})(),
-			).rejects.toThrowError(errorMessages.unauthorizedToViewFriends.message);
+		it("should allow to view friends of non friends", async () => {
+			const res = await userService.friend.getByUserId(user1, adminId);
+			expect(res.length).toBe(0);
 		});
 
 		it("should allow admin to view friends of non friends", async () => {
@@ -273,12 +270,9 @@ describe("friends", () => {
 			expect(res.length).toBe(2);
 		});
 
-		it("should not allow to view friends of non existing user", async () => {
-			await expect(
-				(async () => {
-					await userService.friend.getByUserId(user1, -1);
-				})(),
-			).rejects.toThrowError(errorMessages.unauthorizedToViewFriends.message);
+		it("should allow to view friends of non existing user", async () => {
+			const res = await userService.friend.getByUserId(user1, -1);
+			expect(res.length).toBe(0);
 		});
 	});
 
