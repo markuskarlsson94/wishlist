@@ -10,6 +10,8 @@ import { useDeleteFriend, useGetFriends } from "../hooks/friend";
 import { useGetUser } from "../hooks/user";
 import RoundedRect from "./RoundedRect";
 import { Button } from "./ui/button";
+import { Badge } from "./ui/badge";
+import { useMemo } from "react";
 
 const User = () => {
 	const params = useParams<{ userId: string }>();
@@ -21,10 +23,18 @@ const User = () => {
 	const acceptFriendRequest = useAcceptFriendRequest({ userId: viewer });
 	const deleteFriendRequest = useDeleteFriendRequest({ userId: viewer });
 	const { friends } = useGetFriends(viewer);
+	const { friends: userFriends } = useGetFriends(userId);
 	const deleteFriend = useDeleteFriend({ userId: viewer });
 
 	const sentFriendRequest = sentFriendRequests.find((r) => r.sender === viewer && r.receiver === userId);
 	const receivedFriendRequest = receivedFriendRequests.find((r) => r.sender === userId && r.receiver === viewer);
+
+	const userIsFriend = friends?.some((f) => f.userId === userId);
+
+	const commonFriends = useMemo(
+		() => friends.filter((friend) => userFriends.some((f) => f.userId === friend.userId)).length,
+		[friends, userFriends],
+	);
 
 	const handleDeleteFriend = () => {
 		deleteFriend(userId);
@@ -51,7 +61,7 @@ const User = () => {
 	const friendButton = () => {
 		if (!viewer || viewer === userId) return;
 
-		if (friends?.some((f) => f.userId === userId)) {
+		if (userIsFriend) {
 			return <Button onClick={handleDeleteFriend}>Remove friend</Button>;
 		} else if (sentFriendRequest) {
 			return <Button onClick={handleCancelFriendRequest}>Cancel friend request</Button>;
@@ -62,11 +72,20 @@ const User = () => {
 		}
 	};
 
+	const commonFriendString = (commonFriends: number) => {
+		return commonFriends > 1 ? "common friends" : "common friend";
+	};
+
 	return (
 		<RoundedRect>
 			<p>
 				{user?.firstName} {user?.lastName}
 			</p>
+			{!userIsFriend && commonFriends >= 1 && (
+				<Badge variant={"secondary"}>
+					{commonFriends} {commonFriendString(commonFriends)}
+				</Badge>
+			)}
 			{friendButton()}
 			<div>
 				<NavLink to={`/user/${userId}/wishlists`}>Wishlists</NavLink>
