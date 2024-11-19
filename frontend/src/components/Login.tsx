@@ -1,19 +1,28 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLogin } from "../hooks/useLogin";
 import { NavLink } from "react-router-dom";
 import RoundedRect from "./RoundedRect";
+import { useCurrentUser } from "@/hooks/user";
 
 const Login = () => {
 	const [email, setEmail] = useState<string>("");
 	const [password, setPassword] = useState<string>("");
 	const navigate = useNavigate();
+	const { user } = useCurrentUser();
+	const [loggedIn, setLoggedIn] = useState<boolean>(false);
 
 	const onLogin = () => {
-		navigate("/home");
+		setLoggedIn(true);
 	};
 
 	const { login, isError } = useLogin({ onSuccess: onLogin });
+
+	useEffect(() => {
+		if (loggedIn && user) {
+			navigate(`/user/${user}/wishlists`);
+		}
+	}, [user, loggedIn]);
 
 	const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();

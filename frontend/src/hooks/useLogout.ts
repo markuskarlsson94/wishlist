@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axiosInstance from "../axiosInstance";
 import { useAuth } from "../contexts/AuthContext";
 
@@ -15,6 +15,7 @@ const logout = async (userId: number): Promise<void> => {
 
 export const useLogout = (config?: UseLogoutConfig) => {
 	const { setIsAuthenticated, userId, setUserId } = useAuth();
+	const queryClient = useQueryClient();
 
 	const mutation = useMutation({
 		mutationFn: () => logout(userId!),
@@ -23,6 +24,7 @@ export const useLogout = (config?: UseLogoutConfig) => {
 			localStorage.removeItem("refreshToken");
 			setIsAuthenticated(false);
 			setUserId(undefined);
+			queryClient.removeQueries({ queryKey: ["user"] });
 
 			if (config?.onSuccess) {
 				config.onSuccess();
