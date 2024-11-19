@@ -1,4 +1,4 @@
-import { NavLink, useParams } from "react-router-dom";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
 import {
 	useAcceptFriendRequest,
 	useCreateFriendRequest,
@@ -12,6 +12,7 @@ import RoundedRect from "./RoundedRect";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { useMemo } from "react";
+import BackButton from "./BackButton";
 
 const User = () => {
 	const params = useParams<{ userId: string }>();
@@ -25,6 +26,7 @@ const User = () => {
 	const { friends } = useGetFriends(viewer);
 	const { friends: userFriends } = useGetFriends(userId);
 	const deleteFriend = useDeleteFriend({ userId: viewer });
+	const navigate = useNavigate();
 
 	const sentFriendRequest = sentFriendRequests.find((r) => r.sender === viewer && r.receiver === userId);
 	const receivedFriendRequest = receivedFriendRequests.find((r) => r.sender === userId && r.receiver === viewer);
@@ -58,6 +60,10 @@ const User = () => {
 		}
 	};
 
+	const handleBack = () => {
+		navigate(-1);
+	};
+
 	const friendButton = () => {
 		if (!viewer || viewer === userId) return;
 
@@ -78,6 +84,7 @@ const User = () => {
 
 	return (
 		<RoundedRect>
+			<BackButton onClick={handleBack} />
 			<p>
 				{user?.firstName} {user?.lastName}
 			</p>
