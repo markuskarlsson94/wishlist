@@ -28,6 +28,7 @@ const User = () => {
 	const deleteFriend = useDeleteFriend({ userId: viewer });
 	const navigate = useNavigate();
 
+	const isSelf = viewer === userId;
 	const sentFriendRequest = sentFriendRequests.find((r) => r.sender === viewer && r.receiver === userId);
 	const receivedFriendRequest = receivedFriendRequests.find((r) => r.sender === userId && r.receiver === viewer);
 
@@ -65,7 +66,7 @@ const User = () => {
 	};
 
 	const friendButton = () => {
-		if (!viewer || viewer === userId) return;
+		if (!viewer || isSelf) return;
 
 		if (userIsFriend) {
 			return <Button onClick={handleDeleteFriend}>Remove friend</Button>;
@@ -85,15 +86,19 @@ const User = () => {
 	return (
 		<RoundedRect>
 			<BackButton onClick={handleBack} />
-			<p>
-				{user?.firstName} {user?.lastName}
-			</p>
-			{!userIsFriend && commonFriends >= 1 && (
-				<Badge variant={"secondary"}>
-					{commonFriends} {commonFriendString(commonFriends)}
-				</Badge>
-			)}
-			{friendButton()}
+			<div className="flex justify-between items-center">
+				<div className="flex gap-x-3">
+					<p>
+						{user?.firstName} {user?.lastName}
+					</p>
+					{!isSelf && !userIsFriend && commonFriends >= 1 && (
+						<Badge variant={"secondary"} className="self-center">
+							{commonFriends} {commonFriendString(commonFriends)}
+						</Badge>
+					)}
+				</div>
+				{friendButton()}
+			</div>
 			<div>
 				<NavLink to={`/user/${userId}/wishlists`}>Wishlists</NavLink>
 			</div>
