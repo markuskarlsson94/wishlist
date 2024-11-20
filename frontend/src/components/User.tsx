@@ -1,4 +1,4 @@
-import { NavLink, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
 	useAcceptFriendRequest,
 	useCreateFriendRequest,
@@ -10,10 +10,9 @@ import { useDeleteFriend, useGetFriends } from "../hooks/friend";
 import { useGetUser } from "../hooks/user";
 import RoundedRect from "./RoundedRect";
 import { Button } from "./ui/button";
-import { Badge } from "./ui/badge";
 import { useMemo } from "react";
 import BackButton from "./BackButton";
-import { HeartHandshake } from "lucide-react";
+import { HeartHandshake, Users } from "lucide-react";
 
 const User = () => {
 	const params = useParams<{ userId: string }>();
@@ -121,13 +120,16 @@ const User = () => {
 						<p className="text-large font-medium">
 							{user?.firstName} {user?.lastName}
 						</p>
-						{!isSelf && !userIsFriend && commonFriends >= 1 && (
-							<Badge variant={"secondary"} className="self-center">
-								{commonFriends} {commonFriendString(commonFriends)}
-							</Badge>
-						)}
 					</div>
 				</div>
+				{!isSelf && !userIsFriend && commonFriends >= 1 && (
+					<div className="flex gap-x-2 items-center">
+						<Users strokeWidth={1.5} opacity={0.5} />
+						<p className="text-sm">
+							{commonFriends} {commonFriendString(commonFriends)}
+						</p>
+					</div>
+				)}
 				{userIsFriend && (
 					<div className="flex gap-x-2 items-center">
 						<HeartHandshake strokeWidth={1.5} opacity={0.5} />
