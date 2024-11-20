@@ -549,7 +549,7 @@ const db = {
 				},
 
 				update: async (id, comment) => {
-					await dbClient(commentsTable).update({ comment }).where({ id });
+					await dbClient(commentsTable).update({ comment, updatedAt: new Date() }).where({ id });
 				},
 
 				remove: async (id) => {
