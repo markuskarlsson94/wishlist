@@ -13,6 +13,7 @@ import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { useMemo } from "react";
 import BackButton from "./BackButton";
+import { HeartHandshake } from "lucide-react";
 
 const User = () => {
 	const params = useParams<{ userId: string }>();
@@ -113,7 +114,7 @@ const User = () => {
 
 	return (
 		<RoundedRect>
-			<div className="flex flex-col gap-y-2">
+			<div className="flex flex-col gap-y-3">
 				<BackButton onClick={handleBack} />
 				<div className="flex justify-between items-center">
 					<div className="flex gap-x-3">
@@ -125,13 +126,14 @@ const User = () => {
 								{commonFriends} {commonFriendString(commonFriends)}
 							</Badge>
 						)}
-						{userIsFriend && (
-							<Badge variant={"secondary"} className="self-center">
-								Friends since {new Date(friendship.createdAt).toLocaleDateString()}
-							</Badge>
-						)}
 					</div>
 				</div>
+				{userIsFriend && (
+					<div className="flex gap-x-2 items-center">
+						<HeartHandshake strokeWidth={1.5} opacity={0.5} />
+						<p className="text-sm">Friends since {new Date(friendship.createdAt).toLocaleDateString()}</p>
+					</div>
+				)}
 				<div className="flex justify-between">
 					<div className="flex gap-x-2">
 						<Button onClick={handleGoToWishlists}>Wishlists</Button>
