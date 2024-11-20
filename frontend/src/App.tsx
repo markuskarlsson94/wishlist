@@ -1,7 +1,6 @@
 import "./App.css";
 import Login from "./components/Login";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "./components/Home";
 import ProtectedRoutes from "./components/ProtectedRoutes";
 import { AuthProvider } from "./contexts/AuthContext";
 import Wishlists from "./components/Wishlists";
@@ -23,7 +22,6 @@ function App() {
 					<Route path="/register" element={<Register />} />
 					<Route element={<ProtectedRoutes />}>
 						<Route element={<MainLayout />}>
-							<Route path="/home" element={<Home />} />
 							<Route path="/users" element={<Users />} />
 							<Route path="/reservations" element={<Reservations />} />
 							<Route path="/user/:userId" element={<User />} />
