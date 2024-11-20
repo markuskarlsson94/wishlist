@@ -12,7 +12,7 @@ import RoundedRect from "./RoundedRect";
 import { Button } from "./ui/button";
 import { useMemo } from "react";
 import BackButton from "./BackButton";
-import { HeartHandshake, Users } from "lucide-react";
+import { Calendar, HeartHandshake, Users } from "lucide-react";
 
 const User = () => {
 	const params = useParams<{ userId: string }>();
@@ -136,7 +136,13 @@ const User = () => {
 						<p className="text-sm">Friends since {new Date(friendship.createdAt).toLocaleDateString()}</p>
 					</div>
 				)}
-				<div className="flex justify-between">
+				{user && (
+					<div className="flex gap-x-2 items-center">
+						<Calendar strokeWidth={1.5} opacity={0.5} />
+						<p className="text-sm">User since {new Date(user.createdAt).toLocaleDateString()}</p>
+					</div>
+				)}
+				<div className="flex justify-between mt-3">
 					<div className="flex gap-x-2">
 						<Button onClick={handleGoToWishlists}>Wishlists</Button>
 						<Button onClick={handleGoToFriends}>Friends</Button>
