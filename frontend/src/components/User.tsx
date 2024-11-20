@@ -32,7 +32,11 @@ const User = () => {
 	const sentFriendRequest = sentFriendRequests.find((r) => r.sender === viewer && r.receiver === userId);
 	const receivedFriendRequest = receivedFriendRequests.find((r) => r.sender === userId && r.receiver === viewer);
 
-	const userIsFriend = friends?.some((f) => f.userId === userId);
+	const friendship = useMemo(() => {
+		return friends.find((f) => f.userId === userId);
+	}, [friends]);
+
+	const userIsFriend = friendship !== undefined;
 
 	const commonFriends = useMemo(
 		() => friends.filter((friend) => userFriends.some((f) => f.userId === friend.userId)).length,
@@ -69,13 +73,29 @@ const User = () => {
 		if (!viewer || isSelf) return;
 
 		if (userIsFriend) {
-			return <Button onClick={handleDeleteFriend}>Remove friend</Button>;
+			return (
+				<Button variant={"secondary"} onClick={handleDeleteFriend}>
+					Remove friend
+				</Button>
+			);
 		} else if (sentFriendRequest) {
-			return <Button onClick={handleCancelFriendRequest}>Cancel friend request</Button>;
+			return (
+				<Button variant={"secondary"} onClick={handleCancelFriendRequest}>
+					Cancel friend request
+				</Button>
+			);
 		} else if (receivedFriendRequest) {
-			return <Button onClick={handleAcceptFriendRequest}>Accept friend request</Button>;
+			return (
+				<Button variant={"secondary"} onClick={handleAcceptFriendRequest}>
+					Accept friend request
+				</Button>
+			);
 		} else {
-			return <Button onClick={handleSendFriendRequest}>Send friend request</Button>;
+			return (
+				<Button variant={"secondary"} onClick={handleSendFriendRequest}>
+					Send friend request
+				</Button>
+			);
 		}
 	};
 
@@ -83,27 +103,42 @@ const User = () => {
 		return commonFriends > 1 ? "common friends" : "common friend";
 	};
 
+	const handleGoToWishlists = () => {
+		navigate(`/user/${userId}/wishlists`);
+	};
+
+	const handleGoToFriends = () => {
+		navigate(`/user/${userId}/friends`);
+	};
+
 	return (
 		<RoundedRect>
-			<BackButton onClick={handleBack} />
-			<div className="flex justify-between items-center">
-				<div className="flex gap-x-3">
-					<p>
-						{user?.firstName} {user?.lastName}
-					</p>
-					{!isSelf && !userIsFriend && commonFriends >= 1 && (
-						<Badge variant={"secondary"} className="self-center">
-							{commonFriends} {commonFriendString(commonFriends)}
-						</Badge>
-					)}
+			<div className="flex flex-col gap-y-2">
+				<BackButton onClick={handleBack} />
+				<div className="flex justify-between items-center">
+					<div className="flex gap-x-3">
+						<p>
+							{user?.firstName} {user?.lastName}
+						</p>
+						{!isSelf && !userIsFriend && commonFriends >= 1 && (
+							<Badge variant={"secondary"} className="self-center">
+								{commonFriends} {commonFriendString(commonFriends)}
+							</Badge>
+						)}
+						{userIsFriend && (
+							<Badge variant={"secondary"} className="self-center">
+								Friends since {new Date(friendship.createdAt).toLocaleDateString()}
+							</Badge>
+						)}
+					</div>
 				</div>
-				{friendButton()}
-			</div>
-			<div>
-				<NavLink to={`/user/${userId}/wishlists`}>Wishlists</NavLink>
-			</div>
-			<div>
-				<NavLink to={`/user/${userId}/friends`}>Friends</NavLink>
+				<div className="flex justify-between">
+					<div className="flex gap-x-2">
+						<Button onClick={handleGoToWishlists}>Wishlists</Button>
+						<Button onClick={handleGoToFriends}>Friends</Button>
+					</div>
+					{friendButton()}
+				</div>
 			</div>
 		</RoundedRect>
 	);
