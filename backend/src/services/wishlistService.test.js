@@ -1111,9 +1111,15 @@ describe("comments", async () => {
 	});
 
 	it("should allow user to update own comment", async () => {
+		let comment = await wishlistService.item.comment.getById(user1, commentId);
+		expect(comment.comment).toBe("yeehaw");
+		expect(comment.createdAt).toEqual(comment.updatedAt);
+
 		await wishlistService.item.comment.update(user1, commentId, "yeehaw 2");
-		const comment = await wishlistService.item.comment.getById(user1, commentId);
+		comment = await wishlistService.item.comment.getById(user1, commentId);
 		expect(comment.comment).toBe("yeehaw 2");
+		expect(comment.createdAt).not.toEqual(comment.updatedAt);
+		expect(comment.createdAt < comment.updatedAt).toBeTruthy();
 	});
 
 	it("should allow user to remove own comment", async () => {
