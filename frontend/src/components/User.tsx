@@ -118,7 +118,7 @@ const User = () => {
 				<BackButton onClick={handleBack} />
 				<div className="flex justify-between items-center">
 					<div className="flex gap-x-3">
-						<p>
+						<p className="text-large font-medium">
 							{user?.firstName} {user?.lastName}
 						</p>
 						{!isSelf && !userIsFriend && commonFriends >= 1 && (
