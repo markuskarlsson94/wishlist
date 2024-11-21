@@ -82,9 +82,6 @@ const Friend = ({ friend }: { friend: FriendType }) => {
 				<CardHeader>
 					<CardTitle className="flex justify-between items-center">
 						{user?.firstName} {user?.lastName}{" "}
-						<p className="text-sm text-gray-500">
-							Friends since {new Date(friend.createdAt).toLocaleDateString()}
-						</p>
 					</CardTitle>
 				</CardHeader>
 			</HoverCard>
