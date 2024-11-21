@@ -125,7 +125,7 @@ const User = () => {
 				{!isSelf && !userIsFriend && commonFriends >= 1 && (
 					<div className="flex gap-x-2 items-center">
 						<Users strokeWidth={1.5} opacity={0.5} />
-						<p className="text-sm">
+						<p className="text-sm text-muted-foreground">
 							{commonFriends} {commonFriendString(commonFriends)}
 						</p>
 					</div>
@@ -133,13 +133,17 @@ const User = () => {
 				{userIsFriend && (
 					<div className="flex gap-x-2 items-center">
 						<HeartHandshake strokeWidth={1.5} opacity={0.5} />
-						<p className="text-sm">Friends since {new Date(friendship.createdAt).toLocaleDateString()}</p>
+						<p className="text-sm text-muted-foreground">
+							Friends since {new Date(friendship.createdAt).toLocaleDateString()}
+						</p>
 					</div>
 				)}
 				{user && (
 					<div className="flex gap-x-2 items-center">
 						<Calendar strokeWidth={1.5} opacity={0.5} />
-						<p className="text-sm">User since {new Date(user.createdAt).toLocaleDateString()}</p>
+						<p className="text-sm text-muted-foreground">
+							User since {new Date(user.createdAt).toLocaleDateString()}
+						</p>
 					</div>
 				)}
 				<div className="flex justify-between mt-3">
