@@ -31,6 +31,7 @@ import BackButton from "./BackButton";
 import EditIcon from "./icons/EditIcon";
 import DeleteIcon from "./icons/DeleteIcon";
 import { H3, P } from "./ui/typography";
+import { Separator } from "./ui/separator";
 
 const Item = () => {
 	const [isOwner, setIsOwner] = useState<boolean>(false);
@@ -190,9 +191,7 @@ const Item = () => {
 					<NavLink to={`${item.link}`}>{item.link}</NavLink>
 				</Button>
 			)}
-			<div className="my-4">
-				<p className="text-base font-medium text-gray-500">Comments {`(${comments.length}):`}</p>
-			</div>
+			<Separator className="mt-6 mb-4" />
 			<div className="flex flex-col gap-y-3">
 				{item && comments.map((comment) => <Comment key={comment.id} comment={comment} item={item} />)}
 				<div className="flex flex-col gap-y-3 mt-5">
