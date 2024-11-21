@@ -32,7 +32,6 @@ import { Badge } from "./ui/badge";
 const Comment = ({ comment, item }: { comment: CommentType; item: ItemType }) => {
 	const { id: itemId, owner } = item;
 	const { user } = useGetUser(owner);
-	console.log(user);
 	const deleteComment = useDeleteComment({ itemId });
 	const updateComment = useUpdateComment({ itemId });
 	const [isEditDialogOpen, setIsEditDialogOpen] = useState<boolean>(false);
