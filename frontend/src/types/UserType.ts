@@ -4,6 +4,7 @@ type UserType = {
 	lastName: string;
 	email: string;
 	role: number;
+	createdAt: Date;
 };
 
 export default UserType;
