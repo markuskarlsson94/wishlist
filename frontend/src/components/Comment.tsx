@@ -133,11 +133,18 @@ const Comment = ({ comment, item }: { comment: CommentType; item: ItemType }) =>
 	};
 
 	const DateWrapper = React.forwardRef<HTMLDivElement, { comment: CommentType; children: React.ReactNode }>(
-		({ comment, children }, ref) => (
-			<Tooltip ref={ref} tooltip={new Date(comment.createdAt).toUTCString()}>
-				{children}
-			</Tooltip>
-		),
+		({ comment, children }, ref) => {
+			const edited = comment.createdAt !== comment.updatedAt;
+			const createdAt = new Date(comment.createdAt).toUTCString();
+			const updatedAt = new Date(comment.updatedAt).toUTCString();
+			const tooltip = edited ? `${createdAt}, Edited on ${updatedAt}` : createdAt;
+
+			return (
+				<Tooltip ref={ref} tooltip={tooltip}>
+					{children}
+				</Tooltip>
+			);
+		},
 	);
 
 	const commentContent = (title: string, comment: CommentType) => {
