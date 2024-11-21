@@ -102,16 +102,21 @@ const Friends = () => {
 	};
 
 	const friendRequests = () => {
+		const requestCount = receivedFriendRequests.length + sentFriendRequests.length;
+
 		return (
 			<>
-				<h3>Received friend requests</h3>
-				{receivedFriendRequests.map((friendRequest) => (
-					<ReceivedFriendRequest key={friendRequest.id} friendRequest={friendRequest} />
-				))}
-				<h3>Sent friend requests</h3>
-				{sentFriendRequests.map((friendRequest) => (
-					<SentFriendRequest key={friendRequest.id} friendRequest={friendRequest} />
-				))}
+				{requestCount >= 0 && (
+					<>
+						<p>Friend requests</p>
+						{receivedFriendRequests.map((friendRequest) => (
+							<ReceivedFriendRequest key={friendRequest.id} friendRequest={friendRequest} />
+						))}
+						{sentFriendRequests.map((friendRequest) => (
+							<SentFriendRequest key={friendRequest.id} friendRequest={friendRequest} />
+						))}
+					</>
+				)}
 			</>
 		);
 	};
