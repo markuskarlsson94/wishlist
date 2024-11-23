@@ -6,7 +6,7 @@ import { LogOut } from "lucide-react";
 const Topbar = () => {
 	const navigate = useNavigate();
 	const { logout } = useLogout({
-		onSuccess: () => {
+		onSettled: () => {
 			navigate("/");
 		},
 	});

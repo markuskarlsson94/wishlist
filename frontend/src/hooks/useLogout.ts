@@ -3,7 +3,7 @@ import axiosInstance from "../axiosInstance";
 import { useAuth } from "../contexts/AuthContext";
 
 type UseLogoutConfig = {
-	onSuccess?: () => void;
+	onSettled?: () => void;
 	onError?: (error: Error) => void;
 };
 
@@ -19,15 +19,15 @@ export const useLogout = (config?: UseLogoutConfig) => {
 
 	const mutation = useMutation({
 		mutationFn: () => logout(userId!),
-		onSuccess: () => {
+		onSettled: () => {
 			localStorage.removeItem("accessToken");
 			localStorage.removeItem("refreshToken");
 			setIsAuthenticated(false);
 			setUserId(undefined);
 			queryClient.removeQueries({ queryKey: ["user"] });
 
-			if (config?.onSuccess) {
-				config.onSuccess();
+			if (config?.onSettled) {
+				config.onSettled();
 			}
 		},
 		onError: (error: Error) => {
