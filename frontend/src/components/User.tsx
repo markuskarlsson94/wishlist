@@ -9,10 +9,21 @@ import { useAuth } from "../contexts/AuthContext";
 import { useDeleteFriend, useGetFriends } from "../hooks/friend";
 import { useGetUser } from "../hooks/user";
 import RoundedRect from "./RoundedRect";
-import { Button } from "./ui/button";
+import { Button, buttonVariants } from "./ui/button";
 import { useMemo } from "react";
 import BackButton from "./BackButton";
 import { Calendar, HeartHandshake, Users } from "lucide-react";
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+	AlertDialogTrigger,
+} from "./ui/alert-dialog";
 
 const User = () => {
 	const params = useParams<{ userId: string }>();
@@ -74,9 +85,28 @@ const User = () => {
 
 		if (userIsFriend) {
 			return (
-				<Button variant={"secondary"} onClick={handleDeleteFriend}>
-					Remove friend
-				</Button>
+				<AlertDialog>
+					<AlertDialogTrigger asChild>
+						<Button variant={"secondary"}>Remove friend</Button>
+					</AlertDialogTrigger>
+					<AlertDialogContent>
+						<AlertDialogHeader>
+							<AlertDialogTitle>Remove friend?</AlertDialogTitle>
+							<AlertDialogDescription>{`Are you sure you want to remove ${user?.firstName} as a friend?`}</AlertDialogDescription>
+						</AlertDialogHeader>
+						<AlertDialogFooter>
+							<AlertDialogCancel>Cancel</AlertDialogCancel>
+							<AlertDialogAction
+								className={buttonVariants({ variant: "destructive" })}
+								onClick={() => {
+									handleDeleteFriend();
+								}}
+							>
+								Remove
+							</AlertDialogAction>
+						</AlertDialogFooter>
+					</AlertDialogContent>
+				</AlertDialog>
 			);
 		} else if (sentFriendRequest) {
 			return (
