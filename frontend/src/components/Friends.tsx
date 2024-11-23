@@ -30,7 +30,7 @@ const ReceivedFriendRequest = ({ friendRequest }: { friendRequest: FriendRequest
 			<Card>
 				<CardHeader>
 					<CardTitle>
-						<div className="flex justify-between">
+						<div className="flex justify-between items-center">
 							<NavLink to={`/user/${friendRequest.sender}`}>
 								{user?.firstName} {user?.lastName}
 							</NavLink>
@@ -60,7 +60,7 @@ const SentFriendRequest = ({ friendRequest }: { friendRequest: FriendRequest }) 
 			<Card>
 				<CardHeader>
 					<CardTitle>
-						<div className="flex justify-between">
+						<div className="flex justify-between items-center">
 							<NavLink to={`/user/${friendRequest.receiver}`}>
 								{user?.firstName} {user?.lastName}
 							</NavLink>
@@ -106,9 +106,9 @@ const Friends = () => {
 
 		return (
 			<>
-				{requestCount >= 0 && (
+				{requestCount !== 0 && (
 					<>
-						<p>Friend requests</p>
+						<p className="font-medium">Friend requests {`(${requestCount})`}</p>
 						{receivedFriendRequests.map((friendRequest) => (
 							<ReceivedFriendRequest key={friendRequest.id} friendRequest={friendRequest} />
 						))}
@@ -126,7 +126,8 @@ const Friends = () => {
 			<div className="flex flex-col gap-y-3">
 				<BackButton onClick={handleBack} />
 				{viewer === userId && friendRequests()}
-				<h3>Friends</h3>
+				{friends.length !== 0 && <p className="font-medium mt-3">Friends {`(${friends.length})`}</p>}
+				{friends.length === 0 && <p className="m-auto text-2xl font-medium text-gray-300">No friends yet</p>}
 				{friends.map((friend) => (
 					<Friend key={friend.userId} friend={friend} />
 				))}
