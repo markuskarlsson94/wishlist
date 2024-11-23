@@ -2,7 +2,7 @@ import { z } from "zod";
 import CommentInputType from "../types/CommentInputType";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import commentSchema from "@/schemas/commentSchema";
@@ -34,6 +34,7 @@ const UpdateCommentForm = ({ config }: { config: UpdateCommentFormConfig }) => {
 							<FormControl>
 								<Textarea {...field} />
 							</FormControl>
+							<FormMessage />
 						</FormItem>
 					)}
 				></FormField>
