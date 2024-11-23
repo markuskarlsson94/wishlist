@@ -4,9 +4,8 @@ import { useDeleteComment, useUpdateComment } from "../hooks/comment";
 import CommentType from "../types/CommentType";
 import UpdateCommentForm from "../forms/UpdateCommentForm";
 import CommentInputType from "../types/CommentInputType";
-import { buttonVariants } from "./ui/button";
+import { Button, buttonVariants } from "./ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
-import IconButton from "./IconButton";
 import { EllipsisVertical } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
 import {
@@ -51,9 +50,9 @@ const Comment = ({ comment, item }: { comment: CommentType; item: ItemType }) =>
 			<div>
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
-						<IconButton variant={"ghost"}>
+						<Button size={"icon"} variant={"ghost"}>
 							<EllipsisVertical />
-						</IconButton>
+						</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align="end">
 						<DropdownMenuItem

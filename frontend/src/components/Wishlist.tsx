@@ -8,7 +8,7 @@ import useWishlistTypes from "../hooks/useWishlistTypes";
 import WishlistInputType from "../types/WishlistInputType";
 import RoundedRect from "./RoundedRect";
 import ItemDialog from "./ItemDialog";
-import { buttonVariants } from "./ui/button";
+import { Button, buttonVariants } from "./ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem } from "./ui/dropdown-menu";
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import { DialogTrigger } from "@radix-ui/react-dialog";
@@ -26,7 +26,6 @@ import {
 	AlertDialogTrigger,
 } from "./ui/alert-dialog";
 import { BookmarkCheck, EllipsisVertical, Info, MessageCircle } from "lucide-react";
-import IconButton from "./IconButton";
 import BackButton from "./BackButton";
 import { CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { useGetComments } from "@/hooks/comment";
@@ -152,9 +151,9 @@ const Wishlist = () => {
 						<div className="float-right">
 							<DropdownMenu>
 								<DropdownMenuTrigger asChild>
-									<IconButton variant={"ghost"}>
+									<Button size={"icon"} variant={"ghost"}>
 										<EllipsisVertical />
-									</IconButton>
+									</Button>
 								</DropdownMenuTrigger>
 								<DropdownMenuContent align="end">
 									<DropdownMenuItem

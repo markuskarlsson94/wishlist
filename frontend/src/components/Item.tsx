@@ -12,7 +12,6 @@ import Comment from "./Comment";
 import RoundedRect from "./RoundedRect";
 import { Button, buttonVariants } from "./ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
-import IconButton from "./IconButton";
 import { EllipsisVertical } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
 import ItemForm from "@/forms/ItemForm";
@@ -115,9 +114,9 @@ const Item = () => {
 					<div>
 						<DropdownMenu>
 							<DropdownMenuTrigger asChild>
-								<IconButton variant={"ghost"}>
+								<Button size={"icon"} variant={"ghost"}>
 									<EllipsisVertical />
-								</IconButton>
+								</Button>
 							</DropdownMenuTrigger>
 							<DropdownMenuContent align="end">
 								<DropdownMenuItem
