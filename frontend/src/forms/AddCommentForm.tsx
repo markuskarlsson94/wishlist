@@ -6,10 +6,7 @@ import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-
-const formSchema = z.object({
-	comment: z.string().min(1, "Comment is required"),
-});
+import commentSchema from "@/schemas/commentSchema";
 
 type AddCommentFormConfig = {
 	onSubmit: (values: CommentInputType) => void;
@@ -18,12 +15,12 @@ type AddCommentFormConfig = {
 const AddCommentForm = ({ config }: { config: AddCommentFormConfig }) => {
 	const [comment, setComment] = useState<string>("");
 
-	const form = useForm<z.infer<typeof formSchema>>({
-		resolver: zodResolver(formSchema),
+	const form = useForm<z.infer<typeof commentSchema>>({
+		resolver: zodResolver(commentSchema),
 		values: { comment: "" },
 	});
 
-	const onSubmit = (values: z.infer<typeof formSchema>) => {
+	const onSubmit = (values: z.infer<typeof commentSchema>) => {
 		config.onSubmit(values);
 		form.reset();
 	};
