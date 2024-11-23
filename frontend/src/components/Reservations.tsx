@@ -7,7 +7,18 @@ import { NavLink } from "react-router-dom";
 import RoundedRect from "./RoundedRect";
 import BackButton from "./BackButton";
 import { Card, CardHeader, CardTitle } from "./ui/card";
-import { Button } from "./ui/button";
+import { Button, buttonVariants } from "./ui/button";
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+	AlertDialogTrigger,
+} from "./ui/alert-dialog";
 
 const ReservationItem = ({ reservation }: { reservation: ReservationType }) => {
 	const { userId } = useAuth();
@@ -21,16 +32,38 @@ const ReservationItem = ({ reservation }: { reservation: ReservationType }) => {
 	};
 
 	return (
-		<NavLink to={`/item/${item.id}`}>
-			<Card>
-				<CardHeader>
-					<div className="flex justify-between">
+		<Card>
+			<CardHeader>
+				<div className="flex justify-between">
+					<NavLink to={`/item/${item.id}`}>
 						<CardTitle>{item?.title}</CardTitle>
-						<Button onClick={handleDelete}>Unreserve</Button>
-					</div>
-				</CardHeader>
-			</Card>
-		</NavLink>
+					</NavLink>
+
+					<AlertDialog>
+						<AlertDialogTrigger asChild>
+							<Button>Unreserve</Button>
+						</AlertDialogTrigger>
+						<AlertDialogContent>
+							<AlertDialogHeader>
+								<AlertDialogTitle>Remove reservation?</AlertDialogTitle>
+								<AlertDialogDescription>
+									Removing the reservation will let other users reserve the item.
+								</AlertDialogDescription>
+							</AlertDialogHeader>
+							<AlertDialogFooter>
+								<AlertDialogCancel>Cancel</AlertDialogCancel>
+								<AlertDialogAction
+									className={buttonVariants({ variant: "destructive" })}
+									onClick={() => handleDelete()}
+								>
+									Remove
+								</AlertDialogAction>
+							</AlertDialogFooter>
+						</AlertDialogContent>
+					</AlertDialog>
+				</div>
+			</CardHeader>
+		</Card>
 	);
 };
 
