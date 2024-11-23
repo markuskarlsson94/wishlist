@@ -13,9 +13,9 @@ import { findFormattedType, getFormattedType } from "@/utils/wishlist/utils";
 import WishlistTypeInfoType from "@/types/WishlistTypeInfoType";
 
 const formSchema = z.object({
-	title: z.string().min(1, { message: "Title must be specified" }).max(255, { message: "Title is too long" }),
-	description: z.string(),
-	type: z.string(),
+	title: z.string().min(1, "Title must be specified").max(255, "Title is too long"),
+	description: z.string().max(255, "Description is too long"),
+	type: z.string().max(255, "Type is too long"),
 });
 
 type WishlistFormConfig = {
