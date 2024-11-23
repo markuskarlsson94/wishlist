@@ -80,15 +80,18 @@ const Wishlists = () => {
 				{wishlists?.map((wishlist) => (
 					<Wishlist key={wishlist.id} wishlist={wishlist} />
 				))}
+
 				{isOwner && (
-					<WishlistDialog
-						config={{
-							title: "Create new wishlist",
-							submitButtonTitle: "Create",
-							onSubmit,
-							values,
-						}}
-					/>
+					<div className="self-end">
+						<WishlistDialog
+							config={{
+								title: "Create new wishlist",
+								submitButtonTitle: "Create",
+								onSubmit,
+								values,
+							}}
+						/>
+					</div>
 				)}
 			</div>
 		</RoundedRect>

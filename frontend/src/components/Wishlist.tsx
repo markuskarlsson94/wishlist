@@ -235,7 +235,7 @@ const Wishlist = () => {
 					<Item key={item.id} item={item} />
 				))}
 				{isOwner && (
-					<>
+					<div className="self-end">
 						<ItemDialog
 							config={{
 								title: "Add item",
@@ -244,7 +244,7 @@ const Wishlist = () => {
 								values: itemValues,
 							}}
 						/>
-					</>
+					</div>
 				)}
 			</div>
 		</RoundedRect>

@@ -206,7 +206,7 @@ const Item = () => {
 					/>
 				</div>
 
-				{!isOwner && (item?.reservation ? unreserveButton() : reserveButton())}
+				<div className="self-end">{!isOwner && (item?.reservation ? unreserveButton() : reserveButton())}</div>
 			</div>
 		</RoundedRect>
 	);
