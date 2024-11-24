@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { useGetItem, useDeleteItem, useUpdateItem } from "../hooks/item";
@@ -46,6 +46,8 @@ const Item = () => {
 	const addComment = useAddComment({ itemId: id });
 	const [isEditDialogOpen, setIsEditDialogOpen] = useState<boolean>(false);
 	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false);
+	const [comment, setComment] = useState<string>("");
+	const formRef = useRef<HTMLFormElement | null>(null);
 
 	const onDeleteItem = () => {
 		if (item?.wishlist) {
@@ -98,6 +100,13 @@ const Item = () => {
 	const onSubmitItem = (input: ItemInputType) => {
 		if (item) updateItem(item.id, input);
 		setIsEditDialogOpen(false);
+	};
+
+	const handleSubmitComment = () => {
+		if (formRef.current) {
+			formRef.current.submit();
+			setComment("");
+		}
 	};
 
 	const itemValues: ItemInputType = {
@@ -202,11 +211,19 @@ const Item = () => {
 					<AddCommentForm
 						config={{
 							onSubmit: handleAddComment,
+							onCommentChange(comment) {
+								setComment(comment);
+							},
 						}}
+						ref={formRef}
 					/>
 				</div>
-
-				<div className="self-end">{!isOwner && (item?.reservation ? unreserveButton() : reserveButton())}</div>
+				<div className="flex gap-x-2 self-end">
+					<Button onClick={handleSubmitComment} disabled={comment === ""}>
+						Add comment
+					</Button>
+					{!isOwner && (item?.reservation ? unreserveButton() : reserveButton())}
+				</div>
 			</div>
 		</RoundedRect>
 	);

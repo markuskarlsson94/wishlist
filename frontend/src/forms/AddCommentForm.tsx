@@ -4,17 +4,15 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { forwardRef, useImperativeHandle } from "react";
 import commentSchema from "@/schemas/commentSchema";
 
 type AddCommentFormConfig = {
 	onSubmit: (values: CommentInputType) => void;
+	onCommentChange?: (comment: string) => void;
 };
 
-const AddCommentForm = ({ config }: { config: AddCommentFormConfig }) => {
-	const [comment, setComment] = useState<string>("");
-
+const AddCommentForm = forwardRef(({ config }: { config: AddCommentFormConfig }, ref) => {
 	const form = useForm<z.infer<typeof commentSchema>>({
 		resolver: zodResolver(commentSchema),
 		values: { comment: "" },
@@ -24,6 +22,10 @@ const AddCommentForm = ({ config }: { config: AddCommentFormConfig }) => {
 		config.onSubmit(values);
 		form.reset();
 	};
+
+	useImperativeHandle(ref, () => ({
+		submit: () => form.handleSubmit(onSubmit)(),
+	}));
 
 	return (
 		<Form {...form}>
@@ -39,7 +41,9 @@ const AddCommentForm = ({ config }: { config: AddCommentFormConfig }) => {
 									{...field}
 									onChange={(e) => {
 										field.onChange(e);
-										setComment(e.target.value);
+										if (config.onCommentChange) {
+											config.onCommentChange(e.target.value);
+										}
 									}}
 								/>
 							</FormControl>
@@ -47,15 +51,9 @@ const AddCommentForm = ({ config }: { config: AddCommentFormConfig }) => {
 						</FormItem>
 					)}
 				></FormField>
-
-				<div className="mt-2">
-					<Button disabled={comment.length === 0} type="submit">
-						Add comment
-					</Button>
-				</div>
 			</form>
 		</Form>
 	);
-};
+});
 
 export default AddCommentForm;
