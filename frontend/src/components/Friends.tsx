@@ -74,6 +74,7 @@ const SentFriendRequest = ({ friendRequest }: { friendRequest: FriendRequest }) 
 };
 
 const Friend = ({ friend }: { friend: FriendType }) => {
+	const { userId } = useAuth();
 	const { user } = useGetUser(friend.userId);
 
 	return (
@@ -81,7 +82,10 @@ const Friend = ({ friend }: { friend: FriendType }) => {
 			<HoverCard>
 				<CardHeader>
 					<CardTitle className="flex justify-between items-center">
-						{user?.firstName} {user?.lastName}{" "}
+						<p>
+							{user?.firstName} {user?.lastName}
+							{friend.userId === userId && <span> (You)</span>}
+						</p>
 					</CardTitle>
 				</CardHeader>
 			</HoverCard>
