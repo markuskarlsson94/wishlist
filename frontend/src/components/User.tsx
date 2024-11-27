@@ -148,7 +148,7 @@ const User = () => {
 				<div className="flex justify-between items-center">
 					<div className="flex gap-x-3">
 						<p className="text-large font-medium">
-							{user?.firstName} {user?.lastName} {user?.id === userId && <span> (You)</span>}
+							{user?.firstName} {user?.lastName} {userId === viewer && <span> (You)</span>}
 						</p>
 					</div>
 				</div>
