@@ -124,7 +124,6 @@ const WishlistForm = ({ config }: { config: WishlistFormConfig }) => {
 				</div>
 
 				<div className="mt-6 float-right">
-					<Button variant={"secondary"}>Cancel</Button>
 					<Button type="submit">{config.submitButtonTitle}</Button>
 				</div>
 			</form>
