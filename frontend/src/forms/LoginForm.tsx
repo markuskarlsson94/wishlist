@@ -1,12 +1,9 @@
-import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useLogin } from "@/hooks/useLogin";
-import { useCurrentUser } from "@/hooks/user";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
 import z from "zod";
 
 const formSchema = z.object({
@@ -19,10 +16,6 @@ type LoginConfig = {
 };
 
 const LoginForm = (config?: LoginConfig) => {
-	const navigate = useNavigate();
-	const { user } = useCurrentUser();
-	const [loggedIn, setLoggedIn] = useState<boolean>(false);
-
 	const values = {
 		email: "",
 		password: "",
@@ -33,17 +26,7 @@ const LoginForm = (config?: LoginConfig) => {
 		values,
 	});
 
-	const onLogin = () => {
-		setLoggedIn(true);
-	};
-
-	const { login } = useLogin({ onSuccess: onLogin });
-
-	useEffect(() => {
-		if (loggedIn && user) {
-			navigate(`/user/${user}/wishlists`);
-		}
-	}, [user, loggedIn]);
+	const { login } = useLogin();
 
 	const onSubmit = (values: z.infer<typeof formSchema>) => {
 		if (config?.onSubmit) config.onSubmit(values);
