@@ -1,7 +1,7 @@
-import Topbar from "./Topbar";
+import RoundedRect from "./RoundedRect";
 
 const Home = () => {
-	return <Topbar />;
+	return <RoundedRect>Home</RoundedRect>;
 };
 
 export default Home;
