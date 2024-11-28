@@ -18,10 +18,10 @@ function App() {
 		<AuthProvider>
 			<Router>
 				<Routes>
-					<Route path="/" element={<Home />} />
-					<Route path="/register" element={<Register />} />
-					<Route element={<ProtectedRoutes />}>
-						<Route element={<MainLayout />}>
+					<Route element={<MainLayout />}>
+						<Route path="/" element={<Home />} />
+						<Route path="/register" element={<Register />} />
+						<Route element={<ProtectedRoutes />}>
 							<Route path="/users" element={<Users />} />
 							<Route path="/reservations" element={<Reservations />} />
 							<Route path="/user/:userId" element={<User />} />
