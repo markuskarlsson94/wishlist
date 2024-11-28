@@ -1,5 +1,4 @@
 import "./App.css";
-import Login from "./components/Login";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import ProtectedRoutes from "./components/ProtectedRoutes";
 import { AuthProvider } from "./contexts/AuthContext";
@@ -12,13 +11,14 @@ import MainLayout from "./components/MainLayout";
 import User from "./components/User";
 import Reservations from "./components/Reservations";
 import Register from "./components/Register";
+import Home from "./components/Home";
 
 function App() {
 	return (
 		<AuthProvider>
 			<Router>
 				<Routes>
-					<Route path="/" element={<Login />} />
+					<Route path="/" element={<Home />} />
 					<Route path="/register" element={<Register />} />
 					<Route element={<ProtectedRoutes />}>
 						<Route element={<MainLayout />}>
