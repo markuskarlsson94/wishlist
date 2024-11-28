@@ -12,6 +12,7 @@ import User from "./components/User";
 import Reservations from "./components/Reservations";
 import Register from "./components/Register";
 import Home from "./components/Home";
+import BetaInfo from "./components/BetaInfo";
 
 function App() {
 	return (
@@ -30,6 +31,7 @@ function App() {
 							<Route path="/wishlist/:id" element={<Wishlist />} />
 							<Route path="/item/:id" element={<Item />} />
 						</Route>
+						<Route path="beta-info" element={<BetaInfo />} />
 					</Route>
 				</Routes>
 			</Router>
