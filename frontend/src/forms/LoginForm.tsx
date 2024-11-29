@@ -1,3 +1,4 @@
+import { PasswordInput } from "@/components/PasswordInput";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -57,7 +58,7 @@ const LoginForm = (config?: LoginConfig) => {
 							<FormItem>
 								<FormLabel>Password</FormLabel>
 								<FormControl>
-									<Input placeholder="Password" type="password" {...field} />
+									<PasswordInput placeholder="Password" {...field} />
 								</FormControl>
 								<FormDescription />
 							</FormItem>
