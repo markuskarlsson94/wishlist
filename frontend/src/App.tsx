@@ -14,6 +14,8 @@ import Register from "./components/Register";
 import Home from "./components/Home";
 import BetaInfo from "./components/BetaInfo";
 import About from "./components/About";
+import News from "./components/News";
+import NewsArticle from "./components/NewsArticle";
 
 function App() {
 	return (
@@ -34,6 +36,8 @@ function App() {
 						</Route>
 						<Route path="beta-info" element={<BetaInfo />} />
 						<Route path="about" element={<About />} />
+						<Route path="news" element={<News />} />
+						<Route path="news/:id" element={<NewsArticle />} />
 					</Route>
 				</Routes>
 			</Router>
