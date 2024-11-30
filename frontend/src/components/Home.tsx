@@ -1,7 +1,14 @@
+import { useNavigate } from "react-router-dom";
 import RoundedRect from "./RoundedRect";
 import { Button } from "./ui/button";
 
 const Home = () => {
+	const navigate = useNavigate();
+
+	const handleReadMore = () => {
+		navigate("/about");
+	};
+
 	return (
 		<RoundedRect>
 			<div className="relative flex flex-col">
@@ -34,7 +41,9 @@ const Home = () => {
 				<div className="self-end">
 					<div className="flex gap-x-2">
 						<Button className="">Sign up</Button>
-						<Button variant={"secondary"}>Read more</Button>
+						<Button variant={"secondary"} onClick={handleReadMore}>
+							Read more
+						</Button>
 					</div>
 				</div>
 			</div>
