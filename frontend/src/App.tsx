@@ -13,6 +13,7 @@ import Reservations from "./components/Reservations";
 import Register from "./components/Register";
 import Home from "./components/Home";
 import BetaInfo from "./components/BetaInfo";
+import About from "./components/About";
 
 function App() {
 	return (
@@ -32,6 +33,7 @@ function App() {
 							<Route path="/item/:id" element={<Item />} />
 						</Route>
 						<Route path="beta-info" element={<BetaInfo />} />
+						<Route path="about" element={<About />} />
 					</Route>
 				</Routes>
 			</Router>
