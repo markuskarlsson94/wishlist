@@ -136,18 +136,18 @@ const Wishlist = () => {
 		<RoundedRect>
 			<div className="flex justify-between">
 				<BackButton onClick={handleBack} />
-				{isOwner && (
-					<div className="flex gap-x-3 items-center">
-						{type && (
-							<Badge variant={"secondary"}>
-								<Tooltip tooltip={type?.description}>
-									<div className="flex items-center gap-x-1">
-										<Info size={16} opacity={0.5} />
-										<p className="text-sm text-gray-500">{type?.name}</p>
-									</div>
-								</Tooltip>
-							</Badge>
-						)}
+				<div className="flex gap-x-3 items-center">
+					{type && (
+						<Badge variant={"secondary"}>
+							<Tooltip tooltip={type?.description}>
+								<div className="flex items-center gap-x-1">
+									<Info size={16} opacity={0.5} />
+									<p className="text-sm text-gray-500">{type?.name}</p>
+								</div>
+							</Tooltip>
+						</Badge>
+					)}
+					{isOwner && (
 						<div className="float-right">
 							<DropdownMenu>
 								<DropdownMenuTrigger asChild>
@@ -218,8 +218,8 @@ const Wishlist = () => {
 								</AlertDialogContent>
 							</AlertDialog>
 						</div>
-					</div>
-				)}
+					)}
+				</div>
 			</div>
 			<div className="my-5">
 				<H3>{wishlist?.title}</H3>
