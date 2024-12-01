@@ -16,6 +16,7 @@ import BetaInfo from "./components/BetaInfo";
 import About from "./components/About";
 import News from "./components/News";
 import NewsArticle from "./components/NewsArticle";
+import FAQ from "./components/FAQ";
 
 function App() {
 	return (
@@ -38,6 +39,7 @@ function App() {
 						<Route path="about" element={<About />} />
 						<Route path="news" element={<News />} />
 						<Route path="news/:id" element={<NewsArticle />} />
+						<Route path="faq" element={<FAQ />} />
 					</Route>
 				</Routes>
 			</Router>
