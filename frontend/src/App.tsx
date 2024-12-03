@@ -17,6 +17,7 @@ import About from "./components/About";
 import News from "./components/News";
 import NewsArticle from "./components/NewsArticle";
 import FAQ from "./components/FAQ";
+import TermsOfService from "./components/TermsOfService";
 
 function App() {
 	return (
@@ -40,6 +41,7 @@ function App() {
 						<Route path="news" element={<News />} />
 						<Route path="news/:id" element={<NewsArticle />} />
 						<Route path="faq" element={<FAQ />} />
+						<Route path="terms-of-service" element={<TermsOfService />} />
 					</Route>
 				</Routes>
 			</Router>
