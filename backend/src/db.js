@@ -16,6 +16,7 @@ const reservationsTable = "reservations";
 const friendsTable = "friends";
 const friendRequestsTable = "friendRequests";
 const commentsTable = "comments";
+const waitlistTable = "waitlist";
 
 let dbClient;
 
@@ -50,6 +51,7 @@ const db = {
 			await dbClient.schema.dropTableIfExists(userTable);
 			await dbClient.schema.dropTableIfExists(userRolesTable);
 			await dbClient.schema.dropTableIfExists(wishlistTypeTable);
+			await dbClient.schema.dropTableIfExists(waitlistTable);
 
 			await dbClient.schema.createTable(userRolesTable, (table) => {
 				table.increments("id").primary();
@@ -159,6 +161,18 @@ const db = {
 				table.timestamps(true, true, true);
 			});
 
+			await dbClient.schema.createTable(waitlistTable, (table) => {
+				table.increments("id").primary();
+				table.string("email").notNullable();
+				table.string("firstName").notNullable();
+				table.string("lastName").notNullable();
+				table.string("password").notNullable();
+				table.integer("role").notNullable();
+				table.string("token").notNullable();
+
+				table.timestamps(true, true, true);
+			});
+
 			logger.info("Database initiated.");
 		} catch (error) {
 			logger.error(error.message);
@@ -232,6 +246,38 @@ const db = {
 					})
 					.first()
 			)?.token;
+		},
+	},
+
+	waitlist: {
+		add: async (email, firstName, lastName, plaintextPassword, role, token) => {
+			const hashedPassword = await generatePassword(plaintextPassword);
+
+			await dbClient(waitlistTable).insert({
+				email,
+				firstName,
+				lastName,
+				password: hashedPassword,
+				role,
+				token,
+			});
+		},
+
+		remove: async (email) => {
+			await dbClient(waitlistTable).delete().where({ email });
+		},
+
+		getUserByEmail: async (email) => {
+			return await dbClient(waitlistTable).select("*").where({ email }).first();
+		},
+
+		admit: async (id) => {
+			const { email, firstName, lastName, password, role } = await dbClient(waitlistTable)
+				.select("*")
+				.where({ id })
+				.first();
+
+			await dbClient(userTable).insert({ email, firstName, lastName, password, role });
 		},
 	},
 
