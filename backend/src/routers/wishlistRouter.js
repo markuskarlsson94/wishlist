@@ -237,7 +237,6 @@ wishlistRouter.get("/wishlist/types", isAuthenticated(), async (req, res) => {
 			types,
 		});
 	} catch (error) {
-		console.log(error.message);
 		res.status(error.status).json(error.message);
 	}
 });
