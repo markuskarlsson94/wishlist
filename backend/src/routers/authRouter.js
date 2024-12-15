@@ -44,4 +44,32 @@ authRouter.get("/me", isAuthenticated(), async (req, res) => {
 	});
 });
 
+authRouter.post("verify/:token", async (req, res) => {
+	try {
+		const email = req.body.email;
+
+		if (!email) {
+			res.status(400).json({
+				message: "Missing email",
+			});
+		}
+
+		const token = req.params.token;
+
+		if (!token) {
+			res.status(400).json({
+				message: "Missing token",
+			});
+		}
+
+		await authService.verify(email, token);
+
+		res.status(201).json({
+			message: "User successfully verified",
+		});
+	} catch (error) {
+		res.status(error.status).json(error.message);
+	}
+});
+
 export default authRouter;
