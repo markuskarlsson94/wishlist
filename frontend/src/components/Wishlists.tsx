@@ -58,7 +58,6 @@ const Wishlists = () => {
 	};
 
 	const onSubmit = (input: WishlistInputType) => {
-		console.log(input);
 		createWishlist(input, userId);
 	};
 
