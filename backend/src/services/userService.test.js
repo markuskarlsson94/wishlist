@@ -37,7 +37,7 @@ describe("adding user", () => {
 	});
 
 	it("should add user with correct info", async () => {
-		user1Id = await userService.add(email1, firstName, lastName, "abc");
+		user1Id = await userService.addWithoutVerification(email1, firstName, lastName, "abc");
 		expect(user1Id).toBeGreaterThan(0);
 		user1 = await userService.getById(user1Id);
 		expect(user1.id).toBe(user1Id);
@@ -58,13 +58,13 @@ describe("adding user", () => {
 	it("should not allow adding user with existing email", async () => {
 		await expect(
 			(async () => {
-				await userService.add(email1, "Foo", "Bar", "abc");
+				await userService.addWithoutVerification(email1, "Foo", "Bar", "abc");
 			})(),
 		).rejects.toThrowError(errorMessages.userAlreadyExists.message);
 	});
 
 	it("should add user with different email but same name", async () => {
-		user2Id = await userService.add(email2, firstName, lastName, "abc");
+		user2Id = await userService.addWithoutVerification(email2, firstName, lastName, "abc");
 		expect(user2Id).toBeGreaterThan(0);
 		user2 = await userService.getById(user2Id);
 		expect(user2.id).toBe(user2Id);
@@ -102,9 +102,9 @@ describe("searching for user", async () => {
 		let id3;
 
 		beforeAll(async () => {
-			id1 = await userService.add("mail@mail.com", "Nils", "Malandsson", "abc");
-			id2 = await userService.add("mail2@mail.com", "Truls", "Minipizza", "abc");
-			id3 = await userService.add("mail3@mail.com", "Nils-Jörgen", "Json", "abc");
+			id1 = await userService.addWithoutVerification("mail@mail.com", "Nils", "Malandsson", "abc");
+			id2 = await userService.addWithoutVerification("mail2@mail.com", "Truls", "Minipizza", "abc");
+			id3 = await userService.addWithoutVerification("mail3@mail.com", "Nils-Jörgen", "Json", "abc");
 		});
 
 		it("should find by searching for first name", async () => {
@@ -179,13 +179,13 @@ describe("removing user", async () => {
 
 describe("friends", () => {
 	beforeAll(async () => {
-		adminId = await userService.add(emailAdmin, firstName, lastName, "abc", adminRole());
+		adminId = await userService.addWithoutVerification(emailAdmin, firstName, lastName, "abc", adminRole());
 		admin = await userService.getById(adminId);
 
-		user2Id = await userService.add(email2, firstName, lastName, "abc");
+		user2Id = await userService.addWithoutVerification(email2, firstName, lastName, "abc");
 		user2 = await userService.getById(user2Id);
 
-		user3Id = await userService.add(email3, firstName, lastName, "abc");
+		user3Id = await userService.addWithoutVerification(email3, firstName, lastName, "abc");
 		user3 = await userService.getById(user3Id);
 	});
 
@@ -339,7 +339,7 @@ describe("friend requests", () => {
 	let requestId;
 
 	beforeAll(async () => {
-		user3Id = await userService.add(email3, firstName, lastName, "abc");
+		user3Id = await userService.addWithoutVerification(email3, firstName, lastName, "abc");
 		user3 = await userService.getById(user3Id);
 	});
 
@@ -548,7 +548,7 @@ describe("friend requests", () => {
 
 	describe("accepting requests", async () => {
 		beforeAll(async () => {
-			user3Id = await userService.add(email3, firstName, lastName, "abc");
+			user3Id = await userService.addWithoutVerification(email3, firstName, lastName, "abc");
 			user3 = await userService.getById(user3Id);
 		});
 

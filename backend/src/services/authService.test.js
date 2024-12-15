@@ -3,7 +3,7 @@ import authService from "./authService";
 import db from "../db";
 import userService from "./userService";
 import errorMessages from "../errors/errorMessages";
-import { initUserRoles, adminRole } from "../roles";
+import { initUserRoles, adminRole, userRole } from "../roles";
 
 let admin;
 let user1;
@@ -22,8 +22,8 @@ beforeAll(async () => {
 	await db.init();
 	await initUserRoles();
 
-	await userService.add(email1, firstName, lastName, password);
-	await userService.add(email2, firstName, lastName, password);
+	await userService.addWithoutVerification(email1, firstName, lastName, password);
+	await userService.addWithoutVerification(email2, firstName, lastName, password);
 
 	admin = { role: adminRole() };
 });
@@ -87,6 +87,70 @@ describe("logging out", async () => {
 				await authService.refresh(refreshToken2);
 			})(),
 		).rejects.toThrowError(errorMessages.invalidRefreshToken.message);
+	});
+});
+
+describe("verification", () => {
+	let email = "authServiceTest3@mail.com";
+	let id;
+	let token;
+
+	it("should add user to waitlist after registration and receiving token", async () => {
+		token = await userService.add(email, firstName, lastName, password, userRole(), false);
+		expect(token).toBeTruthy();
+
+		const pendingUser = await db.waitlist.getUserByEmail(email);
+		expect(pendingUser.email).toBe(email);
+	});
+
+	it("should not add user before verification", async () => {
+		const user = await db.user.getByEmail(email);
+		expect(user).toBe(undefined);
+	});
+
+	it("should not be possible to register already registred user", async () => {
+		await expect(userService.add(email, firstName, lastName, password, userRole(), false)).rejects.toThrowError(
+			errorMessages.userAlreadyExists.message,
+		);
+	});
+
+	it("should not be possible to login before verification", async () => {
+		await expect(authService.login(email, password)).rejects.toThrowError(
+			errorMessages.invalidEmailOrPassword.message,
+		);
+	});
+
+	it("should not be possible to verify using invalid token", async () => {
+		await expect(authService.verify(email, "inavlidToken")).rejects.toThrowError(
+			errorMessages.unableToVerifyUser.message,
+		);
+	});
+
+	it("should not be possible to verify non existing user", async () => {
+		await expect(authService.verify("test@test.com", "abc")).rejects.toThrowError(
+			errorMessages.unableToVerifyUser.message,
+		);
+	});
+
+	it("should verify and add user with correct token", async () => {
+		await authService.verify(email, token);
+
+		const user = await db.user.getByEmail(email);
+		expect(user.email).toBe(email);
+
+		id = user.id;
+	});
+
+	it("should be possible to login after verfication", async () => {
+		await authService.login(email, password);
+	});
+
+	it("should not be possible to verify existing user", async () => {
+		await expect(authService.verify(email, token)).rejects.toThrowError(errorMessages.unableToVerifyUser.message);
+	});
+
+	afterAll(async () => {
+		db.user.remove(id);
 	});
 });
 
