@@ -6,6 +6,7 @@ import { userRole } from "../roles.js";
 import errorMessages from "../errors/errorMessages.js";
 import { adminRole } from "../roles.js";
 import { PostgresError } from "pg-error-enum";
+import crypto from "crypto";
 
 const userService = {
 	getAll: async () => {
@@ -48,7 +49,36 @@ const userService = {
 		}
 	},
 
-	add: async (email, firstName, lastName, plaintextPassword, role = userRole()) => {
+	add: async (email, firstName, lastName, plaintextPassword, role = userRole(), sendEmail = true) => {
+		if (await userService.exists(email)) {
+			throw new ErrorMessage(errorMessages.userAlreadyExists);
+		}
+
+		const pendingUser = await db.waitlist.getUserByEmail(email);
+
+		if (pendingUser) {
+			// TODO: Check if token is expired?
+			throw new ErrorMessage(errorMessages.userAlreadyExists);
+		}
+
+		const token = crypto.randomBytes(64).toString("hex");
+
+		if (sendEmail) {
+			// TODO: get url from env file
+			const link = `http://localhost:5137/auth/verify?token=${token}`;
+			//TODO: send email
+		}
+
+		try {
+			await db.waitlist.add(email, firstName, lastName, plaintextPassword, role, token);
+			return token;
+		} catch (error) {
+			logger.error(error.message);
+			throw new ErrorMessage(errorMessages.unableToAddNewUser);
+		}
+	},
+
+	addWithoutVerification: async (email, firstName, lastName, plaintextPassword, role = userRole()) => {
 		if (await userService.exists(email)) {
 			throw new ErrorMessage(errorMessages.userAlreadyExists);
 		}

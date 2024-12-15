@@ -114,6 +114,11 @@ const errorMessages = {
 		message: "Missing item properties",
 	},
 
+	unableToVerifyUser: {
+		status: 400,
+		message: "Unable to verify User",
+	},
+
 	invalidEmailOrPassword: {
 		status: 403,
 		message: "Invalid email or password",

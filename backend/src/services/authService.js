@@ -101,6 +101,29 @@ const authService = {
 			throw new ErrorMessage(errorMessages.invalidRefreshToken);
 		}
 	},
+
+	verify: async (email, token) => {
+		try {
+			const pendingUser = await db.waitlist.getUserByEmail(email);
+
+			if (!pendingUser) {
+				throw new Error("No pending user");
+			}
+
+			const { token: storedToken } = pendingUser;
+
+			// TOOO: check if token has expired?
+
+			if (token !== storedToken) {
+				throw new ErrorMessage(errorMessages.unableToVerifyUser);
+			}
+
+			await db.waitlist.admit(pendingUser.id);
+		} catch (error) {
+			logger.error(error.message);
+			throw new ErrorMessage(errorMessages.unableToVerifyUser);
+		}
+	},
 };
 
 const generateAccessToken = (user, issuedAtLogin = false) => {
