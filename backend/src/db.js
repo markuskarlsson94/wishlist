@@ -263,10 +263,6 @@ const db = {
 			});
 		},
 
-		remove: async (email) => {
-			await dbClient(waitlistTable).delete().where({ email });
-		},
-
 		getUserByEmail: async (email) => {
 			return await dbClient(waitlistTable).select("*").where({ email }).first();
 		},
