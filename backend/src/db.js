@@ -278,6 +278,7 @@ const db = {
 				.first();
 
 			await dbClient(userTable).insert({ email, firstName, lastName, password, role });
+			await dbClient(waitlistTable).delete().where({ email });
 		},
 	},
 
