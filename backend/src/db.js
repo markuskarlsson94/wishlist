@@ -271,6 +271,10 @@ const db = {
 			return await dbClient(waitlistTable).select("*").where({ email }).first();
 		},
 
+		getUserByToken: async (token) => {
+			return await dbClient(waitlistTable).select("*").where({ token }).first();
+		},
+
 		admit: async (id) => {
 			const { email, firstName, lastName, password, role } = await dbClient(waitlistTable)
 				.select("*")

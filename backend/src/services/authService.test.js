@@ -99,7 +99,7 @@ describe("verification", () => {
 		token = await userService.add(email, firstName, lastName, password, userRole(), false);
 		expect(token).toBeTruthy();
 
-		const pendingUser = await db.waitlist.getUserByEmail(email);
+		const pendingUser = await db.waitlist.getUserByToken(token);
 		expect(pendingUser.email).toBe(email);
 	});
 
@@ -133,12 +133,17 @@ describe("verification", () => {
 	});
 
 	it("should verify and add user with correct token", async () => {
-		await authService.verify(email, token);
+		await authService.verify(token);
 
 		const user = await db.user.getByEmail(email);
 		expect(user.email).toBe(email);
 
 		id = user.id;
+	});
+
+	it("should remove user from waitlist after verification", async () => {
+		const user = await db.waitlist.getUserByEmail(email);
+		expect(user).toBe(undefined);
 	});
 
 	it("should be possible to login after verfication", async () => {

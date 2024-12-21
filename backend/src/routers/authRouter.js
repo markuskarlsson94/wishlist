@@ -44,16 +44,8 @@ authRouter.get("/me", isAuthenticated(), async (req, res) => {
 	});
 });
 
-authRouter.post("verify/:token", async (req, res) => {
+authRouter.post("/verify", async (req, res) => {
 	try {
-		const email = req.body.email;
-
-		if (!email) {
-			res.status(400).json({
-				message: "Missing email",
-			});
-		}
-
 		const token = req.params.token;
 
 		if (!token) {
@@ -62,7 +54,7 @@ authRouter.post("verify/:token", async (req, res) => {
 			});
 		}
 
-		await authService.verify(email, token);
+		await authService.verify(token);
 
 		res.status(201).json({
 			message: "User successfully verified",

@@ -102,9 +102,9 @@ const authService = {
 		}
 	},
 
-	verify: async (email, token) => {
+	verify: async (token) => {
 		try {
-			const pendingUser = await db.waitlist.getUserByEmail(email);
+			const pendingUser = await db.waitlist.getUserByToken(token);
 
 			if (!pendingUser) {
 				throw new Error("No pending user");
