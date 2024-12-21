@@ -571,7 +571,10 @@ const db = {
 			},
 
 			getByWishlistId: async (id) => {
-				return await dbClient(wishlistItemTable).select("*").where({ wishlist: id });
+				return await dbClient(wishlistItemTable)
+					.select("*")
+					.where({ wishlist: id })
+					.orderBy("createdAt", "asc");
 			},
 
 			getWishlist: async (id) => {
