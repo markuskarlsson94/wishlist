@@ -6,7 +6,7 @@ import { useGetItem } from "../hooks/item";
 import { NavLink } from "react-router-dom";
 import RoundedRect from "./RoundedRect";
 import BackButton from "./BackButton";
-import { Card, CardHeader, CardTitle } from "./ui/card";
+import { Card, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { Button, buttonVariants } from "./ui/button";
 import {
 	AlertDialog,
@@ -19,10 +19,14 @@ import {
 	AlertDialogTitle,
 	AlertDialogTrigger,
 } from "./ui/alert-dialog";
+import { useGetUser } from "@/hooks/user";
+import { useGetWishlist } from "@/hooks/wishlist";
 
 const ReservationItem = ({ reservation }: { reservation: ReservationType }) => {
 	const { userId } = useAuth();
 	const { item, isSuccess } = useGetItem(reservation.item);
+	const { user: owner } = useGetUser(reservation.owner);
+	const { wishlist } = reservation.wishlist ? useGetWishlist(reservation.wishlist) : { wishlist: undefined };
 	const deleteReservation = useDeleteReservation({ userId });
 
 	if (!isSuccess || !item) return null;
@@ -37,6 +41,9 @@ const ReservationItem = ({ reservation }: { reservation: ReservationType }) => {
 				<div className="flex justify-between">
 					<NavLink to={`/item/${item.id}`}>
 						<CardTitle>{item?.title}</CardTitle>
+						<CardDescription>
+							{owner?.firstName} {owner?.lastName} - {wishlist?.title}
+						</CardDescription>
 					</NavLink>
 
 					<AlertDialog>
