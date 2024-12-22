@@ -559,7 +559,7 @@ const db = {
 				return (
 					await dbClient(`${wishlistItemTable} as i`)
 						.select("u.id as userId")
-						.innerJoin(`${wishlistTable} as w`, `w.id`, "wishlist")
+						.innerJoin(`${wishlistTable} as w`, "w.id", "wishlist")
 						.innerJoin(`${userTable} as u`, "u.id", "w.owner")
 						.where("i.id", "=", id)
 						.first()
@@ -648,7 +648,11 @@ const db = {
 		},
 
 		getByUserId: async (id) => {
-			return await dbClient(reservationsTable).select("*").where({ user: id });
+			return await dbClient(`${reservationsTable} as r`)
+				.select("r.*", "i.wishlist", "w.owner")
+				.innerJoin(`${wishlistItemTable} as i`, "i.id", "r.item")
+				.innerJoin(`${wishlistTable} as w`, "w.id", "i.wishlist")
+				.where({ user: id });
 		},
 
 		getByUserIdAndItemId: async (userId, itemId) => {
