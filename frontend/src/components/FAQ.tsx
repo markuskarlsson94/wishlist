@@ -9,11 +9,11 @@ const FAQ = () => {
 		navigate(-1);
 	};
 
-	const QA = ({ question, answer }: { question: string; answer: string }) => {
+	const QA = ({ question, children }: { question: string; children: React.ReactNode }) => {
 		return (
 			<div>
 				<p className="font-medium">{question}</p>
-				<p>{answer}</p>
+				{children}
 			</div>
 		);
 	};
@@ -26,22 +26,26 @@ const FAQ = () => {
 					<p className="font-medium m-auto">FAQ</p>
 				</div>
 
-				<div className="flex flex-col gap-y-3">
-					<div>
-						<p className="font-medium"></p>
-						<p></p>
-					</div>
-					<QA
-						question={"Why did my reservation dissapear without me doing anything?"}
-						answer={
-							"A reservation will dissapear if the item you reserved is removed. This will occur if the owner either removes the item or the corresponding wishlist. The reservation will also be removed if the user who owns the item is deleted. Your reservation will also be hidden if the wishlist visibility changes so that you no longer can access the wishlist."
-						}
-					/>
+				<div className="flex flex-col gap-y-6">
+					<QA question="Why did my reservation disappear without me doing anything?">
+						<p>A reservation could disappear for a couple of different reasons</p>
+						<ul className="list-disc list-inside pl-4">
+							<li>The item or wishlsit was removed by the owner</li>
+							<li>The user profile of the owner was deleted</li>
+							<li>
+								The visibility level of the corresponding wishlist has changed so that you no longer can
+								access it
+							</li>
+						</ul>
+					</QA>
 
-					<QA
-						question={"Is there any way to see who has reserved the items in my wishlist?"}
-						answer={"No."}
-					/>
+					<QA question={"Is there any way to see who has reserved the items in my wishlist?"}>
+						<p>No.</p>
+					</QA>
+
+					<QA question={"I've forgotten my password. What do I do?"}>
+						<p>Please send an email to the admin using the same email you used to sign up with.</p>
+					</QA>
 				</div>
 			</div>
 		</RoundedRect>
