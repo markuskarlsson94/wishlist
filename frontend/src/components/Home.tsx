@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import RoundedRect from "./RoundedRect";
 import { Button } from "./ui/button";
+import RegisterDialog from "./RegisterDialog";
 
 const Home = () => {
 	const navigate = useNavigate();
@@ -40,7 +41,7 @@ const Home = () => {
 				</div>
 				<div className="self-end">
 					<div className="flex gap-x-2">
-						<Button className="">Sign up</Button>
+						<RegisterDialog />
 						<Button variant={"secondary"} onClick={handleReadMore}>
 							Read more
 						</Button>
