@@ -6,7 +6,7 @@ import RegistrationConfirmedDialog from "./RegistrationConfirmedDialog";
 import { useState } from "react";
 
 const Home = () => {
-	const [registrationConfirmedDialogOpen, setRegistrationConfirmedDialogOpen] = useState<boolean>(true);
+	const [registrationConfirmedDialogOpen, setRegistrationConfirmedDialogOpen] = useState<boolean>(false);
 	const [registredEmail, setRegistredEmail] = useState<string | undefined>(undefined);
 
 	const navigate = useNavigate();
