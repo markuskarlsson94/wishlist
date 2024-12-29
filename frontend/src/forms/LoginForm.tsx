@@ -4,6 +4,9 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel } fr
 import { Input } from "@/components/ui/input";
 import { useLogin } from "@/hooks/useLogin";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { AxiosError } from "axios";
+import { Info } from "lucide-react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
 
@@ -17,6 +20,8 @@ type LoginConfig = {
 };
 
 const LoginForm = (config?: LoginConfig) => {
+	const [warning, setWarning] = useState<string | undefined>(undefined);
+
 	const values = {
 		email: "",
 		password: "",
@@ -27,7 +32,15 @@ const LoginForm = (config?: LoginConfig) => {
 		values,
 	});
 
-	const { login } = useLogin();
+	const onError = (error: AxiosError) => {
+		if (error.response?.status === 403) {
+			setWarning("Unknown email or password");
+		} else {
+			setWarning("Unknown error");
+		}
+	};
+
+	const { login } = useLogin({ onError });
 
 	const onSubmit = (values: z.infer<typeof formSchema>) => {
 		if (config?.onSubmit) config.onSubmit(values);
@@ -66,8 +79,19 @@ const LoginForm = (config?: LoginConfig) => {
 					/>
 				</div>
 
-				<div className="mt-6 float-right">
-					<Button type="submit">Login</Button>
+				<div className="flex flex-row justify-between items-center mt-6">
+					<div>
+						{warning && (
+							<div className="flex flex-row items-center gap-x-2">
+								<Info opacity={0.7} />
+								<p className="font-medium text-sm text-red-500">{warning}</p>
+							</div>
+						)}
+					</div>
+
+					<div className="mt-6 float-right">
+						<Button type="submit">Login</Button>
+					</div>
 				</div>
 			</form>
 		</Form>
