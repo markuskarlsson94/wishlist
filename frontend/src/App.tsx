@@ -10,7 +10,6 @@ import Users from "./components/Users";
 import MainLayout from "./components/MainLayout";
 import User from "./components/User";
 import Reservations from "./components/Reservations";
-import Register from "./components/Register";
 import Home from "./components/Home";
 import BetaInfo from "./components/BetaInfo";
 import About from "./components/About";
@@ -28,7 +27,6 @@ function App() {
 				<Routes>
 					<Route element={<MainLayout />}>
 						<Route path="/" element={<Home />} />
-						<Route path="/register" element={<Register />} />
 						<Route element={<ProtectedRoutes />}>
 							<Route path="/users" element={<Users />} />
 							<Route path="/reservations" element={<Reservations />} />
