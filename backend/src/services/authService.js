@@ -119,6 +119,7 @@ const authService = {
 			}
 
 			await db.waitlist.admit(pendingUser.id);
+			logger.info(`${pendingUser.email} successfully verified`);
 		} catch (error) {
 			logger.error(error.message);
 			throw new ErrorMessage(errorMessages.unableToVerifyUser);
