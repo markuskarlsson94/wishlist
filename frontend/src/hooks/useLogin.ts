@@ -1,6 +1,6 @@
 import { useMutation, UseMutationResult, useQueryClient } from "@tanstack/react-query";
 import axiosInstance from "../axiosInstance";
-import { AxiosResponse } from "axios";
+import { AxiosError, AxiosResponse } from "axios";
 import { useAuth } from "../contexts/AuthContext";
 import { useCurrentUser } from "./user";
 import { useEffect } from "react";
@@ -17,7 +17,7 @@ type LoginResponse = {
 
 type UseLoginConfig = {
 	onSuccess?: (data: LoginResponse) => void;
-	onError?: (error: Error) => void;
+	onError?: (error: AxiosError) => void;
 };
 
 type UseLoginResult = Omit<UseMutationResult<LoginResponse, Error, LoginCredentials, unknown>, "mutate"> & {
@@ -50,7 +50,7 @@ export const useLogin = (config?: UseLoginConfig): UseLoginResult => {
 				config.onSuccess(data);
 			}
 		},
-		onError: (error: Error) => {
+		onError: (error: AxiosError) => {
 			console.error("Login failed:", error);
 			setIsAuthenticated(false);
 
