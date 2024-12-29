@@ -38,20 +38,6 @@ userRouter.get("/all", isAuthenticated(), async (_req, res) => {
 	}
 });
 
-userRouter.post("/add", async (req, res) => {
-	try {
-		const { email, firstName, lastName, password } = req.body;
-		const id = await userService.add(email, firstName, lastName, password);
-
-		res.status(201).json({
-			message: "User successfully created.",
-			id,
-		});
-	} catch (error) {
-		res.status(error.status).json(error.message);
-	}
-});
-
 userRouter.post("/updatePassword", isAuthenticated(), async (req, res) => {
 	const { oldPassword, newPassword, newPasswordRepeated } = req.body;
 
