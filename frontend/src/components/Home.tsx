@@ -2,8 +2,13 @@ import { useNavigate } from "react-router-dom";
 import RoundedRect from "./RoundedRect";
 import { Button } from "./ui/button";
 import RegisterDialog from "./RegisterDialog";
+import RegistrationConfirmedDialog from "./RegistrationConfirmedDialog";
+import { useState } from "react";
 
 const Home = () => {
+	const [registrationConfirmedDialogOpen, setRegistrationConfirmedDialogOpen] = useState<boolean>(true);
+	const [registredEmail, setRegistredEmail] = useState<string | undefined>(undefined);
+
 	const navigate = useNavigate();
 
 	const handleReadMore = () => {
@@ -41,13 +46,21 @@ const Home = () => {
 				</div>
 				<div className="self-end">
 					<div className="flex gap-x-2">
-						<RegisterDialog />
+						<RegisterDialog
+							setRegistrationConfirmedDialogOpen={setRegistrationConfirmedDialogOpen}
+							setRegistredEmail={setRegistredEmail}
+						/>
 						<Button variant={"secondary"} onClick={handleReadMore}>
 							Read more
 						</Button>
 					</div>
 				</div>
 			</div>
+			<RegistrationConfirmedDialog
+				open={registrationConfirmedDialogOpen}
+				setOpen={setRegistrationConfirmedDialogOpen}
+				registredEmail={registredEmail}
+			/>
 		</RoundedRect>
 	);
 };

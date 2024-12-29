@@ -31,6 +31,8 @@ type RegisterConfig = {
 		tosAccepted: boolean;
 	}) => void;
 	setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+	setRegistrationConfirmedDialogOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+	setRegistredEmail?: React.Dispatch<React.SetStateAction<string | undefined>>;
 };
 
 const RegisterForm = (config?: RegisterConfig) => {
@@ -52,9 +54,12 @@ const RegisterForm = (config?: RegisterConfig) => {
 	});
 
 	const tosAccepted = form.watch("tosAccepted");
+	const email = form.watch("email");
 
 	const onSuccess = () => {
 		if (config?.setOpen) config.setOpen(false);
+		if (config?.setRegistrationConfirmedDialogOpen) config.setRegistrationConfirmedDialogOpen(true);
+		if (config?.setRegistredEmail) config.setRegistredEmail(email);
 	};
 
 	const onError = (error: AxiosError) => {
