@@ -32,6 +32,8 @@ const LoginForm = (config?: LoginConfig) => {
 		values,
 	});
 
+	const password = form.watch("password");
+
 	const onError = (error: AxiosError) => {
 		if (error.response?.status === 403) {
 			setWarning("Unknown email or password");
@@ -90,7 +92,9 @@ const LoginForm = (config?: LoginConfig) => {
 					</div>
 
 					<div className="mt-6 float-right">
-						<Button type="submit">Login</Button>
+						<Button type="submit" disabled={password === ""}>
+							Login
+						</Button>
 					</div>
 				</div>
 			</form>
