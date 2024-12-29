@@ -18,6 +18,8 @@ import News from "./components/News";
 import NewsArticle from "./components/NewsArticle";
 import FAQ from "./components/FAQ";
 import TermsOfService from "./components/TermsOfService";
+import Verification from "./components/Verification";
+import AccountVerified from "./components/AccountVerified";
 
 function App() {
 	return (
@@ -42,6 +44,8 @@ function App() {
 						<Route path="news/:id" element={<NewsArticle />} />
 						<Route path="faq" element={<FAQ />} />
 						<Route path="terms-of-service" element={<TermsOfService />} />
+						<Route path="verify" element={<Verification />} />
+						<Route path="account-verified" element={<AccountVerified />} />
 					</Route>
 				</Routes>
 			</Router>
