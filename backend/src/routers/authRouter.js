@@ -46,10 +46,10 @@ authRouter.get("/me", isAuthenticated(), async (req, res) => {
 
 authRouter.post("/verify", async (req, res) => {
 	try {
-		const token = req.params.token;
+		const token = req.query.token;
 
 		if (!token) {
-			res.status(400).json({
+			return res.status(400).json({
 				message: "Missing token",
 			});
 		}
