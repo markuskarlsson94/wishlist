@@ -108,29 +108,29 @@ describe("searching for user", async () => {
 		});
 
 		it("should find by searching for first name", async () => {
-			const users = await userService.getByFullName("Nils");
-			expect(users.length).toBe(2);
-			expect(users.includes(id1)).toBeTruthy();
-			expect(users.includes(id3)).toBeTruthy();
+			const data = await userService.getByFullName("Nils");
+			expect(data.users.length).toBe(2);
+			expect(data.users.includes(id1)).toBeTruthy();
+			expect(data.users.includes(id3)).toBeTruthy();
 		});
 
 		it("should find by searching for last name", async () => {
-			const users = await userService.getByFullName("Mini");
-			expect(users.length).toBe(1);
-			expect(users.includes(id2)).toBeTruthy();
+			const data = await userService.getByFullName("Mini");
+			expect(data.users.length).toBe(1);
+			expect(data.users.includes(id2)).toBeTruthy();
 		});
 
 		it("should find not be case sensitive", async () => {
-			const users = await userService.getByFullName("trULs");
-			expect(users.length).toBe(1);
-			expect(users.includes(id2)).toBeTruthy();
+			const data = await userService.getByFullName("trULs");
+			expect(data.users.length).toBe(1);
+			expect(data.users.includes(id2)).toBeTruthy();
 		});
 
 		it("should find by searching for part of first and last name", async () => {
-			const users = await userService.getByFullName("s m");
-			expect(users.length).toBe(2);
-			expect(users.includes(id1)).toBeTruthy();
-			expect(users.includes(id2)).toBeTruthy();
+			const data = await userService.getByFullName("s m");
+			expect(data.users.length).toBe(2);
+			expect(data.users.includes(id1)).toBeTruthy();
+			expect(data.users.includes(id2)).toBeTruthy();
 		});
 
 		it("should not allow too short queries", async () => {
