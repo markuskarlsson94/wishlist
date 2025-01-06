@@ -36,7 +36,7 @@ const userService = {
 		}
 	},
 
-	getByFullName: async (name, limit = 20, offset = 0) => {
+	getByFullName: async (name, limit = 10, offset = 0) => {
 		if (name.length < 3) {
 			throw new ErrorMessage(errorMessages.userQueryTooShort);
 		}
