@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import axiosInstance from "../axiosInstance";
 import UserType from "../types/UserType";
 
@@ -33,5 +33,32 @@ export const useGetUser = (id: number | undefined) => {
 	return {
 		user: data?.data.user,
 		isSuccess,
+	};
+};
+
+type UserPage = {
+	data: {
+		users: any[];
+		nextPage?: number;
+	};
+};
+
+export const useSearchUser = (query: string) => {
+	const { data, isFetching, isSuccess, hasNextPage, fetchNextPage } = useInfiniteQuery<UserPage>({
+		queryKey: ["userSearch", query],
+		queryFn: ({ pageParam }) => axiosInstance.get(`/user/search?query=${query}&page=${pageParam}`),
+		initialPageParam: 0,
+		getNextPageParam: (lastPage, _allPages, _lastPageParam, _allPagesParams) => lastPage.data.nextPage,
+		enabled: query.length >= 3,
+	});
+
+	const users = data ? data.pages.flatMap((p) => p.data.users) : [];
+
+	return {
+		users,
+		isFetching,
+		isSuccess,
+		hasNextPage,
+		fetchNextPage,
 	};
 };
