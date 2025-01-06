@@ -311,13 +311,26 @@ const db = {
 			return await dbClient(userTable).select("*").where({ email }).first();
 		},
 
-		getByFullName: async (name, limit = 20, offset = 0) => {
-			return (
+		getByFullName: async (name, limit = 10, offset = 0) => {
+			let users = (
 				await dbClient.raw(
 					`SELECT id FROM ${userTable} WHERE CONCAT("firstName", ' ', "lastName") ILIKE ? ORDER BY id LIMIT ? OFFSET ?`,
-					[`%${name}%`, limit, offset],
+					[`%${name}%`, limit + 1, offset],
 				)
 			).rows.map((user) => user.id);
+
+			const hasNextPage = users.length === limit + 1;
+			let nextPage = undefined;
+
+			if (hasNextPage) {
+				users = users.splice(0, limit);
+				nextPage = Math.floor(offset / limit) + 1;
+			}
+
+			return {
+				users,
+				nextPage,
+			};
 		},
 
 		getAll: async () => {
