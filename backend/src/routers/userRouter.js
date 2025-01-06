@@ -10,7 +10,8 @@ userRouter.post("/register", async (req, res) => {
 	const { email, firstName, lastName, password } = req.body;
 
 	try {
-		await userService.add(email, firstName, lastName, password);
+		const token = await userService.add(email, firstName, lastName, password);
+		console.log(token);
 		res.status(201).json({ message: "User registered successfully" });
 	} catch (error) {
 		res.status(error.status).json(error.message);
@@ -45,6 +46,24 @@ userRouter.post("/updatePassword", isAuthenticated(), async (req, res) => {
 		await userService.updatePassword(req.user.id, oldPassword, newPassword, newPasswordRepeated);
 
 		res.status(200).json({ message: "Password updated" });
+	} catch (error) {
+		res.status(error.status).json(error.message);
+	}
+});
+
+userRouter.get("/search", isAuthenticated(), async (req, res) => {
+	try {
+		const query = req.query.query;
+		const page = Number(req.query.page);
+
+		if (query === undefined || page === undefined) {
+			return res.status(400).json({ message: "'query' or 'page' parameters missing" });
+		}
+
+		const limit = 10;
+		const data = await userService.getByFullName(query, limit, page * limit);
+
+		res.status(200).json(data);
 	} catch (error) {
 		res.status(error.status).json(error.message);
 	}
