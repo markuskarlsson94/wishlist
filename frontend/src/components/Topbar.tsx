@@ -7,6 +7,7 @@ import { NavLink } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import LoginDialog from "./LoginDialog";
 import { useEffect } from "react";
+import UserSearchBar from "./UserSearchBar";
 
 const Topbar = () => {
 	const { userId, isAuthenticated } = useAuth();
@@ -24,10 +25,11 @@ const Topbar = () => {
 	}, [userId, isAuthenticated]);
 
 	return (
-		<div className="bg-slate-800 flex items-center p-2 sticky z-10 top-0">
+		<div className="bg-slate-800 flex items-center p-2 sticky z-10 top-0 justify-between">
 			<NavLink to="/beta-info">
 				<Badge className="bg-red-200 text-black hover:bg-red-300">Beta</Badge>
 			</NavLink>
+			{isAuthenticated && <UserSearchBar />}
 			{isAuthenticated && (
 				<Button variant={"secondary"} onClick={() => logout()} className="ml-auto">
 					Logout <LogOut />
