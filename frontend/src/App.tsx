@@ -6,7 +6,6 @@ import Wishlists from "./components/Wishlists";
 import Wishlist from "./components/Wishlist";
 import Item from "./components/Item";
 import Friends from "./components/Friends";
-import Users from "./components/Users";
 import MainLayout from "./components/MainLayout";
 import User from "./components/User";
 import Reservations from "./components/Reservations";
@@ -28,7 +27,6 @@ function App() {
 					<Route element={<MainLayout />}>
 						<Route path="/" element={<Home />} />
 						<Route element={<ProtectedRoutes />}>
-							<Route path="/users" element={<Users />} />
 							<Route path="/reservations" element={<Reservations />} />
 							<Route path="/user/:userId" element={<User />} />
 							<Route path="/user/:userId/wishlists" element={<Wishlists />} />
