@@ -30,7 +30,7 @@ userRouter.get("/adminData", isAuthenticatedAdmin(), (req, res) => {
 	});
 });
 
-userRouter.get("/all", isAuthenticated(), async (_req, res) => {
+userRouter.get("/all", isAuthenticatedAdmin(), async (_req, res) => {
 	try {
 		const users = await userService.getAll();
 		res.json({ users });
