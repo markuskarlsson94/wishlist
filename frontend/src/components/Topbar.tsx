@@ -30,15 +30,12 @@ const Topbar = () => {
 				<Badge className="bg-red-200 text-black hover:bg-red-300">Beta</Badge>
 			</NavLink>
 			{isAuthenticated && <UserSearchBar />}
-			{isAuthenticated && (
-				<Button variant={"secondary"} onClick={() => logout()} className="ml-auto">
+			{isAuthenticated ? (
+				<Button variant={"secondary"} onClick={() => logout()}>
 					Logout <LogOut />
 				</Button>
-			)}
-			{!isAuthenticated && (
-				<div className="ml-auto">
-					<LoginDialog />
-				</div>
+			) : (
+				<LoginDialog />
 			)}
 		</div>
 	);
