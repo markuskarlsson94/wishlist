@@ -613,10 +613,4 @@ describe("friend requests", () => {
 			).rejects.toThrowError(errorMessages.unauthorizedToGetFriendRequest.message);
 		});
 	});
-
-	/*it("a", async () => {
-        console.log("----------------------");
-        const res = await userService.getByFullName("name user");
-        console.log(res);
-    });*/
 });
