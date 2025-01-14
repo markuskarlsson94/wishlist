@@ -91,7 +91,7 @@ const LoginForm = (config?: LoginConfig) => {
 						)}
 					</div>
 
-					<div className="mt-6 float-right">
+					<div className="float-right">
 						<Button type="submit" disabled={password === ""}>
 							Login
 						</Button>
