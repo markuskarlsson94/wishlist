@@ -51,6 +51,29 @@ userRouter.post("/updatePassword", isAuthenticated(), async (req, res) => {
 	}
 });
 
+userRouter.post("/request-password-reset", async (req, res) => {
+	const email = req.body.email;
+
+	try {
+		await userService.requestPasswordReset(email);
+		res.status(200).json({ message: "Password reset requested" });
+	} catch (error) {
+		return res.status(error.status).json(error.message);
+	}
+});
+
+userRouter.post("/reset-password", async (req, res) => {
+	const { token, password: plaintextPassword } = req.body;
+
+	try {
+		await userService.resetPassword(token, plaintextPassword);
+	} catch (error) {
+		return res.status(error.status).json(error.message);
+	}
+
+	res.status(200).json({ message: "Password updated" });
+});
+
 userRouter.get("/search", isAuthenticated(), async (req, res) => {
 	try {
 		const query = req.query.query;
