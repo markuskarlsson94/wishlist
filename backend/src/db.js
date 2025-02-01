@@ -17,6 +17,7 @@ const friendsTable = "friends";
 const friendRequestsTable = "friendRequests";
 const commentsTable = "comments";
 const waitlistTable = "waitlist";
+const passwordTokenTable = "passwordReset";
 
 let dbClient;
 
@@ -41,6 +42,7 @@ const db = {
 
 	init: async () => {
 		try {
+			await dbClient.schema.dropTableIfExists(passwordTokenTable);
 			await dbClient.schema.dropTableIfExists(commentsTable);
 			await dbClient.schema.dropTableIfExists(friendRequestsTable);
 			await dbClient.schema.dropTableIfExists(friendsTable);
@@ -170,6 +172,15 @@ const db = {
 				table.integer("role").notNullable();
 				table.string("token").notNullable();
 
+				table.timestamps(true, true, true);
+			});
+
+			await dbClient.schema.createTable(passwordTokenTable, (table) => {
+				table.increments("id").primary();
+				table.string("user").notNullable();
+				table.string("token").notNullable();
+
+				table.foreign("user").references("id").inTable(userTable).onDelete("CASCADE");
 				table.timestamps(true, true, true);
 			});
 
