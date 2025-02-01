@@ -119,6 +119,11 @@ const errorMessages = {
 		message: "Unable to verify User",
 	},
 
+	missingPassword: {
+		status: 400,
+		message: "Missing password",
+	},
+
 	invalidEmailOrPassword: {
 		status: 403,
 		message: "Invalid email or password",
@@ -307,6 +312,16 @@ const errorMessages = {
 	unableToLogout: {
 		status: 500,
 		message: "Unable to logout",
+	},
+
+	unableToAddPasswordToken: {
+		status: 500,
+		message: "Unable to add password token",
+	},
+
+	unableToResetPassword: {
+		status: 500,
+		message: "Unable to reset password",
 	},
 };
 

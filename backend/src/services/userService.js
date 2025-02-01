@@ -8,6 +8,8 @@ import { adminRole } from "../roles.js";
 import { PostgresError } from "pg-error-enum";
 import crypto from "crypto";
 
+const passwordTokenExpireTime = 1000 * 60 * 60;
+
 const userService = {
 	getAll: async () => {
 		try {
@@ -138,6 +140,58 @@ const userService = {
 			}
 		} else {
 			throw new ErrorMessage(errorMessages.oldPasswordIncorrect);
+		}
+	},
+
+	requestPasswordReset: async (email, sendEmail = true) => {
+		const token = crypto.randomBytes(64).toString("hex");
+		const user = await db.user.getByEmail(email);
+
+		try {
+			if (user) {
+				await db.passwordToken.add(email, token);
+
+				if (sendEmail) {
+					// TODO: send email
+				}
+
+				console.log(token);
+				logger.info(`${email} requested password reset`);
+				return token;
+			}
+		} catch (error) {
+			logger.error(error.message);
+			throw new ErrorMessage(errorMessages.unableToAddPasswordToken);
+		}
+	},
+
+	resetPassword: async (token, newPlaintextPassword) => {
+		if (!newPlaintextPassword) {
+			throw new ErrorMessage(errorMessages.missingPassword);
+		}
+
+		const data = await db.passwordToken.getByToken(token);
+
+		if (!data || data.token != token) {
+			throw new ErrorMessage(errorMessages.unableToResetPassword);
+		}
+
+		const createdAt = new Date(data.createdAt).getTime();
+
+		if (Date.now() > createdAt + passwordTokenExpireTime) {
+			db.passwordToken.remove(data.id);
+			throw new ErrorMessage(errorMessages.unableToResetPassword);
+		}
+
+		const userId = Number(data.user);
+
+		try {
+			await db.user.updatePassword(userId, newPlaintextPassword);
+			await db.passwordToken.remove(data.id);
+			logger.info(`user [id = ${data.id}] updated password`);
+		} catch (error) {
+			logger.error(error.message);
+			throw new ErrorMessage(errorMessages.serverError);
 		}
 	},
 

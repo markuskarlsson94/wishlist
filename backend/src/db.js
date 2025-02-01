@@ -701,6 +701,24 @@ const db = {
 			await dbClient(reservationsTable).del().where({ id });
 		},
 	},
+
+	passwordToken: {
+		add: async (email, token) => {
+			const userId = (await db.user.getByEmail(email))?.id;
+			if (!userId) return;
+
+			await dbClient(passwordTokenTable).del().where({ user: userId });
+			await dbClient(passwordTokenTable).insert({ user: userId, token });
+		},
+
+		getByToken: async (token) => {
+			return await dbClient(passwordTokenTable).select("*").where({ token }).first();
+		},
+
+		remove: async (id) => {
+			await dbClient(passwordTokenTable).del().where({ id });
+		},
+	},
 };
 
 export default db;
