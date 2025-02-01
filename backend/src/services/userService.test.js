@@ -3,6 +3,7 @@ import userService, { usersAreFriends } from "./userService";
 import db from "../db";
 import errorMessages from "../errors/errorMessages";
 import { adminRole, initUserRoles } from "../roles";
+import authService from "./authService";
 
 let admin;
 let user1;
@@ -612,5 +613,62 @@ describe("friend requests", () => {
 				})(),
 			).rejects.toThrowError(errorMessages.unauthorizedToGetFriendRequest.message);
 		});
+	});
+});
+
+describe("password reset", () => {
+	let token, tokenPrev;
+
+	it("should be possible to request password reset for non exisiting user", async () => {
+		const t = await userService.requestPasswordReset("nonexisting@email.com", false);
+
+		expect(t).toBe(undefined);
+	});
+
+	it("should not be possible to reset password if request has not been made", async () => {
+		await expect(
+			(async () => {
+				await userService.resetPassword("token", "newPassword");
+			})(),
+		).rejects.toThrowError(errorMessages.unableToResetPassword.message);
+	});
+
+	it("should be possible to request password reset for existing user", async () => {
+		tokenPrev = await userService.requestPasswordReset(email1);
+	});
+
+	it("shoule be possible to request password reset even if request already exists", async () => {
+		token = await userService.requestPasswordReset(email1);
+
+		expect(token.length).toBeGreaterThan(0);
+	});
+
+	it("should not be possible to reset password with previous token", async () => {
+		await expect(
+			(async () => {
+				await userService.resetPassword(tokenPrev, "newPassword");
+			})(),
+		).rejects.toThrowError(errorMessages.unableToResetPassword.message);
+	});
+
+	it("should be possible to reset password with valid token", async () => {
+		const newPassword = "password";
+
+		await expect(
+			(async () => {
+				await authService.login(email1, newPassword);
+			})(),
+		).rejects.toThrowError(errorMessages.invalidEmailOrPassword.message);
+
+		await userService.resetPassword(token, newPassword);
+		await authService.login(email1, newPassword);
+	});
+
+	it("should not be possible to reset password again with same token", async () => {
+		await expect(
+			(async () => {
+				await userService.resetPassword(token, "abc");
+			})(),
+		).rejects.toThrowError(errorMessages.unableToResetPassword.message);
 	});
 });
