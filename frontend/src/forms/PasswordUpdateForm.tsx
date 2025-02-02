@@ -15,7 +15,7 @@ type PasswordResetConfig = {
 	onSubmit?: (values: { password: string; passwordRepeat: string }) => void;
 };
 
-const PasswordRestForm = (config?: PasswordResetConfig) => {
+const PasswordUpdateForm = (config?: PasswordResetConfig) => {
 	const [showPasswordWarning, setShowPasswordWarning] = useState<boolean>(false);
 
 	const values = {
@@ -93,4 +93,4 @@ const PasswordRestForm = (config?: PasswordResetConfig) => {
 	);
 };
 
-export default PasswordRestForm;
+export default PasswordUpdateForm;

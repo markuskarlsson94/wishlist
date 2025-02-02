@@ -1,4 +1,4 @@
-import PasswordRestForm from "@/forms/PasswordResetForm";
+import PasswordUpdateForm from "@/forms/PasswordUpdateForm";
 import RoundedRect from "./RoundedRect";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useResetPassword } from "@/hooks/password";
@@ -26,7 +26,7 @@ const PasswordReset = () => {
 			<div className="flex mb-4">
 				<p className="font-medium m-auto">Enter new password</p>
 			</div>
-			<PasswordRestForm onSubmit={handleSubmit} />
+			<PasswordUpdateForm onSubmit={handleSubmit} />
 			{isError && (
 				<div className="mt-4 flex justify-center">
 					<div className="flex flex-row gap-x-2">
