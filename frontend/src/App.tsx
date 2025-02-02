@@ -18,6 +18,8 @@ import FAQ from "./components/FAQ";
 import TermsOfService from "./components/TermsOfService";
 import Verification from "./components/Verification";
 import AccountVerified from "./components/AccountVerified";
+import PasswordReset from "./components/PasswordReset";
+import PasswordUpdated from "./components/PasswordUpdated";
 
 function App() {
 	return (
@@ -42,6 +44,8 @@ function App() {
 						<Route path="terms-of-service" element={<TermsOfService />} />
 						<Route path="verify" element={<Verification />} />
 						<Route path="account-verified" element={<AccountVerified />} />
+						<Route path="reset-password" element={<PasswordReset />} />
+						<Route path="password-updated" element={<PasswordUpdated />} />
 					</Route>
 				</Routes>
 			</Router>
