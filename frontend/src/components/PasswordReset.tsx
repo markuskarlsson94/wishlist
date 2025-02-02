@@ -1,4 +1,4 @@
-import PasswordUpdateForm from "@/forms/PasswordUpdateForm";
+import PasswordUpdateForm from "@/forms/PasswordResetForm";
 import RoundedRect from "./RoundedRect";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useResetPassword } from "@/hooks/password";
