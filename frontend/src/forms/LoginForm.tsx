@@ -6,7 +6,7 @@ import { useLogin } from "@/hooks/useLogin";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AxiosError } from "axios";
 import { Info } from "lucide-react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
 
@@ -17,6 +17,7 @@ const formSchema = z.object({
 
 type LoginConfig = {
 	onSubmit?: (values: { email: string; password: string }) => void;
+	setShowForgotPassword: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const LoginForm = (config?: LoginConfig) => {
@@ -91,7 +92,10 @@ const LoginForm = (config?: LoginConfig) => {
 						)}
 					</div>
 
-					<div className="float-right">
+					<div className="flex gap-x-2">
+						<Button variant={"ghost"} type="button" onClick={() => config?.setShowForgotPassword(true)}>
+							Forgot password?
+						</Button>
 						<Button type="submit" disabled={password === ""}>
 							Login
 						</Button>
