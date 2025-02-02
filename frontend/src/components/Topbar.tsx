@@ -5,10 +5,10 @@ import { LogOut } from "lucide-react";
 import { Badge } from "./ui/badge";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import LoginDialog from "./LoginDialog";
+import LoginDialog from "./dialogs/LoginDialog";
 import { useEffect, useState } from "react";
 import UserSearchBar from "./UserSearchBar";
-import PasswordResetRequestDialog from "./PasswordResetRequestDialog";
+import PasswordResetRequestDialog from "./dialogs/PasswordResetRequestDialog";
 
 const Topbar = () => {
 	const { userId, isAuthenticated } = useAuth();

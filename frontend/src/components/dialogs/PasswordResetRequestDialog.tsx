@@ -6,25 +6,25 @@ import {
 	AlertDialogFooter,
 	AlertDialogHeader,
 	AlertDialogTitle,
-} from "./ui/alert-dialog";
+} from "../ui/alert-dialog";
 
-const RegistrationConfirmedDialog = ({
+const PasswordResetRequestDialog = ({
 	open,
 	setOpen,
-	registredEmail,
+	email,
 }: {
 	open: boolean;
 	setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-	registredEmail: string | undefined;
+	email: string | undefined;
 }) => {
 	return (
 		<AlertDialog open={open} onOpenChange={setOpen}>
 			<AlertDialogContent>
 				<AlertDialogHeader>
-					<AlertDialogTitle>Registration complete ✨</AlertDialogTitle>
+					<AlertDialogTitle>Password reset request submitted</AlertDialogTitle>
 					<AlertDialogDescription>
-						Your account has been sucessfully registred! To finish the account setup you have to follow the
-						link that has been sent to {registredEmail} and click the confirmation button.
+						An email will shortly be sent to {email}. Please click the included link in order to reset your
+						password.
 					</AlertDialogDescription>
 				</AlertDialogHeader>
 				<AlertDialogFooter>
@@ -35,4 +35,4 @@ const RegistrationConfirmedDialog = ({
 	);
 };
 
-export default RegistrationConfirmedDialog;
+export default PasswordResetRequestDialog;

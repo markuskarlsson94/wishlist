@@ -1,6 +1,6 @@
 import { LogIn } from "lucide-react";
-import { Button } from "./ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
+import { Button } from "../ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 import LoginForm from "@/forms/LoginForm";
 import { useState } from "react";
 import ForgotPasswordForm from "@/forms/ForgotPasswordForm";

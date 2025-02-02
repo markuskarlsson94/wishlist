@@ -7,7 +7,7 @@ import { useDeleteWishlist, useGetWishlist, useUpdateWishlist } from "../hooks/w
 import useWishlistTypes from "../hooks/useWishlistTypes";
 import WishlistInputType from "../types/WishlistInputType";
 import RoundedRect from "./RoundedRect";
-import ItemDialog from "./ItemDialog";
+import ItemDialog from "./dialogs/ItemDialog";
 import { Button, buttonVariants } from "./ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem } from "./ui/dropdown-menu";
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";

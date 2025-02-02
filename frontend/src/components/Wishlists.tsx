@@ -5,7 +5,7 @@ import useWishlistTypes from "../hooks/useWishlistTypes";
 import { useAuth } from "../contexts/AuthContext";
 import { useCreateWishlist, useGetWishlists } from "../hooks/wishlist";
 import RoundedRect from "./RoundedRect";
-import WishlistDialog from "./WishlistDialog";
+import WishlistDialog from "./dialogs/WishlistDialog";
 import BackButton from "./BackButton";
 import { CardDescription, CardHeader, CardTitle } from "./ui/card";
 import HoverCard from "./HoverCard";

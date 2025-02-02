@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import RoundedRect from "./RoundedRect";
 import { Button } from "./ui/button";
-import RegisterDialog from "./RegisterDialog";
-import RegistrationConfirmedDialog from "./RegistrationConfirmedDialog";
+import RegisterDialog from "./dialogs/RegisterDialog";
+import RegistrationConfirmedDialog from "./dialogs/RegistrationConfirmedDialog";
 import { useState } from "react";
 
 const Home = () => {
