@@ -17,7 +17,7 @@ const formSchema = z.object({
 
 type LoginConfig = {
 	onSubmit?: (values: { email: string; password: string }) => void;
-	setShowForgotPassword: React.Dispatch<React.SetStateAction<boolean>>;
+	onForgotPassword?: () => void;
 };
 
 const LoginForm = (config?: LoginConfig) => {
@@ -48,6 +48,12 @@ const LoginForm = (config?: LoginConfig) => {
 	const onSubmit = (values: z.infer<typeof formSchema>) => {
 		if (config?.onSubmit) config.onSubmit(values);
 		login({ ...values });
+	};
+
+	const onForgotPassword = () => {
+		if (config?.onForgotPassword) {
+			config.onForgotPassword();
+		}
 	};
 
 	return (
@@ -93,7 +99,7 @@ const LoginForm = (config?: LoginConfig) => {
 					</div>
 
 					<div className="flex gap-x-2">
-						<Button variant={"ghost"} type="button" onClick={() => config?.setShowForgotPassword(true)}>
+						<Button variant={"ghost"} type="button" onClick={onForgotPassword}>
 							Forgot password?
 						</Button>
 						<Button type="submit" disabled={password === ""}>

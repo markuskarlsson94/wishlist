@@ -13,16 +13,16 @@ const formSchema = z.object({
 
 type ForgotPasswordFormConfig = {
 	setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
-	setPasswordResetRequestDialogOpen?: React.Dispatch<React.SetStateAction<boolean>>;
-	setEmail?: React.Dispatch<React.SetStateAction<string | undefined>>;
-	setShowForgotPassword: React.Dispatch<React.SetStateAction<boolean>>;
+	onSuccess?: (email: string) => void;
+	onBack?: () => void;
 };
 
 const ForgotPasswordForm = (config?: ForgotPasswordFormConfig) => {
 	const requestPasswordReset = useRequestPasswordReset({
 		onSuccess: (email: string) => {
-			if (config?.setPasswordResetRequestDialogOpen) config.setPasswordResetRequestDialogOpen(true);
-			if (config?.setEmail) config.setEmail(email);
+			if (config?.onSuccess) {
+				config.onSuccess(email);
+			}
 		},
 	});
 
@@ -38,6 +38,12 @@ const ForgotPasswordForm = (config?: ForgotPasswordFormConfig) => {
 	const onSubmit = (values: z.infer<typeof formSchema>) => {
 		requestPasswordReset(values.email);
 		if (config?.setOpen) config.setOpen(false);
+	};
+
+	const onBack = () => {
+		if (config?.onBack) {
+			config.onBack();
+		}
 	};
 
 	const email = form.watch("email");
@@ -59,11 +65,7 @@ const ForgotPasswordForm = (config?: ForgotPasswordFormConfig) => {
 						)}
 					/>
 					<div className="flex gap-x-2 self-end">
-						<Button
-							variant={"secondary"}
-							type="button"
-							onClick={() => config?.setShowForgotPassword(false)}
-						>
+						<Button variant={"secondary"} type="button" onClick={onBack}>
 							Back
 						</Button>
 						<Button type="submit" disabled={email === ""}>

@@ -6,13 +6,18 @@ import { useState } from "react";
 import ForgotPasswordForm from "@/forms/ForgotPasswordForm";
 
 type LoginDialogConfig = {
-	setPasswordResetRequestDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
-	setEmail: React.Dispatch<React.SetStateAction<string | undefined>>;
+	onPasswordResetRequestSent?: (email: string) => void;
 };
 
 const LoginDialog = (config: LoginDialogConfig) => {
 	const [open, setOpen] = useState<boolean>(false);
 	const [showPasswordReset, setShowPasswordReset] = useState<boolean>(false);
+
+	const onPasswordResetRequestSent = (email: string) => {
+		if (config.onPasswordResetRequestSent) {
+			config.onPasswordResetRequestSent(email);
+		}
+	};
 
 	const dialogHeader = (forgotPasswordDialog: boolean) => {
 		if (forgotPasswordDialog) {
@@ -33,13 +38,12 @@ const LoginDialog = (config: LoginDialogConfig) => {
 	const dialogContent = (forgotPasswordDialog: boolean) => {
 		return forgotPasswordDialog ? (
 			<ForgotPasswordForm
-				setShowForgotPassword={setShowPasswordReset}
 				setOpen={setOpen}
-				setPasswordResetRequestDialogOpen={config.setPasswordResetRequestDialogOpen}
-				setEmail={config.setEmail}
+				onSuccess={onPasswordResetRequestSent}
+				onBack={() => setShowPasswordReset(false)}
 			/>
 		) : (
-			<LoginForm setShowForgotPassword={setShowPasswordReset} />
+			<LoginForm onForgotPassword={() => setShowPasswordReset(true)} />
 		);
 	};
 

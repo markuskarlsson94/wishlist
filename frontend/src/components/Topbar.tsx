@@ -27,6 +27,11 @@ const Topbar = () => {
 		}
 	}, [userId, isAuthenticated]);
 
+	const onPasswordResetRequestSent = (email: string | undefined) => {
+		setEmail(email);
+		setPasswordResetRequestDialogOpen(true);
+	};
+
 	return (
 		<>
 			<div className="bg-slate-800 flex items-center p-2 sticky z-10 top-0 justify-between">
@@ -39,10 +44,7 @@ const Topbar = () => {
 						Logout <LogOut />
 					</Button>
 				) : (
-					<LoginDialog
-						setPasswordResetRequestDialogOpen={setPasswordResetRequestDialogOpen}
-						setEmail={setEmail}
-					/>
+					<LoginDialog onPasswordResetRequestSent={onPasswordResetRequestSent} />
 				)}
 			</div>
 			<PasswordResetRequestDialog
