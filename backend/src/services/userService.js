@@ -116,8 +116,8 @@ const userService = {
 		}
 	},
 
-	updatePassword: async (userId, oldPassword, newPassword, newPasswordRepeated) => {
-		if (newPassword !== newPasswordRepeated) {
+	updatePassword: async (userId, passwordCur, passwordNew, passwordNewRepeated) => {
+		if (passwordNew !== passwordNewRepeated) {
 			throw new ErrorMessage(errorMessages.passwordsDontMatch);
 		}
 
@@ -125,7 +125,7 @@ const userService = {
 
 		let match = false;
 		try {
-			match = await passwordsMatching(oldPassword, userPassword);
+			match = await passwordsMatching(passwordCur, userPassword);
 		} catch (error) {
 			logger.error(error.message);
 			throw new ErrorMessage(errorMessages.serverError);
@@ -133,7 +133,8 @@ const userService = {
 
 		if (match) {
 			try {
-				await db.user.updatePassword(userId, newPassword);
+				await db.user.updatePassword(userId, passwordNew);
+				logger.info(`User [id = ${userId}] changed password`);
 			} catch (error) {
 				logger.error(error.message);
 				throw new ErrorMessage(errorMessages.serverError);

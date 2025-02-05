@@ -39,11 +39,11 @@ userRouter.get("/all", isAuthenticatedAdmin(), async (_req, res) => {
 	}
 });
 
-userRouter.post("/updatePassword", isAuthenticated(), async (req, res) => {
-	const { oldPassword, newPassword, newPasswordRepeated } = req.body;
+userRouter.post("/update-password", isAuthenticated(), async (req, res) => {
+	const { passwordCur, passwordNew, passwordNewRepeated } = req.body;
 
 	try {
-		await userService.updatePassword(req.user.id, oldPassword, newPassword, newPasswordRepeated);
+		await userService.updatePassword(req.user.id, passwordCur, passwordNew, passwordNewRepeated);
 
 		res.status(200).json({ message: "Password updated" });
 	} catch (error) {
