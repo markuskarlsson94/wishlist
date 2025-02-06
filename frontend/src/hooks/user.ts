@@ -1,6 +1,7 @@
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import axiosInstance from "../axiosInstance";
 import UserType from "../types/UserType";
+import { AxiosError } from "axios";
 
 type CurrentUserResponse = {
 	data: {
@@ -61,4 +62,31 @@ export const useSearchUser = (query: string) => {
 		hasNextPage,
 		fetchNextPage,
 	};
+};
+
+type UseDeleteUserConfig = {
+	onSuccess?: () => void;
+	onError?: (error: AxiosError) => void;
+};
+
+export const useDeleteUser = (config?: UseDeleteUserConfig) => {
+	const mutation = useMutation({
+		mutationFn: (id: number) => axiosInstance.delete(`/user/${id}`),
+		onSuccess: () => {
+			if (config?.onSuccess) {
+				config.onSuccess();
+			}
+		},
+		onError: (error: AxiosError) => {
+			if (config?.onError) {
+				config.onError(error);
+			}
+		},
+	});
+
+	const deleteUser = (id: number) => {
+		mutation.mutate(id);
+	};
+
+	return deleteUser;
 };
