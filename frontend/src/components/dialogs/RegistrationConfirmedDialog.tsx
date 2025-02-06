@@ -23,8 +23,8 @@ const RegistrationConfirmedDialog = ({
 				<AlertDialogHeader>
 					<AlertDialogTitle>Registration complete ✨</AlertDialogTitle>
 					<AlertDialogDescription>
-						Your account has been sucessfully registred! To finish the account setup you have to follow the
-						link that has been sent to {registredEmail} and click the confirmation button.
+						Your account has been sucessfully registred! Follow the link that has been sent to{" "}
+						{registredEmail} in order to finish the account setup.
 					</AlertDialogDescription>
 				</AlertDialogHeader>
 				<AlertDialogFooter>
