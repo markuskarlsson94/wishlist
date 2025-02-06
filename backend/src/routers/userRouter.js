@@ -194,11 +194,10 @@ userRouter.delete("/friend/:id", isAuthenticated(), async (req, res) => {
 });
 
 userRouter.delete("/:userId", isAuthenticated(), verifyRecentLogin(), async (req, res) => {
-	const userId = Number(req.user.id);
 	const userToDeleteId = Number(req.params.userId);
 
 	try {
-		await userService.remove(userId, userToDeleteId);
+		await userService.remove(req.user, userToDeleteId);
 		res.status(200).json({ message: "User successfully deleted" });
 	} catch (error) {
 		res.status(error.status).json(error.message);
