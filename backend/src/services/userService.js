@@ -98,12 +98,13 @@ const userService = {
 			throw new ErrorMessage(errorMessages.unauthorizedToDeleteOtherUser);
 		}
 
-		const userToDelete = (await db.user.getById(userToDeleteId))?.id;
+		const userToDelete = await db.user.getById(userToDeleteId);
 
 		if (userToDelete === undefined) {
 			throw new ErrorMessage(errorMessages.userNotFound);
 		} else {
-			await db.user.remove(userToDelete);
+			await db.user.remove(userToDelete.id);
+			logger.info(`User [id = ${userToDelete.id}, email = ${userToDelete.email}] has been removed`);
 		}
 	},
 
