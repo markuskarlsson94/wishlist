@@ -20,6 +20,7 @@ import Verification from "./components/Verification";
 import AccountVerified from "./components/AccountVerified";
 import PasswordReset from "./components/PasswordReset";
 import PasswordUpdated from "./components/PasswordUpdated";
+import Settings from "./components/Settings";
 
 function App() {
 	return (
@@ -35,6 +36,7 @@ function App() {
 							<Route path="/user/:userId/friends" element={<Friends />} />
 							<Route path="/wishlist/:id" element={<Wishlist />} />
 							<Route path="/item/:id" element={<Item />} />
+							<Route path="/settings" element={<Settings />} />
 						</Route>
 						<Route path="beta-info" element={<BetaInfo />} />
 						<Route path="about" element={<About />} />

@@ -17,6 +17,9 @@ const Sidebar = () => {
 			<Button variant={"ghost"}>
 				<NavLink to={`user/${userId}/friends`}>My friends</NavLink>
 			</Button>
+			<Button variant={"ghost"}>
+				<NavLink to={`/settings`}>Settings</NavLink>
+			</Button>
 		</RoundedRect>
 	);
 };
