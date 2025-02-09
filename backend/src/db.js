@@ -354,6 +354,10 @@ const db = {
 			return res.length > 0;
 		},
 
+		updateName: async (id, firstName, lastName) => {
+			await dbClient(userTable).update({ firstName, lastName }).where({ id });
+		},
+
 		updatePassword: async (id, plaintextPassword) => {
 			const hashedPassword = await generatePassword(plaintextPassword);
 

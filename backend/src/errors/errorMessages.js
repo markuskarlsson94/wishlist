@@ -244,6 +244,11 @@ const errorMessages = {
 		message: "Unauthorized to update password",
 	},
 
+	unauthorizedToUpdateUserName: {
+		status: 401,
+		message: "Unauthorized to update user name",
+	},
+
 	serverError: {
 		status: 500,
 		message: "Server error",
@@ -327,6 +332,11 @@ const errorMessages = {
 	unableToResetPassword: {
 		status: 500,
 		message: "Unable to reset password",
+	},
+
+	unableToUpdateUserName: {
+		status: 500,
+		message: "Unable to update user name",
 	},
 };
 

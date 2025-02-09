@@ -117,6 +117,20 @@ const userService = {
 		}
 	},
 
+	updateName: async (user, userId, firstName, lastName) => {
+		if (!canManageUser(user, userId)) {
+			throw new ErrorMessage(errorMessages.unauthorizedToUpdateUserName);
+		}
+
+		try {
+			await db.user.updateName(userId, firstName, lastName);
+			logger.info(`User [id = ${userId}] updated user name`);
+		} catch (error) {
+			logger.error(error.message);
+			throw new ErrorMessage(errorMessages.unableToUpdateUserName);
+		}
+	},
+
 	updatePassword: async (user, userId, passwordCur, passwordNew, passwordNewRepeated) => {
 		if (!canManageUser(user, userId)) {
 			throw new ErrorMessage(errorMessages.unauthorizedToUpdatePassword);
