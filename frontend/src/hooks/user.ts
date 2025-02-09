@@ -44,6 +44,37 @@ type UserPage = {
 	};
 };
 
+type UseUpdateNameConfig = {
+	onSuccess?: () => void;
+	onError?: (error: AxiosError) => void;
+};
+
+export const useUpdateName = (config?: UseUpdateNameConfig) => {
+	const mutation = useMutation({
+		mutationFn: ({ firstName, lastName }: { firstName: string; lastName: string }) =>
+			axiosInstance.post(`/user/update-name`, {
+				firstName,
+				lastName,
+			}),
+		onSuccess: () => {
+			if (config?.onSuccess) {
+				config.onSuccess();
+			}
+		},
+		onError: (error: AxiosError) => {
+			if (config?.onError) {
+				config.onError(error);
+			}
+		},
+	});
+
+	const updateName = (firstName: string, lastName: string) => {
+		mutation.mutate({ firstName, lastName });
+	};
+
+	return updateName;
+};
+
 export const useSearchUser = (query: string) => {
 	const { data, isFetching, isSuccess, hasNextPage, fetchNextPage } = useInfiniteQuery<UserPage>({
 		queryKey: ["userSearch", query],
