@@ -672,3 +672,74 @@ describe("password reset", () => {
 		).rejects.toThrowError(errorMessages.unableToResetPassword.message);
 	});
 });
+
+describe("password update", () => {
+	const password = "password";
+	const newPassword = "newpassword";
+
+	let user1;
+	let user2;
+	let user1Email = "passwordUpdateTest1@mail.com";
+	let user2Email = "passwordUpdateTest2@mail.com";
+	let user1Id;
+	let user2Id;
+
+	beforeAll(async () => {
+		user1Id = await userService.addWithoutVerification(user1Email, firstName, lastName, password);
+		user1 = await db.user.getById(user1Id);
+
+		user2Id = await userService.addWithoutVerification(user2Email, firstName, lastName, password);
+		user2 = await db.user.getById(user2Id);
+	});
+
+	afterAll(async () => {
+		await userService.remove(admin, user1Id);
+		await userService.remove(admin, user2Id);
+	});
+
+	it("should not allow updating non existing users password", async () => {
+		await expect(
+			(async () => {
+				await userService.updatePassword(user1, -1, password, newPassword, newPassword);
+			})(),
+		).rejects.toThrowError(errorMessages.unauthorizedToUpdatePassword.message);
+	});
+
+	it("should not let other user update own password", async () => {
+		await expect(
+			(async () => {
+				await userService.updatePassword(user2, user1Id, password, newPassword, newPassword);
+			})(),
+		).rejects.toThrowError(errorMessages.unauthorizedToUpdatePassword.message);
+	});
+
+	it("should not allow updating password if current password is incorrect", async () => {
+		await expect(
+			(async () => {
+				await userService.updatePassword(user1, user1Id, "incorrectPassword", newPassword, newPassword);
+			})(),
+		).rejects.toThrowError(errorMessages.oldPasswordIncorrect.message);
+	});
+
+	it("should allow user to update own password and invalidate old password", async () => {
+		await userService.updatePassword(user1, user1Id, password, newPassword, newPassword);
+		await authService.login(user1Email, newPassword);
+
+		await expect(
+			(async () => {
+				await authService.login(user1Email, password);
+			})(),
+		).rejects.toThrowError(errorMessages.invalidEmailOrPassword.message);
+	});
+
+	it("should allow admin to update other user password", async () => {
+		await userService.updatePassword(admin, user2Id, password, newPassword, newPassword);
+		await authService.login(user2Email, newPassword);
+
+		await expect(
+			(async () => {
+				await authService.login(user2Email, password);
+			})(),
+		).rejects.toThrowError(errorMessages.invalidEmailOrPassword.message);
+	});
+});
