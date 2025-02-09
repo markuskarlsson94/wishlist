@@ -21,7 +21,7 @@ const PasswordUpdateDialog = (config?: PasswordUpdateDialogConfig) => {
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
-				<Button>Update password</Button>
+				<Button>Update Password</Button>
 			</DialogTrigger>
 			<DialogContent>
 				<DialogHeader>
