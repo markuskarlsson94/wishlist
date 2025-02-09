@@ -239,6 +239,11 @@ const errorMessages = {
 		message: "Unauthorized to logout",
 	},
 
+	unauthorizedToUpdatePassword: {
+		status: 401,
+		message: "Unauthorized to update password",
+	},
+
 	serverError: {
 		status: 500,
 		message: "Server error",

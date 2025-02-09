@@ -117,7 +117,11 @@ const userService = {
 		}
 	},
 
-	updatePassword: async (userId, passwordCur, passwordNew, passwordNewRepeated) => {
+	updatePassword: async (user, userId, passwordCur, passwordNew, passwordNewRepeated) => {
+		if (!canManageUser(user, userId)) {
+			throw new ErrorMessage(errorMessages.unauthorizedToUpdatePassword);
+		}
+
 		if (passwordNew !== passwordNewRepeated) {
 			throw new ErrorMessage(errorMessages.passwordsDontMatch);
 		}
