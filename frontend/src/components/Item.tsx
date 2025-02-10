@@ -199,13 +199,13 @@ const Item = () => {
 					<NavLink to={`${item.link}`}>{item.link}</NavLink>
 				</Button>
 			)}
-			<Separator className="mt-6 mb-4" />
+			<div className="h-6" />
 			<div className="flex flex-col gap-y-3">
 				{item && comments.map((comment) => <Comment key={comment.id} comment={comment} item={item} />)}
 				<div className="flex flex-col gap-y-3 mt-5">
 					{!isOwner && (
 						<p className="flex m-auto text-sm text-gray-400">
-							Comment will be anonymous to the item owner and other users
+							Your comment will be anonymous to the item owner and other users
 						</p>
 					)}
 					<AddCommentForm
