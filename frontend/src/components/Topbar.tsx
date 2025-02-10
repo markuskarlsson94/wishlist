@@ -1,6 +1,6 @@
 import { useLogout } from "@/hooks/useLogout";
 import { Button } from "./ui/button";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { LogOut } from "lucide-react";
 import { Badge } from "./ui/badge";
 import { NavLink } from "react-router-dom";
@@ -14,6 +14,7 @@ const Topbar = () => {
 	const { userId, isAuthenticated } = useAuth();
 	const [passwordResetRequestDialogOpen, setPasswordResetRequestDialogOpen] = useState<boolean>(false);
 	const [email, setEmail] = useState<string | undefined>(undefined);
+	const location = useLocation();
 	const navigate = useNavigate();
 	const { logout } = useLogout({
 		onSettled: () => {
@@ -23,7 +24,9 @@ const Topbar = () => {
 
 	useEffect(() => {
 		if (isAuthenticated && userId) {
-			navigate(`/user/${userId}/wishlists`);
+			if (location.pathname === "/") {
+				navigate(`/user/${userId}/wishlists`);
+			}
 		}
 	}, [userId, isAuthenticated]);
 
