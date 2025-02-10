@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import RoundedRect from "./RoundedRect";
 import { Button } from "./ui/button";
 import RegisterDialog from "./dialogs/RegisterDialog";
 import RegistrationConfirmedDialog from "./dialogs/RegistrationConfirmedDialog";
@@ -16,7 +15,7 @@ const Home = () => {
 	};
 
 	return (
-		<RoundedRect>
+		<div>
 			<div className="relative flex flex-col">
 				<img
 					src={"../public/wishlist.png"}
@@ -44,8 +43,9 @@ const Home = () => {
 						</p>
 					</div>
 				</div>
-				<div className="self-end">
-					<div className="flex gap-x-2">
+				<div className="h-12" />
+				<div className="flex justify-center">
+					<div className="flex gap-x-4">
 						<RegisterDialog
 							setRegistrationConfirmedDialogOpen={setRegistrationConfirmedDialogOpen}
 							setRegistredEmail={setRegistredEmail}
@@ -61,7 +61,7 @@ const Home = () => {
 				setOpen={setRegistrationConfirmedDialogOpen}
 				registredEmail={registredEmail}
 			/>
-		</RoundedRect>
+		</div>
 	);
 };
 
