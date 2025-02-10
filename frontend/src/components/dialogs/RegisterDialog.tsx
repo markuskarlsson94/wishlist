@@ -15,7 +15,7 @@ const RegisterDialog = ({
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
-				<Button>Sign up</Button>
+				<Button>Sign up now!</Button>
 			</DialogTrigger>
 			<DialogContent>
 				<DialogHeader>
