@@ -13,7 +13,7 @@ const FAQ = () => {
 		return (
 			<div>
 				<p className="font-medium">{question}</p>
-				{children}
+				<div className="pl-4">{children}</div>
 			</div>
 		);
 	};
@@ -28,9 +28,9 @@ const FAQ = () => {
 
 				<div className="flex flex-col gap-y-6">
 					<QA question="Why did my reservation disappear without me doing anything?">
-						<p>A reservation could disappear for a couple of different reasons</p>
+						<p>A reservation could disappear for a number of different reasons</p>
 						<ul className="list-disc list-inside pl-4">
-							<li>The item or wishlsit was removed by the owner</li>
+							<li>The item or wishlist was removed by the owner</li>
 							<li>The user profile of the owner was deleted</li>
 							<li>
 								The visibility level of the corresponding wishlist has changed so that you no longer can
@@ -43,8 +43,19 @@ const FAQ = () => {
 						<p>No.</p>
 					</QA>
 
-					<QA question={"I've forgotten my password. What do I do?"}>
-						<p>Please send an email to the admin using the same email you used to sign up with.</p>
+					<QA question={"Should I remove the item from my wishlist after I have received it?"}>
+						<p>
+							Yes, it is good practice to remove the item after you have received it. The reservation will
+							then also be removed from the user who gifted it from you.
+						</p>
+					</QA>
+
+					<QA question={"How do I edit or delete an item/wishlist?"}>
+						<p>Press the three dots in the upper right corner to open the edit/delete options.</p>
+					</QA>
+
+					<QA question={"Can I recover my account after I deleted it?"}>
+						<p>No, there is unfourtunately no way to recover a deleted account currently.</p>
 					</QA>
 				</div>
 			</div>
