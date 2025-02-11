@@ -20,11 +20,14 @@ import { useDeleteUser } from "@/hooks/user";
 import { useAuth } from "@/contexts/AuthContext";
 import NameUpdateDialog from "./dialogs/NameUpdateDialog";
 import NameUpdatedDialog from "./dialogs/NameUpdatedDialog";
+import { AxiosError } from "axios";
+import LogoutPromptDialog from "./dialogs/LogoutPromptDialog";
 
 const Settings = () => {
 	const navigate = useNavigate();
 	const [nameUpdatedDialogOpen, setNameUpdatedDialogOpen] = useState<boolean>(false);
 	const [passwordUpdatedDialogOpen, setPasswordUpdatedDialogOpen] = useState<boolean>(false);
+	const [logoutPromptDialogOpen, setLogoutPromptDialogOpen] = useState<boolean>(false);
 	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false);
 	const { userId, setIsAuthenticated } = useAuth();
 
@@ -45,7 +48,13 @@ const Settings = () => {
 		navigate("/");
 	};
 
-	const deleteUser = useDeleteUser({ onSuccess: onDeleteUserSuccess });
+	const onDeleteUserError = (error: AxiosError) => {
+		if (error.response?.status === 403) {
+			setLogoutPromptDialogOpen(true);
+		}
+	};
+
+	const deleteUser = useDeleteUser({ onSuccess: onDeleteUserSuccess, onError: onDeleteUserError });
 
 	const onDeleteUser = () => {
 		if (userId !== undefined) {
@@ -99,6 +108,7 @@ const Settings = () => {
 
 			<NameUpdatedDialog open={nameUpdatedDialogOpen} setOpen={setNameUpdatedDialogOpen} />
 			<PasswordUpdatedDialog open={passwordUpdatedDialogOpen} setOpen={setPasswordUpdatedDialogOpen} />
+			<LogoutPromptDialog open={logoutPromptDialogOpen} setOpen={setLogoutPromptDialogOpen} />
 		</RoundedRect>
 	);
 };
