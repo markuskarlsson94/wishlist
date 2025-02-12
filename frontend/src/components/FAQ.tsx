@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import RoundedRect from "./RoundedRect";
 import BackButton from "./BackButton";
+import { Separator } from "./ui/separator";
 
 const FAQ = () => {
 	const navigate = useNavigate();
@@ -39,9 +40,13 @@ const FAQ = () => {
 						</ul>
 					</QA>
 
+					<Separator />
+
 					<QA question={"Is there any way to see who has reserved the items in my wishlist?"}>
 						<p>No.</p>
 					</QA>
+
+					<Separator />
 
 					<QA question={"Should I remove the item from my wishlist after I have received it?"}>
 						<p>
@@ -50,15 +55,21 @@ const FAQ = () => {
 						</p>
 					</QA>
 
+					<Separator />
+
 					<QA question={"How do I edit or delete an item/wishlist?"}>
 						<p>Press the three dots in the upper right corner to open the edit/delete options.</p>
 					</QA>
+
+					<Separator />
 
 					<QA question={"Can I send messages to users?"}>
 						<p>
 							There is currently no way to message users other than through anonymous comments on items.
 						</p>
 					</QA>
+
+					<Separator />
 
 					<QA question={"Can I recover my account after I deleted it?"}>
 						<p>No, there is unfourtunately no way to recover a deleted account currently.</p>
