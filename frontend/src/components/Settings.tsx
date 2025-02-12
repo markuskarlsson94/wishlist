@@ -5,20 +5,14 @@ import PasswordUpdateDialog from "./dialogs/PasswordUpdateDialog";
 import PasswordUpdatedDialog from "./dialogs/PasswordUpdatedDialog";
 import { useState } from "react";
 import NameUpdateDialog from "./dialogs/NameUpdateDialog";
-import NameUpdatedDialog from "./dialogs/NameUpdatedDialog";
 import UserDeleteDialog from "./dialogs/UserDeleteDialog";
 
 const Settings = () => {
 	const navigate = useNavigate();
-	const [nameUpdatedDialogOpen, setNameUpdatedDialogOpen] = useState<boolean>(false);
 	const [passwordUpdatedDialogOpen, setPasswordUpdatedDialogOpen] = useState<boolean>(false);
 
 	const handleBack = () => {
 		navigate(-1);
-	};
-
-	const onNameUpdated = () => {
-		setNameUpdatedDialogOpen(true);
 	};
 
 	const onPasswordUpdated = () => {
@@ -37,7 +31,7 @@ const Settings = () => {
 
 				<div className="flex justify-center">
 					<div className="flex flex-col w-80 gap-y-3">
-						<NameUpdateDialog onSuccess={onNameUpdated} />
+						<NameUpdateDialog />
 						<PasswordUpdateDialog onSuccess={onPasswordUpdated} />
 						<div className="h-2" />
 						<UserDeleteDialog />
@@ -45,7 +39,6 @@ const Settings = () => {
 				</div>
 			</div>
 
-			<NameUpdatedDialog open={nameUpdatedDialogOpen} setOpen={setNameUpdatedDialogOpen} />
 			<PasswordUpdatedDialog open={passwordUpdatedDialogOpen} setOpen={setPasswordUpdatedDialogOpen} />
 		</RoundedRect>
 	);
