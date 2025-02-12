@@ -54,6 +54,12 @@ const FAQ = () => {
 						<p>Press the three dots in the upper right corner to open the edit/delete options.</p>
 					</QA>
 
+					<QA question={"Can I send messages to users?"}>
+						<p>
+							There is currently no way to message users other than through anonymous comments on items.
+						</p>
+					</QA>
+
 					<QA question={"Can I recover my account after I deleted it?"}>
 						<p>No, there is unfourtunately no way to recover a deleted account currently.</p>
 					</QA>
