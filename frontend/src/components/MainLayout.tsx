@@ -7,14 +7,15 @@ import { useAuth } from "@/contexts/AuthContext";
 const MainLayout = () => {
 	const { isAuthenticated } = useAuth();
 	const location = useLocation();
-	const col = location.pathname === "/" ? "bg_white" : "bg-gray-200";
+	const isHomePage = location.pathname === "/";
+	const col = isHomePage ? "bg_white" : "bg-gray-200";
 
 	return (
 		<>
 			<div className={`flex flex-col min-h-screen ${col}`}>
 				<Topbar />
 				<div className="flex flex-grow flex-row mx-auto space-x-4 my-4">
-					{isAuthenticated && <Sidebar />}
+					{isAuthenticated && !isHomePage && <Sidebar />}
 					<div className="w-[600px]">
 						<Outlet />
 					</div>
