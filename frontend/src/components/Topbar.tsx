@@ -9,6 +9,7 @@ import LoginDialog from "./dialogs/LoginDialog";
 import { useEffect, useState } from "react";
 import UserSearchBar from "./UserSearchBar";
 import PasswordResetRequestDialog from "./dialogs/PasswordResetRequestDialog";
+import { APP_NAME } from "@/constants";
 
 const Topbar = () => {
 	const { userId, isAuthenticated } = useAuth();
@@ -38,9 +39,14 @@ const Topbar = () => {
 	return (
 		<>
 			<div className="bg-slate-800 flex items-center p-2 sticky z-10 top-0 justify-between">
-				<NavLink to="/beta-info">
-					<Badge className="bg-red-200 text-black hover:bg-red-300">Beta</Badge>
-				</NavLink>
+				<div className="flex flex row gap-x-3 items-center">
+					<NavLink to="/">
+						<p className="text-white text-xl font-bold">{APP_NAME}</p>
+					</NavLink>
+					<NavLink to="/beta-info">
+						<Badge className="bg-red-200 text-black hover:bg-red-300">Beta</Badge>
+					</NavLink>
+				</div>
 				{isAuthenticated && <UserSearchBar />}
 				{isAuthenticated ? (
 					<Button variant={"secondary"} onClick={() => logout()}>
