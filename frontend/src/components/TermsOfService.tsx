@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import BackButton from "./BackButton";
 import RoundedRect from "./RoundedRect";
+import { APP_NAME } from "@/constants";
 
 const TermsOfService = () => {
 	const navigate = useNavigate();
@@ -18,7 +19,7 @@ const TermsOfService = () => {
 				</div>
 
 				<p className="mt-3">
-					Welcome to [Wishlist] (“we,” “us,” or “our”). By accessing or using our web application (“Service”),
+					Welcome to {APP_NAME} (“we,” “us,” or “our”). By accessing or using our web application (“Service”),
 					you agree to comply with and be bound by these Terms of Service. Please read them carefully before
 					using the Service. If you do not agree to these terms, you may not use the Service.
 				</p>
@@ -35,7 +36,7 @@ const TermsOfService = () => {
 				<div>
 					<p className="font-medium">2. Description of the Service</p>
 					<p>
-						[Wishlist] allows users to submit and store data for creating and managing wishlists. The
+						{APP_NAME} allows users to submit and store data for creating and managing wishlists. The
 						Service is provided on an “as is” and “as available” basis during its beta phase. Features and
 						functionality may be added, modified, or removed at any time without notice.
 					</p>

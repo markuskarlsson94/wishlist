@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import BackButton from "./BackButton";
 import RoundedRect from "./RoundedRect";
 import { Bug, Database, Settings, Trash2 } from "lucide-react";
+import { APP_NAME } from "@/constants";
 
 const BetaInfo = () => {
 	const navigate = useNavigate();
@@ -19,9 +20,9 @@ const BetaInfo = () => {
 				</div>
 
 				<p className="mt-3">
-					Thank you for participating in the public beta of our web application! Please note that this is a
-					beta version and is still under active development. By using this application during the beta phase,
-					you acknowledge and agree to the following:
+					Thank you for participating in the public beta of {APP_NAME}! Please note that this is a beta
+					version and is still under active development. By using this application during the beta phase, you
+					acknowledge and agree to the following:
 				</p>
 
 				<div className="flex flex-col gap-y-6 px-3">

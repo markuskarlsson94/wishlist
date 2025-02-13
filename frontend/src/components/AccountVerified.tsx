@@ -1,5 +1,6 @@
 import { ShieldCheck } from "lucide-react";
 import RoundedRect from "./RoundedRect";
+import { APP_NAME } from "@/constants";
 
 const AccountVerified = () => {
 	return (
@@ -9,7 +10,7 @@ const AccountVerified = () => {
 				<p className="font-medium">Account successfully verfied</p>
 				<p>
 					Congratulations! Your account has successfully been verified and you are ready to start using
-					[Wishlist]. To get started, click the login button in the top right corner and login using your
+					{APP_NAME}. To get started, click the login button in the top right corner and login using your
 					credentials.
 				</p>
 			</div>
