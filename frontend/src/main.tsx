@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { TooltipProvider } from "./components/ui/tooltip.tsx";
 import "./TimeAgo.ts";
+import { APP_NAME } from "./constants.ts";
 
 const queryClient = new QueryClient({
 	defaultOptions: {
@@ -16,6 +17,8 @@ const queryClient = new QueryClient({
 		},
 	},
 });
+
+document.title = APP_NAME || "";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
 	<React.StrictMode>
