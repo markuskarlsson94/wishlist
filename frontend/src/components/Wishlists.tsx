@@ -12,10 +12,12 @@ import HoverCard from "./HoverCard";
 import { useGetItems } from "@/hooks/item";
 import { Box } from "lucide-react";
 import Tooltip from "./Tooltip";
+import { useGetUser } from "@/hooks/user";
 
 const Wishlists = () => {
 	const params = useParams<{ userId: string }>();
 	const userId = Number(params.userId);
+	const { user, isSuccess } = useGetUser(userId);
 	const { userId: viewer } = useAuth();
 	const navigate = useNavigate();
 	const createWishlist = useCreateWishlist();
@@ -61,6 +63,17 @@ const Wishlists = () => {
 		createWishlist(input, userId);
 	};
 
+	const getTitle = () => {
+		if (isOwner) return "My Wishlists";
+
+		if (isSuccess && user) {
+			const { firstName, lastName } = user;
+			return `${firstName} ${lastName}'s wishslists`;
+		}
+
+		return "";
+	};
+
 	const values = {
 		title: "",
 		description: "",
@@ -70,7 +83,13 @@ const Wishlists = () => {
 	return (
 		<RoundedRect>
 			<div className="flex flex-col gap-y-3">
-				<BackButton onClick={handleBack} />
+				<div className="flex flex-row items-center">
+					<BackButton onClick={handleBack} />
+					<p className="m-auto font-medium">{getTitle()}</p>
+				</div>
+
+				<div className="h-3" />
+
 				{wishlists && wishlists.length === 0 && (
 					<div className="flex">
 						<p className="m-auto text-2xl font-medium text-gray-300">No wishlists</p>
