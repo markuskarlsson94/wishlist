@@ -38,7 +38,7 @@ const Topbar = () => {
 
 	return (
 		<>
-			<div className="bg-slate-800 flex items-center p-2 sticky z-10 top-0 justify-between">
+			<div className="bg-slate-800 flex items-center px-3 py-2 sticky z-10 top-0 justify-between">
 				<div className="flex flex row gap-x-3 items-center">
 					<NavLink to="/">
 						<p className="text-white text-xl font-bold">{APP_NAME}</p>
