@@ -86,7 +86,13 @@ const Reservations = () => {
 	return (
 		<RoundedRect>
 			<div className="flex flex-col gap-y-3">
-				<BackButton onClick={handleBack} />
+				<div className="flex flex-row items-center justify-center">
+					<BackButton onClick={handleBack} />
+					<p className="m-auto font-medium">My Reservations</p>
+				</div>
+
+				<div className="h-3" />
+
 				{reservations.length === 0 && (
 					<div className="flex">
 						<p className="m-auto text-2xl font-medium text-gray-300">No reservations</p>

@@ -117,8 +117,9 @@ const Item = () => {
 
 	return (
 		<RoundedRect>
-			<div className="flex justify-between">
+			<div className="flex justify-between items-center">
 				<BackButton onClick={handleBack} />
+				<p className="font-medium">{item?.title}</p>
 				{isOwner && (
 					<div>
 						<DropdownMenu>
@@ -191,7 +192,6 @@ const Item = () => {
 				)}
 			</div>
 			<div className="my-5">
-				<H3>{item?.title}</H3>
 				<P>{item?.description}</P>
 			</div>
 			{item?.link && (

@@ -15,9 +15,9 @@ const Settings = () => {
 	return (
 		<RoundedRect>
 			<div className="flex flex-col">
-				<div className="relative flex flex-row items-center justify-center">
-					<BackButton className="absolute left-0" onClick={handleBack} />
-					<p className="font-medium">Settings</p>
+				<div className="flex flex-row items-center">
+					<BackButton onClick={handleBack} />
+					<p className="m-auto font-medium">Settings</p>
 				</div>
 
 				<div className="h-12" />

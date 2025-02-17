@@ -14,8 +14,8 @@ const About = () => {
 	return (
 		<RoundedRect>
 			<div className="flex flex-col gap-y-6">
-				<div className="relative flex items-center">
-					<BackButton className="absolute" onClick={handleBack} />
+				<div className="flex items-center">
+					<BackButton onClick={handleBack} />
 					<p className="font-medium m-auto">About {APP_NAME}</p>
 				</div>
 

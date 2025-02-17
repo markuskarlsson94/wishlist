@@ -128,7 +128,13 @@ const Friends = () => {
 	return (
 		<RoundedRect>
 			<div className="flex flex-col gap-y-3">
-				<BackButton onClick={handleBack} />
+				<div className="flex flex-row items-center justify-center">
+					<BackButton className="" onClick={handleBack} />
+					<p className="m-auto font-medium">My Friends</p>
+				</div>
+
+				<div className="h-3" />
+
 				{viewer === userId && friendRequests()}
 				{friends.length !== 0 && <p className="font-medium mt-3">Friends {`(${friends.length})`}</p>}
 				{friends.length === 0 && <p className="m-auto text-2xl font-medium text-gray-300">No friends yet</p>}
