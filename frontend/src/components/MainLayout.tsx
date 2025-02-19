@@ -8,7 +8,7 @@ const MainLayout = () => {
 	const { isAuthenticated } = useAuth();
 	const location = useLocation();
 	const isHomePage = location.pathname === "/";
-	const col = isHomePage ? "bg_white" : "bg-gray-200";
+	const col = isHomePage ? "bg-white-200" : "bg-gray-200";
 
 	return (
 		<>
