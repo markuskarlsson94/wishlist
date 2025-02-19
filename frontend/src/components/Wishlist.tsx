@@ -134,8 +134,9 @@ const Wishlist = () => {
 
 	return (
 		<RoundedRect>
-			<div className="flex justify-between">
+			<div className="flex justify-between items-center">
 				<BackButton onClick={handleBack} />
+				<p className="font-medium">{wishlist?.title}</p>
 				<div className="flex gap-x-3 items-center">
 					{type && (
 						<Badge variant={"secondary"}>
@@ -222,7 +223,6 @@ const Wishlist = () => {
 				</div>
 			</div>
 			<div className="my-5">
-				<H3>{wishlist?.title}</H3>
 				<P>{wishlist?.description}</P>
 			</div>
 			<div className="flex flex-col gap-y-3">
