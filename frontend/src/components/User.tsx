@@ -24,6 +24,7 @@ import {
 	AlertDialogTitle,
 	AlertDialogTrigger,
 } from "./ui/alert-dialog";
+import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar";
 
 const User = () => {
 	const params = useParams<{ userId: string }>();
@@ -146,7 +147,11 @@ const User = () => {
 			<div className="flex flex-col gap-y-3">
 				<BackButton onClick={handleBack} />
 				<div className="flex justify-between items-center">
-					<div className="flex gap-x-3">
+					<div className="flex gap-x-3 items-center">
+						<Avatar>
+							<AvatarImage src="./../public/profile.png" />
+							<AvatarFallback />
+						</Avatar>
 						<p className="text-large font-medium">
 							{user?.firstName} {user?.lastName} {userId === viewer && <span> (You)</span>}
 						</p>
