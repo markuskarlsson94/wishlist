@@ -6,6 +6,7 @@ import { Button } from "./ui/button";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { ScrollArea } from "./ui/scroll-area";
+import { Avatar, AvatarImage } from "./ui/avatar";
 
 const UserSearchBar = () => {
 	const [query, setQuery] = useState<string>("");
@@ -67,9 +68,14 @@ const UserSearchBar = () => {
 		return (
 			<div>
 				<NavLink to={`/user/${id}`} onClick={() => setResultsOpen(false)}>
-					<p className="px-3 py-2 hover:bg-gray-100">
-						{user.firstName} {user.lastName} {viewer === id ? "(You)" : ""}
-					</p>
+					<div className="flex px-3 py-2 hover:bg-gray-100 items-center gap-3">
+						<Avatar className="w-8 h-8">
+							<AvatarImage src="./../public/profile.png" />
+						</Avatar>
+						<p className="">
+							{user.firstName} {user.lastName} {viewer === id ? "(You)" : ""}
+						</p>
+					</div>
 				</NavLink>
 			</div>
 		);
@@ -78,11 +84,13 @@ const UserSearchBar = () => {
 	const SearchResult = () => {
 		return (
 			<>
-				{users.map((userId, index) => (
-					<div key={userId} ref={index === 0 ? userRef : null}>
-						<User key={userId} id={userId} />
-					</div>
-				))}
+				<div className="flex flex-col gap-y-2">
+					{users.map((userId, index) => (
+						<div key={userId} ref={index === 0 ? userRef : null}>
+							<User key={userId} id={userId} />
+						</div>
+					))}
+				</div>
 				{users.length === 0 && (
 					<div className="flex">
 						<p className="m-auto text-muted-foreground">No results</p>
