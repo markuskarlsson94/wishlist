@@ -1,15 +1,11 @@
-import { useLogout } from "@/hooks/useLogout";
-import { Button } from "./ui/button";
 import { useLocation, useNavigate } from "react-router-dom";
-import { LogOut } from "lucide-react";
-import { Badge } from "./ui/badge";
-import { NavLink } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import LoginDialog from "./dialogs/LoginDialog";
 import { useEffect, useState } from "react";
 import UserSearchBar from "./UserSearchBar";
 import PasswordResetRequestDialog from "./dialogs/PasswordResetRequestDialog";
-import { APP_NAME } from "@/constants";
+import { useIsMobile } from "@/hooks/use-mobile";
+import AppSidebarTrigger from "./AppSidebarTrigger";
 
 const Topbar = () => {
 	const { userId, isAuthenticated } = useAuth();
@@ -17,11 +13,7 @@ const Topbar = () => {
 	const [email, setEmail] = useState<string | undefined>(undefined);
 	const location = useLocation();
 	const navigate = useNavigate();
-	const { logout } = useLogout({
-		onSettled: () => {
-			navigate("/");
-		},
-	});
+	const isMobile = useIsMobile();
 
 	useEffect(() => {
 		if (isAuthenticated && userId) {
@@ -38,22 +30,17 @@ const Topbar = () => {
 
 	return (
 		<>
-			<div className="bg-slate-800 flex items-center px-3 py-2 sticky z-10 top-0 justify-between">
-				<div className="flex flex row gap-x-3 items-center">
-					<NavLink to="/">
-						<p className="text-white text-xl font-bold">{APP_NAME}</p>
-					</NavLink>
-					<NavLink to="/beta-info">
-						<Badge className="bg-red-200 text-black hover:bg-red-300">Beta</Badge>
-					</NavLink>
-				</div>
-				{isAuthenticated && <UserSearchBar />}
-				{isAuthenticated ? (
-					<Button variant={"secondary"} onClick={() => logout()}>
-						Logout <LogOut />
-					</Button>
-				) : (
-					<LoginDialog onPasswordResetRequestSent={onPasswordResetRequestSent} />
+			<div className="relative bg-slate-800 flex items-center px-3 py-2 sticky top-0">
+				<div className="absolute left-3">{isMobile && <AppSidebarTrigger />}</div>
+				{isAuthenticated && (
+					<div className="m-auto">
+						<UserSearchBar />
+					</div>
+				)}
+				{!isAuthenticated && (
+					<div className="flex-1 flex justify-end">
+						<LoginDialog onPasswordResetRequestSent={onPasswordResetRequestSent} />
+					</div>
 				)}
 			</div>
 			<PasswordResetRequestDialog
