@@ -96,10 +96,13 @@ const Friend = ({ friend }: { friend: FriendType }) => {
 const Friends = () => {
 	const params = useParams<{ userId: string }>();
 	const userId = Number(params.userId);
+	const { user, isSuccess } = useGetUser(userId);
 	const { userId: viewer } = useAuth();
 	const navigate = useNavigate();
 	const { sentFriendRequests, receivedFriendRequests } = useGetFriendRequests(userId);
 	const { friends } = useGetFriends(userId);
+
+	const isOwner: boolean = userId === viewer;
 
 	const handleBack = () => {
 		navigate(-1);
@@ -125,12 +128,23 @@ const Friends = () => {
 		);
 	};
 
+	const getTitle = () => {
+		if (isOwner) return "My Friends";
+
+		if (isSuccess && user) {
+			const { firstName, lastName } = user;
+			return `${firstName} ${lastName}'s friends`;
+		}
+
+		return "";
+	};
+
 	return (
 		<RoundedRect>
 			<div className="flex flex-col gap-y-3">
 				<div className="flex flex-row items-center justify-center">
 					<BackButton className="" onClick={handleBack} />
-					<p className="m-auto font-medium">My Friends</p>
+					<p className="m-auto font-medium">{getTitle()}</p>
 				</div>
 
 				<div className="h-3" />
