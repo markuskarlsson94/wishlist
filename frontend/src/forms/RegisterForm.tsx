@@ -1,7 +1,7 @@
 import { PasswordInput } from "@/components/PasswordInput";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel } from "@/components/ui/form";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import useRegister from "@/hooks/register";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -63,8 +63,12 @@ const RegisterForm = (config?: RegisterConfig) => {
 	};
 
 	const onError = (error: AxiosError) => {
-		if (error.response?.status === 400) {
+		const response = error.response;
+
+		if (response?.data === "User already exists") {
 			setWarning("User is already registred");
+		} else if (response?.data === "Invalid email") {
+			setWarning("Invalid email");
 		} else {
 			setWarning("Unknown error");
 		}
@@ -99,6 +103,7 @@ const RegisterForm = (config?: RegisterConfig) => {
 									<Input placeholder="Email" {...field} />
 								</FormControl>
 								<FormDescription />
+								<FormMessage />
 							</FormItem>
 						)}
 					/>
