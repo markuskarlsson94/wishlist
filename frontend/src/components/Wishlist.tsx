@@ -134,9 +134,9 @@ const Wishlist = () => {
 
 	return (
 		<RoundedRect>
-			<div className="flex justify-between items-center">
+			<div className="relative flex justify-between items-center">
+				<p className="absolute left-1/2 transform -translate-x-1/2 font-medium">{wishlist?.title}</p>
 				<BackButton onClick={handleBack} />
-				<p className="font-medium">{wishlist?.title}</p>
 				<div className="flex gap-x-3 items-center">
 					{type && (
 						<Badge variant={"secondary"}>
@@ -223,7 +223,7 @@ const Wishlist = () => {
 				</div>
 			</div>
 			<div className="my-5">
-				<P>{wishlist?.description}</P>
+				<p>{wishlist?.description}</p>
 			</div>
 			<div className="flex flex-col gap-y-3">
 				{items && items.length === 0 && (

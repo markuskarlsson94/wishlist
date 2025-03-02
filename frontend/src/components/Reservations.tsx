@@ -86,9 +86,9 @@ const Reservations = () => {
 	return (
 		<RoundedRect>
 			<div className="flex flex-col gap-y-3">
-				<div className="flex flex-row items-center justify-center">
+				<div className="relative flex items-center">
 					<BackButton onClick={handleBack} />
-					<p className="m-auto font-medium">My Reservations</p>
+					<p className="absolute left-1/2 transform -translate-x-1/2 font-medium">My Reservations</p>
 				</div>
 
 				<div className="h-3" />

@@ -117,9 +117,9 @@ const Item = () => {
 
 	return (
 		<RoundedRect>
-			<div className="flex items-center">
+			<div className="relative flex items-center justify-between">
 				<BackButton onClick={handleBack} />
-				<p className="m-auto font-medium">{item?.title}</p>
+				<p className="absolute left-1/2 transform -translate-x-1/2 font-medium">{item?.title}</p>
 				{isOwner && (
 					<div>
 						<DropdownMenu>

@@ -83,9 +83,9 @@ const Wishlists = () => {
 	return (
 		<RoundedRect>
 			<div className="flex flex-col gap-y-3">
-				<div className="flex flex-row items-center">
+				<div className="relative flex flex-row items-center">
 					<BackButton onClick={handleBack} />
-					<p className="m-auto font-medium">{getTitle()}</p>
+					<p className="absolute left-1/2 transform -translate-x-1/2 font-medium">{getTitle()}</p>
 				</div>
 
 				<div className="h-3" />

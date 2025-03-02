@@ -22,9 +22,9 @@ const FAQ = () => {
 	return (
 		<RoundedRect>
 			<div className="flex flex-col gap-y-6">
-				<div className="flex items-center">
+				<div className="relative flex items-center">
 					<BackButton onClick={handleBack} />
-					<p className="font-medium m-auto">FAQ</p>
+					<p className="absolute left-1/2 transform -translate-x-1/2 font-medium">FAQ</p>
 				</div>
 
 				<div className="flex flex-col gap-y-6">
