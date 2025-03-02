@@ -55,7 +55,7 @@ const AppSidebar = () => {
 		const { receivedFriendRequests } = useGetFriendRequests(userId);
 		let pendingFriendRequests;
 
-		if (receivedFriendRequests) {
+		if (receivedFriendRequests?.length > 0) {
 			pendingFriendRequests = receivedFriendRequests.length;
 			if (pendingFriendRequests > 9) {
 				pendingFriendRequests = "9+";
