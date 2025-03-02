@@ -5,15 +5,18 @@ import {
 	SidebarGroup,
 	SidebarGroupContent,
 	SidebarMenu,
+	SidebarMenuBadge,
 	SidebarMenuButton,
+	SidebarMenuItem,
 	useSidebar,
 } from "@/components/ui/sidebar";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
-import { Heart, ListChecks, LogOut, LucideIcon, Scroll, Settings } from "lucide-react";
+import { Bell, Heart, ListChecks, LogOut, LucideIcon, Scroll, Settings } from "lucide-react";
 import { useLogout } from "@/hooks/useLogout";
+import { useGetFriendRequests } from "@/hooks/friendRequest";
 
 const AppSidebar = () => {
 	const { userId } = useAuth();
@@ -37,12 +40,45 @@ const AppSidebar = () => {
 
 	const AppSidebarButton = ({ title, to, Icon }: { title: string; to: string; Icon: LucideIcon }) => {
 		return (
-			<SidebarMenuButton onClick={() => navigateTo(to)}>
-				<div className="flex items-center gap-2">
-					<Icon size={16} />
-					<p className="font-medium">{title}</p>
-				</div>
-			</SidebarMenuButton>
+			<SidebarMenuItem>
+				<SidebarMenuButton onClick={() => navigateTo(to)}>
+					<div className="flex items-center gap-2">
+						<Icon size={16} />
+						<p className="font-medium">{title}</p>
+					</div>
+				</SidebarMenuButton>
+			</SidebarMenuItem>
+		);
+	};
+
+	const AppSidebarFriendsButton = ({ title, to, Icon }: { title: string; to: string; Icon: LucideIcon }) => {
+		const { receivedFriendRequests } = useGetFriendRequests(userId);
+		let pendingFriendRequests;
+
+		if (receivedFriendRequests) {
+			pendingFriendRequests = receivedFriendRequests.length;
+			if (pendingFriendRequests > 9) {
+				pendingFriendRequests = "9+";
+			}
+		}
+
+		return (
+			<SidebarMenuItem>
+				<SidebarMenuButton onClick={() => navigateTo(to)}>
+					<div className="flex items-center gap-2">
+						<Icon size={16} />
+						<p className="font-medium">{title}</p>
+					</div>
+				</SidebarMenuButton>
+				{pendingFriendRequests && (
+					<SidebarMenuBadge>
+						<div className="flex gap-1 items-center">
+							<Bell size={16} />
+							<p className="font-medium">{pendingFriendRequests}</p>
+						</div>
+					</SidebarMenuBadge>
+				)}
+			</SidebarMenuItem>
 		);
 	};
 
@@ -64,7 +100,7 @@ const AppSidebar = () => {
 						<SidebarMenu>
 							<AppSidebarButton title="My Wishlists" to={`user/${userId}/wishlists`} Icon={Scroll} />
 							<AppSidebarButton title="My Reservations" to="/reservations" Icon={ListChecks} />
-							<AppSidebarButton title="My Friends" to={`user/${userId}/friends`} Icon={Heart} />
+							<AppSidebarFriendsButton title="My Friends" to={`user/${userId}/friends`} Icon={Heart} />
 							<AppSidebarButton title="Settings" to="/settings" Icon={Settings} />
 						</SidebarMenu>
 					</SidebarGroupContent>
