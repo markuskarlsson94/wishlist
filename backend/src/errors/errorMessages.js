@@ -124,6 +124,11 @@ const errorMessages = {
 		message: "Missing password",
 	},
 
+	invalidEmail: {
+		status: 400,
+		message: "Invalid email",
+	},
+
 	invalidEmailOrPassword: {
 		status: 403,
 		message: "Invalid email or password",

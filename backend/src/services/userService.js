@@ -7,8 +7,13 @@ import errorMessages from "../errors/errorMessages.js";
 import { adminRole } from "../roles.js";
 import { PostgresError } from "pg-error-enum";
 import crypto from "crypto";
+import z from "zod";
 
 const passwordTokenExpireTime = 1000 * 60 * 60;
+
+const emailSchema = z.object({
+	email: z.string().email(),
+});
 
 const userService = {
 	getAll: async () => {
@@ -54,6 +59,12 @@ const userService = {
 	add: async (email, firstName, lastName, plaintextPassword, role = userRole(), sendEmail = true) => {
 		if (await userService.exists(email)) {
 			throw new ErrorMessage(errorMessages.userAlreadyExists);
+		}
+
+		try {
+			emailSchema.parse({ email });
+		} catch (error) {
+			throw new ErrorMessage(errorMessages.invalidEmail);
 		}
 
 		const pendingUser = await db.waitlist.getUserByEmail(email);
