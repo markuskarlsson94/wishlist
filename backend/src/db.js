@@ -410,27 +410,43 @@ const db = {
 			},
 
 			getByUserId: async (id) => {
-				const users1 = (await dbClient(friendsTable).select("user2", "createdAt").where({ user1: id })).map(
-					(user) => {
-						return {
-							userId: user.user2,
-							createdAt: user.createdAt,
-						};
-					},
-				);
+				const users1 = (
+					await dbClient(`${friendsTable} as f`)
+						.select("f.user2", "f.createdAt", "u.firstName", "u.lastName")
+						.innerJoin(`${userTable} as u`, "u.id", "user2")
+						.where({ user1: id })
+				).map((user) => {
+					return {
+						userId: user.user2,
+						createdAt: user.createdAt,
+						firstName: user.firstName,
+						lastName: user.lastName,
+					};
+				});
 
-				const users2 = (await dbClient(friendsTable).select("user1", "createdAt").where({ user2: id })).map(
-					(user) => {
-						return {
-							userId: user.user1,
-							createdAt: user.createdAt,
-						};
-					},
-				);
+				const users2 = (
+					await dbClient(`${friendsTable} as f`)
+						.select("f.user1", "f.createdAt", "u.firstName", "u.lastName")
+						.innerJoin(`${userTable} as u`, "u.id", "user1")
+						.where({ user2: id })
+				).map((user) => {
+					return {
+						userId: user.user1,
+						createdAt: user.createdAt,
+						firstName: user.firstName,
+						lastName: user.lastName,
+					};
+				});
 
 				let users = users1.concat(users2);
 				users = users.filter((user, index) => users.indexOf(user) === index); // Remove duplicate
 				users = users.filter((user) => user.userId !== id); // Remove requested id
+				users = users.sort((a, b) =>
+					`${a.firstName}${a.lastName}`
+						.toLowerCase()
+						.localeCompare(`${b.firstName}${b.lastName}`.toLowerCase()),
+				);
+
 				return users;
 			},
 
