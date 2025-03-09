@@ -75,7 +75,6 @@ const SentFriendRequest = ({ friendRequest }: { friendRequest: FriendRequest }) 
 
 const Friend = ({ friend }: { friend: FriendType }) => {
 	const { userId } = useAuth();
-	const { user } = useGetUser(friend.userId);
 
 	return (
 		<NavLink to={`/user/${friend.userId}`}>
@@ -83,7 +82,7 @@ const Friend = ({ friend }: { friend: FriendType }) => {
 				<CardHeader>
 					<CardTitle className="flex justify-between items-center">
 						<p>
-							{user?.firstName} {user?.lastName}
+							{friend?.firstName} {friend?.lastName}
 							{friend.userId === userId && <span> (You)</span>}
 						</p>
 					</CardTitle>
@@ -100,7 +99,7 @@ const Friends = () => {
 	const { userId: viewer } = useAuth();
 	const navigate = useNavigate();
 	const { sentFriendRequests, receivedFriendRequests } = useGetFriendRequests(userId);
-	const { friends } = useGetFriends(userId);
+	const { friends, isSuccess: isSuccessFriends } = useGetFriends(userId);
 
 	const isOwner: boolean = userId === viewer;
 
@@ -152,9 +151,7 @@ const Friends = () => {
 				{viewer === userId && friendRequests()}
 				{friends.length !== 0 && <p className="font-medium mt-3">Friends {`(${friends.length})`}</p>}
 				{friends.length === 0 && <p className="m-auto text-2xl font-medium text-gray-300">No friends yet</p>}
-				{friends.map((friend) => (
-					<Friend key={friend.userId} friend={friend} />
-				))}
+				{isSuccessFriends && friends?.map((friend) => <Friend key={friend.userId} friend={friend} />)}
 			</div>
 		</RoundedRect>
 	);
