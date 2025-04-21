@@ -8,9 +8,17 @@ if (!env) {
 	env = "development";
 }
 
-const devConfig = {};
+const devConfig = {
+	getFrontendUrl: () => {
+		return `${process.env.API_URL}:${process.env.FRONTEND_PORT}`;
+	},
+};
 
-const prodConfig = {};
+const prodConfig = {
+	getFrontendUrl: () => {
+		return `${process.env.VITE_APP_DOMAIN}`;
+	},
+};
 
 const configs = {
 	development: devConfig,
