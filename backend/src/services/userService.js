@@ -8,6 +8,7 @@ import { adminRole } from "../roles.js";
 import { PostgresError } from "pg-error-enum";
 import crypto from "crypto";
 import z from "zod";
+import { sendPasswordResetEmail, sendVerificationEmail } from "../utilities/email.js";
 
 const passwordTokenExpireTime = 1000 * 60 * 60;
 
@@ -79,7 +80,7 @@ const userService = {
 		if (sendEmail) {
 			// TODO: get url from env file
 			const link = `http://localhost:5137/auth/verify?token=${token}`;
-			//TODO: send email
+			await sendVerificationEmail(email, token);
 		}
 
 		try {
@@ -183,7 +184,7 @@ const userService = {
 				await db.passwordToken.add(email, token);
 
 				if (sendEmail) {
-					// TODO: send email
+					await sendPasswordResetEmail(email, token);
 				}
 
 				console.log(token);
