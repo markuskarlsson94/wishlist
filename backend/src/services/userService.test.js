@@ -634,11 +634,11 @@ describe("password reset", () => {
 	});
 
 	it("should be possible to request password reset for existing user", async () => {
-		tokenPrev = await userService.requestPasswordReset(email1);
+		tokenPrev = await userService.requestPasswordReset(email1, false);
 	});
 
 	it("shoule be possible to request password reset even if request already exists", async () => {
-		token = await userService.requestPasswordReset(email1);
+		token = await userService.requestPasswordReset(email1, false);
 
 		expect(token.length).toBeGreaterThan(0);
 	});
