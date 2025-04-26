@@ -9,7 +9,7 @@ const AccountVerified = () => {
 				<ShieldCheck size={96} color="#79bf73" />
 				<p className="font-medium">Account successfully verfied</p>
 				<p>
-					Congratulations! Your account has successfully been verified and you are ready to start using
+					Congratulations! Your account has successfully been verified and you are ready to start using{" "}
 					{APP_NAME}. To get started, click the login button in the top right corner and login using your
 					credentials.
 				</p>
