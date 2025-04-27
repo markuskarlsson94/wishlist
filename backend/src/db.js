@@ -178,7 +178,7 @@ const db = {
 
 			await dbClient.schema.createTable(passwordTokenTable, (table) => {
 				table.increments("id").primary();
-				table.string("user").notNullable();
+				table.integer("user").notNullable();
 				table.string("token").notNullable();
 
 				table.foreign("user").references("id").inTable(userTable).onDelete("CASCADE");
@@ -662,7 +662,7 @@ const db = {
 
 				getByItemId: async (itemId) => {
 					return await dbClient(commentsTable)
-						.select("id", "user", "comment", "createdAt", "updatedAt")
+						.select("id", "user", "comment", "asAdmin", "createdAt", "updatedAt")
 						.where({ item: itemId })
 						.orderBy("createdAt", "asc");
 				},
