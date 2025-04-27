@@ -157,6 +157,7 @@ const db = {
 				table.integer("item").notNullable();
 				table.integer("user").notNullable();
 				table.string("comment").notNullable();
+				table.boolean("asAdmin").notNullable();
 
 				table.foreign("item").references("id").inTable(wishlistItemTable).onDelete("CASCADE");
 				table.foreign("user").references("id").inTable(userTable);
@@ -630,13 +631,14 @@ const db = {
 			},
 
 			comment: {
-				add: async (itemId, userId, comment) => {
+				add: async (itemId, userId, comment, asAdmin = false) => {
 					return (
 						await dbClient(commentsTable)
 							.insert({
 								item: itemId,
 								user: userId,
 								comment,
+								asAdmin,
 							})
 							.returning("id")
 					)[0].id;

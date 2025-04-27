@@ -173,7 +173,7 @@ wishlistRouter.post("/item/:id/comment", isAuthenticated(), async (req, res) => 
 		const user = req.user;
 		const { comment } = req.body;
 
-		await wishlistService.item.comment.add(user, id, user.id, comment);
+		await wishlistService.item.comment.add(user, id, user.id, comment.comment, comment?.asAdmin);
 
 		res.status(200).json({
 			message: "Comment added",

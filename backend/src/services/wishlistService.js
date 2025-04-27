@@ -267,7 +267,7 @@ const wishlistService = {
 		},
 
 		comment: {
-			add: async (user, itemId, userId, comment) => {
+			add: async (user, itemId, userId, comment, asAdmin = false) => {
 				if (!(await canViewWishlistItem(user, itemId))) {
 					throw new ErrorMessage(errorMessages.wishlistItemNotFound);
 				}
@@ -276,8 +276,12 @@ const wishlistService = {
 					throw new ErrorMessage(errorMessages.unauthorizedToAddComment);
 				}
 
+				if (asAdmin && user.role !== adminRole()) {
+					asAdmin = false;
+				}
+
 				try {
-					return await db.wishlist.item.comment.add(itemId, userId, comment);
+					return await db.wishlist.item.comment.add(itemId, userId, comment, asAdmin);
 				} catch (error) {
 					logger.error(error.message);
 					throw new ErrorMessage(errorMessages.unableToAddComment);
@@ -349,9 +353,8 @@ const wishlistService = {
 					let id = 1;
 
 					for (const comment of comments) {
-						const commenter = await db.user.getById(comment.user);
-						const isAdmin = commenter.role === adminRole();
-						comment.isAdmin = isAdmin;
+						comment.isAdmin = comment.asAdmin;
+						delete comment.asAdmin;
 
 						const ownComment = comment.user === user.id;
 						let anonymizedUserId;
@@ -359,7 +362,7 @@ const wishlistService = {
 						if (comment.user === itemOwner) {
 							comment.isItemOwner = true;
 						} else {
-							if (!isAdmin) {
+							if (!comment.isAdmin) {
 								anonymizedUserId = commentMap.get(comment.user);
 
 								if (anonymizedUserId === undefined) {
