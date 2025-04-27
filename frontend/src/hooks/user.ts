@@ -5,7 +5,10 @@ import { AxiosError } from "axios";
 
 type CurrentUserResponse = {
 	data: {
-		id: number;
+		user: {
+			id: number;
+			isAdmin: boolean;
+		};
 	};
 };
 
@@ -15,7 +18,7 @@ export const useCurrentUser = () => {
 		queryFn: () => axiosInstance.get("/auth/me"),
 	});
 
-	return { user: data?.data.id, ...rest };
+	return { user: data?.data.user, ...rest };
 };
 
 type UserResponse = {

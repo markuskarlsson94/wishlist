@@ -7,6 +7,7 @@ type AuthContextType = {
 	isLoadingAuthStatus: boolean;
 	userId: number | undefined;
 	setUserId: (userId: number | undefined) => void;
+	isAdmin: boolean;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -19,6 +20,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 	const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 	const [isLoadingAuthStatus, setIsLoadingAuthStatus] = useState<boolean>(true);
 	const [userId, setUserId] = useState<number | undefined>(undefined);
+	const [isAdmin, setIsAdmin] = useState<boolean>(false);
 	const { user, isLoading, isError } = useCurrentUser();
 
 	useEffect(() => {
@@ -33,7 +35,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
 	useEffect(() => {
 		if (user) {
-			setUserId(user);
+			setUserId(user.id);
+			setIsAdmin(user.isAdmin);
 			setIsLoadingAuthStatus(false);
 		} else if (!isLoading && !isError) {
 			setUserId(undefined);
@@ -49,6 +52,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 				isLoadingAuthStatus,
 				userId,
 				setUserId,
+				isAdmin,
 			}}
 		>
 			{children}
