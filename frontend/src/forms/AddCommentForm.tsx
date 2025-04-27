@@ -2,10 +2,12 @@ import { z } from "zod";
 import CommentInputType from "../types/CommentInputType";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { forwardRef, useImperativeHandle } from "react";
 import commentSchema from "@/schemas/commentSchema";
+import { useAuth } from "@/contexts/AuthContext";
+import { Checkbox } from "@/components/ui/checkbox";
 
 type AddCommentFormConfig = {
 	onSubmit: (values: CommentInputType) => void;
@@ -13,9 +15,11 @@ type AddCommentFormConfig = {
 };
 
 const AddCommentForm = forwardRef(({ config }: { config: AddCommentFormConfig }, ref) => {
+	const { isAdmin } = useAuth();
+
 	const form = useForm<z.infer<typeof commentSchema>>({
 		resolver: zodResolver(commentSchema),
-		values: { comment: "" },
+		values: { comment: "", asAdmin: false },
 	});
 
 	const onSubmit = (values: z.infer<typeof commentSchema>) => {
@@ -51,6 +55,22 @@ const AddCommentForm = forwardRef(({ config }: { config: AddCommentFormConfig },
 						</FormItem>
 					)}
 				></FormField>
+				{isAdmin && (
+					<FormField
+						control={form.control}
+						name="asAdmin"
+						render={({ field }) => (
+							<FormItem>
+								<div className="flex items-center gap-x-2 pt-2">
+									<FormLabel>Comment as admin</FormLabel>
+									<FormControl>
+										<Checkbox checked={field.value} onCheckedChange={field.onChange} />
+									</FormControl>
+								</div>
+							</FormItem>
+						)}
+					/>
+				)}
 			</form>
 		</Form>
 	);
