@@ -1,6 +1,7 @@
 import { QueryClient, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axiosInstance from "../axiosInstance";
 import CommentType from "../types/CommentType";
+import CommentInputType from "@/types/CommentInputType";
 
 type CommentsResponse = {
 	data: {
@@ -32,7 +33,7 @@ export const useGetComments = (itemId: number) => {
 export const useAddComment = (config: CommentConfig) => {
 	const queryClient = useQueryClient();
 
-	const addCommentFn = async (comment: string) => {
+	const addCommentFn = async (comment: CommentInputType) => {
 		await axiosInstance.post(`/item/${config.itemId}/comment`, {
 			comment,
 		});
@@ -54,7 +55,7 @@ export const useAddComment = (config: CommentConfig) => {
 		},
 	});
 
-	const addComment = (comment: string) => {
+	const addComment = (comment: CommentInputType) => {
 		addCommentMutation.mutate(comment);
 	};
 
