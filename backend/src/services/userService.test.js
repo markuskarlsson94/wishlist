@@ -40,7 +40,8 @@ describe("adding user", () => {
 	it("should add user with correct info", async () => {
 		user1Id = await userService.addWithoutVerification(email1, firstName, lastName, "abc");
 		expect(user1Id).toBeGreaterThan(0);
-		user1 = await userService.getById(user1Id);
+
+		user1 = await db.user.getById(user1Id);
 		expect(user1.id).toBe(user1Id);
 
 		const allUsers = await userService.getAll();
@@ -67,14 +68,15 @@ describe("adding user", () => {
 	it("should add user with different email but same name", async () => {
 		user2Id = await userService.addWithoutVerification(email2, firstName, lastName, "abc");
 		expect(user2Id).toBeGreaterThan(0);
-		user2 = await userService.getById(user2Id);
+
+		user2 = await db.user.getById(user2Id);
 		expect(user2.id).toBe(user2Id);
 	});
 });
 
 describe("searching for user", async () => {
 	it("should find user by id", async () => {
-		const user = await userService.getById(user1Id);
+		const user = await userService.getById(user1, user1Id);
 		expect(user.id).toBe(user1Id);
 		expect(user.email).toBe(email1);
 		expect(user.firstName).toBe(firstName);
@@ -82,7 +84,7 @@ describe("searching for user", async () => {
 	});
 
 	it("should find user by email", async () => {
-		const user = await userService.getByEmail(email1);
+		const user = await userService.getByEmail(user1, email1);
 		expect(user.id).toBe(user1Id);
 		expect(user.email).toBe(email1);
 		expect(user.firstName).toBe(firstName);
@@ -90,11 +92,17 @@ describe("searching for user", async () => {
 	});
 
 	it("should not find nonexisting user", async () => {
-		let user = await userService.getById(0);
-		expect(user).toBe(undefined);
+		await expect(
+			(async () => {
+				await userService.getById(user1, -1);
+			})(),
+		).rejects.toThrowError(errorMessages.userNotFound.message);
 
-		user = await userService.getByEmail("a@mail.com");
-		expect(user).toBe(undefined);
+		await expect(
+			(async () => {
+				await userService.getByEmail(user1, "a@mail.com");
+			})(),
+		).rejects.toThrowError(errorMessages.userNotFound.message);
 	});
 
 	describe("searching by name", () => {
@@ -181,13 +189,13 @@ describe("removing user", async () => {
 describe("friends", () => {
 	beforeAll(async () => {
 		adminId = await userService.addWithoutVerification(emailAdmin, firstName, lastName, "abc", adminRole());
-		admin = await userService.getById(adminId);
+		admin = await db.user.getById(adminId);
 
 		user2Id = await userService.addWithoutVerification(email2, firstName, lastName, "abc");
-		user2 = await userService.getById(user2Id);
+		user2 = await db.user.getById(user2Id);
 
 		user3Id = await userService.addWithoutVerification(email3, firstName, lastName, "abc");
-		user3 = await userService.getById(user3Id);
+		user3 = await db.user.getById(user3Id);
 	});
 
 	describe("adding friends", () => {
@@ -341,7 +349,7 @@ describe("friend requests", () => {
 
 	beforeAll(async () => {
 		user3Id = await userService.addWithoutVerification(email3, firstName, lastName, "abc");
-		user3 = await userService.getById(user3Id);
+		user3 = await db.user.getById(user3Id);
 	});
 
 	describe("creating requests", () => {
@@ -550,7 +558,7 @@ describe("friend requests", () => {
 	describe("accepting requests", async () => {
 		beforeAll(async () => {
 			user3Id = await userService.addWithoutVerification(email3, firstName, lastName, "abc");
-			user3 = await userService.getById(user3Id);
+			user3 = await db.user.getById(user3Id);
 		});
 
 		it("should not allow accepting non existing request", async () => {

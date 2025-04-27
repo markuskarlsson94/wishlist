@@ -2,13 +2,13 @@ import jwt from "jsonwebtoken";
 import logger from "../logger.js";
 import ErrorMessage from "../errors/ErrorMessage.js";
 import { passwordsMatching } from "../utilities/password.js";
-import userService, { canManageUser } from "./userService.js";
+import { canManageUser } from "./userService.js";
 import errorMessages from "../errors/errorMessages.js";
 import db from "../db.js";
 
 const authService = {
 	login: async (email, password) => {
-		const user = await userService.getByEmail(email);
+		const user = await db.user.getByEmail(email);
 
 		if (!user) {
 			throw new ErrorMessage(errorMessages.invalidEmailOrPassword);
@@ -68,7 +68,7 @@ const authService = {
 
 		try {
 			const decoded = jwt.verify(refreshToken, process.env.REFRESH_SECRET_KEY);
-			const user = await userService.getById(decoded.id);
+			const user = await db.user.getById(decoded.id);
 
 			if (!user) {
 				throw new ErrorMessage(errorMessages.invalidRefreshToken);

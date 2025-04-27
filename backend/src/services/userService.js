@@ -26,22 +26,46 @@ const userService = {
 		}
 	},
 
-	getById: async (id) => {
+	getById: async (user, userId) => {
+		let userToGet;
+
 		try {
-			return await db.user.getById(id);
+			userToGet = await db.user.getById(userId);
 		} catch (error) {
 			logger.error(error.message);
 			throw new ErrorMessage(errorMessages.serverError);
 		}
+
+		if (!userToGet) {
+			throw new ErrorMessage(errorMessages.userNotFound);
+		}
+
+		if (!canViewUser(user, userId)) {
+			throw new ErrorMessage(errorMessages.userNotFound);
+		}
+
+		return userToGet;
 	},
 
-	getByEmail: async (email) => {
+	getByEmail: async (user, email) => {
+		let userToGet;
+
 		try {
-			return await db.user.getByEmail(email);
+			userToGet = await db.user.getByEmail(email);
 		} catch (error) {
 			logger.error(error.message);
 			throw new ErrorMessage(errorMessages.serverError);
 		}
+
+		if (!userToGet) {
+			throw new ErrorMessage(errorMessages.userNotFound);
+		}
+
+		if (!canViewUser(user, userToGet.id)) {
+			throw new ErrorMessage(errorMessages.userNotFound);
+		}
+
+		return userToGet;
 	},
 
 	getByFullName: async (name, limit = 10, offset = 0) => {
@@ -187,7 +211,6 @@ const userService = {
 					await sendPasswordResetEmail(email, token);
 				}
 
-				console.log(token);
 				logger.info(`${email} requested password reset`);
 				return token;
 			}
@@ -413,6 +436,11 @@ const userService = {
 			}
 		},
 	},
+};
+
+export const canViewUser = async (user, userId) => {
+	// TODO: Implement logic when needed
+	return true;
 };
 
 export const canManageUser = (user, userId) => {

@@ -158,7 +158,7 @@ userRouter.put("/friendrequest/:id/accept", isAuthenticated(), async (req, res) 
 
 userRouter.get("/:userId", isAuthenticated(), async (req, res) => {
 	try {
-		const user = await userService.getById(Number(req.params.userId));
+		const user = await userService.getById(req.user, Number(req.params.userId));
 		res.status(200).json({ user });
 	} catch (error) {
 		res.status(error.status).json(error.message);

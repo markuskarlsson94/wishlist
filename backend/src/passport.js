@@ -2,7 +2,7 @@ import passport from "passport";
 import { Strategy as JwtStrategy, ExtractJwt } from "passport-jwt";
 import jwt from "jsonwebtoken";
 import { adminRole } from "./roles.js";
-import userService from "./services/userService.js";
+import db from "./db.js";
 
 const options = {
 	jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -11,7 +11,7 @@ const options = {
 
 passport.use(
 	new JwtStrategy(options, async (payload, done) => {
-		const user = await userService.getById(payload.id);
+		const user = await db.user.getById(payload.id);
 
 		if (user) {
 			// passport sets req.user to the object in the second parameter
