@@ -1,6 +1,7 @@
 import express from "express";
 import authService from "../services/authService.js";
 import { isAuthenticated } from "../passport.js";
+import { adminRole } from "../roles.js";
 
 const authRouter = express.Router();
 
@@ -40,7 +41,10 @@ authRouter.post("/refresh", async (req, res) => {
 
 authRouter.get("/me", isAuthenticated(), async (req, res) => {
 	res.json({
-		id: req.user.id,
+		user: {
+			id: req.user.id,
+			isAdmin: req.user.role === adminRole(),
+		},
 	});
 });
 
