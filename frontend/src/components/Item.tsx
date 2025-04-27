@@ -93,8 +93,8 @@ const Item = () => {
 		return <Button onClick={handleUnreserve}>Unreserve</Button>;
 	};
 
-	const handleAddComment = (data: CommentInputType) => {
-		addComment(data.comment);
+	const handleAddComment = (comment: CommentInputType) => {
+		addComment(comment);
 	};
 
 	const onSubmitItem = (input: ItemInputType) => {
