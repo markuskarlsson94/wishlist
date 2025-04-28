@@ -1147,6 +1147,41 @@ describe("comments", async () => {
 		).rejects.toThrowError(errorMessages.commentNotFound.message);
 	});
 
+	it("should not allow user to post comment as admin", async () => {
+		const commentId = await wishlistService.item.comment.add(
+			user1,
+			itemId,
+			user1Id,
+			"trying to post as admin",
+			true,
+		);
+
+		const comment = await wishlistService.item.comment.getById(user1, commentId);
+		expect(comment.asAdmin).toBe(false);
+
+		await db.wishlist.item.comment.remove(commentId);
+	});
+
+	it("should allow admins to post both regular and admin comments", async () => {
+		let commentId = await wishlistService.item.comment.add(
+			admin,
+			itemId,
+			adminId,
+			"trying to post as regular user",
+		);
+
+		let comment = await wishlistService.item.comment.getById(admin, commentId);
+		expect(comment.asAdmin).toBe(false);
+
+		await db.wishlist.item.comment.remove(commentId);
+
+		commentId = await wishlistService.item.comment.add(admin, itemId, adminId, "trying to post as admin", true);
+		comment = await wishlistService.item.comment.getById(admin, commentId);
+		expect(comment.asAdmin).toBe(true);
+
+		await db.wishlist.item.comment.remove(commentId);
+	});
+
 	describe("anonymous comments", () => {
 		beforeAll(async () => {
 			await wishlistService.item.comment.add(user1, itemId, user1Id, "test comment 1"); // user1 is wishlist owner
@@ -1154,23 +1189,26 @@ describe("comments", async () => {
 			await wishlistService.item.comment.add(user3, itemId, user3Id, "test comment 3");
 			await wishlistService.item.comment.add(user2, itemId, user2Id, "test comment 4");
 			await wishlistService.item.comment.add(admin, itemId, adminId, "test comment 5");
+			await wishlistService.item.comment.add(admin, itemId, adminId, "test comment 6", true);
 		});
 
 		it("should anonymize comments successfully for other user", async () => {
 			const comments = await wishlistService.item.comment.getByItemId(user4, itemId);
-			expect(comments.length).toBe(5);
+			expect(comments.length).toBe(6);
 
 			expect(comments[0].anonymizedUserId).toBe(undefined);
 			expect(comments[1].anonymizedUserId).toBe(1);
 			expect(comments[2].anonymizedUserId).toBe(2);
 			expect(comments[3].anonymizedUserId).toBe(1);
-			expect(comments[4].anonymizedUserId).toBe(undefined);
+			expect(comments[4].anonymizedUserId).toBe(3);
+			expect(comments[5].anonymizedUserId).toBe(undefined);
 
 			expect(comments[0].comment).toBe("test comment 1");
 			expect(comments[1].comment).toBe("test comment 2");
 			expect(comments[2].comment).toBe("test comment 3");
 			expect(comments[3].comment).toBe("test comment 4");
 			expect(comments[4].comment).toBe("test comment 5");
+			expect(comments[5].comment).toBe("test comment 6");
 
 			expect(comments.every((c) => c.user === undefined));
 			expect(comments.every((c) => c.isOwnComment === undefined));
@@ -1178,68 +1216,76 @@ describe("comments", async () => {
 
 		it("should anonymize own comment", async () => {
 			const comments = await wishlistService.item.comment.getByItemId(user3, itemId);
-			expect(comments.length).toBe(5);
+			expect(comments.length).toBe(6);
 
 			expect(comments[0].anonymizedUserId).toBe(undefined);
 			expect(comments[1].anonymizedUserId).toBe(1);
 			expect(comments[2].anonymizedUserId).toBe(2);
 			expect(comments[3].anonymizedUserId).toBe(1);
-			expect(comments[4].anonymizedUserId).toBe(undefined);
+			expect(comments[4].anonymizedUserId).toBe(3);
+			expect(comments[5].anonymizedUserId).toBe(undefined);
 
 			expect(comments[0].isOwnComment).toBe(false);
 			expect(comments[1].isOwnComment).toBe(false);
 			expect(comments[2].isOwnComment).toBe(true);
 			expect(comments[3].isOwnComment).toBe(false);
 			expect(comments[4].isOwnComment).toBe(false);
+			expect(comments[5].isOwnComment).toBe(false);
 
 			expect(comments[0].isItemOwner).toBe(true);
 			expect(comments[1].isItemOwner).toBe(false);
 			expect(comments[2].isItemOwner).toBe(false);
 			expect(comments[3].isItemOwner).toBe(false);
 			expect(comments[4].isItemOwner).toBe(false);
+			expect(comments[5].isItemOwner).toBe(false);
 
 			expect(comments[0].comment).toBe("test comment 1");
 			expect(comments[1].comment).toBe("test comment 2");
 			expect(comments[2].comment).toBe("test comment 3");
 			expect(comments[3].comment).toBe("test comment 4");
 			expect(comments[4].comment).toBe("test comment 5");
+			expect(comments[5].comment).toBe("test comment 6");
 
 			expect(comments.every((c) => c.user === undefined));
 		});
 
 		it("should preserve original user for admin", async () => {
 			const comments = await wishlistService.item.comment.getByItemId(admin, itemId);
-			expect(comments.length).toBe(5);
+			expect(comments.length).toBe(6);
 
 			expect(comments[0].user).toBe(user1Id);
 			expect(comments[1].user).toBe(user2Id);
 			expect(comments[2].user).toBe(user3Id);
 			expect(comments[3].user).toBe(user2Id);
 			expect(comments[4].user).toBe(adminId);
+			expect(comments[5].user).toBe(adminId);
 
 			expect(comments[0].anonymizedUserId).toBe(undefined);
 			expect(comments[1].anonymizedUserId).toBe(1);
 			expect(comments[2].anonymizedUserId).toBe(2);
 			expect(comments[3].anonymizedUserId).toBe(1);
-			expect(comments[4].anonymizedUserId).toBe(undefined);
+			expect(comments[4].anonymizedUserId).toBe(3);
 
 			expect(comments[0].isOwnComment).toBe(false);
 			expect(comments[1].isOwnComment).toBe(false);
 			expect(comments[2].isOwnComment).toBe(false);
 			expect(comments[3].isOwnComment).toBe(false);
 			expect(comments[4].isOwnComment).toBe(true);
+			expect(comments[5].isOwnComment).toBe(true);
 
 			expect(comments[0].isItemOwner).toBe(true);
 			expect(comments[1].isItemOwner).toBe(false);
 			expect(comments[2].isItemOwner).toBe(false);
 			expect(comments[3].isItemOwner).toBe(false);
 			expect(comments[4].isItemOwner).toBe(false);
+			expect(comments[5].isItemOwner).toBe(false);
 
 			expect(comments[0].comment).toBe("test comment 1");
 			expect(comments[1].comment).toBe("test comment 2");
 			expect(comments[2].comment).toBe("test comment 3");
 			expect(comments[3].comment).toBe("test comment 4");
 			expect(comments[4].comment).toBe("test comment 5");
+			expect(comments[5].comment).toBe("test comment 6");
 		});
 
 		it("should mark admin comments", async () => {
@@ -1249,7 +1295,8 @@ describe("comments", async () => {
 			expect(comments[1].isAdmin).toBe(false);
 			expect(comments[2].isAdmin).toBe(false);
 			expect(comments[3].isAdmin).toBe(false);
-			expect(comments[4].isAdmin).toBe(true);
+			expect(comments[4].isAdmin).toBe(false);
+			expect(comments[5].isAdmin).toBe(true);
 		});
 	});
 });
