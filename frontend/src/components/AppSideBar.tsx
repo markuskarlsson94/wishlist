@@ -8,6 +8,7 @@ import {
 	SidebarMenuBadge,
 	SidebarMenuButton,
 	SidebarMenuItem,
+	SidebarSeparator,
 	useSidebar,
 } from "@/components/ui/sidebar";
 import { useAuth } from "@/contexts/AuthContext";
@@ -17,11 +18,15 @@ import { Button } from "./ui/button";
 import { Bell, Heart, ListChecks, LogOut, LucideIcon, Scroll, Settings } from "lucide-react";
 import { useLogout } from "@/hooks/useLogout";
 import { useGetFriendRequests } from "@/hooks/friendRequest";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { useGetUser } from "@/hooks/user";
+import { APP_NAME } from "@/constants";
 
 const AppSidebar = () => {
 	const { userId } = useAuth();
 	const navigate = useNavigate();
 	const { isMobile, setOpenMobile } = useSidebar();
+	const { user } = useGetUser(userId);
 
 	const navigateTo = (to: string) => {
 		navigate(to);
@@ -100,6 +105,22 @@ const AppSidebar = () => {
 						</div>
 					</SidebarGroupContent>
 				</SidebarGroup>
+				{user && (
+					<>
+						<SidebarGroup>
+							<SidebarGroupContent>
+								<div className="flex flex-col gap-y-2">
+									<Avatar className="mx-auto w-14 h-14">
+										<AvatarImage src="./../../public/profile.png" />
+										<AvatarFallback />
+									</Avatar>
+									<p className="font-bold mx-auto">{`${user.firstName} ${user.lastName}`}</p>
+								</div>
+							</SidebarGroupContent>
+						</SidebarGroup>
+						<SidebarSeparator />
+					</>
+				)}
 				<SidebarGroup>
 					<SidebarGroupContent>
 						<SidebarMenu>
@@ -111,6 +132,7 @@ const AppSidebar = () => {
 					</SidebarGroupContent>
 				</SidebarGroup>
 			</SidebarContent>
+			<SidebarSeparator />
 			<SidebarFooter>
 				<SidebarMenuButton onClick={() => logout()} asChild>
 					<Button variant={"ghost"}>
