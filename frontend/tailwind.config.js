@@ -61,6 +61,16 @@ module.exports = {
 					ring: "hsl(var(--sidebar-ring))",
 				},
 			},
+			keyframes: {
+				"fade-slide-in": {
+					"0%": { opacity: "0", transform: "translateY(20px)" },
+					"50%": { opacity: "1", transform: "translateY(-5px)" },
+					"100%": { opacity: "1", transform: "translateY(0)" },
+				},
+			},
+			animation: {
+				"fade-slide-in": "fade-slide-in 0.4s ease-out forwards",
+			},
 		},
 	},
 	plugins: [require("tailwindcss-animate")],
