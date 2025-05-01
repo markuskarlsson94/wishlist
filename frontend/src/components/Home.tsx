@@ -16,9 +16,22 @@ const Home = () => {
 		navigate("/about");
 	};
 
-	const Feature = ({ title, description, Icon }: { title: string; description: string; Icon: LucideIcon }) => {
+	const Feature = ({
+		title,
+		description,
+		Icon,
+		delay = "0ms",
+	}: {
+		title: string;
+		description: string;
+		Icon: LucideIcon;
+		delay?: string;
+	}) => {
 		return (
-			<div className="flex flex-row gap-x-3 items-center">
+			<div
+				className="flex flex-row gap-x-3 items-center animate-fade-slide-in opacity-0"
+				style={{ animationDelay: delay }}
+			>
 				<Icon size={24} color={"#f87171"} />
 				<div className="max-w-[18rem]">
 					<p className="font-medium">{title}</p>
@@ -45,30 +58,34 @@ const Home = () => {
 						title="Create and Manage Wishlists"
 						description="Build your wishlist in seconds. Choose who can see it: Everyone, friends, or just you."
 						Icon={Scroll}
+						delay="500ms"
 					/>
 
 					<Feature
 						title="Connect with Friends"
 						description="Keep track of your friends wishlists and share yours. Make gift-giving personal and easy."
 						Icon={Heart}
+						delay="750ms"
 					/>
 
 					<Feature
 						title="Reserve Items"
 						description="Reserve items to avoid duplicate gifts. Only you knows what you reserved."
 						Icon={ListChecks}
+						delay="1000ms"
 					/>
 
 					<Feature
 						title="Anonymous Comments"
 						description="Ask anonymous questions about wishlist items. No one will know it’s you."
 						Icon={Ghost}
+						delay="1250ms"
 					/>
 				</div>
 			</div>
 			<div className="h-12" />
 			<div className="flex justify-center">
-				<div className="flex gap-x-4">
+				<div className="flex gap-x-4 animate-fade-slide-in opacity-0" style={{ animationDelay: "2250ms" }}>
 					<RegisterDialog
 						setRegistrationConfirmedDialogOpen={setRegistrationConfirmedDialogOpen}
 						setRegistredEmail={setRegistredEmail}
