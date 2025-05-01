@@ -7,6 +7,7 @@ import { NavLink } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { ScrollArea } from "./ui/scroll-area";
 import { Avatar, AvatarImage } from "./ui/avatar";
+import { AvatarFallback } from "@radix-ui/react-avatar";
 
 const UserSearchBar = () => {
 	const [query, setQuery] = useState<string>("");
@@ -70,7 +71,8 @@ const UserSearchBar = () => {
 				<NavLink to={`/user/${id}`} onClick={() => setResultsOpen(false)}>
 					<div className="flex px-3 py-2 hover:bg-gray-100 items-center gap-3">
 						<Avatar className="w-8 h-8">
-							<AvatarImage src="./../public/profile.png" />
+							<AvatarImage src="./../../public/profile.png" />
+							<AvatarFallback />
 						</Avatar>
 						<p className="">
 							{user.firstName} {user.lastName} {viewer === id ? "(You)" : ""}
