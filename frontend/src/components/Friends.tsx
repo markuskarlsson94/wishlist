@@ -10,6 +10,7 @@ import { Card, CardHeader, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
 import HoverCard from "./HoverCard";
 import FriendType from "@/types/FriendType";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
 const ReceivedFriendRequest = ({ friendRequest }: { friendRequest: FriendRequest }) => {
 	const { userId } = useAuth();
@@ -32,7 +33,13 @@ const ReceivedFriendRequest = ({ friendRequest }: { friendRequest: FriendRequest
 					<CardTitle>
 						<div className="flex justify-between items-center">
 							<NavLink to={`/user/${friendRequest.sender}`}>
-								{user?.firstName} {user?.lastName}
+								<div className="flex gap-x-3 items-center">
+									<Avatar>
+										<AvatarImage src="./../../public/profile.png" />
+										<AvatarFallback />
+									</Avatar>
+									{user?.firstName} {user?.lastName}
+								</div>
 							</NavLink>
 							<div className="flex gap-x-3">
 								<Button onClick={handleAccept}>Accept</Button>
@@ -62,7 +69,13 @@ const SentFriendRequest = ({ friendRequest }: { friendRequest: FriendRequest }) 
 					<CardTitle>
 						<div className="flex justify-between items-center">
 							<NavLink to={`/user/${friendRequest.receiver}`}>
-								{user?.firstName} {user?.lastName}
+								<div className="flex gap-x-3 items-center">
+									<Avatar>
+										<AvatarImage src="./../../public/profile.png" />
+										<AvatarFallback />
+									</Avatar>
+									{user?.firstName} {user?.lastName}
+								</div>
 							</NavLink>
 							<Button onClick={handleCancel}>Cancel</Button>
 						</div>
@@ -81,10 +94,16 @@ const Friend = ({ friend }: { friend: FriendType }) => {
 			<HoverCard>
 				<CardHeader>
 					<CardTitle className="flex justify-between items-center">
-						<p>
-							{friend?.firstName} {friend?.lastName}
-							{friend.userId === userId && <span> (You)</span>}
-						</p>
+						<div className="flex gap-x-3 items-center">
+							<Avatar>
+								<AvatarImage src="./../../public/profile.png" />
+								<AvatarFallback />
+							</Avatar>
+							<div>
+								{friend?.firstName} {friend?.lastName}
+								{friend.userId === userId && <span> (You)</span>}
+							</div>
+						</div>
 					</CardTitle>
 				</CardHeader>
 			</HoverCard>
