@@ -102,8 +102,6 @@ const userService = {
 		const token = crypto.randomBytes(64).toString("hex");
 
 		if (sendEmail) {
-			// TODO: get url from env file
-			const link = `http://localhost:5137/auth/verify?token=${token}`;
 			await sendVerificationEmail(email, token);
 		}
 
