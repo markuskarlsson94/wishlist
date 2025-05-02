@@ -167,17 +167,24 @@ const userService = {
 		}
 	},
 
-	updateName: async (user, userId, firstName, lastName) => {
-		if (!canManageUser(user, userId)) {
-			throw new ErrorMessage(errorMessages.unauthorizedToUpdateUserName);
+	update: async (user, userId, data) => {
+		if (!(await canViewUser(user, userId))) {
+			throw new ErrorMessage(errorMessages.userNotFound);
 		}
 
+		if (!canManageUser(user, userId)) {
+			throw new ErrorMessage(errorMessages.unauthorizedToUpdateUser);
+		}
+
+		const { id, email, password, role, createdAt, updatedAt, ...rest } = data;
+		if (Object.keys(rest).length === 0) return;
+
 		try {
-			await db.user.updateName(userId, firstName, lastName);
-			logger.info(`User [id = ${userId}] updated user name`);
+			await db.user.update(userId, rest);
+			logger.info(`User [id = ${userId}] updated`);
 		} catch (error) {
 			logger.error(error.message);
-			throw new ErrorMessage(errorMessages.unableToUpdateUserName);
+			throw new ErrorMessage(errorMessages.unableToUpdateUser);
 		}
 	},
 
