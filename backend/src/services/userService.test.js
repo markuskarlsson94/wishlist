@@ -38,7 +38,12 @@ describe("adding user", () => {
 	});
 
 	it("should add user with correct info", async () => {
-		user1Id = await userService.addWithoutVerification(email1, firstName, lastName, "abc");
+		user1Id = await userService.addWithoutVerification({
+			email: email1,
+			firstName,
+			lastName,
+			plaintextPassword: "abc",
+		});
 		expect(user1Id).toBeGreaterThan(0);
 
 		user1 = await db.user.getById(user1Id);
@@ -60,17 +65,65 @@ describe("adding user", () => {
 	it("should not allow adding user with existing email", async () => {
 		await expect(
 			(async () => {
-				await userService.addWithoutVerification(email1, "Foo", "Bar", "abc");
+				await userService.addWithoutVerification({
+					email: email1,
+					firstName: "Foo",
+					lastName: "Bar",
+					plaintextPassword: "abc",
+				});
 			})(),
 		).rejects.toThrowError(errorMessages.userAlreadyExists.message);
 	});
 
 	it("should add user with different email but same name", async () => {
-		user2Id = await userService.addWithoutVerification(email2, firstName, lastName, "abc");
+		user2Id = await userService.addWithoutVerification({
+			email: email2,
+			firstName,
+			lastName,
+			plaintextPassword: "abc",
+		});
 		expect(user2Id).toBeGreaterThan(0);
 
 		user2 = await db.user.getById(user2Id);
 		expect(user2.id).toBe(user2Id);
+	});
+
+	it("should not add user when supplying missing properties", async () => {
+		await expect(
+			(async () => {
+				await userService.addWithoutVerification({ firstName, lastName, plaintextPassword: "abc" });
+			})(),
+		).rejects.toThrowError(errorMessages.missingUserProperties.message);
+
+		await expect(
+			(async () => {
+				await userService.addWithoutVerification({ email: email1, lastName, plaintextPassword: "abc" });
+			})(),
+		).rejects.toThrowError(errorMessages.missingUserProperties.message);
+
+		await expect(
+			(async () => {
+				await userService.addWithoutVerification({ email: email1, firstName, plaintextPassword: "abc" });
+			})(),
+		).rejects.toThrowError(errorMessages.missingUserProperties.message);
+
+		await expect(
+			(async () => {
+				await userService.addWithoutVerification({ email: email1, firstName, lastName });
+			})(),
+		).rejects.toThrowError(errorMessages.missingUserProperties.message);
+
+		// misspelled "email" as "mail"
+		await expect(
+			(async () => {
+				await userService.addWithoutVerification({
+					mail: email1,
+					firstName,
+					lastName,
+					plaintextPassword: "abc",
+				});
+			})(),
+		).rejects.toThrowError(errorMessages.missingUserProperties.message);
 	});
 });
 
@@ -111,9 +164,24 @@ describe("searching for user", async () => {
 		let id3;
 
 		beforeAll(async () => {
-			id1 = await userService.addWithoutVerification("mail@mail.com", "Nils", "Malandsson", "abc");
-			id2 = await userService.addWithoutVerification("mail2@mail.com", "Truls", "Minipizza", "abc");
-			id3 = await userService.addWithoutVerification("mail3@mail.com", "Nils-Jörgen", "Json", "abc");
+			id1 = await userService.addWithoutVerification({
+				email: "mail@mail.com",
+				firstName: "Nils",
+				lastName: "Malandsson",
+				plaintextPassword: "abc",
+			});
+			id2 = await userService.addWithoutVerification({
+				email: "mail2@mail.com",
+				firstName: "Truls",
+				lastName: "Minipizza",
+				plaintextPassword: "abc",
+			});
+			id3 = await userService.addWithoutVerification({
+				email: "mail3@mail.com",
+				firstName: "Nils-Jörgen",
+				lastName: "Json",
+				plaintextPassword: "abc",
+			});
 		});
 
 		it("should find by searching for first name", async () => {
@@ -188,13 +256,29 @@ describe("removing user", async () => {
 
 describe("friends", () => {
 	beforeAll(async () => {
-		adminId = await userService.addWithoutVerification(emailAdmin, firstName, lastName, "abc", adminRole());
+		adminId = await userService.addWithoutVerification({
+			email: emailAdmin,
+			firstName,
+			lastName,
+			plaintextPassword: "abc",
+			role: adminRole(),
+		});
 		admin = await db.user.getById(adminId);
 
-		user2Id = await userService.addWithoutVerification(email2, firstName, lastName, "abc");
+		user2Id = await userService.addWithoutVerification({
+			email: email2,
+			firstName,
+			lastName,
+			plaintextPassword: "abc",
+		});
 		user2 = await db.user.getById(user2Id);
 
-		user3Id = await userService.addWithoutVerification(email3, firstName, lastName, "abc");
+		user3Id = await userService.addWithoutVerification({
+			email: email3,
+			firstName,
+			lastName,
+			plaintextPassword: "abc",
+		});
 		user3 = await db.user.getById(user3Id);
 	});
 
@@ -348,7 +432,12 @@ describe("friend requests", () => {
 	let requestId;
 
 	beforeAll(async () => {
-		user3Id = await userService.addWithoutVerification(email3, firstName, lastName, "abc");
+		user3Id = await userService.addWithoutVerification({
+			email: email3,
+			firstName,
+			lastName,
+			plaintextPassword: "abc",
+		});
 		user3 = await db.user.getById(user3Id);
 	});
 
@@ -557,7 +646,12 @@ describe("friend requests", () => {
 
 	describe("accepting requests", async () => {
 		beforeAll(async () => {
-			user3Id = await userService.addWithoutVerification(email3, firstName, lastName, "abc");
+			user3Id = await userService.addWithoutVerification({
+				email: email3,
+				firstName,
+				lastName,
+				plaintextPassword: "abc",
+			});
 			user3 = await db.user.getById(user3Id);
 		});
 
@@ -693,10 +787,20 @@ describe("password update", () => {
 	let user2Id;
 
 	beforeAll(async () => {
-		user1Id = await userService.addWithoutVerification(user1Email, firstName, lastName, password);
+		user1Id = await userService.addWithoutVerification({
+			email: user1Email,
+			firstName,
+			lastName,
+			plaintextPassword: password,
+		});
 		user1 = await db.user.getById(user1Id);
 
-		user2Id = await userService.addWithoutVerification(user2Email, firstName, lastName, password);
+		user2Id = await userService.addWithoutVerification({
+			email: user2Email,
+			firstName,
+			lastName,
+			plaintextPassword: password,
+		});
 		user2 = await db.user.getById(user2Id);
 	});
 

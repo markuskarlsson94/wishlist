@@ -81,7 +81,15 @@ const userService = {
 		}
 	},
 
-	add: async (email, firstName, lastName, plaintextPassword, role = userRole(), sendEmail = true) => {
+	add: async (user, sendEmail = true) => {
+		let { email, firstName, lastName, plaintextPassword, role } = user;
+
+		if (!email || !firstName || !lastName || !plaintextPassword) {
+			throw new ErrorMessage(errorMessages.missingUserProperties);
+		}
+
+		if (!role) role = userRole();
+
 		if (await userService.exists(email)) {
 			throw new ErrorMessage(errorMessages.userAlreadyExists);
 		}
@@ -114,7 +122,15 @@ const userService = {
 		}
 	},
 
-	addWithoutVerification: async (email, firstName, lastName, plaintextPassword, role = userRole()) => {
+	addWithoutVerification: async (user) => {
+		let { email, firstName, lastName, plaintextPassword, role } = user;
+
+		if (!email || !firstName || !lastName || !plaintextPassword) {
+			throw new ErrorMessage(errorMessages.missingUserProperties);
+		}
+
+		if (!role) role = userRole();
+
 		if (await userService.exists(email)) {
 			throw new ErrorMessage(errorMessages.userAlreadyExists);
 		}

@@ -10,7 +10,7 @@ userRouter.post("/register", async (req, res) => {
 	const { email, firstName, lastName, password } = req.body;
 
 	try {
-		const token = await userService.add(email, firstName, lastName, password);
+		const token = await userService.add({ email, firstName, lastName, plaintextPassword: password });
 		console.log(token);
 		res.status(201).json({ message: "User registered successfully" });
 	} catch (error) {

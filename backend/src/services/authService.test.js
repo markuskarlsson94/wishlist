@@ -22,8 +22,8 @@ beforeAll(async () => {
 	await db.init();
 	await initUserRoles();
 
-	await userService.addWithoutVerification(email1, firstName, lastName, password);
-	await userService.addWithoutVerification(email2, firstName, lastName, password);
+	await userService.addWithoutVerification({ email: email1, firstName, lastName, plaintextPassword: password });
+	await userService.addWithoutVerification({ email: email2, firstName, lastName, plaintextPassword: password });
 
 	admin = { role: adminRole() };
 });
@@ -96,7 +96,10 @@ describe("verification", () => {
 	let token;
 
 	it("should add user to waitlist after registration and receiving token", async () => {
-		token = await userService.add(email, firstName, lastName, password, userRole(), false);
+		token = await userService.add(
+			{ email, firstName, lastName, plaintextPassword: password, role: userRole() },
+			false,
+		);
 		expect(token).toBeTruthy();
 
 		const pendingUser = await db.waitlist.getUserByToken(token);
@@ -109,9 +112,9 @@ describe("verification", () => {
 	});
 
 	it("should not be possible to register already registred user", async () => {
-		await expect(userService.add(email, firstName, lastName, password, userRole(), false)).rejects.toThrowError(
-			errorMessages.userAlreadyExists.message,
-		);
+		await expect(
+			userService.add({ email, firstName, lastName, plaintextPassword: password, role: userRole() }, false),
+		).rejects.toThrowError(errorMessages.userAlreadyExists.message);
 	});
 
 	it("should not be possible to login before verification", async () => {
