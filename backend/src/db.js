@@ -185,7 +185,7 @@ const db = {
 				table.timestamps(true, true, true);
 			});
 
-			logger.info("Database initiated.");
+			logger.info("Database initiated");
 		} catch (error) {
 			logger.error(error.message);
 		}
