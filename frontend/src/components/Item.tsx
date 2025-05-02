@@ -29,8 +29,6 @@ import {
 import BackButton from "./BackButton";
 import EditIcon from "./icons/EditIcon";
 import DeleteIcon from "./icons/DeleteIcon";
-import { H3, P } from "./ui/typography";
-import { Separator } from "./ui/separator";
 
 const Item = () => {
 	const [isOwner, setIsOwner] = useState<boolean>(false);
@@ -192,7 +190,7 @@ const Item = () => {
 				)}
 			</div>
 			<div className="my-5">
-				<P>{item?.description}</P>
+				<p>{item?.description}</p>
 			</div>
 			{item?.link && (
 				<Button variant={"link"} className={"w-full whitespace-normal text-left"}>
