@@ -149,7 +149,7 @@ const User = () => {
 				<div className="flex justify-between items-center">
 					<div className="flex gap-x-3 items-center">
 						<Avatar>
-							<AvatarImage src="./../public/profile.png" />
+							<AvatarImage src={user?.profilePicture} />
 							<AvatarFallback />
 						</Avatar>
 						<p className="text-large font-medium">

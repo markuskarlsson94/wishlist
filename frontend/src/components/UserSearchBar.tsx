@@ -71,7 +71,7 @@ const UserSearchBar = () => {
 				<NavLink to={`/user/${id}`} onClick={() => setResultsOpen(false)}>
 					<div className="flex px-3 py-2 hover:bg-gray-100 items-center gap-3">
 						<Avatar className="w-8 h-8">
-							<AvatarImage src="./../../public/profile.png" />
+							<AvatarImage src={user.profilePicture} />
 							<AvatarFallback />
 						</Avatar>
 						<p className="">

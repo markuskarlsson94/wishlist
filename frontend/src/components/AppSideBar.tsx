@@ -111,7 +111,7 @@ const AppSidebar = () => {
 							<SidebarGroupContent>
 								<div className="flex flex-col gap-y-2">
 									<Avatar className="mx-auto w-14 h-14">
-										<AvatarImage src="./../../public/profile.png" />
+										<AvatarImage src={user.profilePicture} />
 										<AvatarFallback />
 									</Avatar>
 									<p className="font-bold mx-auto">{`${user.firstName} ${user.lastName}`}</p>

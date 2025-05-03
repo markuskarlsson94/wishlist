@@ -35,7 +35,7 @@ const ReceivedFriendRequest = ({ friendRequest }: { friendRequest: FriendRequest
 							<NavLink to={`/user/${friendRequest.sender}`}>
 								<div className="flex gap-x-3 items-center">
 									<Avatar>
-										<AvatarImage src="./../../public/profile.png" />
+										<AvatarImage src={user?.profilePicture} />
 										<AvatarFallback />
 									</Avatar>
 									{user?.firstName} {user?.lastName}
@@ -71,7 +71,7 @@ const SentFriendRequest = ({ friendRequest }: { friendRequest: FriendRequest }) 
 							<NavLink to={`/user/${friendRequest.receiver}`}>
 								<div className="flex gap-x-3 items-center">
 									<Avatar>
-										<AvatarImage src="./../../public/profile.png" />
+										<AvatarImage src={user?.profilePicture} />
 										<AvatarFallback />
 									</Avatar>
 									{user?.firstName} {user?.lastName}
@@ -96,7 +96,7 @@ const Friend = ({ friend }: { friend: FriendType }) => {
 					<CardTitle className="flex justify-between items-center">
 						<div className="flex gap-x-3 items-center">
 							<Avatar>
-								<AvatarImage src="./../../public/profile.png" />
+								<AvatarImage src={friend?.profilePicture} />
 								<AvatarFallback />
 							</Avatar>
 							<div>
