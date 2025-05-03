@@ -17,6 +17,12 @@ export const useGetFriends = (userId: number | undefined) => {
 
 	const friends = data?.data.friends || [];
 
+	for (let friend of friends) {
+		if (!friend.profilePicture) {
+			friend.profilePicture = "./../../public/profile.png";
+		}
+	}
+
 	return {
 		friends,
 		isSuccess,

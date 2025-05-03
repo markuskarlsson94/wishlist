@@ -34,6 +34,10 @@ export const useGetUser = (id: number | undefined) => {
 		enabled: !!id,
 	});
 
+	if (data && !data?.data.user.profilePicture) {
+		data.data.user.profilePicture = "./../../public/profile.png";
+	}
+
 	return {
 		user: data?.data.user,
 		isSuccess,
