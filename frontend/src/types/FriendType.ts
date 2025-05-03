@@ -3,6 +3,7 @@ type FriendType = {
 	createdAt: Date;
 	firstName: string;
 	lastName: string;
+	profilePicture: string;
 };
 
 export default FriendType;
