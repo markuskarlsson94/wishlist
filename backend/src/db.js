@@ -81,6 +81,7 @@ const db = {
 				table.string("lastName").notNullable();
 				table.string("password").notNullable();
 				table.integer("role").notNullable();
+				table.string("profilePicture");
 
 				table.foreign("role").references("id").inTable(userRolesTable);
 				table.timestamps(true, true, true);
@@ -171,6 +172,7 @@ const db = {
 				table.string("lastName").notNullable();
 				table.string("password").notNullable();
 				table.integer("role").notNullable();
+				table.string("profilePicture");
 				table.string("token").notNullable();
 
 				table.timestamps(true, true, true);
@@ -262,7 +264,7 @@ const db = {
 	},
 
 	waitlist: {
-		add: async (email, firstName, lastName, plaintextPassword, role, token) => {
+		add: async (email, firstName, lastName, plaintextPassword, role, profilePicture, token) => {
 			const hashedPassword = await generatePassword(plaintextPassword);
 
 			await dbClient(waitlistTable).insert({
@@ -271,6 +273,7 @@ const db = {
 				lastName,
 				password: hashedPassword,
 				role,
+				profilePicture,
 				token,
 			});
 		},
@@ -284,18 +287,18 @@ const db = {
 		},
 
 		admit: async (id) => {
-			const { email, firstName, lastName, password, role } = await dbClient(waitlistTable)
+			const { email, firstName, lastName, password, role, profilePicture } = await dbClient(waitlistTable)
 				.select("*")
 				.where({ id })
 				.first();
 
-			await dbClient(userTable).insert({ email, firstName, lastName, password, role });
+			await dbClient(userTable).insert({ email, firstName, lastName, password, role, profilePicture });
 			await dbClient(waitlistTable).delete().where({ email });
 		},
 	},
 
 	user: {
-		add: async (email, firstName, lastName, plaintextPassword, role) => {
+		add: async (email, firstName, lastName, plaintextPassword, role, profilePicture) => {
 			const hashedPassword = await generatePassword(plaintextPassword);
 
 			return (
@@ -306,6 +309,7 @@ const db = {
 						lastName,
 						password: hashedPassword,
 						role,
+						profilePicture,
 					})
 					.returning("id")
 			)[0].id;
@@ -415,7 +419,7 @@ const db = {
 			getByUserId: async (id) => {
 				const users1 = (
 					await dbClient(`${friendsTable} as f`)
-						.select("f.user2", "f.createdAt", "u.firstName", "u.lastName")
+						.select("f.user2", "f.createdAt", "u.firstName", "u.lastName", "u.profilePicture")
 						.innerJoin(`${userTable} as u`, "u.id", "user2")
 						.where({ user1: id })
 				).map((user) => {
@@ -424,12 +428,13 @@ const db = {
 						createdAt: user.createdAt,
 						firstName: user.firstName,
 						lastName: user.lastName,
+						profilePicture: user.profilePicture,
 					};
 				});
 
 				const users2 = (
 					await dbClient(`${friendsTable} as f`)
-						.select("f.user1", "f.createdAt", "u.firstName", "u.lastName")
+						.select("f.user1", "f.createdAt", "u.firstName", "u.lastName", "u.profilePicture")
 						.innerJoin(`${userTable} as u`, "u.id", "user1")
 						.where({ user2: id })
 				).map((user) => {
@@ -438,6 +443,7 @@ const db = {
 						createdAt: user.createdAt,
 						firstName: user.firstName,
 						lastName: user.lastName,
+						profilePicture: user.profilePicture,
 					};
 				});
 

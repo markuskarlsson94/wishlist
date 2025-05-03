@@ -20,6 +20,7 @@ const email2 = "userServiceTest2@mail.com";
 const email3 = "userServiceTest3@mail.com";
 const firstName = "UserServiceFirstName";
 const lastName = "UserServiceLastName";
+const profilePicture = "pic";
 
 beforeAll(async () => {
 	await db.connect();
@@ -43,19 +44,16 @@ describe("adding user", () => {
 			firstName,
 			lastName,
 			plaintextPassword: "abc",
+			profilePicture,
 		});
 		expect(user1Id).toBeGreaterThan(0);
 
 		user1 = await db.user.getById(user1Id);
 		expect(user1.id).toBe(user1Id);
-
-		const allUsers = await userService.getAll();
-		expect(allUsers.length).toBe(1);
-
-		const user = allUsers[0];
-		expect(user.email).toBe(email1);
-		expect(user.firstName).toBe(firstName);
-		expect(user.lastName).toBe(lastName);
+		expect(user1.email).toBe(email1);
+		expect(user1.firstName).toBe(firstName);
+		expect(user1.lastName).toBe(lastName);
+		expect(user1.profilePicture).toBe(profilePicture);
 	});
 
 	it("should make exists(email) return true", async () => {

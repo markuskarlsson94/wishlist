@@ -13,6 +13,7 @@ const email2 = "authServiceTest2@mail.com";
 const firstName = "AuthServiceFirstName";
 const lastName = "AuthServiceLastName";
 const password = "abc";
+const profilePicture = "pic";
 let refreshToken;
 const invalidRefreshToken =
 	"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
@@ -97,7 +98,7 @@ describe("verification", () => {
 
 	it("should add user to waitlist after registration and receiving token", async () => {
 		token = await userService.add(
-			{ email, firstName, lastName, plaintextPassword: password, role: userRole() },
+			{ email, firstName, lastName, plaintextPassword: password, role: userRole(), profilePicture },
 			false,
 		);
 		expect(token).toBeTruthy();
@@ -140,6 +141,7 @@ describe("verification", () => {
 
 		const user = await db.user.getByEmail(email);
 		expect(user.email).toBe(email);
+		expect(user.profilePicture).toBe(profilePicture);
 
 		id = user.id;
 	});

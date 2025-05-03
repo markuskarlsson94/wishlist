@@ -82,7 +82,7 @@ const userService = {
 	},
 
 	add: async (user, sendEmail = true) => {
-		let { email, firstName, lastName, plaintextPassword, role } = user;
+		let { email, firstName, lastName, plaintextPassword, role, profilePicture } = user;
 
 		if (!email || !firstName || !lastName || !plaintextPassword) {
 			throw new ErrorMessage(errorMessages.missingUserProperties);
@@ -114,7 +114,7 @@ const userService = {
 		}
 
 		try {
-			await db.waitlist.add(email, firstName, lastName, plaintextPassword, role, token);
+			await db.waitlist.add(email, firstName, lastName, plaintextPassword, role, profilePicture, token);
 			return token;
 		} catch (error) {
 			logger.error(error.message);
@@ -123,7 +123,7 @@ const userService = {
 	},
 
 	addWithoutVerification: async (user) => {
-		let { email, firstName, lastName, plaintextPassword, role } = user;
+		let { email, firstName, lastName, plaintextPassword, role, profilePicture } = user;
 
 		if (!email || !firstName || !lastName || !plaintextPassword) {
 			throw new ErrorMessage(errorMessages.missingUserProperties);
@@ -136,7 +136,7 @@ const userService = {
 		}
 
 		try {
-			return await db.user.add(email, firstName, lastName, plaintextPassword, role);
+			return await db.user.add(email, firstName, lastName, plaintextPassword, role, profilePicture);
 		} catch (error) {
 			logger.error(error.message);
 			throw new ErrorMessage(errorMessages.unableToAddNewUser);
