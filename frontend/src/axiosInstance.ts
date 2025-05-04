@@ -3,8 +3,11 @@ import axios from "axios";
 let isRefreshing: boolean = false;
 let requestQueue: Array<(error?: any) => void> = [];
 
+const isProduction = import.meta.env.prod;
 const axiosInstance = axios.create({
-	baseURL: `${import.meta.env.VITE_API_URL}/api/v1`,
+	baseURL: isProduction
+		? import.meta.env.VITE_API_URL
+		: `${import.meta.env.VITE_API_URL}:${import.meta.env.VITE_BACKEND_PORT}/api/v1`,
 });
 
 axiosInstance.interceptors.request.use(
