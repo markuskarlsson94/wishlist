@@ -145,117 +145,117 @@ const errorMessages = {
 	},
 
 	unauthorizedToDeleteOtherUser: {
-		status: 401,
+		status: 403,
 		message: "Unauthorized to delete other user",
 	},
 
 	unauthorizedToAddWishlist: {
-		status: 401,
+		status: 403,
 		message: "Unauthorized to add wishlist",
 	},
 
 	unauthorizedToDeleteWishlist: {
-		status: 401,
+		status: 403,
 		message: "Unauthorized to delete wishlist",
 	},
 
 	unauthorizedToUpdateWishlist: {
-		status: 401,
+		status: 403,
 		message: "Unauthorized to update wishlist",
 	},
 
 	unauthorizedToUpdateWishlistItem: {
-		status: 401,
+		status: 403,
 		message: "Unauthorized to update wishlist item",
 	},
 
 	unauthorizedToClearReservations: {
-		status: 401,
+		status: 403,
 		message: "Unauthorized to clear reservations",
 	},
 
 	unauthorizedToRemoveReservation: {
-		status: 401,
+		status: 403,
 		message: "Unauthorized to remove reservation",
 	},
 
 	unauthorizedToViewReservations: {
-		status: 401,
+		status: 403,
 		message: "Unauthorized to view reservations",
 	},
 
 	unauthorizedToAddFriend: {
-		status: 401,
+		status: 403,
 		message: "Unauthorized to add friend",
 	},
 
 	unauthorizedToRemoveFriend: {
-		status: 401,
+		status: 403,
 		message: "Unauthorized to remove friend",
 	},
 
 	unauthorizedToViewFriends: {
-		status: 401,
+		status: 403,
 		message: "Unauthorized to view friends",
 	},
 
 	unauthorizedToCreateFriendRequest: {
-		status: 401,
+		status: 403,
 		message: "Unauthorized to create friend request",
 	},
 
 	unauthorizedToRemoveFriendRequest: {
-		status: 401,
+		status: 403,
 		message: "Unauthorized to remove friend request",
 	},
 
 	unauthorizedToAcceptFriendRequest: {
-		status: 401,
+		status: 403,
 		message: "Unauthorized to accept friend request",
 	},
 
 	unauthorizedToGetFriendRequest: {
-		status: 401,
+		status: 403,
 		message: "Unauthorized to get friend request",
 	},
 
 	unauthorizedToGetFriendRequests: {
-		status: 401,
+		status: 403,
 		message: "Unauthorized to get friend requests",
 	},
 
 	unauthorizedToAddComment: {
-		status: 401,
+		status: 403,
 		message: "Unauthorized to add comment",
 	},
 
 	unauthorizedToRemoveComment: {
-		status: 401,
+		status: 403,
 		message: "Unauthorized to remove comment",
 	},
 
 	unauthorizedToUpdateComment: {
-		status: 401,
+		status: 403,
 		message: "Unauthorized to update comment",
 	},
 
 	unauthorizedToGetComments: {
-		status: 401,
+		status: 403,
 		message: "Unauthorized to get comments",
 	},
 
 	unauthorizedToLogout: {
-		status: 401,
+		status: 403,
 		message: "Unauthorized to logout",
 	},
 
 	unauthorizedToUpdatePassword: {
-		status: 401,
+		status: 403,
 		message: "Unauthorized to update password",
 	},
 
 	unauthorizedToUpdateUser: {
-		status: 401,
+		status: 403,
 		message: "Unauthorized to update user",
 	},
 
