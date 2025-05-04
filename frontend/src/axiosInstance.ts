@@ -1,4 +1,5 @@
 import axios from "axios";
+import { StatusCodes } from "http-status-codes";
 
 let isRefreshing: boolean = false;
 let requestQueue: Array<(error?: any) => void> = [];
@@ -34,7 +35,11 @@ axiosInstance.interceptors.response.use(
 	async (error) => {
 		const originalRequest = error.config;
 
-		if (error.response.status === 401 && !originalRequest._retry && !originalRequest.url.includes("/auth/login")) {
+		if (
+			error.response.status === StatusCodes.UNAUTHORIZED &&
+			!originalRequest._retry &&
+			!originalRequest.url.includes("/auth/login")
+		) {
 			if (isRefreshing) {
 				return new Promise((resolve, reject) => {
 					requestQueue.push(() => {
@@ -57,7 +62,7 @@ axiosInstance.interceptors.response.use(
 				requestQueue.forEach((callback) => callback(Promise.reject(err)));
 				requestQueue = [];
 
-				if (err?.response?.status === 401) {
+				if (err?.response?.status === StatusCodes) {
 					window.location.href = "/";
 					localStorage.removeItem("accessToken");
 					localStorage.removeItem("refreshToken");

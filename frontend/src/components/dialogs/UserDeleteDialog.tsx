@@ -16,6 +16,7 @@ import { useNavigate } from "react-router-dom";
 import { useDeleteUser } from "@/hooks/user";
 import LogoutPromptDialog from "./LogoutPromptDialog";
 import { useState } from "react";
+import { StatusCodes } from "http-status-codes";
 
 const UserDeleteDialog = () => {
 	const { userId, setIsAuthenticated } = useAuth();
@@ -28,7 +29,7 @@ const UserDeleteDialog = () => {
 	};
 
 	const onDeleteUserError = (error: AxiosError) => {
-		if (error.response?.status === 403) {
+		if (error.response?.status === StatusCodes.FORBIDDEN) {
 			setShowLogoutPromptDialogOpen(true);
 		}
 	};

@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { useLogin } from "@/hooks/useLogin";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AxiosError } from "axios";
+import { StatusCodes } from "http-status-codes";
 import { Info } from "lucide-react";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -36,7 +37,7 @@ const LoginForm = (config?: LoginConfig) => {
 	const password = form.watch("password");
 
 	const onError = (error: AxiosError) => {
-		if (error.response?.status === 401) {
+		if (error.response?.status === StatusCodes.UNAUTHORIZED) {
 			setWarning("Unknown email or password");
 		} else {
 			setWarning("Unknown error");
