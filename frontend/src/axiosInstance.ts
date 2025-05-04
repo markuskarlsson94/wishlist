@@ -34,7 +34,7 @@ axiosInstance.interceptors.response.use(
 	async (error) => {
 		const originalRequest = error.config;
 
-		if (error.response.status === 401 && !originalRequest._retry) {
+		if (error.response.status === 401 && !originalRequest._retry && !originalRequest.url.includes("/auth/login")) {
 			if (isRefreshing) {
 				return new Promise((resolve, reject) => {
 					requestQueue.push(() => {
@@ -57,7 +57,7 @@ axiosInstance.interceptors.response.use(
 				requestQueue.forEach((callback) => callback(Promise.reject(err)));
 				requestQueue = [];
 
-				if (err.response.status === 401) {
+				if (err?.response?.status === 401) {
 					window.location.href = "/";
 					localStorage.removeItem("accessToken");
 					localStorage.removeItem("refreshToken");

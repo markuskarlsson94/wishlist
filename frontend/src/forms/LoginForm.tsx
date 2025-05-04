@@ -36,7 +36,7 @@ const LoginForm = (config?: LoginConfig) => {
 	const password = form.watch("password");
 
 	const onError = (error: AxiosError) => {
-		if (error.response?.status === 403) {
+		if (error.response?.status === 401) {
 			setWarning("Unknown email or password");
 		} else {
 			setWarning("Unknown error");
