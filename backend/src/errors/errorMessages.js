@@ -137,7 +137,7 @@ const errorMessages = {
 	},
 
 	invalidEmailOrPassword: {
-		status: StatusCodes.FORBIDDEN,
+		status: StatusCodes.UNAUTHORIZED,
 		message: "Invalid email or password",
 	},
 
