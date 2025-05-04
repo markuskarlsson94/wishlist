@@ -64,7 +64,7 @@ export const useLogin = (config?: UseLoginConfig): UseLoginResult => {
 
 	useEffect(() => {
 		if (user) {
-			setUserId(user);
+			setUserId(user.id);
 		}
 	}, [user, setUserId]);
 
