@@ -4,10 +4,12 @@ let isRefreshing: boolean = false;
 let requestQueue: Array<(error?: any) => void> = [];
 
 const isProduction = import.meta.env.prod;
+const baseURL = isProduction
+	? import.meta.env.VITE_API_URL
+	: `${import.meta.env.VITE_API_URL}:${import.meta.env.VITE_BACKEND_PORT}/api/v1`;
+
 const axiosInstance = axios.create({
-	baseURL: isProduction
-		? import.meta.env.VITE_API_URL
-		: `${import.meta.env.VITE_API_URL}:${import.meta.env.VITE_BACKEND_PORT}/api/v1`,
+	baseURL,
 });
 
 axiosInstance.interceptors.request.use(
@@ -68,7 +70,8 @@ const refreshAccessToken = async () => {
 	const refreshToken = localStorage.getItem("refreshToken");
 
 	if (refreshToken) {
-		const res = await axiosInstance.post("/auth/refresh", {
+		// TODO: using axiosInstance when the refresh token has expired does not navigate the user back to the homepage. Investiage why
+		const res = await axios.post(`${baseURL}/auth/refresh`, {
 			refreshToken,
 		});
 
