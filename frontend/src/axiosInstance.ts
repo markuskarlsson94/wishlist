@@ -53,9 +53,16 @@ axiosInstance.interceptors.response.use(
 				requestQueue.forEach((callback) => callback());
 				requestQueue = [];
 				return axiosInstance(originalRequest);
-			} catch (err) {
+			} catch (err: any) {
 				requestQueue.forEach((callback) => callback(Promise.reject(err)));
 				requestQueue = [];
+
+				if (err.response.status === 401) {
+					window.location.href = "/";
+					localStorage.removeItem("accessToken");
+					localStorage.removeItem("refreshToken");
+				}
+
 				return Promise.reject(err);
 			} finally {
 				isRefreshing = false;
