@@ -1,13 +1,10 @@
 import axios from "axios";
 import { StatusCodes } from "http-status-codes";
+import envConfig from "./envConfig";
 
 let isRefreshing: boolean = false;
 let requestQueue: Array<(error?: any) => void> = [];
-
-const isProduction = import.meta.env.prod;
-const baseURL = isProduction
-	? import.meta.env.VITE_API_URL
-	: `${import.meta.env.VITE_API_URL}:${import.meta.env.VITE_BACKEND_PORT}/api/v1`;
+const baseURL = envConfig.getBackendUrl();
 
 const axiosInstance = axios.create({
 	baseURL,
