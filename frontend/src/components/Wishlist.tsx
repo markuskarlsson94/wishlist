@@ -34,7 +34,6 @@ import HoverCard from "./HoverCard";
 import EditIcon from "./icons/EditIcon";
 import DeleteIcon from "./icons/DeleteIcon";
 import Tooltip from "./Tooltip";
-import { H3, P } from "./ui/typography";
 import { useGetReservations } from "@/hooks/reservation";
 import ReservationType from "@/types/ReservationType";
 import { findFormattedType, getFormattedType } from "@/utils/wishlist/utils";
