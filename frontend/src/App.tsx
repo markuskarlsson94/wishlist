@@ -21,6 +21,7 @@ import AccountVerified from "./components/AccountVerified";
 import PasswordReset from "./components/PasswordReset";
 import PasswordUpdated from "./components/PasswordUpdated";
 import Settings from "./components/Settings";
+import NotFound from "./components/NotFound";
 
 function App() {
 	return (
@@ -48,6 +49,7 @@ function App() {
 						<Route path="account-verified" element={<AccountVerified />} />
 						<Route path="reset-password" element={<PasswordReset />} />
 						<Route path="password-updated" element={<PasswordUpdated />} />
+						<Route path="*" element={<NotFound type="Page" />} />
 					</Route>
 				</Routes>
 			</Router>
