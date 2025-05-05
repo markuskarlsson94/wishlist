@@ -40,12 +40,13 @@ import ReservationType from "@/types/ReservationType";
 import { findFormattedType, getFormattedType } from "@/utils/wishlist/utils";
 import WishlistTypeInfoType from "@/types/WishlistTypeInfoType";
 import { Badge } from "./ui/badge";
+import NotFound from "./NotFound";
 
 const Wishlist = () => {
 	const [isOwner, setIsOwner] = useState<boolean>(false);
 	const params = useParams<{ id: string }>();
 	const id = Number(params.id);
-	const { wishlist, isSuccess } = useGetWishlist(id);
+	const { wishlist, isSuccess, notFound } = useGetWishlist(id);
 	const updateWishlist = useUpdateWishlist();
 	const { userId } = useAuth();
 	const navigate = useNavigate();
@@ -131,6 +132,10 @@ const Wishlist = () => {
 		description: wishlist?.description || "",
 		type: wishlist?.type || types[0]?.id,
 	};
+
+	if (notFound) {
+		return <NotFound type="Wishlist" />;
+	}
 
 	return (
 		<RoundedRect>

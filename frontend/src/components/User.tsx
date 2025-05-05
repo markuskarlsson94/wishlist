@@ -25,12 +25,13 @@ import {
 	AlertDialogTrigger,
 } from "./ui/alert-dialog";
 import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar";
+import NotFound from "./NotFound";
 
 const User = () => {
 	const params = useParams<{ userId: string }>();
 	const userId = Number(params.userId);
 	const { userId: viewer } = useAuth();
-	const { user } = useGetUser(userId);
+	const { user, notFound } = useGetUser(userId);
 	const createFriendRequest = useCreateFriendRequest({ userId });
 	const { sentFriendRequests, receivedFriendRequests } = useGetFriendRequests(viewer);
 	const acceptFriendRequest = useAcceptFriendRequest({ userId: viewer });
@@ -141,6 +142,10 @@ const User = () => {
 	const handleGoToFriends = () => {
 		navigate(`/user/${userId}/friends`);
 	};
+
+	if (notFound) {
+		return <NotFound type="User" />;
+	}
 
 	return (
 		<RoundedRect>

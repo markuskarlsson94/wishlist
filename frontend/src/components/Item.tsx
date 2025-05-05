@@ -29,6 +29,7 @@ import {
 import BackButton from "./BackButton";
 import EditIcon from "./icons/EditIcon";
 import DeleteIcon from "./icons/DeleteIcon";
+import NotFound from "./NotFound";
 
 const Item = () => {
 	const [isOwner, setIsOwner] = useState<boolean>(false);
@@ -36,7 +37,7 @@ const Item = () => {
 	const id = Number(params.id);
 	const navigate = useNavigate();
 	const { userId } = useAuth();
-	const { item, isSuccess } = useGetItem(id);
+	const { item, isSuccess, notFound } = useGetItem(id);
 	const createReservation = useCreateReservation({ userId });
 	const deleteReservation = useDeleteReservation({ userId });
 	const updateItem = useUpdateItem();
@@ -112,6 +113,10 @@ const Item = () => {
 		description: item?.description || "",
 		link: item?.link || "",
 	};
+
+	if (notFound) {
+		return <NotFound type="Item" />;
+	}
 
 	return (
 		<RoundedRect>

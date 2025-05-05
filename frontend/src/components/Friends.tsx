@@ -11,6 +11,7 @@ import { Button } from "./ui/button";
 import HoverCard from "./HoverCard";
 import FriendType from "@/types/FriendType";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import NotFound from "./NotFound";
 
 const ReceivedFriendRequest = ({ friendRequest }: { friendRequest: FriendRequest }) => {
 	const { userId } = useAuth();
@@ -114,7 +115,7 @@ const Friend = ({ friend }: { friend: FriendType }) => {
 const Friends = () => {
 	const params = useParams<{ userId: string }>();
 	const userId = Number(params.userId);
-	const { user, isSuccess } = useGetUser(userId);
+	const { user, isSuccess, notFound } = useGetUser(userId);
 	const { userId: viewer } = useAuth();
 	const navigate = useNavigate();
 	const { sentFriendRequests, receivedFriendRequests } = useGetFriendRequests(userId);
@@ -156,6 +157,10 @@ const Friends = () => {
 
 		return "";
 	};
+
+	if (notFound) {
+		return <NotFound type="User" />;
+	}
 
 	return (
 		<RoundedRect>

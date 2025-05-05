@@ -13,11 +13,12 @@ import { useGetItems } from "@/hooks/item";
 import { Box } from "lucide-react";
 import Tooltip from "./Tooltip";
 import { useGetUser } from "@/hooks/user";
+import NotFound from "./NotFound";
 
 const Wishlists = () => {
 	const params = useParams<{ userId: string }>();
 	const userId = Number(params.userId);
-	const { user, isSuccess } = useGetUser(userId);
+	const { user, isSuccess, notFound } = useGetUser(userId);
 	const { userId: viewer } = useAuth();
 	const navigate = useNavigate();
 	const createWishlist = useCreateWishlist();
@@ -79,6 +80,10 @@ const Wishlists = () => {
 		description: "",
 		type: types[0]?.id ?? 1,
 	};
+
+	if (notFound) {
+		return <NotFound type="User" />;
+	}
 
 	return (
 		<RoundedRect>
