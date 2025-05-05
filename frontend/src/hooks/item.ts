@@ -4,26 +4,33 @@ import { useEffect, useState } from "react";
 import ItemType from "../types/ItemType";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import ItemInputType from "../types/ItemInputType";
+import { StatusCodes } from "http-status-codes";
 
 export const useGetItem = (id: number) => {
 	const [item, setItem] = useState<ItemType | undefined>(undefined);
 
-	const { data: dataItem, isSuccess: isSuccessItem } = useQuery({
+	const {
+		data: dataItem,
+		isSuccess: isSuccessItem,
+		error,
+	} = useQuery({
 		queryKey: ["item", id],
 		queryFn: () => axiosInstance.get(`item/${id}`),
 		enabled: !!id,
 	});
 
+	const notFound = error?.response?.status === StatusCodes.NOT_FOUND;
+
 	const { data: dataOwner, isSuccess: isSuccessOwner } = useQuery({
 		queryKey: ["itemOwner", id],
 		queryFn: () => axiosInstance.get(`item/${id}/owner`),
-		enabled: !!id,
+		enabled: !!id && !notFound,
 	});
 
 	const { data: dataReservation, isSuccess: isSuccessReservation } = useQuery({
 		queryKey: ["itemReservation", id],
 		queryFn: () => axiosInstance.get(`item/${id}/reservation`),
-		enabled: !!id,
+		enabled: !!id && !notFound,
 	});
 
 	useEffect(() => {
@@ -46,6 +53,7 @@ export const useGetItem = (id: number) => {
 	return {
 		item,
 		isSuccess: isSuccessItem && isSuccessOwner && isSuccessReservation,
+		notFound,
 	};
 };
 

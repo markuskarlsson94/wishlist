@@ -2,9 +2,10 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axiosInstance from "../axiosInstance";
 import WishlistType from "../types/WishlistType";
 import WishlistInputType from "../types/WishlistInputType";
+import { StatusCodes } from "http-status-codes";
 
 export const useGetWishlist = (id: number) => {
-	const { data, isSuccess } = useQuery<WishlistType>({
+	const { data, error, ...rest } = useQuery<WishlistType>({
 		queryKey: ["wishlist", id],
 		queryFn: async () => {
 			const data = await axiosInstance.get(`wishlist/${id}`);
@@ -12,9 +13,12 @@ export const useGetWishlist = (id: number) => {
 		},
 	});
 
+	const notFound = error?.response?.status === StatusCodes.NOT_FOUND;
+
 	return {
 		wishlist: data,
-		isSuccess,
+		notFound,
+		...rest,
 	};
 };
 

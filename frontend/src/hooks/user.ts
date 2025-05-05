@@ -2,6 +2,7 @@ import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import axiosInstance from "../axiosInstance";
 import UserType from "../types/UserType";
 import { AxiosError } from "axios";
+import { StatusCodes } from "http-status-codes";
 
 type CurrentUserResponse = {
 	data: {
@@ -28,11 +29,13 @@ type UserResponse = {
 };
 
 export const useGetUser = (id: number | undefined) => {
-	const { data, isSuccess } = useQuery<UserResponse>({
+	const { data, error, ...rest } = useQuery<UserResponse>({
 		queryKey: ["user", id],
 		queryFn: () => axiosInstance.get(`/user/${id}`),
 		enabled: !!id,
 	});
+
+	const notFound = error?.response?.status === StatusCodes.NOT_FOUND;
 
 	if (data && !data?.data.user.profilePicture) {
 		data.data.user.profilePicture = "./../../public/profile.png";
@@ -40,7 +43,8 @@ export const useGetUser = (id: number | undefined) => {
 
 	return {
 		user: data?.data.user,
-		isSuccess,
+		notFound,
+		...rest,
 	};
 };
 
