@@ -37,10 +37,6 @@ export const useGetUser = (id: number | undefined) => {
 
 	const notFound = error?.response?.status === StatusCodes.NOT_FOUND;
 
-	if (data && !data?.data.user.profilePicture) {
-		data.data.user.profilePicture = "./../../public/profile.png";
-	}
-
 	return {
 		user: data?.data.user,
 		notFound,
