@@ -134,6 +134,39 @@ export const useDeleteUser = (config?: UseDeleteUserConfig) => {
 	return deleteUser;
 };
 
+type UseSetProfilePictureConfig = {
+	onSuccess?: () => void;
+	onError?: (error: AxiosError) => void;
+};
+
+export const useSetProfilePicture = (config?: UseSetProfilePictureConfig) => {
+	const queryClient = useQueryClient();
+
+	const mutation = useMutation({
+		mutationFn: async ({ userId, src }: { userId: number; src: string | null }) => {
+			await axiosInstance.patch("/user/update-profile-picture", { image: src });
+			invalidateUser(queryClient, userId);
+		},
+
+		onSuccess: () => {
+			if (config?.onSuccess) {
+				config.onSuccess();
+			}
+		},
+		onError: (error: AxiosError) => {
+			if (config?.onError) {
+				config.onError(error);
+			}
+		},
+	});
+
+	const setProfilePicture = (userId: number, src: string | null) => {
+		mutation.mutate({ userId, src });
+	};
+
+	return setProfilePicture;
+};
+
 const userQueryKey = (id: number) => {
 	return ["user", id];
 };
