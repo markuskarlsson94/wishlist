@@ -43,7 +43,7 @@ userRouter.post("/update-name", isAuthenticated(), async (req, res) => {
 	try {
 		const { firstName, lastName } = req.body;
 		await userService.update(req.user, req.user.id, { firstName, lastName });
-		res.json({ message: "User name updated" });
+		res.status(200).json({ message: "User name updated" });
 	} catch (error) {
 		res.status(error.status).json(error.message);
 	}
