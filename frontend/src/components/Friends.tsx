@@ -10,8 +10,8 @@ import { Card, CardHeader, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
 import HoverCard from "./HoverCard";
 import FriendType from "@/types/FriendType";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import NotFound from "./NotFound";
+import ProfilePicture from "./ProfilePicture";
 
 const ReceivedFriendRequest = ({ friendRequest }: { friendRequest: FriendRequest }) => {
 	const { userId } = useAuth();
@@ -35,10 +35,7 @@ const ReceivedFriendRequest = ({ friendRequest }: { friendRequest: FriendRequest
 						<div className="flex justify-between items-center">
 							<NavLink to={`/user/${friendRequest.sender}`}>
 								<div className="flex gap-x-3 items-center">
-									<Avatar>
-										<AvatarImage src={user?.profilePicture} />
-										<AvatarFallback />
-									</Avatar>
+									<ProfilePicture src={user?.profilePicture} />
 									{user?.firstName} {user?.lastName}
 								</div>
 							</NavLink>
@@ -71,10 +68,7 @@ const SentFriendRequest = ({ friendRequest }: { friendRequest: FriendRequest }) 
 						<div className="flex justify-between items-center">
 							<NavLink to={`/user/${friendRequest.receiver}`}>
 								<div className="flex gap-x-3 items-center">
-									<Avatar>
-										<AvatarImage src={user?.profilePicture} />
-										<AvatarFallback />
-									</Avatar>
+									<ProfilePicture src={user?.profilePicture} />
 									{user?.firstName} {user?.lastName}
 								</div>
 							</NavLink>
@@ -96,10 +90,7 @@ const Friend = ({ friend }: { friend: FriendType }) => {
 				<CardHeader>
 					<CardTitle className="flex justify-between items-center">
 						<div className="flex gap-x-3 items-center">
-							<Avatar>
-								<AvatarImage src={friend?.profilePicture} />
-								<AvatarFallback />
-							</Avatar>
+							<ProfilePicture src={friend.profilePicture} />
 							<div>
 								{friend?.firstName} {friend?.lastName}
 								{friend.userId === userId && <span> (You)</span>}

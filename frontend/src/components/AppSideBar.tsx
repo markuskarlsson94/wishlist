@@ -18,9 +18,9 @@ import { Button } from "./ui/button";
 import { Bell, Heart, ListChecks, LogOut, LucideIcon, Scroll, Settings } from "lucide-react";
 import { useLogout } from "@/hooks/useLogout";
 import { useGetFriendRequests } from "@/hooks/friendRequest";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { useGetUser } from "@/hooks/user";
 import { APP_NAME } from "@/constants";
+import ProfilePicture from "./ProfilePicture";
 
 const AppSidebar = () => {
 	const { userId } = useAuth();
@@ -110,10 +110,7 @@ const AppSidebar = () => {
 						<SidebarGroup>
 							<SidebarGroupContent>
 								<div className="flex flex-col gap-y-2">
-									<Avatar className="mx-auto w-14 h-14">
-										<AvatarImage src={user.profilePicture} />
-										<AvatarFallback />
-									</Avatar>
+									<ProfilePicture src={user.profilePicture} className="mx-auto h-14 w-14" />
 									<p className="font-bold mx-auto">{`${user.firstName} ${user.lastName}`}</p>
 								</div>
 							</SidebarGroupContent>
