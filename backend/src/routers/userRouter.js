@@ -61,6 +61,16 @@ userRouter.post("/update-password", isAuthenticated(), async (req, res) => {
 	}
 });
 
+userRouter.patch("/update-profile-picture", isAuthenticated(), async (req, res) => {
+	try {
+		const { image } = req.body;
+		await userService.update(req.user, req.user.id, { profilePicture: image });
+		res.status(200).json({ message: "Profile picture updated" });
+	} catch (error) {
+		res.status(error.status).json(error.message);
+	}
+});
+
 userRouter.post("/request-password-reset", async (req, res) => {
 	const email = req.body.email;
 
