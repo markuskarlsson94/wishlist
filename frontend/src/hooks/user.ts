@@ -61,12 +61,17 @@ type UseUpdateNameConfig = {
 };
 
 export const useUpdateName = (config?: UseUpdateNameConfig) => {
+	const queryClient = useQueryClient();
+
 	const mutation = useMutation({
-		mutationFn: ({ firstName, lastName }: { firstName: string; lastName: string }) =>
-			axiosInstance.post(`/user/update-name`, {
+		mutationFn: async ({ id, firstName, lastName }: { id: number; firstName: string; lastName: string }) => {
+			await axiosInstance.post(`/user/update-name`, {
 				firstName,
 				lastName,
-			}),
+			});
+
+			invalidateUser(queryClient, id);
+		},
 		onSuccess: () => {
 			if (config?.onSuccess) {
 				config.onSuccess();
@@ -79,8 +84,8 @@ export const useUpdateName = (config?: UseUpdateNameConfig) => {
 		},
 	});
 
-	const updateName = (firstName: string, lastName: string) => {
-		mutation.mutate({ firstName, lastName });
+	const updateName = (id: number, firstName: string, lastName: string) => {
+		mutation.mutate({ id, firstName, lastName });
 	};
 
 	return updateName;
@@ -131,4 +136,12 @@ export const useDeleteUser = (config?: UseDeleteUserConfig) => {
 	};
 
 	return deleteUser;
+};
+
+const userQueryKey = (id: number) => {
+	return ["user", id];
+};
+
+const invalidateUser = (queryClient: QueryClient, userId: number) => {
+	queryClient.invalidateQueries({ queryKey: userQueryKey(userId) });
 };
