@@ -59,7 +59,10 @@ const NameUpdateForm = (config?: NameUpdateConfig) => {
 
 	const onSubmit = (values: z.infer<typeof formSchema>) => {
 		setWarning(undefined);
-		updateName(values.firstName, values.lastName);
+
+		if (userId) {
+			updateName(userId, values.firstName, values.lastName);
+		}
 	};
 
 	const firstName = form.watch("firstName");
