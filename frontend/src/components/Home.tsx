@@ -28,14 +28,13 @@ const Home = () => {
 		delay?: string;
 	}) => {
 		return (
-			<div
-				className="flex flex-row gap-x-3 items-center animate-fade-slide-in opacity-0"
-				style={{ animationDelay: delay }}
-			>
-				<Icon size={24} color={"#f87171"} />
-				<div className="max-w-[18rem]">
-					<p className="font-medium">{title}</p>
-					<p className="text-sm text-muted-foreground">{description}</p>
+			<div className="animate-fade-slide-in opacity-0" style={{ animationDelay: delay }}>
+				<div className="flex flex-row gap-x-3 items-center transform transition-transform duration-150 ease-in-out hover:scale-105">
+					<Icon size={24} color={"white"} />
+					<div className="max-w-[18rem]">
+						<p className="font-medium text-slate-800">{title}</p>
+						<p className="text-sm font-medium text-gray-100">{description}</p>
+					</div>
 				</div>
 			</div>
 		);
@@ -47,11 +46,11 @@ const Home = () => {
 				<div className="h-8" />
 
 				<div className="flex flex-col">
-					<p className="text-4xl font-bold text-red-500 self-center">{APP_NAME}</p>
-					<p className="font-medium self-center">The simple and intuitive wishlist manager</p>
+					<p className="text-4xl font-bold self-center text-white">{APP_NAME}</p>
+					<p className="font-medium self-center text-gray-100">The simple and intuitive wishlist manager</p>
 				</div>
 
-				<div className="h-10" />
+				<div className="h-12" />
 
 				<div className="flex flex-col gap-y-10 self-center">
 					<Feature
@@ -90,7 +89,7 @@ const Home = () => {
 						setRegistrationConfirmedDialogOpen={setRegistrationConfirmedDialogOpen}
 						setRegistredEmail={setRegistredEmail}
 					/>
-					<Button variant={"secondary"} onClick={handleReadMore}>
+					<Button variant={"ghost"} onClick={handleReadMore}>
 						Read more
 					</Button>
 				</div>
