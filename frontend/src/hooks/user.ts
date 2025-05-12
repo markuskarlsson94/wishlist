@@ -143,11 +143,13 @@ export const useSetProfilePicture = (config?: UseSetProfilePictureConfig) => {
 	const queryClient = useQueryClient();
 
 	const mutation = useMutation({
-		mutationFn: async ({ userId, src }: { userId: number; src: string | null }) => {
-			await axiosInstance.patch("/user/update-profile-picture", { image: src });
+		mutationFn: async ({ userId, image }: { userId: number; image: File }) => {
+			const formData = new FormData();
+			formData.append("image", image);
+
+			await axiosInstance.patch("/user/update-profile-picture", formData);
 			invalidateUser(queryClient, userId);
 		},
-
 		onSuccess: () => {
 			if (config?.onSuccess) {
 				config.onSuccess();
@@ -160,11 +162,43 @@ export const useSetProfilePicture = (config?: UseSetProfilePictureConfig) => {
 		},
 	});
 
-	const setProfilePicture = (userId: number, src: string | null) => {
-		mutation.mutate({ userId, src });
+	const setProfilePicture = (userId: number, image: File) => {
+		mutation.mutate({ userId, image });
 	};
 
-	return setProfilePicture;
+	return { setProfilePicture, ...mutation };
+};
+
+type UseRemoveProfilePictureConfig = {
+	onSuccess?: () => void;
+	onError?: (error: AxiosError) => void;
+};
+
+export const useRemoveProfilePicture = (config?: UseRemoveProfilePictureConfig) => {
+	const queryClient = useQueryClient();
+
+	const mutation = useMutation({
+		mutationFn: async (userId: number) => {
+			await axiosInstance.delete("/user/remove-profile-picture");
+			invalidateUser(queryClient, userId);
+		},
+		onSuccess: () => {
+			if (config?.onSuccess) {
+				config.onSuccess();
+			}
+		},
+		onError: (error: AxiosError) => {
+			if (config?.onError) {
+				config.onError(error);
+			}
+		},
+	});
+
+	const removeProfilePicture = (userId: number) => {
+		mutation.mutate(userId);
+	};
+
+	return { removeProfilePicture, ...mutation };
 };
 
 const userQueryKey = (id: number) => {
