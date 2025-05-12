@@ -72,6 +72,15 @@ userRouter.patch("/update-profile-picture", isAuthenticated(), upload.single("im
 	}
 });
 
+userRouter.delete("/remove-profile-picture", isAuthenticated(), async (req, res) => {
+	try {
+		await userService.removeProfilePicture(req.user, req.user.id);
+		res.status(200).json({ message: "Profile picture removed" });
+	} catch (error) {
+		res.status(error.status).json(error.message);
+	}
+});
+
 userRouter.post("/request-password-reset", async (req, res) => {
 	const email = req.body.email;
 
