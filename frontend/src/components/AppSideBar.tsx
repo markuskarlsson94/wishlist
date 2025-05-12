@@ -110,7 +110,7 @@ const AppSidebar = () => {
 						<SidebarGroup>
 							<SidebarGroupContent>
 								<div className="flex flex-col gap-y-2">
-									<ProfilePicture src={user.profilePicture} className="mx-auto h-14 w-14" />
+									<ProfilePicture src={user.profilePicture} className="mx-auto h-16 w-16" />
 									<p className="font-bold mx-auto">{`${user.firstName} ${user.lastName}`}</p>
 								</div>
 							</SidebarGroupContent>
