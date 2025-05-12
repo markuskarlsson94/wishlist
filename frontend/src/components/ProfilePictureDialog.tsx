@@ -11,7 +11,7 @@ import { useGetUser, useRemoveProfilePicture, useSetProfilePicture } from "@/hoo
 import ProfilePicture from "./ProfilePicture";
 import { Info } from "lucide-react";
 
-const ProfilePictureEditor = () => {
+const ProfilePictureDialog = () => {
 	const minZoom = 1;
 	const maxZoom = 5;
 	const maxMB = 20;
@@ -286,4 +286,4 @@ const loadImage = (imageSrc: string): Promise<CanvasImageSource> => {
 	});
 };
 
-export default ProfilePictureEditor;
+export default ProfilePictureDialog;
