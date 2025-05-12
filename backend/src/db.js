@@ -81,7 +81,7 @@ const db = {
 				table.string("lastName").notNullable();
 				table.string("password").notNullable();
 				table.integer("role").notNullable();
-				table.string("profilePicture");
+				table.string("profilePicture").defaultTo(null);
 
 				table.foreign("role").references("id").inTable(userRolesTable);
 				table.timestamps(true, true, true);
