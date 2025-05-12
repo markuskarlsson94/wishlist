@@ -94,7 +94,7 @@ const AppSidebar = () => {
 					<SidebarGroupContent>
 						<div className="flex justify-center gap-x-3 items-center">
 							<p
-								className="text-xl font-bold text-slate-800 cursor-pointer"
+								className="text-xl font-bold cursor-pointer bg-gradient-to-tr from-blue-600 to-emerald-400 inline-block text-transparent bg-clip-text"
 								onClick={() => navigateTo("/")}
 							>
 								{APP_NAME}
