@@ -136,6 +136,11 @@ const errorMessages = {
 		message: "Missing user properties",
 	},
 
+	missingImage: {
+		status: StatusCodes.BAD_REQUEST,
+		message: "Missing image",
+	},
+
 	invalidEmailOrPassword: {
 		status: StatusCodes.UNAUTHORIZED,
 		message: "Invalid email or password",
@@ -256,6 +261,11 @@ const errorMessages = {
 		message: "Unauthorized to update password",
 	},
 
+	unauthorizedToUpdateProfilePicture: {
+		status: StatusCodes.FORBIDDEN,
+		message: "Unauthorized to update profile picture",
+	},
+
 	unauthorizedToUpdateUser: {
 		status: StatusCodes.FORBIDDEN,
 		message: "Unauthorized to update user",
@@ -349,6 +359,11 @@ const errorMessages = {
 	unableToUpdateUser: {
 		status: StatusCodes.INTERNAL_SERVER_ERROR,
 		message: "Unable to update user",
+	},
+
+	unableToUploadProfilePicture: {
+		status: StatusCodes.INTERNAL_SERVER_ERROR,
+		message: "Unable to upload profile picture",
 	},
 };
 
