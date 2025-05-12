@@ -107,7 +107,7 @@ const ProfilePictureDialog = () => {
 				}}
 			>
 				<DialogTrigger asChild>
-					<Button>Update profile picture</Button>
+					<Button>Update Profile Picture</Button>
 				</DialogTrigger>
 				<DialogContent>
 					<DialogHeader>
