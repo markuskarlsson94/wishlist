@@ -153,7 +153,7 @@ const User = () => {
 				<BackButton onClick={handleBack} />
 				<div className="flex justify-between items-center">
 					<div className="flex gap-x-3 items-center">
-						<ProfilePicture src={user?.profilePicture} />
+						<ProfilePicture src={user?.profilePicture} className="h-16 w-16" />
 						<p className="text-large font-medium">
 							{user?.firstName} {user?.lastName} {userId === viewer && <span> (You)</span>}
 						</p>
