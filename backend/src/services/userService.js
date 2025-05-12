@@ -9,6 +9,7 @@ import { PostgresError } from "pg-error-enum";
 import crypto from "crypto";
 import z from "zod";
 import { sendPasswordResetEmail, sendVerificationEmail } from "../utilities/email.js";
+import { removeProfilePicture, uploadProfilePicture } from "../utilities/profilePicture.js";
 
 const passwordTokenExpireTime = 1000 * 60 * 60;
 
@@ -217,6 +218,30 @@ const userService = {
 			}
 		} else {
 			throw new ErrorMessage(errorMessages.oldPasswordIncorrect);
+		}
+	},
+
+	updateProfilePicture: async (user, userId, image) => {
+		if (!canManageUser(user, userId)) {
+			throw new ErrorMessage(errorMessages.unauthorizedToUpdateProfilePicture);
+		}
+
+		try {
+			const url = await uploadProfilePicture(user, userId, image);
+			await db.user.update(user.id, { profilePicture: url });
+		} catch (error) {
+			logger.error(error.message);
+			throw new ErrorMessage(errorMessages.serverError);
+		}
+	},
+
+	removeProfilePicture: async (user, userId) => {
+		try {
+			await removeProfilePicture(user, userId);
+			await db.user.update(user.id, { profilePicture: null });
+		} catch (error) {
+			logger.error(error.message);
+			throw new ErrorMessage(errorMessages.serverError);
 		}
 	},
 
