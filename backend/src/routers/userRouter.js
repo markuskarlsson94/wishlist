@@ -1,10 +1,12 @@
 import express from "express";
-
+import multer from "multer";
 import { isAuthenticated, isAuthenticatedAdmin, verifyRecentLogin } from "../passport.js";
 import userService from "../services/userService.js";
 import wishlistService from "../services/wishlistService.js";
 
 const userRouter = express.Router();
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
 userRouter.post("/register", async (req, res) => {
 	const { email, firstName, lastName, password } = req.body;
@@ -61,10 +63,9 @@ userRouter.post("/update-password", isAuthenticated(), async (req, res) => {
 	}
 });
 
-userRouter.patch("/update-profile-picture", isAuthenticated(), async (req, res) => {
+userRouter.patch("/update-profile-picture", isAuthenticated(), upload.single("image"), async (req, res) => {
 	try {
-		const { image } = req.body;
-		await userService.update(req.user, req.user.id, { profilePicture: image });
+		await userService.updateProfilePicture(req.user, req.user.id, req.file);
 		res.status(200).json({ message: "Profile picture updated" });
 	} catch (error) {
 		res.status(error.status).json(error.message);
