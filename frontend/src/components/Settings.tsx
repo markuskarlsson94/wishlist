@@ -4,6 +4,7 @@ import RoundedRect from "./RoundedRect";
 import PasswordUpdateDialog from "./dialogs/PasswordUpdateDialog";
 import NameUpdateDialog from "./dialogs/NameUpdateDialog";
 import UserDeleteDialog from "./dialogs/UserDeleteDialog";
+import ProfilePictureEditor from "./ProfilePictureEditor";
 
 const Settings = () => {
 	const navigate = useNavigate();
@@ -26,6 +27,7 @@ const Settings = () => {
 					<div className="flex flex-col w-80 gap-y-3">
 						<NameUpdateDialog />
 						<PasswordUpdateDialog />
+						<ProfilePictureEditor />
 						<div className="h-2" />
 						<UserDeleteDialog />
 					</div>
