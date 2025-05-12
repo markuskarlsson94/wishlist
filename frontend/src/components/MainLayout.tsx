@@ -9,7 +9,7 @@ const MainLayout = () => {
 	const { isAuthenticated } = useAuth();
 	const location = useLocation();
 	const isHomePage = location.pathname === "/";
-	const col = isHomePage ? "bg-white-200" : "bg-neutral-200";
+	const col = isHomePage ? "bg-gradient-to-tr from-blue-600 to-emerald-400" : "bg-neutral-200";
 
 	return (
 		<div className="min-h-screen flex flex-col">
