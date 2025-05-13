@@ -10,6 +10,16 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useGetUser, useRemoveProfilePicture, useSetProfilePicture } from "@/hooks/user";
 import ProfilePicture from "./ProfilePicture";
 import { Info } from "lucide-react";
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+} from "./ui/alert-dialog";
+import { AxiosError } from "axios";
 
 const ProfilePictureDialog = () => {
 	const minZoom = 1;
@@ -26,12 +36,19 @@ const ProfilePictureDialog = () => {
 	const [error, setError] = useState<string | undefined>(undefined);
 	const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | undefined>(undefined);
 	const fileInputRef = useRef<HTMLInputElement | null>(null);
+	const [shwowErrorDialog, setShowErrorDialog] = useState<boolean>(false);
 
 	const { setProfilePicture, isPending: isPendingUpload } = useSetProfilePicture({
 		onSuccess: () => {
 			setFile(undefined);
 			if (fileInputRef.current) fileInputRef.current.value = "";
 			setOpen(false);
+		},
+		onError: (_error: AxiosError) => {
+			setFile(undefined);
+			if (fileInputRef.current) fileInputRef.current.value = "";
+			setOpen(false);
+			setShowErrorDialog(true);
 		},
 	});
 
@@ -40,6 +57,10 @@ const ProfilePictureDialog = () => {
 			setFile(undefined);
 			if (fileInputRef.current) fileInputRef.current.value = "";
 			setOpen(false);
+		},
+		onError: (_error: AxiosError) => {
+			setOpen(false);
+			setShowErrorDialog(true);
 		},
 	});
 
@@ -254,6 +275,18 @@ const ProfilePictureDialog = () => {
 					}
 				}}
 			/>
+
+			<AlertDialog open={shwowErrorDialog} onOpenChange={setShowErrorDialog}>
+				<AlertDialogContent>
+					<AlertDialogHeader>
+						<AlertDialogTitle>Error</AlertDialogTitle>
+					</AlertDialogHeader>
+					<AlertDialogDescription>Unable to update profile picture</AlertDialogDescription>
+					<AlertDialogFooter>
+						<AlertDialogAction>Close</AlertDialogAction>
+					</AlertDialogFooter>
+				</AlertDialogContent>
+			</AlertDialog>
 		</>
 	);
 };
