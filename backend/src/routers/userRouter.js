@@ -4,9 +4,25 @@ import { isAuthenticated, isAuthenticatedAdmin, verifyRecentLogin } from "../pas
 import userService from "../services/userService.js";
 import wishlistService from "../services/wishlistService.js";
 
+const profilePictureMaxSize = 20 * 1024 * 1024; // 20 MB
+
 const userRouter = express.Router();
 const storage = multer.memoryStorage();
-const upload = multer({ storage });
+const upload = multer({
+	storage,
+	limits: {
+		fileSize: profilePictureMaxSize,
+	},
+	fileFilter: (_req, file, cb) => {
+		const isImage = file.mimetype.startsWith("image/");
+
+		if (!isImage) {
+			return cb(new Error("Only image files are allowed"));
+		}
+
+		cb(null, true);
+	},
+});
 
 userRouter.post("/register", async (req, res) => {
 	const { email, firstName, lastName, password } = req.body;
