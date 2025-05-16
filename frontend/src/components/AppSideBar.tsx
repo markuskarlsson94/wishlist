@@ -100,7 +100,11 @@ const AppSidebar = () => {
 								{APP_NAME}
 							</p>
 							<div onClick={() => navigateTo("/beta-info")} className="cursor-pointer">
-								<Badge className="bg-red-200 text-black hover:bg-red-300">Beta</Badge>
+								{
+									<Badge className="bg-gray-800 text-white hover:bg-gray-300 hover:text-black">
+										Beta
+									</Badge>
+								}
 							</div>
 						</div>
 					</SidebarGroupContent>
