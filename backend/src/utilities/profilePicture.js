@@ -4,7 +4,7 @@ import logger from "../logger.js";
 import userService from "../services/userService.js";
 import { uploadProfilePicture as upload, removeProfilePicture as remove } from "./profilePictureProvider.js";
 
-export const uploadProfilePicture = async (user, userId, image) => {
+export const uploadProfilePicture = async (user, userId, image, mimeType = undefined) => {
 	if (!image) {
 		throw new ErrorMessage(errorMessages.missingImage);
 	}
@@ -13,7 +13,7 @@ export const uploadProfilePicture = async (user, userId, image) => {
 	const fileName = `${user.id}_${u.firstName}-${u.lastName}_${new Date().toISOString()}`;
 
 	try {
-		return await upload(u.profilePicture, image, fileName);
+		return await upload(u.profilePicture, image, fileName, mimeType);
 	} catch (error) {
 		logger.error(error.message);
 		throw new ErrorMessage(errorMessages.unableToUploadProfilePicture);

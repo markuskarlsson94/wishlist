@@ -10,6 +10,7 @@ import crypto from "crypto";
 import z from "zod";
 import { sendPasswordResetEmail, sendVerificationEmail } from "../utilities/email.js";
 import { removeProfilePicture, uploadProfilePicture } from "../utilities/profilePicture.js";
+import sharp from "sharp";
 
 const passwordTokenExpireTime = 1000 * 60 * 60;
 
@@ -226,8 +227,16 @@ const userService = {
 			throw new ErrorMessage(errorMessages.unauthorizedToUpdateProfilePicture);
 		}
 
+		const resizedImage = await sharp(image.buffer)
+			.resize({
+				width: 400,
+				height: 400,
+			})
+			.toFormat("jpeg")
+			.toBuffer();
+
 		try {
-			const url = await uploadProfilePicture(user, userId, image);
+			const url = await uploadProfilePicture(user, userId, resizedImage, "image/jpeg");
 			await db.user.update(user.id, { profilePicture: url });
 		} catch (error) {
 			logger.error(error.message);

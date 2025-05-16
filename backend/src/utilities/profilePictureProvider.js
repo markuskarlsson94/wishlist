@@ -6,7 +6,7 @@ import logger from "../logger.js";
 const supabase = createClient(`https://${process.env.SUPABASE_PROJECT}.supabase.co`, process.env.SUPABASE_SERVICE_ROLE);
 const bucketName = process.env.SUPABASE_BUCKET;
 
-export const uploadProfilePicture = async (profilePictureURL, image, fileName) => {
+export const uploadProfilePicture = async (profilePictureURL, image, fileName, mimeType) => {
 	if (profilePictureURL) {
 		try {
 			const segments = profilePictureURL.split("/");
@@ -24,7 +24,7 @@ export const uploadProfilePicture = async (profilePictureURL, image, fileName) =
 
 	const { error: uploadError } = await supabase.storage
 		.from(bucketName)
-		.upload(fileName, image.buffer, { contentType: image.mimetype, upsert: true });
+		.upload(fileName, image.buffer, { contentType: mimeType, upsert: true });
 
 	if (uploadError) {
 		logger.error(uploadError.message);
