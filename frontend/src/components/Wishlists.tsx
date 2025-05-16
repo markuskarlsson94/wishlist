@@ -105,7 +105,7 @@ const Wishlists = () => {
 				))}
 
 				{isOwner && (
-					<div className="self-end">
+					<div className="self-end mt-6">
 						<WishlistDialog
 							config={{
 								title: "Create new wishlist",

@@ -229,6 +229,9 @@ const Wishlist = () => {
 			<div className="my-5">
 				<p>{wishlist?.description}</p>
 			</div>
+
+			<div className="h-3" />
+
 			<div className="flex flex-col gap-y-3">
 				{items && items.length === 0 && (
 					<div className="flex">
@@ -239,7 +242,7 @@ const Wishlist = () => {
 					<Item key={item.id} item={item} />
 				))}
 				{isOwner && (
-					<div className="self-end">
+					<div className="self-end mt-6">
 						<ItemDialog
 							config={{
 								title: "Add item",
