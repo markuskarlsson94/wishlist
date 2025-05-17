@@ -3,7 +3,7 @@ type ReservationType = {
 	user: number;
 	item: number;
 	createdAt: Date;
-	owner?: number;
+	owner: number;
 	wishlist?: number;
 };
 
