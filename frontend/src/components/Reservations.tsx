@@ -80,9 +80,13 @@ const UserCard = ({ reservations }: { reservations: ReservationType[] }) => {
 		<Card className="p-4">
 			<div className="flex gap-x-3 items-center">
 				<ProfilePicture src={owner?.profilePicture} />
-				<NavLink className="font-medium" to={`/user/${owner?.id}`}>
-					{owner?.firstName + " " + owner?.lastName}
-				</NavLink>
+				{owner && (
+					<>
+						<NavLink className="font-medium" to={`/user/${owner?.id}`}>
+							{owner.firstName + " " + owner.lastName}
+						</NavLink>
+					</>
+				)}
 			</div>
 			<div className="flex flex-col gap-y-3 mt-3">
 				{reservations.map((reservation: ReservationType) => (
