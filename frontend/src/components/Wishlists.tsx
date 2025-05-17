@@ -46,7 +46,7 @@ const Wishlists = () => {
 									<CardDescription>{wishlist.description}</CardDescription>
 								</div>
 								{itemCount > 0 && (
-									<Tooltip tooltip={`Contains ${itemCount} items`}>
+									<Tooltip tooltip={`Contains ${itemCount} ${itemCount > 1 ? "items" : "item"}`}>
 										<div className="flex gap-x-1 float-right">
 											<Box strokeWidth={1.5} opacity={0.5} /> {itemCount}
 										</div>

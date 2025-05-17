@@ -92,7 +92,11 @@ const Wishlist = () => {
 										</Tooltip>
 									)}
 									{commentCount > 0 && (
-										<Tooltip tooltip={`Contains ${commentCount} comments`}>
+										<Tooltip
+											tooltip={`Contains ${commentCount} ${
+												commentCount > 1 ? "comments" : "comment"
+											}`}
+										>
 											<div className="flex gap-x-1 float-right">
 												<MessageCircle strokeWidth={1.5} opacity={0.5} /> {commentCount}
 											</div>
