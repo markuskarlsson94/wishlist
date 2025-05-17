@@ -12,6 +12,7 @@ import HoverCard from "./HoverCard";
 import FriendType from "@/types/FriendType";
 import NotFound from "./NotFound";
 import ProfilePicture from "./ProfilePicture";
+import { Separator } from "./ui/separator";
 
 const ReceivedFriendRequest = ({ friendRequest }: { friendRequest: FriendRequest }) => {
 	const { userId } = useAuth();
@@ -41,7 +42,9 @@ const ReceivedFriendRequest = ({ friendRequest }: { friendRequest: FriendRequest
 							</NavLink>
 							<div className="flex gap-x-3">
 								<Button onClick={handleAccept}>Accept</Button>
-								<Button onClick={handleDecline}>Decline</Button>
+								<Button onClick={handleDecline} variant={"secondary"}>
+									Decline
+								</Button>
 							</div>
 						</div>
 					</CardTitle>
@@ -118,7 +121,7 @@ const Friends = () => {
 		navigate(-1);
 	};
 
-	const friendRequests = () => {
+	const FriendRequests = () => {
 		const requestCount = receivedFriendRequests.length + sentFriendRequests.length;
 
 		return (
@@ -132,6 +135,7 @@ const Friends = () => {
 						{sentFriendRequests.map((friendRequest) => (
 							<SentFriendRequest key={friendRequest.id} friendRequest={friendRequest} />
 						))}
+						<Separator className="my-2" />
 					</>
 				)}
 			</>
@@ -163,7 +167,8 @@ const Friends = () => {
 
 				<div className="h-3" />
 
-				{viewer === userId && friendRequests()}
+				{viewer === userId && <FriendRequests />}
+
 				{friends.length !== 0 && <p className="font-medium mt-3">Friends {`(${friends.length})`}</p>}
 				{friends.length === 0 && <p className="m-auto text-2xl font-medium text-gray-300">No friends yet</p>}
 				{isSuccessFriends && friends?.map((friend) => <Friend key={friend.userId} friend={friend} />)}
