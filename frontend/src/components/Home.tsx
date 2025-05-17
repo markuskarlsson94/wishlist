@@ -62,21 +62,21 @@ const Home = () => {
 
 					<Feature
 						title="Connect with Friends"
-						description="Keep track of your friends wishlists and share yours. Make gift-giving personal and easy."
+						description="Keep track of your friends wishes and share yours. Make gift-giving organized and fun."
 						Icon={Heart}
 						delay="750ms"
 					/>
 
 					<Feature
 						title="Reserve Items"
-						description="Reserve items to avoid duplicate gifts. Only you knows what you reserved."
+						description="Reserve items to avoid duplicate gifts. Only you can see what you reserved."
 						Icon={ListChecks}
 						delay="1000ms"
 					/>
 
 					<Feature
 						title="Anonymous Comments"
-						description="Ask anonymous questions about wishlist items. No one will know it’s you."
+						description="Ask anonymous questions about wishlist items without revealing your identity."
 						Icon={Ghost}
 						delay="1250ms"
 					/>
