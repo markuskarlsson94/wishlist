@@ -12,7 +12,7 @@ import RoundedRect from "./RoundedRect";
 import { Button, buttonVariants } from "./ui/button";
 import { useMemo } from "react";
 import BackButton from "./BackButton";
-import { Calendar, HeartHandshake, Users } from "lucide-react";
+import { Users } from "lucide-react";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -26,6 +26,7 @@ import {
 } from "./ui/alert-dialog";
 import NotFound from "./NotFound";
 import ProfilePicture from "./ProfilePicture";
+import { Badge } from "./ui/badge";
 
 const User = () => {
 	const params = useParams<{ userId: string }>();
@@ -82,7 +83,7 @@ const User = () => {
 		navigate(-1);
 	};
 
-	const friendButton = () => {
+	const FriendButton = () => {
 		if (!viewer || isSelf) return;
 
 		if (userIsFriend) {
@@ -132,7 +133,7 @@ const User = () => {
 	};
 
 	const commonFriendString = (commonFriends: number) => {
-		return commonFriends > 1 ? "common friends" : "common friend";
+		return commonFriends > 1 ? `${commonFriends} common friends` : "1 common friend";
 	};
 
 	const handleGoToWishlists = () => {
@@ -149,7 +150,7 @@ const User = () => {
 
 	return (
 		<RoundedRect>
-			<div className="flex flex-col gap-y-3">
+			<div className="flex flex-col gap-y-6">
 				<BackButton onClick={handleBack} />
 				<div className="flex justify-between items-center">
 					<div className="flex gap-x-3 items-center">
@@ -157,38 +158,24 @@ const User = () => {
 						<p className="text-large font-medium">
 							{user?.firstName} {user?.lastName} {userId === viewer && <span> (You)</span>}
 						</p>
+						{!isSelf && !userIsFriend && commonFriends >= 1 && (
+							<Badge variant={"secondary"}>
+								<div className="flex gap-x-2 items-center ">
+									<>
+										<Users size={16} />
+										<p>{commonFriendString(commonFriends)}</p>
+									</>
+								</div>
+							</Badge>
+						)}
 					</div>
 				</div>
-				{!isSelf && !userIsFriend && commonFriends >= 1 && (
-					<div className="flex gap-x-2 items-center">
-						<Users strokeWidth={1.5} opacity={0.5} />
-						<p className="text-sm text-muted-foreground">
-							{commonFriends} {commonFriendString(commonFriends)}
-						</p>
-					</div>
-				)}
-				{userIsFriend && (
-					<div className="flex gap-x-2 items-center">
-						<HeartHandshake strokeWidth={1.5} opacity={0.5} />
-						<p className="text-sm text-muted-foreground">
-							Friends since {new Date(friendship.createdAt).toLocaleDateString()}
-						</p>
-					</div>
-				)}
-				{user && (
-					<div className="flex gap-x-2 items-center">
-						<Calendar strokeWidth={1.5} opacity={0.5} />
-						<p className="text-sm text-muted-foreground">
-							User since {new Date(user.createdAt).toLocaleDateString()}
-						</p>
-					</div>
-				)}
-				<div className="flex justify-between mt-3">
+				<div className="flex justify-between">
 					<div className="flex gap-x-2">
 						<Button onClick={handleGoToWishlists}>Wishlists</Button>
 						<Button onClick={handleGoToFriends}>Friends</Button>
 					</div>
-					{friendButton()}
+					<FriendButton />
 				</div>
 			</div>
 		</RoundedRect>
