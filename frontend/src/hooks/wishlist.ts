@@ -4,13 +4,14 @@ import WishlistType from "../types/WishlistType";
 import WishlistInputType from "../types/WishlistInputType";
 import { StatusCodes } from "http-status-codes";
 
-export const useGetWishlist = (id: number) => {
+export const useGetWishlist = (id: number | undefined) => {
 	const { data, error, ...rest } = useQuery<WishlistType>({
 		queryKey: ["wishlist", id],
 		queryFn: async () => {
 			const data = await axiosInstance.get(`wishlist/${id}`);
 			return data.data.wishlist;
 		},
+		enabled: !!id,
 	});
 
 	const notFound = error?.response?.status === StatusCodes.NOT_FOUND;
