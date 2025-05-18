@@ -52,7 +52,7 @@ const ItemForm = ({ config }: { config: ItemFormConfig }) => {
 						name="title"
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel>Title*</FormLabel>
+								<FormLabel>Title</FormLabel>
 								<FormControl>
 									<Input placeholder="Title" {...field} />
 								</FormControl>
@@ -65,7 +65,7 @@ const ItemForm = ({ config }: { config: ItemFormConfig }) => {
 						name="description"
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel>Description</FormLabel>
+								<FormLabel>Description (optional)</FormLabel>
 								<FormControl>
 									<Textarea placeholder="Description" {...field} />
 								</FormControl>
@@ -78,7 +78,7 @@ const ItemForm = ({ config }: { config: ItemFormConfig }) => {
 						name="link"
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel>Link</FormLabel>
+								<FormLabel>Link (optional)</FormLabel>
 								<FormControl>
 									<Input placeholder="Link" {...field} value={field.value ?? ""} />
 								</FormControl>

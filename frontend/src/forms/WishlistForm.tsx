@@ -67,7 +67,7 @@ const WishlistForm = ({ config }: { config: WishlistFormConfig }) => {
 						name="title"
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel>Title*</FormLabel>
+								<FormLabel>Title</FormLabel>
 								<FormControl>
 									<Input placeholder="Title" {...field} />
 								</FormControl>
@@ -80,7 +80,7 @@ const WishlistForm = ({ config }: { config: WishlistFormConfig }) => {
 						name="description"
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel>Description</FormLabel>
+								<FormLabel>Description (optional)</FormLabel>
 								<FormControl>
 									<Textarea placeholder="Description" {...field} />
 								</FormControl>
