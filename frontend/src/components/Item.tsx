@@ -30,6 +30,15 @@ import BackButton from "./BackButton";
 import EditIcon from "./icons/EditIcon";
 import DeleteIcon from "./icons/DeleteIcon";
 import NotFound from "./NotFound";
+import {
+	Breadcrumb,
+	BreadcrumbEllipsis,
+	BreadcrumbItem,
+	BreadcrumbLink,
+	BreadcrumbList,
+	BreadcrumbSeparator,
+} from "./ui/breadcrumb";
+import { useGetWishlist } from "@/hooks/wishlist";
 
 const Item = () => {
 	const [isOwner, setIsOwner] = useState<boolean>(false);
@@ -38,6 +47,7 @@ const Item = () => {
 	const navigate = useNavigate();
 	const { userId } = useAuth();
 	const { item, isSuccess, notFound } = useGetItem(id);
+	const { wishlist } = useGetWishlist(item?.wishlist);
 	const createReservation = useCreateReservation({ userId });
 	const deleteReservation = useDeleteReservation({ userId });
 	const updateItem = useUpdateItem();
@@ -122,7 +132,25 @@ const Item = () => {
 		<RoundedRect>
 			<div className="relative flex items-center justify-between">
 				<BackButton onClick={handleBack} />
-				<p className="absolute left-1/2 transform -translate-x-1/2 font-medium">{item?.title}</p>
+				<div className="absolute left-1/2 transform -translate-x-1/2 font-medium">
+					{wishlist && item && (
+						<Breadcrumb>
+							<BreadcrumbList>
+								<BreadcrumbItem>
+									<BreadcrumbEllipsis />
+								</BreadcrumbItem>
+								<BreadcrumbSeparator />
+								<BreadcrumbItem>
+									<BreadcrumbLink asChild>
+										<NavLink to={`/wishlist/${wishlist.id}`}>{wishlist.title}</NavLink>
+									</BreadcrumbLink>
+								</BreadcrumbItem>
+								<BreadcrumbSeparator />
+								<BreadcrumbItem className="text-black text-base">{item.title}</BreadcrumbItem>
+							</BreadcrumbList>
+						</Breadcrumb>
+					)}
+				</div>
 				{isOwner && (
 					<div>
 						<DropdownMenu>

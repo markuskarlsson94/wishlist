@@ -14,11 +14,12 @@ import { Box } from "lucide-react";
 import Tooltip from "./Tooltip";
 import { useGetUser } from "@/hooks/user";
 import NotFound from "./NotFound";
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "./ui/breadcrumb";
 
 const Wishlists = () => {
 	const params = useParams<{ userId: string }>();
 	const userId = Number(params.userId);
-	const { user, isSuccess, notFound } = useGetUser(userId);
+	const { user, notFound } = useGetUser(userId);
 	const { userId: viewer } = useAuth();
 	const navigate = useNavigate();
 	const createWishlist = useCreateWishlist();
@@ -64,17 +65,6 @@ const Wishlists = () => {
 		createWishlist(input, userId);
 	};
 
-	const getTitle = () => {
-		if (isOwner) return "My Wishlists";
-
-		if (isSuccess && user) {
-			const { firstName, lastName } = user;
-			return `${firstName} ${lastName}'s wishslists`;
-		}
-
-		return "";
-	};
-
 	const values = {
 		title: "",
 		description: "",
@@ -90,7 +80,25 @@ const Wishlists = () => {
 			<div className="flex flex-col gap-y-3">
 				<div className="relative flex flex-row items-center">
 					<BackButton onClick={handleBack} />
-					<p className="absolute left-1/2 transform -translate-x-1/2 font-medium">{getTitle()}</p>
+					<div className="absolute left-1/2 transform -translate-x-1/2 font-medium">
+						{isOwner ? (
+							<p>My Wishlists</p>
+						) : (
+							<Breadcrumb>
+								<BreadcrumbList>
+									<BreadcrumbItem>
+										<BreadcrumbLink asChild>
+											<NavLink to={`/user/${user?.id}`}>
+												{`${user?.firstName} ${user?.lastName}`}
+											</NavLink>
+										</BreadcrumbLink>
+									</BreadcrumbItem>
+									<BreadcrumbSeparator />
+									<BreadcrumbItem className="text-black text-base">Wishlists</BreadcrumbItem>
+								</BreadcrumbList>
+							</Breadcrumb>
+						)}
+					</div>
 				</div>
 
 				<div className="h-3" />

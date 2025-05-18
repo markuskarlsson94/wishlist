@@ -40,6 +40,15 @@ import { findFormattedType, getFormattedType } from "@/utils/wishlist/utils";
 import WishlistTypeInfoType from "@/types/WishlistTypeInfoType";
 import { Badge } from "./ui/badge";
 import NotFound from "./NotFound";
+import {
+	Breadcrumb,
+	BreadcrumbEllipsis,
+	BreadcrumbItem,
+	BreadcrumbLink,
+	BreadcrumbList,
+	BreadcrumbSeparator,
+} from "./ui/breadcrumb";
+import { useGetUser } from "@/hooks/user";
 
 const Wishlist = () => {
 	const [isOwner, setIsOwner] = useState<boolean>(false);
@@ -48,6 +57,7 @@ const Wishlist = () => {
 	const { wishlist, isSuccess, notFound } = useGetWishlist(id);
 	const updateWishlist = useUpdateWishlist();
 	const { userId } = useAuth();
+	const { user } = useGetUser(wishlist?.owner);
 	const navigate = useNavigate();
 	const deleteWishlist = useDeleteWishlist({
 		onSuccess: () => {
@@ -136,6 +146,10 @@ const Wishlist = () => {
 		type: wishlist?.type || types[0]?.id,
 	};
 
+	const wishlistsText = () => {
+		return isOwner ? "My Wishlists" : `${user?.firstName}'s wishlists`;
+	};
+
 	if (notFound) {
 		return <NotFound type="Wishlist" />;
 	}
@@ -143,7 +157,27 @@ const Wishlist = () => {
 	return (
 		<RoundedRect>
 			<div className="relative flex justify-between items-center">
-				<p className="absolute left-1/2 transform -translate-x-1/2 font-medium">{wishlist?.title}</p>
+				<div className="absolute left-1/2 transform -translate-x-1/2 font-medium">
+					{user && (
+						<Breadcrumb>
+							<BreadcrumbList>
+								{!isOwner && (
+									<>
+										<BreadcrumbItem>
+											<BreadcrumbEllipsis />
+										</BreadcrumbItem>
+										<BreadcrumbSeparator />
+									</>
+								)}
+								<BreadcrumbLink asChild>
+									<NavLink to={`/user/${user.id}/wishlists`}>{wishlistsText()}</NavLink>
+								</BreadcrumbLink>
+								<BreadcrumbSeparator />
+								<BreadcrumbItem className="text-black text-base">{wishlist?.title}</BreadcrumbItem>
+							</BreadcrumbList>
+						</Breadcrumb>
+					)}
+				</div>
 				<BackButton onClick={handleBack} />
 				<div className="flex gap-x-3 items-center">
 					{type && (

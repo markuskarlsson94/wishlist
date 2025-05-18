@@ -13,6 +13,7 @@ import FriendType from "@/types/FriendType";
 import NotFound from "./NotFound";
 import ProfilePicture from "./ProfilePicture";
 import { Separator } from "./ui/separator";
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "./ui/breadcrumb";
 
 const ReceivedFriendRequest = ({ friendRequest }: { friendRequest: FriendRequest }) => {
 	const { userId } = useAuth();
@@ -142,17 +143,6 @@ const Friends = () => {
 		);
 	};
 
-	const getTitle = () => {
-		if (isOwner) return "My Friends";
-
-		if (isSuccess && user) {
-			const { firstName, lastName } = user;
-			return `${firstName} ${lastName}'s friends`;
-		}
-
-		return "";
-	};
-
 	if (notFound) {
 		return <NotFound type="User" />;
 	}
@@ -162,7 +152,23 @@ const Friends = () => {
 			<div className="flex flex-col gap-y-3">
 				<div className="relative flex items-center">
 					<BackButton className="" onClick={handleBack} />
-					<p className="absolute left-1/2 transform -translate-x-1/2 font-medium">{getTitle()}</p>
+					<div className="absolute left-1/2 transform -translate-x-1/2 font-medium">
+						{isOwner ? (
+							<p>My Friends</p>
+						) : (
+							<Breadcrumb>
+								<BreadcrumbList>
+									<BreadcrumbLink asChild>
+										<NavLink
+											to={`/user/${user?.id}`}
+										>{`${user?.firstName} ${user?.lastName}`}</NavLink>
+									</BreadcrumbLink>
+									<BreadcrumbSeparator />
+									<BreadcrumbItem className="text-black text-base">Friends</BreadcrumbItem>
+								</BreadcrumbList>
+							</Breadcrumb>
+						)}
+					</div>
 				</div>
 
 				<div className="h-3" />
