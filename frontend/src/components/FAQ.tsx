@@ -1,22 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import RoundedRect from "./RoundedRect";
 import BackButton from "./BackButton";
-import { Separator } from "./ui/separator";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion";
 
 const FAQ = () => {
 	const navigate = useNavigate();
 
 	const handleBack = () => {
 		navigate(-1);
-	};
-
-	const QA = ({ question, children }: { question: string; children: React.ReactNode }) => {
-		return (
-			<div>
-				<p className="font-medium">{question}</p>
-				<div className="pl-4">{children}</div>
-			</div>
-		);
 	};
 
 	return (
@@ -27,54 +18,55 @@ const FAQ = () => {
 					<p className="absolute left-1/2 transform -translate-x-1/2 font-medium">FAQ</p>
 				</div>
 
-				<div className="flex flex-col gap-y-6">
-					<QA question="Why did my reservation disappear without me doing anything?">
-						<p>A reservation could disappear for a number of different reasons</p>
-						<ul className="list-disc list-inside pl-4">
-							<li>The item or wishlist was removed by the owner</li>
-							<li>The user profile of the owner was deleted</li>
-							<li>
-								The visibility level of the corresponding wishlist has changed so that you no longer can
-								access it
-							</li>
-						</ul>
-					</QA>
-
-					<Separator />
-
-					<QA question={"Is there any way to see who has reserved the items in my wishlist?"}>
-						<p>No.</p>
-					</QA>
-
-					<Separator />
-
-					<QA question={"Should I remove the item from my wishlist after I have received it?"}>
-						<p>
+				<Accordion type="multiple">
+					<AccordionItem value="1">
+						<AccordionTrigger>Why did my reservation disappear for seemingly no reason?</AccordionTrigger>
+						<AccordionContent>
+							<p>A reservation can disappear for a number of different reasons</p>
+							<ul className="list-disc list-inside pl-4">
+								<li>The item or wishlist was removed by the owner</li>
+								<li>The user profile of the owner was deleted</li>
+								<li>
+									The visibility level of the corresponding wishlist has changed so that you no longer
+									can access it
+								</li>
+							</ul>
+						</AccordionContent>
+					</AccordionItem>
+					<AccordionItem value="2">
+						<AccordionTrigger>
+							Is there any way to see who has reserved the items in my wishlist?
+						</AccordionTrigger>
+						<AccordionContent>No, it is not possible.</AccordionContent>
+					</AccordionItem>
+					<AccordionItem value="3">
+						<AccordionTrigger>
+							Should I remove the item from my wishlist after I have received it?
+						</AccordionTrigger>
+						<AccordionContent>
 							Yes, it is good practice to remove the item after you have received it. The reservation will
-							then also be removed from the user who gifted it from you.
-						</p>
-					</QA>
-
-					<Separator />
-
-					<QA question={"How do I edit or delete an item/wishlist?"}>
-						<p>Press the three dots in the upper right corner to open the edit/delete options.</p>
-					</QA>
-
-					<Separator />
-
-					<QA question={"Can I send messages to users?"}>
-						<p>
+							then also be removed from the user who gifted it to you.
+						</AccordionContent>
+					</AccordionItem>
+					<AccordionItem value="4">
+						<AccordionTrigger>How do I edit or delete an item/wishlist?</AccordionTrigger>
+						<AccordionContent>
+							Press the three dots in the upper right corner to open the edit/delete options.
+						</AccordionContent>
+					</AccordionItem>
+					<AccordionItem value="5">
+						<AccordionTrigger>Can I send direct messages to users?</AccordionTrigger>
+						<AccordionContent>
 							There is currently no way to message users other than through anonymous comments on items.
-						</p>
-					</QA>
-
-					<Separator />
-
-					<QA question={"Can I recover my account after I deleted it?"}>
-						<p>No, there is unfourtunately no way to recover a deleted account currently.</p>
-					</QA>
-				</div>
+						</AccordionContent>
+					</AccordionItem>
+					<AccordionItem value="6">
+						<AccordionTrigger>Can I recover my account after I deleted it?</AccordionTrigger>
+						<AccordionContent>
+							No, there is unfourtunately no way to recover a deleted account currently.
+						</AccordionContent>
+					</AccordionItem>
+				</Accordion>
 			</div>
 		</RoundedRect>
 	);
