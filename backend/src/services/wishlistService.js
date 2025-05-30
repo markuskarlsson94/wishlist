@@ -405,7 +405,16 @@ const wishlistService = {
 				throw new ErrorMessage(errorMessages.reservationNotFound);
 			}
 
-			return await db.reservation.getByUserId(id);
+			const reservations = await db.reservation.getByUserId(id);
+			let filteredReservations = [];
+
+			for (const reservation of reservations) {
+				if (await canViewWishlistItem(user, reservation.item)) {
+					filteredReservations.push(reservation);
+				}
+			}
+
+			return filteredReservations;
 		},
 
 		getByItemId: async (user, id) => {
