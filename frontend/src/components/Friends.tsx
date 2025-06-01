@@ -12,8 +12,8 @@ import HoverCard from "./HoverCard";
 import FriendType from "@/types/FriendType";
 import NotFound from "./NotFound";
 import ProfilePicture from "./ProfilePicture";
-import { Separator } from "./ui/separator";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "./ui/breadcrumb";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion";
 
 const ReceivedFriendRequest = ({ friendRequest }: { friendRequest: FriendRequest }) => {
 	const { userId } = useAuth();
@@ -129,14 +129,19 @@ const Friends = () => {
 			<>
 				{requestCount !== 0 && (
 					<>
-						<p className="font-medium">Friend requests {`(${requestCount})`}</p>
-						{receivedFriendRequests.map((friendRequest) => (
-							<ReceivedFriendRequest key={friendRequest.id} friendRequest={friendRequest} />
-						))}
-						{sentFriendRequests.map((friendRequest) => (
-							<SentFriendRequest key={friendRequest.id} friendRequest={friendRequest} />
-						))}
-						<Separator className="my-2" />
+						<Accordion type="single" collapsible>
+							<AccordionItem value="friendRequests">
+								<AccordionTrigger>Friend requests</AccordionTrigger>
+								<AccordionContent>
+									{receivedFriendRequests.map((friendRequest) => (
+										<ReceivedFriendRequest key={friendRequest.id} friendRequest={friendRequest} />
+									))}
+									{sentFriendRequests.map((friendRequest) => (
+										<SentFriendRequest key={friendRequest.id} friendRequest={friendRequest} />
+									))}
+								</AccordionContent>
+							</AccordionItem>
+						</Accordion>
 					</>
 				)}
 			</>
