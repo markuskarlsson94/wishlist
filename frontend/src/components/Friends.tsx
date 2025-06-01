@@ -179,8 +179,6 @@ const Friends = () => {
 				<div className="h-3" />
 
 				{viewer === userId && <FriendRequests />}
-
-				{friends.length !== 0 && <p className="font-medium mt-3">Friends {`(${friends.length})`}</p>}
 				{friends.length === 0 && <p className="m-auto text-2xl font-medium text-gray-300">No friends yet</p>}
 				{isSuccessFriends && friends?.map((friend) => <Friend key={friend.userId} friend={friend} />)}
 			</div>
