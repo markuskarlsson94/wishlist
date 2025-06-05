@@ -155,8 +155,8 @@ const userService = {
 		if (userToDelete === undefined) {
 			throw new ErrorMessage(errorMessages.userNotFound);
 		} else {
+			await removeProfilePicture(user, userToDeleteId);
 			await db.user.remove(userToDelete.id);
-			// TODO: remove profile picture
 			logger.info(`User [id = ${userToDelete.id}, email = ${userToDelete.email}] has been removed`);
 		}
 	},
