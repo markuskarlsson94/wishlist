@@ -112,7 +112,12 @@ const userService = {
 		const token = crypto.randomBytes(64).toString("hex");
 
 		if (sendEmail) {
-			await sendVerificationEmail(email, token);
+			try {
+				await sendVerificationEmail(email, token);
+			} catch (error) {
+				logger.error(error.message);
+				throw new ErrorMessage(errorMessages.serverError);
+			}
 		}
 
 		try {
