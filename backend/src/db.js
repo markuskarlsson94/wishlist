@@ -6,18 +6,18 @@ import { generatePassword } from "./utilities/password.js";
 import userService from "./services/userService.js";
 
 const environment = process.env.NODE_ENV || "development";
-const tokenTable = "tokens";
-const userTable = "users";
-const userRolesTable = "userRoles";
-const wishlistTable = "wishlists";
-const wishlistTypeTable = "wishlistTypes";
-const wishlistItemTable = "wishlistItems";
-const reservationsTable = "reservations";
-const friendsTable = "friends";
-const friendRequestsTable = "friendRequests";
-const commentsTable = "comments";
-const waitlistTable = "waitlist";
-const passwordTokenTable = "passwordReset";
+export const tokenTable = "tokens";
+export const userTable = "users";
+export const userRolesTable = "userRoles";
+export const wishlistTable = "wishlists";
+export const wishlistTypeTable = "wishlistTypes";
+export const wishlistItemTable = "wishlistItems";
+export const reservationsTable = "reservations";
+export const friendsTable = "friends";
+export const friendRequestsTable = "friendRequests";
+export const commentsTable = "comments";
+export const waitlistTable = "waitlist";
+export const passwordTokenTable = "passwordReset";
 
 let dbClient;
 

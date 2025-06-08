@@ -11,6 +11,9 @@ const config = {
 			database: process.env.DB_DATABASE,
 			port: process.env.DB_PORT,
 		},
+		migrations: {
+			directory: "./migrations",
+		},
 	},
 	test: {
 		client: "pg",
@@ -21,6 +24,9 @@ const config = {
 			//database: process.env.DB_DATABASE_TEST,
 			database: process.env.DB_DATABASE, // TODO: Connect to test database.
 			port: process.env.DB_PORT,
+		},
+		migrations: {
+			directory: "./migrations",
 		},
 	},
 };
