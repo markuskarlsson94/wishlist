@@ -1,12 +1,5 @@
-import {
-	AlertDialog,
-	AlertDialogAction,
-	AlertDialogContent,
-	AlertDialogDescription,
-	AlertDialogFooter,
-	AlertDialogHeader,
-	AlertDialogTitle,
-} from "../ui/alert-dialog";
+import { Button } from "../ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog";
 
 const NameUpdatedDialog = ({
 	open,
@@ -16,17 +9,17 @@ const NameUpdatedDialog = ({
 	setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
 	return (
-		<AlertDialog open={open} onOpenChange={setOpen}>
-			<AlertDialogContent>
-				<AlertDialogHeader>
-					<AlertDialogTitle>Name updated</AlertDialogTitle>
-					<AlertDialogDescription>Your name has successfully been updated!</AlertDialogDescription>
-				</AlertDialogHeader>
-				<AlertDialogFooter>
-					<AlertDialogAction>Got it</AlertDialogAction>
-				</AlertDialogFooter>
-			</AlertDialogContent>
-		</AlertDialog>
+		<Dialog open={open} onOpenChange={setOpen}>
+			<DialogContent>
+				<DialogHeader>
+					<DialogTitle>Name updated</DialogTitle>
+					<DialogDescription>Your name has successfully been updated!</DialogDescription>
+				</DialogHeader>
+				<DialogFooter>
+					<Button onClick={() => setOpen(false)}>Got it</Button>
+				</DialogFooter>
+			</DialogContent>
+		</Dialog>
 	);
 };
 
