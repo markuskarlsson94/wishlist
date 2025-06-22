@@ -1,11 +1,8 @@
-import "./loadEnv.js";
-import knex from "knex";
-import config from "./knexfile.js";
 import logger from "./logger.js";
 import { generatePassword } from "./utilities/password.js";
 import userService from "./services/userService.js";
+import envConfig from "./envConfig.js";
 
-const environment = process.env.NODE_ENV || "development";
 export const tokenTable = "tokens";
 export const userTable = "users";
 export const userRolesTable = "userRoles";
@@ -22,10 +19,9 @@ export const passwordTokenTable = "passwordReset";
 let dbClient;
 
 const db = {
-	connect: async (env = environment) => {
+	connect: async () => {
 		try {
-			dbClient = knex(config[env]);
-			logger.info(`Connected to database. Environment: ${env}.`);
+			dbClient = envConfig.getDBClient();
 		} catch (error) {
 			logger.error("Error connecting to database:", error);
 		}
