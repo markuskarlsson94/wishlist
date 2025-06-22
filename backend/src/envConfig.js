@@ -10,6 +10,8 @@ if (!env) {
 	env = "development";
 }
 
+logger.info(`Environment: ${env}`);
+
 const baseConfig = {
 	getDBClient: () => {
 		const dbClient = knex(config[env]);
