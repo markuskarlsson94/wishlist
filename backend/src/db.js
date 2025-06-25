@@ -27,6 +27,17 @@ const db = {
 		}
 	},
 
+	init: async () => {
+		try {
+			await dbClient.migrate.rollback(null, true);
+			await dbClient.migrate.latest();
+
+			logger.info("Database initiated");
+		} catch (error) {
+			logger.error("Error initiating database:", error);
+		}
+	},
+
 	disconnect: async () => {
 		try {
 			await dbClient.destroy();
