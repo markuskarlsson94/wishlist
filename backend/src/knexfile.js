@@ -34,6 +34,19 @@ const config = {
 			directory: path.resolve(dirname, "migrations"),
 		},
 	},
+	production: {
+		client: "pg",
+		connection: {
+			host: `db.${process.env.SUPABASE_PROJECT}.supabase.co`,
+			user: process.env.SUPABASE_DB_USER,
+			password: process.env.SUPABASE_DB_PASSWORD,
+			database: process.env.SUPABASE_DB,
+			port: process.env.SUPABASE_PORT,
+		},
+		migrations: {
+			directory: path.resolve(dirname, "migrations"),
+		},
+	},
 };
 
 export default config;
