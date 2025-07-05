@@ -1,3 +1,8 @@
+import path from "path";
+import { fileURLToPath } from "url";
+
+const dirname = path.dirname(fileURLToPath(import.meta.url));
+
 /**
  * @type { Object.<string, import("knex").Knex.Config> }
  */
@@ -12,7 +17,7 @@ const config = {
 			port: process.env.DB_PORT,
 		},
 		migrations: {
-			directory: "./migrations",
+			directory: path.resolve(dirname, "migrations"),
 		},
 	},
 	test: {
@@ -26,7 +31,7 @@ const config = {
 			port: process.env.DB_PORT,
 		},
 		migrations: {
-			directory: "./migrations",
+			directory: path.resolve(dirname, "migrations"),
 		},
 	},
 };
