@@ -516,6 +516,11 @@ const canManageReservation = async (user, reservationId) => {
 
 const canViewUser = async (user, userId) => {
 	if (!user || !userId) return false;
+	return true;
+};
+
+const canManageUser = async (user, userId) => {
+	if (!user || !userId) return false;
 	return user.role === adminRole() || user.id === userId;
 };
 
