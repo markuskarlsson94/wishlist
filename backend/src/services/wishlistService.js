@@ -5,7 +5,7 @@ import logger from "../logger.js";
 import { adminRole } from "../roles.js";
 import { publicType, allTypes, hiddenType, friendType } from "../wishlistTypes.js";
 import { PostgresError } from "pg-error-enum";
-import { canManageUser, usersAreFriends } from "./userService.js";
+import { canViewUser, canManageUser, usersAreFriends } from "./userService.js";
 
 const wishlistService = {
 	add: async (user, userId, title, description, type = publicType()) => {
@@ -511,16 +511,6 @@ const canViewReservation = async (user, reservationId) => {
 
 const canManageReservation = async (user, reservationId) => {
 	const userId = await db.reservation.getUser(reservationId);
-	return user.role === adminRole() || user.id === userId;
-};
-
-const canViewUser = async (user, userId) => {
-	if (!user || !userId) return false;
-	return true;
-};
-
-const canManageUser = async (user, userId) => {
-	if (!user || !userId) return false;
 	return user.role === adminRole() || user.id === userId;
 };
 
