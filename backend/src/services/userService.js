@@ -501,10 +501,12 @@ const userService = {
 
 export const canViewUser = async (user, userId) => {
 	// TODO: Implement logic when needed
+	if (!user || !userId) return false;
 	return true;
 };
 
 export const canManageUser = (user, userId) => {
+	if (!user || !userId) return false;
 	return user.role === adminRole() || user.id === userId;
 };
 
