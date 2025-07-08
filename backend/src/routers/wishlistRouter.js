@@ -125,7 +125,7 @@ wishlistRouter.get("/item/:id/reservation", isAuthenticated(), async (req, res) 
 		const itemId = req.params.id;
 		const user = req.user;
 
-		const data = await wishlistService.reservation.getByUserIdAndItemId(user, user.id, itemId);
+		const data = await wishlistService.reservation.getByItemId(user, itemId);
 
 		res.status(200).json({ reservation: data });
 	} catch (error) {
