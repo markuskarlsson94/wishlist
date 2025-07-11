@@ -530,13 +530,6 @@ const userOwnsItem = async (user, itemId) => {
 	return user.id === owner;
 };
 
-const userHasReservedItem = async (user, itemId) => {
-	if (!user || !itemId) return false;
-
-	const reservation = await db.reservation.getByUserIdAndItemId(user.id, itemId);
-	return reservation !== undefined;
-};
-
 const createFilteredWishlistItem = async (user, item) => {
 	const isAdmin = user.role === adminRole();
 
