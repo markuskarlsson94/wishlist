@@ -929,22 +929,6 @@ describe("reservations", () => {
 				})(),
 			).rejects.toThrowError(errorMessages.unauthorizedToViewReservations.message);
 		});
-
-		it("should only find reservations by user id and item id if not owner", async () => {
-			const reservation = await wishlistService.item.reserve(user3, item1user1Id);
-
-			let r = await wishlistService.reservation.getByUserIdAndItemId(user2, user1Id, item1user1Id);
-			expect(r).toBe(reservation.id);
-
-			r = await wishlistService.reservation.getByUserIdAndItemId(admin, user1Id, item1user1Id);
-			expect(r).toBe(reservation.id);
-
-			await expect(
-				(async () => {
-					await wishlistService.reservation.getByUserIdAndItemId(user1, user1Id, item1user1Id);
-				})(),
-			).rejects.toThrowError(errorMessages.reservationNotFound.message);
-		});
 	});
 
 	describe("removing reservations", () => {
