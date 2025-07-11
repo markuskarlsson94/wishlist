@@ -401,7 +401,7 @@ const wishlistService = {
 		},
 
 		getByUserId: async (user, id) => {
-			if (!(await canViewUser(user, id))) {
+			if (!canManageUser(user, id)) {
 				throw new ErrorMessage(errorMessages.reservationNotFound);
 			}
 
@@ -418,7 +418,7 @@ const wishlistService = {
 		},
 
 		getByItemId: async (user, id) => {
-			if (user.role !== adminRole()) {
+			if (await userOwnsItem(user, id)) {
 				throw new ErrorMessage(errorMessages.unauthorizedToViewReservations);
 			}
 
@@ -427,7 +427,7 @@ const wishlistService = {
 
 		getByUserIdAndItemId: async (user, userId, itemId) => {
 			const userOk = await canViewUser(user, userId);
-			const itemOk = await canViewWishlistItem(user, itemId);
+			const itemOk = !(await userOwnsItem(user, itemId));
 
 			if (!userOk || !itemOk) {
 				throw new ErrorMessage(errorMessages.reservationNotFound);
@@ -437,10 +437,6 @@ const wishlistService = {
 
 			if (!reservation) {
 				return undefined;
-			}
-
-			if (!(await canViewReservation(user, reservation.id))) {
-				throw new ErrorMessage(errorMessages.reservationNotFound);
 			}
 
 			return reservation;
@@ -554,12 +550,6 @@ const createFilteredWishlistItem = async (user, item) => {
 	reservations.forEach((r) => {
 		reservedAmount += r.amount;
 	});
-
-	const reservedByUser = await userHasReservedItem(user, item.id);
-
-	if (reservedAmount >= item.amount && !reservedByUser && !isAdmin) {
-		throw new Error(errorMessages.amountToReserveTooLarge.message);
-	}
 
 	const obj = {
 		...item,
