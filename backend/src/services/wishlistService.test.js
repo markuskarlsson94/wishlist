@@ -747,7 +747,7 @@ describe("reservations", () => {
 			expect(item.originalAmount).toBe(undefined);
 		});
 
-		it("should not display item from wishlist if it has been fully reserved for other user", async () => {
+		it("should display item from wishlist even if it has been fully reserved for other user", async () => {
 			item4user1Id = await wishlistService.item.add({
 				user: user1,
 				wishlist: wishlistUser1Id1,
@@ -759,17 +759,13 @@ describe("reservations", () => {
 
 			await wishlistService.item.reserve(user2, item4user1Id);
 
-			await expect(
-				(async () => {
-					await wishlistService.item.getById(user3, item4user1Id);
-				})(),
-			).rejects.toThrowError(errorMessages.wishlistItemNotFound.message);
+			const item = await wishlistService.item.getById(user3, item4user1Id);
+			expect(item.amount).toBe(0);
 		});
 
 		it("should display item for reserver even if its fully reserved", async () => {
 			const item = await wishlistService.item.getById(user2, item4user1Id);
 			expect(item.amount).toBe(0);
-			expect(item.originalAmount).toBe(undefined);
 		});
 
 		it("should display item for admin even if its fully reserved", async () => {
@@ -825,17 +821,17 @@ describe("reservations", () => {
 			expect(item2.originalAmount).toBe(undefined);
 		});
 
-		it("should change amount after reservation for other user", async () => {
+		it("should not change amount after reservation for other user", async () => {
 			await wishlistService.item.reserve(user1, item1Id);
 			await wishlistService.item.reserve(user1, item2Id);
 
 			let items = await wishlistService.getItems(user2, wishlist);
-			expect(items.length).toBe(1);
+			expect(items.length).toBe(2);
 
 			const item1 = items.find((item) => item.id === item1Id);
 			const item2 = items.find((item) => item.id === item2Id);
 
-			expect(item1).toBe(undefined);
+			expect(item1.id).toBe(item1Id);
 			expect(item2.id).toBe(item2Id);
 
 			expect(item2.amount).toBe(1);
@@ -914,15 +910,40 @@ describe("reservations", () => {
 			expect(reservations.length).toBe(2);
 		});
 
-		it("should only find reservations by item id if admin", async () => {
+		it("should only find reservations by item id if not owner", async () => {
+			let reservations = await wishlistService.reservation.getByItemId(user1, item1AdminId);
+			expect(reservations.length).toBe(1);
+
+			reservations = await wishlistService.reservation.getByItemId(admin, item1user1Id);
+			expect(reservations.length).toBe(0);
+
 			await expect(
 				(async () => {
-					await wishlistService.reservation.getByItemId(user1, item1AdminId);
+					await wishlistService.reservation.getByItemId(user1, item1user1Id);
 				})(),
 			).rejects.toThrowError(errorMessages.unauthorizedToViewReservations.message);
 
-			const reservations = await wishlistService.reservation.getByItemId(admin, item3AdminId);
-			expect(reservations.length).toBe(2);
+			await expect(
+				(async () => {
+					await wishlistService.reservation.getByItemId(admin, item3AdminId);
+				})(),
+			).rejects.toThrowError(errorMessages.unauthorizedToViewReservations.message);
+		});
+
+		it("should only find reservations by user id and item id if not owner", async () => {
+			const reservation = await wishlistService.item.reserve(user3, item1user1Id);
+
+			let r = await wishlistService.reservation.getByUserIdAndItemId(user2, user1Id, item1user1Id);
+			expect(r).toBe(reservation.id);
+
+			r = await wishlistService.reservation.getByUserIdAndItemId(admin, user1Id, item1user1Id);
+			expect(r).toBe(reservation.id);
+
+			await expect(
+				(async () => {
+					await wishlistService.reservation.getByUserIdAndItemId(user1, user1Id, item1user1Id);
+				})(),
+			).rejects.toThrowError(errorMessages.reservationNotFound.message);
 		});
 	});
 
