@@ -563,16 +563,6 @@ const db = {
 				.where({ user: id });
 		},
 
-		getByUserIdAndItemId: async (userId, itemId) => {
-			return await dbClient(reservationsTable)
-				.select("*")
-				.where({
-					user: userId,
-					item: itemId,
-				})
-				.first();
-		},
-
 		getUser: async (id) => {
 			return (await dbClient(reservationsTable).select("user").where({ id }).first())?.user;
 		},
