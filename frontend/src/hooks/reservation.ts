@@ -20,13 +20,14 @@ export const useGetReservations = (userId: number | undefined) => {
 	};
 };
 
-export const useGetReservationByItemId = (itemId: number) => {
-	const { data, isSuccess } = useQuery<ReservationType>({
-		queryKey: ["reservationItemId", itemId],
+export const useGetReservationByItemId = (itemId: number | undefined) => {
+	const { data, isSuccess } = useQuery<ReservationType[]>({
+		queryKey: ["itemReservation", itemId],
 		queryFn: async () => {
 			const data = await axiosInstance.get(`item/${itemId}/reservation`);
 			return data.data.reservation;
 		},
+		enabled: !!itemId,
 	});
 
 	return {
