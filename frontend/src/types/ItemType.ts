@@ -5,7 +5,6 @@ type ItemType = {
 	wishlist: number;
 	createdAt: string;
 	owner: number;
-	reservation: number;
 	link: string | null;
 };
 
