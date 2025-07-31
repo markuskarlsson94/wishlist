@@ -27,6 +27,7 @@ import ReactTimeAgo from "react-time-ago";
 import ItemType from "@/types/ItemType";
 import { useGetUser } from "@/hooks/user";
 import { Badge } from "./ui/badge";
+import ProfilePicture from "./ProfilePicture";
 
 const Comment = ({ comment, item }: { comment: CommentType; item: ItemType }) => {
 	const { id: itemId, owner } = item;
@@ -145,6 +146,16 @@ const Comment = ({ comment, item }: { comment: CommentType; item: ItemType }) =>
 		},
 	);
 
+	const CommentProfilePicture = ({ comment }: { comment: CommentType }) => {
+		if (comment.isAdmin) return <></>;
+
+		if (comment.isItemOwner) {
+			return <ProfilePicture src={user?.profilePicture ?? undefined} />;
+		}
+
+		return <ProfilePicture src={undefined} />;
+	};
+
 	const commentContent = (title: string, comment: CommentType) => {
 		return (
 			<Card className="relative">
@@ -153,6 +164,7 @@ const Comment = ({ comment, item }: { comment: CommentType; item: ItemType }) =>
 						<div className="absolute right-3 top-2">{comment.isOwnComment && commentOptions()}</div>
 						<div className="flex justify-between">
 							<div className="flex gap-x-3 items-center">
+								<CommentProfilePicture comment={comment} />
 								<p>{title}</p>
 								<Badge variant={"secondary"}>
 									<DateComponent comment={comment} />
