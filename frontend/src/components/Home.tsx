@@ -69,7 +69,7 @@ const Home = () => {
 
 					<Feature
 						title="Reserve Items"
-						description="Reserve items to avoid duplicate gifts. Only you can see what you reserved."
+						description="Avoid duplicate gifts. The owner can't see what you reserved."
 						Icon={ListChecks}
 						delay="1000ms"
 					/>

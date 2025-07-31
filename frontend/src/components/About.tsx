@@ -22,8 +22,8 @@ const About = () => {
 				<p>
 					{APP_NAME} is a free-to-use and minimal website that allows users to create and manage their own
 					wishlists. Items in wishlists can be reserved by other users to make sure they wont be bought twice.
-					You, as the owner of the wishlist can't see which items have been reserved, and reserved items can't
-					be seen by other users.
+					The owner of the wishlist can't see which items have been reserved. Other users can however see who
+					reserved what.
 				</p>
 
 				<p>
