@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { useGetItem, useDeleteItem, useUpdateItem } from "../hooks/item";
-import { useCreateReservation, useDeleteReservation } from "../hooks/reservation";
+import { useCreateReservation, useDeleteReservation, useGetReservationByItemId } from "../hooks/reservation";
 import ItemInputType from "../types/ItemInputType";
 import { NavLink } from "react-router-dom";
 import { useAddComment, useGetComments } from "../hooks/comment";
@@ -39,6 +39,9 @@ import {
 	BreadcrumbSeparator,
 } from "./ui/breadcrumb";
 import { useGetWishlist } from "@/hooks/wishlist";
+import { useGetUser } from "@/hooks/user";
+import ProfilePicture from "./ProfilePicture";
+import UserType from "@/types/UserType";
 
 const Item = () => {
 	const [isOwner, setIsOwner] = useState<boolean>(false);
@@ -50,6 +53,10 @@ const Item = () => {
 	const { wishlist } = useGetWishlist(item?.wishlist);
 	const createReservation = useCreateReservation({ userId });
 	const deleteReservation = useDeleteReservation({ userId });
+	const { reservation } = useGetReservationByItemId(item?.id);
+	const { user: reserver } = useGetUser(reservation?.[0]?.user);
+	const reservedByCurrentUser = reserver?.id === userId;
+	const reservationExists = reservation && reservation?.length > 0;
 	const updateItem = useUpdateItem();
 	const { comments } = useGetComments(id);
 	const addComment = useAddComment({ itemId: id });
@@ -85,8 +92,8 @@ const Item = () => {
 	};
 
 	const handleUnreserve = () => {
-		if (item?.reservation) {
-			deleteReservation(item.reservation, item.id);
+		if (reservation && item) {
+			deleteReservation(reservation[0].id, item.id);
 		}
 	};
 
@@ -94,12 +101,32 @@ const Item = () => {
 		navigate(-1);
 	};
 
-	const reserveButton = () => {
-		return <Button onClick={handleReserve}>Reserve</Button>;
+	const ReserveButton = () => {
+		return (
+			<Button disabled={reservationExists} onClick={handleReserve}>
+				Reserve
+			</Button>
+		);
 	};
 
-	const unreserveButton = () => {
+	const UnreserveButton = () => {
 		return <Button onClick={handleUnreserve}>Unreserve</Button>;
+	};
+
+	const ReservationInfo = ({ reserver }: { reserver: UserType }) => {
+		return (
+			<p className="font-medium">
+				<span className="flex items-center">
+					<NavLink to={`/user/${reserver.id}`}>
+						<span className="flex gap-x-2 items-center">
+							<ProfilePicture src={reserver.profilePicture} />
+							{reserver.firstName} {reserver.lastName}
+						</span>
+					</NavLink>
+					<span className="font-normal ml-1">has reserved this item</span>
+				</span>
+			</p>
+		);
 	};
 
 	const handleAddComment = (comment: CommentInputType) => {
@@ -247,11 +274,14 @@ const Item = () => {
 						ref={formRef}
 					/>
 				</div>
-				<div className="flex gap-x-2 self-end">
-					<Button onClick={handleSubmitComment} disabled={comment === ""}>
-						Add comment
-					</Button>
-					{!isOwner && (item?.reservation ? unreserveButton() : reserveButton())}
+				<div className="flex flex-row">
+					{reserver && !reservedByCurrentUser && <ReservationInfo reserver={reserver} />}
+					<div className="flex gap-x-2 ml-auto">
+						<Button onClick={handleSubmitComment} disabled={comment === ""}>
+							Add comment
+						</Button>
+						{!isOwner && (reservedByCurrentUser ? <UnreserveButton /> : <ReserveButton />)}
+					</div>
 				</div>
 			</div>
 		</RoundedRect>
