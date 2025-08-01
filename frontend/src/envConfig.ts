@@ -1,4 +1,4 @@
-let env: keyof typeof configs = import.meta.env.ENV as keyof typeof configs;
+let env: keyof typeof configs = import.meta.env.MODE as keyof typeof configs;
 
 if (!env) {
 	console.warn("Unable to find current environment. Defaulting to 'development'");
