@@ -46,7 +46,7 @@ const Comment = ({ comment, item }: { comment: CommentType; item: ItemType }) =>
 		setIsEditDialogOpen(false);
 	};
 
-	const commentOptions = () => {
+	const CommentOptions = () => {
 		return (
 			<div>
 				<DropdownMenu>
@@ -156,12 +156,12 @@ const Comment = ({ comment, item }: { comment: CommentType; item: ItemType }) =>
 		return <ProfilePicture src={undefined} />;
 	};
 
-	const commentContent = (title: string, comment: CommentType) => {
+	const CommentContent = ({ title, comment }: { title: string; comment: CommentType }) => {
 		return (
 			<Card className="relative">
 				<CardHeader>
 					<CardTitle>
-						<div className="absolute right-3 top-2">{comment.isOwnComment && commentOptions()}</div>
+						<div className="absolute right-3 top-2">{comment.isOwnComment && <CommentOptions />}</div>
 						<div className="flex justify-between">
 							<div className="flex gap-x-3 items-center">
 								<CommentProfilePicture comment={comment} />
@@ -193,18 +193,18 @@ const Comment = ({ comment, item }: { comment: CommentType; item: ItemType }) =>
 	}
 
 	if (comment.isOwnComment) {
-		return commentContent(ownCommentString, comment);
+		return <CommentContent title={ownCommentString} comment={comment} />;
 	}
 
 	if (comment.isItemOwner) {
-		return commentContent(`${user?.firstName} ${user?.lastName}`, comment);
+		return <CommentContent title={`${user?.firstName} ${user?.lastName}`} comment={comment} />;
 	}
 
 	if (comment.isAdmin) {
-		return commentContent("Admin", comment);
+		return <CommentContent title={"Admin"} comment={comment} />;
 	}
 
-	return commentContent(`Anonymous user ${comment.anonymizedUserId}`, comment);
+	return <CommentContent title={`Anonymous user ${comment.anonymizedUserId}`} comment={comment} />;
 };
 
 export default Comment;
