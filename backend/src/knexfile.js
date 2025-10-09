@@ -37,11 +37,9 @@ const config = {
 	production: {
 		client: "pg",
 		connection: {
-			host: `db.${process.env.SUPABASE_PROJECT}.supabase.co`,
-			user: process.env.SUPABASE_DB_USER,
-			password: process.env.SUPABASE_DB_PASSWORD,
-			database: process.env.SUPABASE_DB,
-			port: process.env.SUPABASE_PORT,
+			// Supabase Transaction Pooler
+			connectionString: `postgresql://postgres.${process.env.SUPABASE_PROJECT}:${process.env.SUPABASE_DB_PASSWORD}@${process.env.SUPABASE_POOLER}.supabase.com:6543/postgres`,
+			ssl: { rejectUnauthorized: false },
 		},
 		migrations: {
 			directory: path.resolve(dirname, "migrations"),
