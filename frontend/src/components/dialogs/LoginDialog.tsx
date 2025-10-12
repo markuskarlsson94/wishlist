@@ -4,6 +4,8 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import LoginForm from "@/forms/LoginForm";
 import { useState } from "react";
 import ForgotPasswordForm from "@/forms/ForgotPasswordForm";
+import GoogleAuthButton from "../GoogleAuthButton";
+import SeparatorWithLabel from "../SeparatorWithLabel";
 
 const LoginDialogHeader = ({ showPasswordResetDialog }: { showPasswordResetDialog: boolean }) => {
 	if (showPasswordResetDialog) {
@@ -32,14 +34,22 @@ const LoginDialogContent = ({
 	setShowPasswordResetDialog: React.Dispatch<React.SetStateAction<boolean>>;
 	showPasswordResetDialog: boolean;
 }) => {
-	return showPasswordResetDialog ? (
-		<ForgotPasswordForm
-			setOpen={setOpen}
-			onSuccess={onPasswordResetRequestSent}
-			onBack={() => setShowPasswordResetDialog(false)}
-		/>
-	) : (
-		<LoginForm onForgotPassword={() => setShowPasswordResetDialog(true)} />
+	return (
+		<>
+			<GoogleAuthButton />
+
+			<SeparatorWithLabel label="Or by email" />
+
+			{showPasswordResetDialog ? (
+				<ForgotPasswordForm
+					setOpen={setOpen}
+					onSuccess={onPasswordResetRequestSent}
+					onBack={() => setShowPasswordResetDialog(false)}
+				/>
+			) : (
+				<LoginForm onForgotPassword={() => setShowPasswordResetDialog(true)} />
+			)}
+		</>
 	);
 };
 
