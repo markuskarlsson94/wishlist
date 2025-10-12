@@ -5,13 +5,51 @@ import LoginForm from "@/forms/LoginForm";
 import { useState } from "react";
 import ForgotPasswordForm from "@/forms/ForgotPasswordForm";
 
+const LoginDialogHeader = ({ showPasswordResetDialog }: { showPasswordResetDialog: boolean }) => {
+	if (showPasswordResetDialog) {
+		return (
+			<>
+				<DialogTitle>Reset password</DialogTitle>
+				<DialogDescription>
+					Enter the email which you used to register. An email will be sent to you which contains a link to
+					reset your password.
+				</DialogDescription>
+			</>
+		);
+	}
+
+	return <DialogTitle>Login</DialogTitle>;
+};
+
+const LoginDialogContent = ({
+	setOpen,
+	onPasswordResetRequestSent,
+	setShowPasswordResetDialog,
+	showPasswordResetDialog,
+}: {
+	setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+	onPasswordResetRequestSent: (email: string) => void;
+	setShowPasswordResetDialog: React.Dispatch<React.SetStateAction<boolean>>;
+	showPasswordResetDialog: boolean;
+}) => {
+	return showPasswordResetDialog ? (
+		<ForgotPasswordForm
+			setOpen={setOpen}
+			onSuccess={onPasswordResetRequestSent}
+			onBack={() => setShowPasswordResetDialog(false)}
+		/>
+	) : (
+		<LoginForm onForgotPassword={() => setShowPasswordResetDialog(true)} />
+	);
+};
+
 type LoginDialogConfig = {
 	onPasswordResetRequestSent?: (email: string) => void;
 };
 
 const LoginDialog = (config: LoginDialogConfig) => {
 	const [open, setOpen] = useState<boolean>(false);
-	const [showPasswordReset, setShowPasswordReset] = useState<boolean>(false);
+	const [showPasswordResetDialog, setShowPasswordResetDialog] = useState<boolean>(false);
 
 	const onPasswordResetRequestSent = (email: string) => {
 		if (config.onPasswordResetRequestSent) {
@@ -19,39 +57,11 @@ const LoginDialog = (config: LoginDialogConfig) => {
 		}
 	};
 
-	const dialogHeader = (forgotPasswordDialog: boolean) => {
-		if (forgotPasswordDialog) {
-			return (
-				<>
-					<DialogTitle>Reset password</DialogTitle>
-					<DialogDescription>
-						Enter the email which you used to register. An email will be sent to you which contains a link
-						to reset your password.
-					</DialogDescription>
-				</>
-			);
-		}
-
-		return <DialogTitle>Login</DialogTitle>;
-	};
-
-	const dialogContent = (forgotPasswordDialog: boolean) => {
-		return forgotPasswordDialog ? (
-			<ForgotPasswordForm
-				setOpen={setOpen}
-				onSuccess={onPasswordResetRequestSent}
-				onBack={() => setShowPasswordReset(false)}
-			/>
-		) : (
-			<LoginForm onForgotPassword={() => setShowPasswordReset(true)} />
-		);
-	};
-
 	return (
 		<Dialog
 			open={open}
 			onOpenChange={(open) => {
-				if (open) setShowPasswordReset(false);
+				if (open) setShowPasswordResetDialog(false);
 				setOpen(open);
 			}}
 		>
@@ -61,8 +71,15 @@ const LoginDialog = (config: LoginDialogConfig) => {
 				</Button>
 			</DialogTrigger>
 			<DialogContent>
-				<DialogHeader>{dialogHeader(showPasswordReset)}</DialogHeader>
-				{dialogContent(showPasswordReset)}
+				<DialogHeader>
+					<LoginDialogHeader showPasswordResetDialog={showPasswordResetDialog} />
+				</DialogHeader>
+				<LoginDialogContent
+					setOpen={setOpen}
+					onPasswordResetRequestSent={onPasswordResetRequestSent}
+					setShowPasswordResetDialog={setShowPasswordResetDialog}
+					showPasswordResetDialog={showPasswordResetDialog}
+				/>
 			</DialogContent>
 		</Dialog>
 	);
