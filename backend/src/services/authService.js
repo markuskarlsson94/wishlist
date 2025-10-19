@@ -24,22 +24,9 @@ const authService = {
 		}
 
 		if (match) {
-			const accessToken = generateAccessToken(user, true);
-			const refreshToken = generateRefreshToken(user);
-
-			try {
-				await db.token.add(user.id, refreshToken);
-			} catch (error) {
-				logger.error(error.message);
-				throw new Error("Unable to store token");
-			}
-
-			logger.info(`User ${user.email} logged in.`);
-
-			return {
-				accessToken,
-				refreshToken,
-			};
+			tokens = await generateTokens(user);
+			logger.info(`User ${user.email} logged in`);
+			return tokens;
 		} else {
 			throw new ErrorMessage(errorMessages.invalidEmailOrPassword);
 		}
@@ -54,7 +41,7 @@ const authService = {
 			await db.token.removeByUserId(userId);
 			const { email } = await db.user.getById(userId);
 
-			logger.info(`User ${email} logged out.`);
+			logger.info(`User ${email} logged out`);
 		} catch (error) {
 			logger.error(error.message);
 			throw new ErrorMessage(errorMessages.unableToLogout);
@@ -135,6 +122,23 @@ const generateAccessToken = (user, issuedAtLogin = false) => {
 const generateRefreshToken = (user) => {
 	const payload = { id: user.id };
 	return jwt.sign(payload, process.env.REFRESH_SECRET_KEY, { expiresIn: "1w" });
+};
+
+export const generateTokens = async (user) => {
+	const accessToken = generateAccessToken(user, true);
+	const refreshToken = generateRefreshToken(user);
+
+	try {
+		await db.token.add(user.id, refreshToken);
+	} catch (error) {
+		logger.error(error.message);
+		throw new Error("Unable to store token");
+	}
+
+	return {
+		accessToken,
+		refreshToken,
+	};
 };
 
 export default authService;
