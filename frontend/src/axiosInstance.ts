@@ -59,7 +59,7 @@ axiosInstance.interceptors.response.use(
 				requestQueue.forEach((callback) => callback(Promise.reject(err)));
 				requestQueue = [];
 
-				if (err?.response?.status === StatusCodes) {
+				if (err?.response?.status === StatusCodes.UNAUTHORIZED) {
 					window.location.href = "/";
 					localStorage.removeItem("accessToken");
 					localStorage.removeItem("refreshToken");
