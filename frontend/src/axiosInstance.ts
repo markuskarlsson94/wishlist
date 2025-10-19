@@ -75,6 +75,10 @@ axiosInstance.interceptors.response.use(
 	},
 );
 
+export const refreshAxiosInstance = () => {
+	axiosInstance.defaults.headers["Authorization"] = `Bearer ${localStorage.getItem("accessToken")}`;
+};
+
 const refreshAccessToken = async () => {
 	const refreshToken = localStorage.getItem("refreshToken");
 
