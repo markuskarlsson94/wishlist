@@ -152,7 +152,7 @@ const db = {
 	},
 
 	user: {
-		add: async (email, firstName, lastName, plaintextPassword, role, profilePicture) => {
+		add: async (email, firstName, lastName, plaintextPassword, role, profilePicture, googleId) => {
 			const hashedPassword = await generatePassword(plaintextPassword);
 
 			return (
@@ -164,6 +164,22 @@ const db = {
 						password: hashedPassword,
 						role,
 						profilePicture,
+						googleId,
+					})
+					.returning("id")
+			)[0].id;
+		},
+
+		addByGoogleId: async (googleId, email, firstName, lastName, profilePicture, role) => {
+			return (
+				await dbClient(userTable)
+					.insert({
+						googleId,
+						email,
+						firstName,
+						lastName,
+						profilePicture,
+						role,
 					})
 					.returning("id")
 			)[0].id;
@@ -179,6 +195,14 @@ const db = {
 
 		getByEmail: async (email) => {
 			return await dbClient(userTable).select("*").where({ email }).first();
+		},
+
+		getByGoogleId: async (googleId) => {
+			return await dbClient(userTable).select("*").where({ googleId }).first();
+		},
+
+		getGoogleId: async (id) => {
+			return await dbClient(userTable).select("googleId").where({ id }).first();
 		},
 
 		getByFullName: async (name, limit = 10, offset = 0) => {
@@ -217,6 +241,10 @@ const db = {
 			await dbClient(userTable)
 				.update({ ...data })
 				.where({ id });
+		},
+
+		updateByGoogleId: async (googleId, firstName, lastName, profilePicture) => {
+			await dbClient(userTable).update({ firstName, lastName, profilePicture }).where({ googleId });
 		},
 
 		updatePassword: async (id, plaintextPassword) => {
