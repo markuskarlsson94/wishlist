@@ -1,7 +1,10 @@
 import express from "express";
 import authService from "../services/authService.js";
-import { isAuthenticated } from "../passport.js";
+import { isAuthenticated, passportErrors } from "../passport.js";
 import { adminRole } from "../roles.js";
+import { generateTokens } from "../services/authService.js";
+import passport from "../passport.js";
+import envConfig from "../envConfig.js";
 
 const authRouter = express.Router();
 
@@ -26,6 +29,32 @@ authRouter.post("/logout", isAuthenticated(), async (req, res) => {
 	} catch (error) {
 		res.status(error.status).json(error.message);
 	}
+});
+
+authRouter.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }));
+
+authRouter.get("/google/callback", (req, res, next) => {
+	passport.authenticate("google", { session: false }, async (err, user, info) => {
+		if (err) return next(err);
+
+		if (!user) {
+			if (info?.error === passportErrors.userAlreadyExists) {
+				return res.redirect(`${envConfig.getFrontendUrl()}?error=google_email_conflict`);
+			}
+
+			return res.redirect(`${envConfig.getFrontendUrl()}?error=unknown`);
+		}
+
+		try {
+			const { accessToken, refreshToken } = await generateTokens(user);
+
+			return res.redirect(
+				`${envConfig.getFrontendUrl()}/authenticated?accessToken=${accessToken}&refreshToken=${refreshToken}`,
+			);
+		} catch (error) {
+			res.status(error.status).json(error.message);
+		}
+	})(req, res, next);
 });
 
 authRouter.post("/refresh", async (req, res) => {
