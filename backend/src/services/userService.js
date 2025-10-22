@@ -537,4 +537,9 @@ export const usersAreFriends = async (user1Id, user2Id) => {
 	return await db.user.friend.with(user1Id, user2Id);
 };
 
+const filterUser = (user) => {
+	const { googleId, password, ...rest } = user;
+	return { ...rest, isGoogleUser: !!googleId };
+};
+
 export default userService;
