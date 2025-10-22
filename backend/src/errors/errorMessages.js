@@ -271,6 +271,11 @@ const errorMessages = {
 		message: "Unauthorized to update user",
 	},
 
+	unauthorizedToUpdateGoogleProfileInfo: {
+		status: StatusCodes.FORBIDDEN,
+		message: "Unauthorized to update Google profile info",
+	},
+
 	serverError: {
 		status: StatusCodes.INTERNAL_SERVER_ERROR,
 		message: "Server error",
