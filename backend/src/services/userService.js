@@ -67,7 +67,7 @@ const userService = {
 			throw new ErrorMessage(errorMessages.userNotFound);
 		}
 
-		return userToGet;
+		return filterUser(userToGet);
 	},
 
 	getByFullName: async (name, limit = 10, offset = 0) => {
