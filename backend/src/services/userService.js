@@ -264,6 +264,10 @@ const userService = {
 		const token = crypto.randomBytes(64).toString("hex");
 		const user = await db.user.getByEmail(email);
 
+		if (await isGoogleUser(user)) {
+			return;
+		}
+
 		try {
 			if (user) {
 				await db.passwordToken.add(email, token);
