@@ -10,7 +10,7 @@ const authService = {
 	login: async (email, password) => {
 		const user = await db.user.getByEmail(email);
 
-		if (!user) {
+		if (!user || !!user.googleId) {
 			throw new ErrorMessage(errorMessages.invalidEmailOrPassword);
 		}
 
