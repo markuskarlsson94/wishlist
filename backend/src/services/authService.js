@@ -24,7 +24,7 @@ const authService = {
 		}
 
 		if (match) {
-			tokens = await generateTokens(user);
+			const tokens = await generateTokens(user);
 			logger.info(`User ${user.email} logged in`);
 			return tokens;
 		} else {
