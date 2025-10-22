@@ -499,6 +499,11 @@ const userService = {
 	},
 };
 
+export const isGoogleUser = async (id) => {
+	const googleId = await db.user.getGoogleId(id);
+	return !!googleId;
+};
+
 export const canViewUser = async (user, userId) => {
 	// TODO: Implement logic when needed
 	if (!user || !userId) return false;
