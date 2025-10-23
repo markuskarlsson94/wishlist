@@ -5,6 +5,7 @@ type UserType = {
 	email: string;
 	role: number;
 	profilePicture: string;
+	isGoogleUser: boolean;
 	createdAt: Date;
 };
 
