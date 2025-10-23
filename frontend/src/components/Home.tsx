@@ -76,7 +76,7 @@ const Home = () => {
 
 					<Feature
 						title="Anonymous Comments"
-						description="Ask anonymous questions about wishlist items without revealing your identity."
+						description="Ask questions on wishlists without revealing your identity."
 						Icon={Ghost}
 						delay="1250ms"
 					/>
