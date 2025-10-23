@@ -46,7 +46,7 @@ const userService = {
 			throw new ErrorMessage(errorMessages.userNotFound);
 		}
 
-		return userToGet;
+		return filterUser(userToGet);
 	},
 
 	getByEmail: async (user, email) => {
