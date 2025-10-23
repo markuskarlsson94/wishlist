@@ -5,9 +5,13 @@ import PasswordUpdateDialog from "./dialogs/PasswordUpdateDialog";
 import NameUpdateDialog from "./dialogs/NameUpdateDialog";
 import UserDeleteDialog from "./dialogs/UserDeleteDialog";
 import ProfilePictureDialog from "./ProfilePictureDialog";
+import { useGetUser } from "@/hooks/user";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Settings = () => {
 	const navigate = useNavigate();
+	const { userId } = useAuth();
+	const { user } = useGetUser(userId);
 
 	const handleBack = () => {
 		navigate(-1);
@@ -25,10 +29,14 @@ const Settings = () => {
 
 				<div className="flex justify-center">
 					<div className="flex flex-col w-80 gap-y-3">
-						<NameUpdateDialog />
-						<PasswordUpdateDialog />
-						<ProfilePictureDialog />
-						<div className="h-2" />
+						{!user?.isGoogleUser && (
+							<>
+								<NameUpdateDialog />
+								<PasswordUpdateDialog />
+								<ProfilePictureDialog />
+								<div className="h-2" />
+							</>
+						)}
 						<UserDeleteDialog />
 					</div>
 				</div>
