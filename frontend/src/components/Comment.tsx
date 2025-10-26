@@ -126,7 +126,7 @@ const Comment = ({ comment, item }: { comment: CommentType; item: ItemType }) =>
 					tooltip={false}
 					wrapperComponent={DateWrapperWithComment}
 				/>
-				{edited && <span>*</span>}
+				{edited && <span> (Edited)</span>}
 			</span>
 		);
 	};
