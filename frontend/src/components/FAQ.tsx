@@ -66,6 +66,12 @@ const FAQ = () => {
 							No, there is unfourtunately no way to recover a deleted account currently.
 						</AccordionContent>
 					</AccordionItem>
+					<AccordionItem value="7">
+						<AccordionTrigger>
+							Can I change login method to another one than I registred with?
+						</AccordionTrigger>
+						<AccordionContent>No, this is not possible at the moment.</AccordionContent>
+					</AccordionItem>
 				</Accordion>
 			</div>
 		</RoundedRect>
