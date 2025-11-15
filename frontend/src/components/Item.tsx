@@ -12,7 +12,7 @@ import Comment from "./Comment";
 import RoundedRect from "./RoundedRect";
 import { Button, buttonVariants } from "./ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
-import { EllipsisVertical } from "lucide-react";
+import { Copy, EllipsisVertical } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
 import ItemForm from "@/forms/ItemForm";
 import {
@@ -42,6 +42,7 @@ import { useGetWishlist } from "@/hooks/wishlist";
 import { useGetUser } from "@/hooks/user";
 import ProfilePicture from "./ProfilePicture";
 import UserType from "@/types/UserType";
+import Tooltip from "./Tooltip";
 
 const Item = () => {
 	const [isOwner, setIsOwner] = useState<boolean>(false);
@@ -260,6 +261,15 @@ const Item = () => {
 					>
 						<NavLink to={`${item.link}`}>{item.link}</NavLink>
 					</Button>
+					<Tooltip tooltip="Copy link">
+						<Button
+							variant={"ghost"}
+							className="w-9"
+							onClick={() => navigator.clipboard.writeText(item.link || "")}
+						>
+							<Copy />
+						</Button>
+					</Tooltip>
 				</div>
 			)}
 			<div className="h-6" />
