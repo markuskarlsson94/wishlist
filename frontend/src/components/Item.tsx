@@ -253,9 +253,14 @@ const Item = () => {
 				<p>{item?.description}</p>
 			</div>
 			{item?.link && (
-				<Button variant={"link"} className={"w-full whitespace-normal text-left"}>
-					<NavLink to={`${item.link}`}>{item.link}</NavLink>
-				</Button>
+				<div className="flex flex-row">
+					<Button
+						variant={"link"}
+						className={"block overflow-hidden whitespace-nowrap text-ellipsis max-w-full"}
+					>
+						<NavLink to={`${item.link}`}>{item.link}</NavLink>
+					</Button>
+				</div>
 			)}
 			<div className="h-6" />
 			<div className="flex flex-col gap-y-3">
