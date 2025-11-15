@@ -11,7 +11,7 @@ import ItemInputType from "@/types/ItemInputType";
 const formSchema = z.object({
 	title: z.string().min(1, { message: "Title must be specified" }).max(255, "Title is too long"),
 	description: z.string().max(255, "Description is too long"),
-	link: z.string().max(255, "Link is too long").nullable(),
+	link: z.string().url().max(8192, "Link is too long").nullable(),
 });
 
 type ItemFormConfig = {
