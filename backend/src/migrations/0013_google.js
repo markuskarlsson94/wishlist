@@ -11,6 +11,8 @@ export async function up(knex) {
 }
 
 export async function down(knex) {
+	await knex.table(userTable).update({ password: "PREVIOUSLY NULL" }).whereNull("password");
+
 	await knex.schema.table(userTable, (table) => {
 		table.dropColumn("googleId");
 		table.dropNullable("password");
