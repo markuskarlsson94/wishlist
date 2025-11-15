@@ -7,7 +7,7 @@ export async function up(knex) {
 		table.integer("wishlist").notNullable();
 		table.string("title").notNullable();
 		table.string("description").notNullable();
-		table.string("link");
+		table.text("link");
 		table.integer("amount").notNullable();
 
 		table.foreign("wishlist").references("id").inTable(wishlistTable).onDelete("CASCADE");
