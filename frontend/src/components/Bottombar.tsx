@@ -33,7 +33,7 @@ const Bottombar = () => {
 				<Column>
 					<p className="font-medium">Contact</p>
 					<Link to={"https://www.linkedin.com/in/markus-karlsson-a200b9262/"} title={"LinkedIn"} />
-					<Link to={"mailto:admin@mail.com"} title={"Mail"} />
+					{/*<Link to={"mailto:admin@mail.com"} title={"Mail"} />*/}
 				</Column>
 			</div>
 			<div className="flex text-white py-2">
