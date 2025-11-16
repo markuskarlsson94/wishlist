@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import RoundedRect from "./RoundedRect";
 import BackButton from "./BackButton";
 import NotFound from "./NotFound";
+import { Badge } from "./ui/badge";
 
 const NewsArticle = () => {
 	const params = useParams<{ id: string }>();
@@ -22,14 +23,12 @@ const NewsArticle = () => {
 	return (
 		<RoundedRect>
 			<div className="flex flex-col gap-y-6">
-				<div className="relative flex items-center">
+				<div className="relative flex items-center justify-between">
 					<BackButton onClick={handleBack} />
+					<p className="absolute left-1/2 transform -translate-x-1/2 font-medium">{article.title}</p>
+					<Badge variant={"secondary"}>{article.createdAt.toLocaleDateString()}</Badge>
 				</div>
 				<div className="flex flex-col gap-y-3">
-					<p className="text-sm text-muted-foreground">
-						Posted {article.createdAt.toLocaleDateString()}.{" "}
-						{article.updatedAt && <span> Updated {article.updatedAt.toLocaleDateString()}.</span>}
-					</p>
 					<p>{article.text}</p>
 				</div>
 			</div>
