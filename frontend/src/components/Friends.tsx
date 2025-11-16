@@ -110,7 +110,7 @@ const Friend = ({ friend }: { friend: FriendType }) => {
 const Friends = () => {
 	const params = useParams<{ userId: string }>();
 	const userId = Number(params.userId);
-	const { user, isSuccess, notFound } = useGetUser(userId);
+	const { user, notFound } = useGetUser(userId);
 	const { userId: viewer } = useAuth();
 	const navigate = useNavigate();
 	const { sentFriendRequests, receivedFriendRequests } = useGetFriendRequests(userId);
