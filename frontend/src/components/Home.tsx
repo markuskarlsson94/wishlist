@@ -69,14 +69,14 @@ const Home = () => {
 
 					<Feature
 						title="Reserve Items"
-						description="Avoid duplicate gifts. The owner can't see what you reserved."
+						description="Avoid duplicate gifts. The wishlist owner can't see what you reserve."
 						Icon={ListChecks}
 						delay="1000ms"
 					/>
 
 					<Feature
 						title="Anonymous Comments"
-						description="Ask questions on wishlists without revealing your identity."
+						description="Ask questions about wishlist items without revealing your identity."
 						Icon={Ghost}
 						delay="1250ms"
 					/>
