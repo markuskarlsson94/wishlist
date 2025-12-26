@@ -202,7 +202,7 @@ const db = {
 		},
 
 		getGoogleId: async (id) => {
-			return await dbClient(userTable).select("googleId").where({ id }).first();
+			return (await dbClient(userTable).select("googleId").where({ id }).first()).googleId;
 		},
 
 		getByFullName: async (name, limit = 10, offset = 0) => {
