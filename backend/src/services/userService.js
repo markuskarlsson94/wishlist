@@ -278,7 +278,7 @@ const userService = {
 		const token = crypto.randomBytes(64).toString("hex");
 		const user = await db.user.getByEmail(email);
 
-		if (await isGoogleUser(user)) {
+		if (await isGoogleUser(user?.id)) {
 			return;
 		}
 
