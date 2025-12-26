@@ -518,6 +518,8 @@ const userService = {
 };
 
 export const isGoogleUser = async (id) => {
+	if (!id) return false;
+
 	const googleId = await db.user.getGoogleId(id);
 	return !!googleId;
 };
