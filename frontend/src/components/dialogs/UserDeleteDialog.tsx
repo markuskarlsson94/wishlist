@@ -57,12 +57,12 @@ const UserDeleteDialog = () => {
 						</AlertDialogDescription>
 					</AlertDialogHeader>
 					<AlertDialogFooter>
-						<AlertDialogCancel>Cancel</AlertDialogCancel>
+						<AlertDialogCancel>No, don't delete</AlertDialogCancel>
 						<AlertDialogAction
 							className={buttonVariants({ variant: "destructive" })}
 							onClick={() => onDeleteUser()}
 						>
-							Delete
+							Yes, delete my account
 						</AlertDialogAction>
 					</AlertDialogFooter>
 				</AlertDialogContent>
