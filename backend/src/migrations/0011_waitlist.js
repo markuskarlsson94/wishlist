@@ -21,5 +21,5 @@ export async function up(knex) {
 export async function down(knex) {
 	await knex.schema.dropTableIfExists(waitlistTable);
 
-	logger.info("Migration 0011_waitlist completed");
+	logger.info("Migration 0011_waitlist reverted");
 }

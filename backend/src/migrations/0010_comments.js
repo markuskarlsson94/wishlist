@@ -20,5 +20,5 @@ export async function up(knex) {
 export async function down(knex) {
 	await knex.schema.dropTableIfExists(commentsTable);
 
-	logger.info("Migration 0010_comments completed");
+	logger.info("Migration 0010_comments reverted");
 }

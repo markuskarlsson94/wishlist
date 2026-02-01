@@ -17,5 +17,5 @@ export async function up(knex) {
 export async function down(knex) {
 	await knex.schema.dropTableIfExists(passwordTokenTable);
 
-	logger.info("Migration 0012_password_tokens completed");
+	logger.info("Migration 0012_password_tokens reverted");
 }
