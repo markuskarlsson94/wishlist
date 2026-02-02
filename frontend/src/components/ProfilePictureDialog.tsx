@@ -7,7 +7,7 @@ import { Slider } from "./ui/slider";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { useAuth } from "@/contexts/AuthContext";
-import { useGetUser, useRemoveProfilePicture, useSetProfilePicture } from "@/hooks/user";
+import { useGetUser, useRemoveProfilePicture, useSetProfilePicture, useUseGoogleProfilePicture } from "@/hooks/user";
 import ProfilePicture from "./ProfilePicture";
 import { Info } from "lucide-react";
 import {
@@ -63,6 +63,8 @@ const ProfilePictureDialog = () => {
 			setShowErrorDialog(true);
 		},
 	});
+
+	const { useGoogleProfilePicture } = useUseGoogleProfilePicture();
 
 	const userHasProfilePicture = !!user?.profilePicture;
 	const isPending = isPendingUpload || isPendingRemove;
@@ -227,9 +229,19 @@ const ProfilePictureDialog = () => {
 										</Button>
 									</>
 								) : (
-									<Button onClick={() => fileInputRef.current?.click()} disabled={isPending}>
-										Select image
-									</Button>
+									<>
+										{user?.isGoogleUser && userId && (
+											<Button
+												variant={"secondary"}
+												onClick={() => useGoogleProfilePicture(userId)}
+											>
+												Use Google profile picture
+											</Button>
+										)}
+										<Button onClick={() => fileInputRef.current?.click()} disabled={isPending}>
+											Select image
+										</Button>
+									</>
 								)}
 							</div>
 						</div>
