@@ -186,7 +186,7 @@ const userService = {
 
 		const googleUser = await isGoogleUser(userId);
 
-		if (googleUser && (data?.firstName || data?.lastName || data?.profilePicture)) {
+		if (googleUser && (data?.firstName || data?.lastName)) {
 			throw new ErrorMessage(errorMessages.unauthorizedToUpdateGoogleProfileInfo);
 		}
 
@@ -241,10 +241,6 @@ const userService = {
 	updateProfilePicture: async (user, userId, image) => {
 		if (!canManageUser(user, userId)) {
 			throw new ErrorMessage(errorMessages.unauthorizedToUpdateProfilePicture);
-		}
-
-		if (await isGoogleUser(userId)) {
-			throw new ErrorMessage(errorMessages.unauthorizedToUpdateGoogleProfileInfo);
 		}
 
 		const resizedImage = await sharp(image.buffer)
