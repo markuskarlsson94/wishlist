@@ -188,6 +188,7 @@ const db = {
 						firstName,
 						lastName,
 						profilePicture,
+						googleProfilePicture: profilePicture,
 						role,
 					})
 					.returning("id")
@@ -253,7 +254,9 @@ const db = {
 		},
 
 		updateByGoogleId: async (googleId, firstName, lastName, profilePicture) => {
-			await dbClient(userTable).update({ firstName, lastName, profilePicture }).where({ googleId });
+			await dbClient(userTable)
+				.update({ firstName, lastName, googleProfilePicture: profilePicture })
+				.where({ googleId });
 		},
 
 		updatePassword: async (id, plaintextPassword) => {
