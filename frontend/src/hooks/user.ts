@@ -201,6 +201,38 @@ export const useRemoveProfilePicture = (config?: UseRemoveProfilePictureConfig) 
 	return { removeProfilePicture, ...mutation };
 };
 
+type UseUseGoogleProfilePictureConfig = {
+	onSuccess?: () => void;
+	onError?: (error: AxiosError) => void;
+};
+
+export const useUseGoogleProfilePicture = (config?: UseUseGoogleProfilePictureConfig) => {
+	const queryClient = useQueryClient();
+
+	const mutation = useMutation({
+		mutationFn: async (userId: number) => {
+			await axiosInstance.patch("/user/use-google-profile-picture");
+			invalidateUser(queryClient, userId);
+		},
+		onSuccess: () => {
+			if (config?.onSuccess) {
+				config.onSuccess();
+			}
+		},
+		onError: (error: AxiosError) => {
+			if (config?.onError) {
+				config.onError(error);
+			}
+		},
+	});
+
+	const useGoogleProfilePicture = (userId: number) => {
+		mutation.mutate(userId);
+	};
+
+	return { useGoogleProfilePicture, ...mutation };
+};
+
 const userQueryKey = (id: number) => {
 	return ["user", id];
 };
