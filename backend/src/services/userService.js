@@ -270,6 +270,19 @@ const userService = {
 		}
 	},
 
+	useGoogleProfilePicture: async (user, userId) => {
+		if (!canManageUser(user, userId)) {
+			throw new ErrorMessage(errorMessages.unauthorizedToUpdateProfilePicture);
+		}
+
+		try {
+			await db.user.useGoogleProfilePicture(userId);
+		} catch (error) {
+			logger.error(error.message);
+			throw new ErrorMessage(errorMessages.serverError);
+		}
+	},
+
 	requestPasswordReset: async (email, sendEmail = true) => {
 		const token = crypto.randomBytes(64).toString("hex");
 		const user = await db.user.getByEmail(email);
