@@ -88,6 +88,15 @@ userRouter.patch("/update-profile-picture", isAuthenticated(), upload.single("im
 	}
 });
 
+userRouter.patch("/use-google-profile-picture", isAuthenticated(), async (req, res) => {
+	try {
+		await userService.useGoogleProfilePicture(req.user, req.user.id);
+		res.status(200).json({ message: "Profile picture updated" });
+	} catch (error) {
+		res.status(error.status).json(error.message);
+	}
+});
+
 userRouter.delete("/remove-profile-picture", isAuthenticated(), async (req, res) => {
 	try {
 		await userService.removeProfilePicture(req.user, req.user.id);
