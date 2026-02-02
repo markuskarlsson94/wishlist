@@ -33,10 +33,10 @@ const Settings = () => {
 							<>
 								<NameUpdateDialog />
 								<PasswordUpdateDialog />
-								<ProfilePictureDialog />
-								<div className="h-2" />
 							</>
 						)}
+						<ProfilePictureDialog />
+						<div className="h-2" />
 						<UserDeleteDialog />
 					</div>
 				</div>
