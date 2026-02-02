@@ -29,6 +29,15 @@ const db = {
 
 	init: async () => {
 		try {
+			const showMigrationLogs = false;
+
+			if (showMigrationLogs) {
+				const [completed, pending] = await dbClient.migrate.list();
+
+				console.log("Completed migrations:", completed);
+				console.log("Pending migrations:", pending);
+			}
+
 			await dbClient.migrate.rollback(null, true);
 			await dbClient.migrate.latest();
 
