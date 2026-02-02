@@ -4,6 +4,7 @@ import logger from "../logger.js";
 export async function up(knex) {
 	await knex.schema.table(userTable, (table) => {
 		table.string("googleId");
+		table.string("googleProfilePicture").defaultTo(null);
 		table.setNullable("password");
 	});
 
@@ -15,6 +16,7 @@ export async function down(knex) {
 
 	await knex.schema.table(userTable, (table) => {
 		table.dropColumn("googleId");
+		table.dropColumn("googleProfilePicture");
 		table.dropNullable("password");
 	});
 
