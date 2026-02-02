@@ -265,6 +265,15 @@ const db = {
 			await dbClient(userTable).update({ password: hashedPassword }).where({ id });
 		},
 
+		useGoogleProfilePicture: async (id) => {
+			const profilePicture = (await dbClient(userTable).select("googleProfilePicture").where({ id }).first())
+				?.googleProfilePicture;
+
+			if (profilePicture) {
+				await dbClient(userTable).update({ profilePicture }).where({ id });
+			}
+		},
+
 		friend: {
 			add: async (user1Id, user2Id) => {
 				let user1 = user1Id;
