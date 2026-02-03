@@ -34,8 +34,8 @@ const db = {
 			if (showMigrationLogs) {
 				const [completed, pending] = await dbClient.migrate.list();
 
-				console.log("Completed migrations:", completed);
-				console.log("Pending migrations:", pending);
+				logger.info("Completed migrations:", completed);
+				logger.info("Pending migrations:", pending);
 			}
 
 			await dbClient.migrate.rollback(null, true);
