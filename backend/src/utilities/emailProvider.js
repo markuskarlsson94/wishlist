@@ -1,35 +1,29 @@
-import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
+import { Resend } from "resend";
 import logger from "../logger.js";
 
-const ses = new SESClient({
-	region: process.env.AWS_REGION,
-	credentials: {
-		accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-		secretAccessKey: process.env.AWS_ACCESS_KEY,
-	},
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const sendEmail = async (
 	sender,
 	recipients,
 	subject,
 	message,
-	onEmailSent = (recipients, data) => {
-		logger.info(`Email sent to ${recipients}. Message id = ${data.MessageId}`);
+	onEmailSent = (data) => {
+		logger.info(`Email sent to ${data.recipients}. Message id = ${data.id}`);
 	},
 ) => {
-	const params = {
-		Source: `"${process.env.APP_NAME}" <${sender}@${process.env.EMAIL_DOMAIN}>`,
-		Destination: { ToAddresses: recipients },
-		Message: {
-			Subject: { Data: subject },
-			Body: { Html: { Data: message } },
-		},
-	};
-
 	try {
-		const data = await ses.send(new SendEmailCommand(params));
-		onEmailSent(recipients, data);
+		const from = `${sender}@${process.env.EMAIL_DOMAIN}`;
+
+		const res = await resend.emails.send({
+			from: `"${process.env.APP_NAME}" <${from}>`,
+			to: recipients,
+			replyTo: from,
+			subject,
+			html: message,
+		});
+
+		onEmailSent({ recipients, id: res.data.id });
 	} catch (error) {
 		logger.error(error);
 	}
