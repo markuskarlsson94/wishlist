@@ -129,7 +129,7 @@ const Friends = () => {
 			<>
 				{requestCount !== 0 && (
 					<>
-						<Accordion type="single" collapsible>
+						<Accordion type="single" collapsible defaultValue="friendRequests">
 							<AccordionItem value="friendRequests">
 								<AccordionTrigger>Friend requests</AccordionTrigger>
 								<AccordionContent>
