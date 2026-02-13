@@ -6,8 +6,8 @@ import config from "./knexfile.js";
 let env = process.env.ENV;
 
 if (!env) {
-	logger.warn("Unable to find current environment. Defaulting to 'development'");
 	env = "development";
+	logger.warn(`Unable to find current environment. Defaulting to '${env}'`);
 }
 
 logger.info(`Environment: ${env}`);
