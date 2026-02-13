@@ -33,7 +33,6 @@ const AppSidebar = () => {
 
 		if (isMobile) {
 			setOpenMobile(false);
-			console.log("here");
 		}
 	};
 
