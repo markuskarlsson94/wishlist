@@ -18,7 +18,7 @@ Passport is used to handle authentication which is based on JWT's with access an
 
 ## Integrated services
 
-The production database and profile pictures are hosted on supabase. Amazon SES is used for sending emails to users, such as account verification and password reset requests.
+The production database and profile pictures are hosted on supabase. Resend is used for sending emails to users, such as account verification and password reset requests.
 
 ## Further work:
 
