@@ -9,13 +9,14 @@ import logger from "./logger.js";
 import { initUserRoles } from "./roles.js";
 import { initWishlistTypes } from "./wishlistTypes.js";
 import cors from "cors";
+import envConfig from "./envConfig.js";
 
 await db.connect();
 
 const app = express();
 app.use(
 	cors({
-		origin: `http://localhost:${process.env.FRONTEND_PORT}`,
+		origin: [`http://localhost:${process.env.FRONTEND_PORT}`, envConfig.getFrontendUrl()],
 	}),
 );
 app.use(json());
