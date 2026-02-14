@@ -3,6 +3,8 @@ import multer from "multer";
 import { isAuthenticated, isAuthenticatedAdmin, verifyRecentLogin } from "../passport.js";
 import userService from "../services/userService.js";
 import wishlistService from "../services/wishlistService.js";
+import envConfig from "../envConfig.js";
+import logger from "../logger.js";
 
 const profilePictureMaxSize = 20 * 1024 * 1024; // 20 MB
 
@@ -29,7 +31,11 @@ userRouter.post("/register", async (req, res) => {
 
 	try {
 		const token = await userService.add({ email, firstName, lastName, plaintextPassword: password });
-		console.log(token);
+
+		if (!envConfig.isProd()) {
+			logger.info(token);
+		}
+
 		res.status(201).json({ message: "User registered successfully" });
 	} catch (error) {
 		res.status(error.status).json(error.message);
