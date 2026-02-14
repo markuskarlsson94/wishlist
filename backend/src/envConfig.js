@@ -18,6 +18,9 @@ const baseConfig = {
 		logger.info("Connected to database");
 		return dbClient;
 	},
+	isProd: () => {
+		return false;
+	},
 };
 
 const devConfig = {
@@ -31,6 +34,9 @@ const prodConfig = {
 	...baseConfig,
 	getFrontendUrl: () => {
 		return `${process.env.VITE_APP_DOMAIN}`;
+	},
+	isProd: () => {
+		return true;
 	},
 };
 
