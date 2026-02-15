@@ -26,7 +26,7 @@ const baseConfig = {
 const devConfig = {
 	...baseConfig,
 	getFrontendUrl: () => {
-		return `${process.env.API_URL}:${process.env.FRONTEND_PORT}`;
+		return `${process.env.VITE_API_URL}:${process.env.FRONTEND_PORT}`;
 	},
 };
 
