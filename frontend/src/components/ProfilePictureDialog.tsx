@@ -56,7 +56,6 @@ const ProfilePictureDialog = () => {
 		onSuccess: () => {
 			setFile(undefined);
 			if (fileInputRef.current) fileInputRef.current.value = "";
-			setOpen(false);
 		},
 		onError: (_error: AxiosError) => {
 			setOpen(false);
