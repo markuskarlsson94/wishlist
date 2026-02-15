@@ -16,7 +16,7 @@ await db.connect();
 const app = express();
 app.use(
 	cors({
-		origin: [`http://localhost:${process.env.FRONTEND_PORT}`, envConfig.getFrontendUrl()],
+		origin: envConfig.getFrontendUrl(),
 	}),
 );
 app.use(json());
