@@ -1,0 +1,29 @@
+services:
+    - type: web
+      name: backend
+      env: docker
+      rootDir: backend
+      startCommand: npm start
+      envVars:
+          - key: VITE_APP_DOMAIN
+            fromService:
+                name: frontend
+                type: static
+                property: host
+
+    - type: static
+      name: frontend
+      env: node
+      rootDir: frontend
+      buildCommand: npm install && npm run build
+      publishPath: ./dist
+      envVars:
+          - key: VITE_API_URL
+            fromService:
+                name: backend
+                type: web
+                property: host
+      routes:
+          - type: rewrite
+            source: /*
+            destination: /index.html
