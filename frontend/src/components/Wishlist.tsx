@@ -25,7 +25,7 @@ import {
 	AlertDialogTitle,
 	AlertDialogTrigger,
 } from "./ui/alert-dialog";
-import { BookmarkCheck, EllipsisVertical, Info, MessageCircle } from "lucide-react";
+import { BookmarkCheck, EllipsisVertical, Info } from "lucide-react";
 import BackButton from "./BackButton";
 import { CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { useGetComments } from "@/hooks/comment";
@@ -102,15 +102,9 @@ const Wishlist = () => {
 										</Tooltip>
 									)}
 									{commentCount > 0 && (
-										<Tooltip
-											tooltip={`Contains ${commentCount} ${
-												commentCount > 1 ? "comments" : "comment"
-											}`}
-										>
-											<div className="flex gap-x-1 float-right">
-												<MessageCircle strokeWidth={1.5} opacity={0.5} /> {commentCount}
-											</div>
-										</Tooltip>
+										<Badge variant={"secondary"}>{`${commentCount} ${
+											commentCount > 1 ? "comments" : "comment"
+										}`}</Badge>
 									)}
 								</div>
 							</div>
