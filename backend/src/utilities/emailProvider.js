@@ -1,7 +1,7 @@
 import { Resend } from "resend";
 import logger from "../logger.js";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = new Resend(process.env.RESEND_API_KEY ?? "no_key");
 
 export const sendEmail = async (
 	sender,
