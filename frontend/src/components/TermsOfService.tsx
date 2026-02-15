@@ -180,11 +180,6 @@ const TermsOfService = () => {
 						Continued use of the Service after changes indicates your acceptance of the updated terms.
 					</p>
 				</div>
-
-				<p>
-					For questions or concerns regarding these Terms of Service, please contact us at [support email or
-					feedback link].
-				</p>
 			</div>
 		</RoundedRect>
 	);
