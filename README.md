@@ -25,4 +25,5 @@ The production database and profile pictures are hosted on supabase. Resend is u
 -   CSRF Tokens
 -   Convert backend to Typescript
 -   Store tokens in cookie
--   obfuscation of IDs
+-   Obfuscation of IDs
+-   Frontend tests
