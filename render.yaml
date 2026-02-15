@@ -3,7 +3,9 @@ services:
       name: backend
       env: docker
       rootDir: backend
-      startCommand: npm start
+      dockerContext: .
+      dockerFilePath: Dockerfile
+      dockerTarget: production
       envVars:
           - key: VITE_APP_DOMAIN
             fromService:
