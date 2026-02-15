@@ -11,7 +11,7 @@ services:
                 type: static
                 property: host
 
-    - type: static
+    - type: web
       name: frontend
       env: node
       rootDir: frontend
