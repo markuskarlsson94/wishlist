@@ -17,7 +17,7 @@ const devConfig: ConfigType = {
 
 const prodConfig: ConfigType = {
 	getBackendUrl: () => {
-		return `${import.meta.env.VITE_API_URL}/api/v1`;
+		return `https://${import.meta.env.VITE_API_URL}.onrender.com/api/v1`;
 	},
 };
 
