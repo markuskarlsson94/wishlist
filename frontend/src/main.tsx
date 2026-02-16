@@ -11,7 +11,7 @@ import { APP_NAME } from "./constants.ts";
 const queryClient = new QueryClient({
 	defaultOptions: {
 		queries: {
-			retry: (retryCount, error) => {
+			retry: (_retryCount, _error) => {
 				return false;
 			},
 		},
