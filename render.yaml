@@ -3,12 +3,6 @@ services:
       name: backend
       env: docker
       rootDir: backend
-      envVars:
-          - key: VITE_APP_DOMAIN
-            fromService:
-                name: frontend
-                type: web
-                property: host
 
     - type: web
       name: frontend
