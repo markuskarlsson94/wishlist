@@ -19,7 +19,7 @@ export const useGetFriends = (userId: number | undefined) => {
 
 	for (let friend of friends) {
 		if (!friend.profilePicture) {
-			friend.profilePicture = "./../../public/profile.png";
+			friend.profilePicture = "./../../profile.png";
 		}
 	}
 
