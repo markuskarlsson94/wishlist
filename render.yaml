@@ -7,7 +7,7 @@ services:
           - key: VITE_APP_DOMAIN
             fromService:
                 name: frontend
-                type: static
+                type: web
                 property: host
 
     - type: web
