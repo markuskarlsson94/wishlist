@@ -3,9 +3,6 @@ services:
       name: backend
       env: docker
       rootDir: backend
-      dockerContext: .
-      dockerFilePath: Dockerfile
-      dockerTarget: production
       envVars:
           - key: VITE_APP_DOMAIN
             fromService:
