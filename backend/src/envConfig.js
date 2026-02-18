@@ -39,7 +39,7 @@ const prodConfig = {
 		return `${process.env.VITE_APP_DOMAIN}`;
 	},
 	getGoogleCallbackUrl: () => {
-		return `https://${process.env.VITE_API_URL}.onrender.com/api/v1/auth/google/callback`;
+		return `${process.env.RENDER_EXTERNAL_URL}/api/v1/auth/google/callback`;
 	},
 	isProd: () => {
 		return true;
