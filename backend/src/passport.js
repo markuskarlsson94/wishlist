@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 import { adminRole, userRole } from "./roles.js";
 import db from "./db.js";
 import logger from "./logger.js";
+import envConfig from "./envConfig.js";
 
 export const passportErrors = {
 	userAlreadyExists: "User already exists",
@@ -36,7 +37,7 @@ passport.use(
 		{
 			clientID: process.env.GOOGLE_CLIENT_ID,
 			clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-			callbackURL: process.env.GOOGLE_CALLBACK_URL,
+			callbackURL: envConfig.getGoogleCallbackUrl(),
 		},
 		async (_accessToken, _refreshToken, profile, done) => {
 			try {

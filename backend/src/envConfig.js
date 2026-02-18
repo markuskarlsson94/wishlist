@@ -28,12 +28,18 @@ const devConfig = {
 	getFrontendUrl: () => {
 		return `${process.env.VITE_API_URL}:${process.env.FRONTEND_PORT}`;
 	},
+	getGoogleCallbackUrl: () => {
+		return `${process.env.VITE_API_URL}:${process.env.VITE_BACKEND_PORT}/api/v1/auth/google/callback`;
+	},
 };
 
 const prodConfig = {
 	...baseConfig,
 	getFrontendUrl: () => {
 		return `${process.env.VITE_APP_DOMAIN}`;
+	},
+	getGoogleCallbackUrl: () => {
+		return `${process.env.VITE_APP_DOMAIN}/api/v1/auth/google/callback`;
 	},
 	isProd: () => {
 		return true;
