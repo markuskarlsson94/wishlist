@@ -236,7 +236,7 @@ const Item = () => {
 					)}
 				</div>
 				<div className="my-3"></div>
-				<div className="my-3">
+				<div className="my-3 px-4">
 					<p>{item?.description}</p>
 				</div>
 				{item?.link && (
