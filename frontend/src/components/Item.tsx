@@ -258,6 +258,11 @@ const Item = () => {
 						</Tooltip>
 					</div>
 				)}
+				{reserver && !reservedByCurrentUser && (
+					<div className="mt-6">
+						<ReservationInfo reserver={reserver} />
+					</div>
+				)}
 				<div className="h-6" />
 				<div className="flex flex-col gap-y-3">
 					{item && comments.map((comment) => <Comment key={comment.id} comment={comment} item={item} />)}
@@ -278,7 +283,6 @@ const Item = () => {
 						/>
 					</div>
 					<div className="flex flex-row">
-						{reserver && !reservedByCurrentUser && <ReservationInfo reserver={reserver} />}
 						<div className="flex gap-x-2 ml-auto">
 							<Button onClick={handleSubmitComment} disabled={comment === ""}>
 								Add comment
