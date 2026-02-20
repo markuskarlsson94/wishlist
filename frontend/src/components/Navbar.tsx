@@ -9,6 +9,7 @@ import {
 	BreadcrumbSeparator,
 	BreadcrumbLink,
 } from "./ui/breadcrumb";
+import React from "react";
 
 type BreadCrumbType = {
 	title?: string;
@@ -25,7 +26,7 @@ const Navbar = ({ breadcrumbs }: { breadcrumbs: BreadCrumbType[] }) => {
 				<Breadcrumb className="font-medium">
 					<BreadcrumbList>
 						{breadcrumbs.map((breadcrumb, index) => (
-							<>
+							<React.Fragment key={breadcrumb.link}>
 								{breadcrumb.link ? (
 									<BreadcrumbItem>
 										<BreadcrumbLink asChild>
@@ -40,7 +41,7 @@ const Navbar = ({ breadcrumbs }: { breadcrumbs: BreadCrumbType[] }) => {
 									</BreadcrumbItem>
 								)}
 								{index < breadcrumbs.length - 1 && <BreadcrumbSeparator />}
-							</>
+							</React.Fragment>
 						))}
 					</BreadcrumbList>
 				</Breadcrumb>
