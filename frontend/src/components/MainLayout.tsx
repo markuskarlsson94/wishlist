@@ -17,7 +17,7 @@ const MainLayout = () => {
 				{isAuthenticated && <AppSidebar />}
 				<div className={`flex flex-col flex-grow ${col}`}>
 					<Topbar />
-					<div className="flex-grow w-[40rem] mx-auto my-4">
+					<div className="flex-grow w-full max-w-2xl px-4 mx-auto my-6">
 						<Outlet />
 					</div>
 					<Bottombar />
