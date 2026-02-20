@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { useGetItem, useDeleteItem, useUpdateItem } from "../hooks/item";
 import { useCreateReservation, useDeleteReservation, useGetReservationByItemId } from "../hooks/reservation";
@@ -35,6 +35,7 @@ import ProfilePicture from "./ProfilePicture";
 import UserType from "@/types/UserType";
 import Tooltip from "./Tooltip";
 import Navbar from "./Navbar";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const Item = () => {
 	const [isOwner, setIsOwner] = useState<boolean>(false);
@@ -58,6 +59,7 @@ const Item = () => {
 	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false);
 	const [comment, setComment] = useState<string>("");
 	const formRef = useRef<HTMLFormElement | null>(null);
+	const isMobile = useIsMobile();
 
 	const onDeleteItem = () => {
 		if (item?.wishlist) {
@@ -240,23 +242,31 @@ const Item = () => {
 					<p>{item?.description}</p>
 				</div>
 				{item?.link && (
-					<div className="flex flex-row">
-						<Button
-							variant={"link"}
-							className={"block overflow-hidden whitespace-nowrap text-ellipsis max-w-full"}
-						>
-							<NavLink to={`${item.link}`}>{item.link}</NavLink>
-						</Button>
-						<Tooltip tooltip="Copy link">
-							<Button
-								variant={"ghost"}
-								className="w-9"
-								onClick={() => navigator.clipboard.writeText(item.link || "")}
-							>
-								<Copy />
-							</Button>
-						</Tooltip>
-					</div>
+					<>
+						{isMobile ? (
+							<Link to={item?.link} className="block break-all text-blue-500 hover:underline">
+								{item?.link}
+							</Link>
+						) : (
+							<div className="flex flex-row">
+								<Button
+									variant={"link"}
+									className={"block overflow-hidden whitespace-nowrap text-ellipsis max-w-full"}
+								>
+									<NavLink to={`${item.link}`}>{item.link}</NavLink>
+								</Button>
+								<Tooltip tooltip="Copy link">
+									<Button
+										variant={"ghost"}
+										className="w-9"
+										onClick={() => navigator.clipboard.writeText(item.link || "")}
+									>
+										<Copy />
+									</Button>
+								</Tooltip>
+							</div>
+						)}
+					</>
 				)}
 				{reserver && !reservedByCurrentUser && (
 					<div className="mt-6">
