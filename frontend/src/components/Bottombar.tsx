@@ -18,7 +18,7 @@ const Bottombar = () => {
 			<div className="max-w-xl md:max-w-2xl mx-auto px-10 py-4">
 				<div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 text-white">
 					<Column>
-						<p className="font-medium">Info</p>
+						<p className="font-medium">{import.meta.env.VITE_APP_NAME}</p>
 						<Link to={"/about"} title={"About"} />
 						<Link to={"/news"} title="News Archive" />
 					</Column>
