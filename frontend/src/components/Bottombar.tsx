@@ -39,7 +39,9 @@ const Bottombar = () => {
 				</div>
 				<div className="flex text-slate-500 pt-6">
 					<div className="m-auto">
-						<p className="text-sm">© {import.meta.env.VITE_COPYRIGHT}</p>
+						<p className="text-sm">
+							© {new Date().getFullYear()} {import.meta.env.VITE_COPYRIGHT}
+						</p>
 					</div>
 				</div>
 			</div>
