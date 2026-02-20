@@ -24,7 +24,7 @@ const Navbar = ({ breadcrumbs }: { breadcrumbs: BreadCrumbType[] }) => {
 			<div className="flex items-center gap-x-4">
 				<BackButton onClick={() => navigate(-1)} />
 				<Breadcrumb className="font-medium">
-					<BreadcrumbList>
+					<BreadcrumbList className="text-xs md:text-sm">
 						{breadcrumbs.map((breadcrumb, index) => (
 							<React.Fragment key={breadcrumb.link}>
 								{breadcrumb.link ? (
