@@ -14,34 +14,36 @@ const Bottombar = () => {
 	};
 
 	return (
-		<div className="bg-slate-800">
-			<div className="grid grid-cols-4 text-white m-auto gap-x-12 py-4" style={{ width: "max-content" }}>
-				<Column>
-					<p className="font-medium">News</p>
-					<Link to={"/news"} title="Archive" />
-				</Column>
-				<Column>
-					<p className="font-medium">Info</p>
-					<Link to={"/about"} title={"About"} />
-					<Link to={"/terms-of-service"} title={"Terms of Service"} />
-					<Link to={"/beta-info"} title={"Beta Disclaimer"} />
-				</Column>
-				<Column>
-					<p className="font-medium">Support</p>
-					<Link to={"/faq"} title={"FAQ"} />
-				</Column>
-				<Column>
-					<p className="font-medium">Contact</p>
-					<Link to={"https://www.linkedin.com/in/markus-karlsson-a200b9262/"} title={"LinkedIn"} />
-					{/*<Link to={"mailto:admin@mail.com"} title={"Mail"} />*/}
-				</Column>
-			</div>
-			<div className="flex text-white py-2">
-				<div className="m-auto">
-					<p className="text-sm">© {import.meta.env.VITE_COPYRIGHT}</p>
+		<footer className="bg-slate-800 w-full mt-auto">
+			<div className="max-w-xl md:max-w-2xl mx-auto px-10 py-4">
+				<div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 text-white">
+					<Column>
+						<p className="font-medium">News</p>
+						<Link to={"/news"} title="Archive" />
+					</Column>
+					<Column>
+						<p className="font-medium">Info</p>
+						<Link to={"/about"} title={"About"} />
+						<Link to={"/terms-of-service"} title={"Terms of Service"} />
+						<Link to={"/beta-info"} title={"Beta Disclaimer"} />
+					</Column>
+					<Column>
+						<p className="font-medium">Support</p>
+						<Link to={"/faq"} title={"FAQ"} />
+					</Column>
+					<Column>
+						<p className="font-medium">Contact</p>
+						<Link to={"https://www.linkedin.com/in/markus-karlsson-a200b9262/"} title={"LinkedIn"} />
+						{/*<Link to={"mailto:admin@mail.com"} title={"Mail"} />*/}
+					</Column>
+				</div>
+				<div className="flex">
+					<div className="m-auto">
+						<p className="text-sm">© {import.meta.env.VITE_COPYRIGHT}</p>
+					</div>
 				</div>
 			</div>
-		</div>
+		</footer>
 	);
 };
 
