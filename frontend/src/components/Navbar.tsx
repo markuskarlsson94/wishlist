@@ -16,7 +16,7 @@ type BreadCrumbType = {
 	link?: string;
 };
 
-const Navbar = ({ breadcrumbs }: { breadcrumbs: BreadCrumbType[] }) => {
+const Navbar = ({ breadcrumbs }: { breadcrumbs?: BreadCrumbType[] }) => {
 	const navigate = useNavigate();
 
 	return (
@@ -25,7 +25,7 @@ const Navbar = ({ breadcrumbs }: { breadcrumbs: BreadCrumbType[] }) => {
 				<BackButton onClick={() => navigate(-1)} />
 				<Breadcrumb className="font-medium">
 					<BreadcrumbList className="text-xs md:text-sm">
-						{breadcrumbs.map((breadcrumb, index) => (
+						{breadcrumbs?.map((breadcrumb, index) => (
 							<React.Fragment key={breadcrumb.link}>
 								{breadcrumb.link ? (
 									<BreadcrumbItem>
