@@ -132,7 +132,7 @@ const Wishlist = () => {
 		return isOwner
 			? [{ title: "My Wishlists", link: `/user/${userId}/wishlists` }]
 			: [
-					{ title: `${user?.firstName} ${user?.lastName}`, link: `/user/${user?.id}` },
+					{ title: user?.firstName, link: `/user/${user?.id}` },
 					{ title: "Wishlists", link: `/user/${wishlist?.owner}/wishlists` },
 			  ];
 	};
