@@ -11,7 +11,6 @@ import { useGetUser } from "../hooks/user";
 import RoundedRect from "./RoundedRect";
 import { Button, buttonVariants } from "./ui/button";
 import { useMemo } from "react";
-import BackButton from "./BackButton";
 import { Users } from "lucide-react";
 import {
 	AlertDialog,
@@ -77,10 +76,6 @@ const User = () => {
 		if (viewer) {
 			createFriendRequest(viewer, userId);
 		}
-	};
-
-	const handleBack = () => {
-		navigate(-1);
 	};
 
 	const FriendButton = () => {
@@ -151,26 +146,27 @@ const User = () => {
 	return (
 		<RoundedRect>
 			<div className="flex flex-col gap-y-6">
-				<BackButton onClick={handleBack} />
 				<div className="flex justify-between items-center">
 					<div className="flex gap-x-3 items-center">
 						<ProfilePicture src={user?.profilePicture} className="h-16 w-16" />
-						<p className="text-large font-medium">
-							{user?.firstName} {user?.lastName} {userId === viewer && <span> (You)</span>}
-						</p>
-						{!isSelf && !userIsFriend && commonFriends >= 1 && (
-							<Badge variant={"secondary"}>
-								<div className="flex gap-x-2 items-center ">
-									<>
-										<Users size={16} />
-										<p>{commonFriendString(commonFriends)}</p>
-									</>
-								</div>
-							</Badge>
-						)}
+						<div className="flex flex-col gap-y-1">
+							<p className="text-large font-medium">
+								{user?.firstName} {user?.lastName} {userId === viewer && <span> (You)</span>}
+							</p>
+							{!isSelf && !userIsFriend && commonFriends >= 1 && (
+								<Badge variant={"secondary"}>
+									<div className="flex gap-x-2 items-center ">
+										<>
+											<Users size={16} />
+											<p>{commonFriendString(commonFriends)}</p>
+										</>
+									</div>
+								</Badge>
+							)}
+						</div>
 					</div>
 				</div>
-				<div className="flex justify-between">
+				<div className="flex flex-wrap justify-between gap-y-3">
 					<div className="flex gap-x-2">
 						<Button onClick={handleGoToWishlists}>Wishlists</Button>
 						<Button onClick={handleGoToFriends}>Friends</Button>
