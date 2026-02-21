@@ -65,7 +65,7 @@ const Searchbar = ({
 				type={"text"}
 				ref={inputRef}
 				placeholder={placeholder}
-				className="w-80 bg-white pr-16"
+				className="w-64 md:w-80 bg-white pr-16"
 				onChange={(e) => handleInputChange(e.target.value)}
 				onKeyDown={handleKeyDown}
 			/>

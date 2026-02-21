@@ -70,7 +70,7 @@ const UserSearchBar = () => {
 				<NavLink to={`/user/${id}`} onClick={() => setResultsOpen(false)}>
 					<div className="flex px-3 py-2 hover:bg-gray-100 items-center gap-3">
 						<ProfilePicture src={user.profilePicture} className="w-8 h-8" />
-						<p className="">
+						<p className="truncate text-sm md:text-base">
 							{user.firstName} {user.lastName} {viewer === id ? "(You)" : ""}
 						</p>
 					</div>
@@ -125,7 +125,7 @@ const UserSearchBar = () => {
 				</div>
 				<PopoverAnchor />
 				<PopoverContent
-					className="w-80 shadow-2xl"
+					className="w-64 md:w-80 shadow-2xl"
 					onOpenAutoFocus={(e) => e.preventDefault()}
 					onInteractOutside={(e) => handleInteractOutside(e.target)}
 					onKeyDown={(e) => handleKeyDown(e.key)}
