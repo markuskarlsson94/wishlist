@@ -150,10 +150,9 @@ const Wishlist = () => {
 					<div className="flex gap-x-3 items-center">
 						{type && (
 							<Badge variant={"secondary"}>
-								<Tooltip tooltip={type?.description}>
+								<Tooltip tooltip={type.description}>
 									<div className="flex items-center gap-x-1">
-										<Info size={16} opacity={0.5} />
-										<p className="text-sm text-gray-500">{type?.name}</p>
+										<p className="text-sm text-gray-500">{type.name}</p>
 									</div>
 								</Tooltip>
 							</Badge>
