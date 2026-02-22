@@ -83,7 +83,7 @@ const Home = () => {
 				</div>
 			</div>
 			<div className="h-12" />
-			<div className="flex justify-center">
+			<div className="flex justify-center pb-20 md:pb-0">
 				<div className="flex gap-x-4 animate-fade-slide-in opacity-0" style={{ animationDelay: "2250ms" }}>
 					<RegisterDialog
 						setRegistrationConfirmedDialogOpen={setRegistrationConfirmedDialogOpen}
