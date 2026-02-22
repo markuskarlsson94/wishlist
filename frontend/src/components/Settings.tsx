@@ -29,9 +29,9 @@ const Settings = () => {
 
 				<div className="flex justify-center">
 					<div className="flex flex-col md:w-80 gap-y-3">
+						<NameUpdateDialog />
 						{!user?.isGoogleUser && (
 							<>
-								<NameUpdateDialog />
 								<PasswordUpdateDialog />
 							</>
 						)}
