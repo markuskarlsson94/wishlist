@@ -74,8 +74,8 @@ const Wishlists = () => {
 		<div className="flex flex-col gap-y-2">
 			{!isOwner && <Navbar breadcrumbs={breadcrumbs()} />}
 			<RoundedRect>
-				<div className="flex flex-col gap-y-3">
-					<p className="pb-3 font-medium">{isOwner ? "My Wishlists" : "Wishlists"}</p>
+				<div className="flex flex-col gap-y-5">
+					<p className="font-medium">{isOwner ? "My Wishlists" : "Wishlists"}</p>
 
 					{wishlists && wishlists.length === 0 && (
 						<div className="flex">
