@@ -82,12 +82,12 @@ const Wishlist = () => {
 				<NavLink to={`/item/${item.id}`}>
 					<HoverCard>
 						<CardHeader>
-							<div className="flex justify-between items-center">
+							<div className="flex flex-wrap gap-y-1 items-start">
 								<div>
 									<CardTitle>{item.title}</CardTitle>
 									<CardDescription>{item.description}</CardDescription>
 								</div>
-								<div className="flex gap-x-3">
+								<div className="flex gap-x-3 ml-auto">
 									{reserved && (
 										<Tooltip tooltip="Reserved by you">
 											<BookmarkCheck strokeWidth={1.5} opacity={0.5} />
