@@ -1,19 +1,18 @@
-import { useNavigate, NavLink, useParams } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 import { useAcceptFriendRequest, useDeleteFriendRequest, useGetFriendRequests } from "../hooks/friendRequest";
 import FriendRequest from "../types/FriendRequesstType";
 import { useAuth } from "../contexts/AuthContext";
 import { useGetUser } from "../hooks/user";
 import { useGetFriends } from "../hooks/friend";
 import RoundedRect from "./RoundedRect";
-import BackButton from "./BackButton";
 import { Card, CardHeader, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
 import HoverCard from "./HoverCard";
 import FriendType from "@/types/FriendType";
 import NotFound from "./NotFound";
 import ProfilePicture from "./ProfilePicture";
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "./ui/breadcrumb";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion";
+import Navbar from "./Navbar";
 
 const ReceivedFriendRequest = ({ friendRequest }: { friendRequest: FriendRequest }) => {
 	const { userId } = useAuth();
@@ -112,15 +111,10 @@ const Friends = () => {
 	const userId = Number(params.userId);
 	const { user, notFound } = useGetUser(userId);
 	const { userId: viewer } = useAuth();
-	const navigate = useNavigate();
 	const { sentFriendRequests, receivedFriendRequests } = useGetFriendRequests(userId);
 	const { friends, isSuccess: isSuccessFriends } = useGetFriends(userId);
 
 	const isOwner: boolean = userId === viewer;
-
-	const handleBack = () => {
-		navigate(-1);
-	};
 
 	const FriendRequests = () => {
 		const requestCount = receivedFriendRequests.length + sentFriendRequests.length;
@@ -148,41 +142,28 @@ const Friends = () => {
 		);
 	};
 
+	const breadcrumbs = () => {
+		return [{ title: user?.firstName, link: `/user/${user?.id}`, userId: user?.id }];
+	};
+
 	if (notFound) {
 		return <NotFound type="User" />;
 	}
 
 	return (
-		<RoundedRect>
-			<div className="flex flex-col gap-y-3">
-				<div className="relative flex items-center">
-					<BackButton className="" onClick={handleBack} />
-					<div className="absolute left-1/2 transform -translate-x-1/2 font-medium">
-						{isOwner ? (
-							<p>My Friends</p>
-						) : (
-							<Breadcrumb>
-								<BreadcrumbList>
-									<BreadcrumbLink asChild>
-										<NavLink
-											to={`/user/${user?.id}`}
-										>{`${user?.firstName} ${user?.lastName}`}</NavLink>
-									</BreadcrumbLink>
-									<BreadcrumbSeparator />
-									<BreadcrumbItem className="text-black text-base">Friends</BreadcrumbItem>
-								</BreadcrumbList>
-							</Breadcrumb>
-						)}
-					</div>
+		<div className="flex flex-col gap-y-2">
+			{!isOwner && <Navbar breadcrumbs={breadcrumbs()} />}
+			<RoundedRect>
+				<div className="flex flex-col gap-y-5">
+					<p className="font-medium">{isOwner ? "My Friends" : "Friends"}</p>
+					{viewer === userId && <FriendRequests />}
+					{friends.length === 0 && (
+						<p className="m-auto text-2xl font-medium text-gray-300">No friends yet</p>
+					)}
+					{isSuccessFriends && friends?.map((friend) => <Friend key={friend.userId} friend={friend} />)}
 				</div>
-
-				<div className="h-3" />
-
-				{viewer === userId && <FriendRequests />}
-				{friends.length === 0 && <p className="m-auto text-2xl font-medium text-gray-300">No friends yet</p>}
-				{isSuccessFriends && friends?.map((friend) => <Friend key={friend.userId} friend={friend} />)}
-			</div>
-		</RoundedRect>
+			</RoundedRect>
+		</div>
 	);
 };
 
