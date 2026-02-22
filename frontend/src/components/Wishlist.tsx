@@ -145,7 +145,7 @@ const Wishlist = () => {
 		<div className="flex flex-col gap-y-2">
 			<Navbar breadcrumbs={breadcrumbs()} />
 			<RoundedRect>
-				<div className="flex justify-between items-center">
+				<div className="flex justify-between items-start">
 					<p className="font-bold">{wishlist?.title}</p>
 					<div className="flex gap-x-3 items-center">
 						{type && (
