@@ -39,34 +39,36 @@ const ReservationItem = ({ reservation }: { reservation: ReservationType }) => {
 	return (
 		<Card>
 			<CardHeader>
-				<div className="flex justify-between">
+				<div className="flex flex-wrap gap-y-1 justify-between">
 					<NavLink to={`/item/${item.id}`}>
 						<CardTitle>{item?.title}</CardTitle>
 						<CardDescription>{wishlist?.title}</CardDescription>
 					</NavLink>
 
-					<AlertDialog>
-						<AlertDialogTrigger asChild>
-							<Button>Unreserve</Button>
-						</AlertDialogTrigger>
-						<AlertDialogContent>
-							<AlertDialogHeader>
-								<AlertDialogTitle>Remove reservation?</AlertDialogTitle>
-								<AlertDialogDescription>
-									Removing the reservation will let other users reserve the item.
-								</AlertDialogDescription>
-							</AlertDialogHeader>
-							<AlertDialogFooter>
-								<AlertDialogCancel>Cancel</AlertDialogCancel>
-								<AlertDialogAction
-									className={buttonVariants({ variant: "destructive" })}
-									onClick={() => handleDelete()}
-								>
-									Remove
-								</AlertDialogAction>
-							</AlertDialogFooter>
-						</AlertDialogContent>
-					</AlertDialog>
+					<div className="ml-auto">
+						<AlertDialog>
+							<AlertDialogTrigger asChild>
+								<Button>Unreserve</Button>
+							</AlertDialogTrigger>
+							<AlertDialogContent>
+								<AlertDialogHeader>
+									<AlertDialogTitle>Remove reservation?</AlertDialogTitle>
+									<AlertDialogDescription>
+										Removing the reservation will let other users reserve the item.
+									</AlertDialogDescription>
+								</AlertDialogHeader>
+								<AlertDialogFooter>
+									<AlertDialogCancel>Cancel</AlertDialogCancel>
+									<AlertDialogAction
+										className={buttonVariants({ variant: "destructive" })}
+										onClick={() => handleDelete()}
+									>
+										Remove
+									</AlertDialogAction>
+								</AlertDialogFooter>
+							</AlertDialogContent>
+						</AlertDialog>
+					</div>
 				</div>
 			</CardHeader>
 		</Card>
