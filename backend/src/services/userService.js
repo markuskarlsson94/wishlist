@@ -184,12 +184,6 @@ const userService = {
 			throw new ErrorMessage(errorMessages.unauthorizedToUpdateUser);
 		}
 
-		const googleUser = await isGoogleUser(userId);
-
-		if (googleUser && (data?.firstName || data?.lastName)) {
-			throw new ErrorMessage(errorMessages.unauthorizedToUpdateGoogleProfileInfo);
-		}
-
 		const { id, email, password, role, createdAt, updatedAt, ...rest } = data;
 		if (Object.keys(rest).length === 0) return;
 
