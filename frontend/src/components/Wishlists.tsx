@@ -40,13 +40,13 @@ const Wishlists = () => {
 				<NavLink to={`/wishlist/${wishlist.id}`}>
 					<HoverCard>
 						<CardHeader>
-							<div className="flex justify-between items-center">
+							<div className="flex flex-wrap gap-y-1 items-start">
 								<div>
 									<CardTitle>{wishlist.title}</CardTitle>
 									<CardDescription>{wishlist.description}</CardDescription>
 								</div>
 								{itemCount > 0 && (
-									<Badge variant={"secondary"}>
+									<Badge variant={"secondary"} className="ml-auto">
 										{`${itemCount} ${itemCount > 1 ? "items" : "item"}`}
 									</Badge>
 								)}
