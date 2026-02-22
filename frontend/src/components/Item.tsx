@@ -107,17 +107,19 @@ const Item = () => {
 
 	const ReservationInfo = ({ reserver }: { reserver: UserType }) => {
 		return (
-			<p className="font-medium">
-				<span className="flex items-center">
+			<div className="flex gap-x-2 items-center">
+				<NavLink to={`/user/${reserver.id}`}>
+					<ProfilePicture src={reserver.profilePicture} />
+				</NavLink>
+				<p>
 					<NavLink to={`/user/${reserver.id}`}>
-						<span className="flex gap-x-2 items-center">
-							<ProfilePicture src={reserver.profilePicture} />
+						<span className="font-medium">
 							{reserver.firstName} {reserver.lastName}
 						</span>
 					</NavLink>
-					<span className="font-normal ml-1">has reserved this item</span>
-				</span>
-			</p>
+					<span> has reserved this item</span>
+				</p>
+			</div>
 		);
 	};
 
