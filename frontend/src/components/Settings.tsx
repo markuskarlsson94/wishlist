@@ -28,7 +28,7 @@ const Settings = () => {
 				<div className="h-12" />
 
 				<div className="flex justify-center">
-					<div className="flex flex-col w-80 gap-y-3">
+					<div className="flex flex-col md:w-80 gap-y-3">
 						{!user?.isGoogleUser && (
 							<>
 								<NameUpdateDialog />
