@@ -167,7 +167,7 @@ const Item = () => {
 			<Navbar breadcrumbs={breadcrumbs()} />
 			<RoundedRect>
 				<div className="flex items-center justify-between">
-					<p className="font-bold">{item?.title}</p>
+					<p className="font-medium">{item?.title}</p>
 					{isOwner && (
 						<div>
 							<DropdownMenu>
