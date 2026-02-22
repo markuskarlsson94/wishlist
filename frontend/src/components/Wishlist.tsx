@@ -142,7 +142,7 @@ const Wishlist = () => {
 			<Navbar breadcrumbs={breadcrumbs()} />
 			<RoundedRect>
 				<div className="flex justify-between items-start">
-					<p className="font-bold pt-1">{wishlist?.title}</p>
+					<p className="font-medium pt-1">{wishlist?.title}</p>
 					<div className="flex gap-x-3 items-center">
 						{type && (
 							<Badge variant={"secondary"}>
