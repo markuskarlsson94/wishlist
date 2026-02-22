@@ -1,4 +1,4 @@
-import { useNavigate, NavLink, useParams } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 import WishlistType from "../types/WishlistType";
 import WishlistInputType from "../types/WishlistInputType";
 import useWishlistTypes from "../hooks/useWishlistTypes";
@@ -6,30 +6,24 @@ import { useAuth } from "../contexts/AuthContext";
 import { useCreateWishlist, useGetWishlists } from "../hooks/wishlist";
 import RoundedRect from "./RoundedRect";
 import WishlistDialog from "./dialogs/WishlistDialog";
-import BackButton from "./BackButton";
 import { CardDescription, CardHeader, CardTitle } from "./ui/card";
 import HoverCard from "./HoverCard";
 import { useGetItems } from "@/hooks/item";
 import { useGetUser } from "@/hooks/user";
 import NotFound from "./NotFound";
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "./ui/breadcrumb";
 import { Badge } from "./ui/badge";
+import Navbar from "./Navbar";
 
 const Wishlists = () => {
 	const params = useParams<{ userId: string }>();
 	const userId = Number(params.userId);
 	const { user, notFound } = useGetUser(userId);
 	const { userId: viewer } = useAuth();
-	const navigate = useNavigate();
 	const createWishlist = useCreateWishlist();
 	const { wishlists } = useGetWishlists(userId);
 	const { types } = useWishlistTypes();
 
 	const isOwner: boolean = userId === viewer;
-
-	const handleBack = () => {
-		navigate(-1);
-	};
 
 	const Wishlist = ({ wishlist }: { wishlist: WishlistType }) => {
 		const { items } = useGetItems(wishlist.id);
@@ -72,57 +66,41 @@ const Wishlists = () => {
 		return <NotFound type="User" />;
 	}
 
+	const breadcrumbs = () => {
+		return [{ title: user?.firstName, link: `/user/${user?.id}`, userId: user?.id }];
+	};
+
 	return (
-		<RoundedRect>
-			<div className="flex flex-col gap-y-3">
-				<div className="relative flex flex-row items-center">
-					<BackButton onClick={handleBack} />
-					<div className="absolute left-1/2 transform -translate-x-1/2 font-medium">
-						{isOwner ? (
-							<p>My Wishlists</p>
-						) : (
-							<Breadcrumb>
-								<BreadcrumbList>
-									<BreadcrumbItem>
-										<BreadcrumbLink asChild>
-											<NavLink to={`/user/${user?.id}`}>
-												{`${user?.firstName} ${user?.lastName}`}
-											</NavLink>
-										</BreadcrumbLink>
-									</BreadcrumbItem>
-									<BreadcrumbSeparator />
-									<BreadcrumbItem className="text-black text-base">Wishlists</BreadcrumbItem>
-								</BreadcrumbList>
-							</Breadcrumb>
-						)}
-					</div>
+		<div className="flex flex-col gap-y-2">
+			{!isOwner && <Navbar breadcrumbs={breadcrumbs()} />}
+			<RoundedRect>
+				<div className="flex flex-col gap-y-3">
+					<p className="pb-3 font-medium">{isOwner ? "My Wishlists" : "Wishlists"}</p>
+
+					{wishlists && wishlists.length === 0 && (
+						<div className="flex">
+							<p className="m-auto text-2xl font-medium text-gray-300">No wishlists</p>
+						</div>
+					)}
+					{wishlists?.map((wishlist) => (
+						<Wishlist key={wishlist.id} wishlist={wishlist} />
+					))}
+
+					{isOwner && (
+						<div className="self-end mt-6">
+							<WishlistDialog
+								config={{
+									title: "Create new wishlist",
+									submitButtonTitle: "Create",
+									onSubmit,
+									values,
+								}}
+							/>
+						</div>
+					)}
 				</div>
-
-				<div className="h-3" />
-
-				{wishlists && wishlists.length === 0 && (
-					<div className="flex">
-						<p className="m-auto text-2xl font-medium text-gray-300">No wishlists</p>
-					</div>
-				)}
-				{wishlists?.map((wishlist) => (
-					<Wishlist key={wishlist.id} wishlist={wishlist} />
-				))}
-
-				{isOwner && (
-					<div className="self-end mt-6">
-						<WishlistDialog
-							config={{
-								title: "Create new wishlist",
-								submitButtonTitle: "Create",
-								onSubmit,
-								values,
-							}}
-						/>
-					</div>
-				)}
-			</div>
-		</RoundedRect>
+			</RoundedRect>
+		</div>
 	);
 };
 
