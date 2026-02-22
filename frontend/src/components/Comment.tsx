@@ -165,10 +165,12 @@ const Comment = ({ comment, item }: { comment: CommentType; item: ItemType }) =>
 						<div className="flex justify-between">
 							<div className="flex gap-x-3 items-center">
 								<CommentProfilePicture comment={comment} />
-								<p>{title}</p>
-								<Badge variant={"secondary"}>
-									<DateComponent comment={comment} />
-								</Badge>
+								<div className="flex flex-wrap gap-y-1 gap-x-3 items-center">
+									<p>{title}</p>
+									<Badge variant={"secondary"}>
+										<DateComponent comment={comment} />
+									</Badge>
+								</div>
 							</div>
 						</div>
 					</CardTitle>
