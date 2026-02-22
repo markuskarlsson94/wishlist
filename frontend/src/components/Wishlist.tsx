@@ -25,7 +25,7 @@ import {
 	AlertDialogTitle,
 	AlertDialogTrigger,
 } from "./ui/alert-dialog";
-import { BookmarkCheck, EllipsisVertical, Info } from "lucide-react";
+import { EllipsisVertical } from "lucide-react";
 import { CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { useGetComments } from "@/hooks/comment";
 import ItemType from "@/types/ItemType";
@@ -88,11 +88,7 @@ const Wishlist = () => {
 									<CardDescription>{item.description}</CardDescription>
 								</div>
 								<div className="flex gap-x-3 ml-auto">
-									{reserved && (
-										<Tooltip tooltip="Reserved by you">
-											<BookmarkCheck strokeWidth={1.5} opacity={0.5} />
-										</Tooltip>
-									)}
+									{reserved && <Badge>Reserved by you</Badge>}
 									{commentCount > 0 && (
 										<Badge variant={"secondary"}>{`${commentCount} ${
 											commentCount > 1 ? "comments" : "comment"
