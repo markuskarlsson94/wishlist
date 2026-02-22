@@ -36,9 +36,9 @@ const News = () => {
 				<HoverCard>
 					<CardHeader>
 						<CardTitle>
-							<div className="flex justify-between items-center">
+							<div className="flex flex-wrap gap-y-1 items-center">
 								{article.title}
-								<Badge variant={"secondary"}>
+								<Badge variant={"secondary"} className="ml-auto">
 									<ReactTimeAgo
 										date={article.createdAt}
 										tooltip={false}
