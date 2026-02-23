@@ -108,17 +108,26 @@ const Item = () => {
 	const ReservationInfo = ({ reserver }: { reserver: UserType }) => {
 		return (
 			<div className="flex gap-x-2 items-center">
-				<NavLink to={`/user/${reserver.id}`}>
-					<ProfilePicture src={reserver.profilePicture} />
-				</NavLink>
-				<p>
-					<NavLink to={`/user/${reserver.id}`}>
-						<span className="font-medium">
-							{reserver.firstName} {reserver.lastName}
-						</span>
-					</NavLink>
-					<span> has reserved this item</span>
-				</p>
+				{reservedByCurrentUser ? (
+					<>
+						<ProfilePicture src={reserver.profilePicture} />
+						<span> You have reserved this item</span>
+					</>
+				) : (
+					<>
+						<NavLink to={`/user/${reserver.id}`}>
+							<ProfilePicture src={reserver.profilePicture} />
+						</NavLink>
+						<p>
+							<NavLink to={`/user/${reserver.id}`}>
+								<span className="font-medium">
+									{reserver.firstName} {reserver.lastName}
+								</span>
+							</NavLink>
+							<span> has reserved this item</span>
+						</p>
+					</>
+				)}
 			</div>
 		);
 	};
@@ -270,7 +279,7 @@ const Item = () => {
 						)}
 					</>
 				)}
-				{reserver && !reservedByCurrentUser && (
+				{reserver && (
 					<div className="mt-6">
 						<ReservationInfo reserver={reserver} />
 					</div>
