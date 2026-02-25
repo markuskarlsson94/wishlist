@@ -33,7 +33,7 @@ const ReceivedFriendRequest = ({ friendRequest }: { friendRequest: FriendRequest
 			<Card>
 				<CardHeader>
 					<CardTitle>
-						<div className="flex justify-between items-center">
+						<div className="flex flex-wrap gap-y-2 justify-between items-center">
 							<NavLink to={`/user/${friendRequest.sender}`}>
 								<div className="flex gap-x-3 items-center">
 									<ProfilePicture src={user?.profilePicture} />
