@@ -11,6 +11,7 @@ import z from "zod";
 import { sendPasswordResetEmail, sendVerificationEmail } from "../utilities/email.js";
 import { removeProfilePicture, uploadProfilePicture } from "../utilities/profilePicture.js";
 import sharp from "sharp";
+import notificationService from "./notificationService.js";
 
 const passwordTokenExpireTime = 1000 * 60 * 60;
 
@@ -419,12 +420,22 @@ const userService = {
 				throw new ErrorMessage(errorMessages.userAlreadyAddedAsFriend);
 			}
 
+			let request;
+
 			try {
-				return await db.user.friendRequest.add(senderId, receiverId);
+				request = await db.user.friendRequest.add(senderId, receiverId);
 			} catch (error) {
 				logger.error(error.message);
 				throw new ErrorMessage(errorMessages.unableToCreateFriendRequest);
 			}
+
+			try {
+				await notificationService.sendFriendRequestNotification(receiverId, request);
+			} catch (error) {
+				logger.error(error.message);
+			}
+
+			return request;
 		},
 
 		remove: async (user, id) => {
