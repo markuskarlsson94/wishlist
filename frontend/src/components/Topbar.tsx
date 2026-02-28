@@ -6,6 +6,7 @@ import UserSearchBar from "./UserSearchBar";
 import PasswordResetRequestDialog from "./dialogs/PasswordResetRequestDialog";
 import { useIsMobile } from "@/hooks/use-mobile";
 import AppSidebarTrigger from "./AppSidebarTrigger";
+import Notifications from "./Notifications";
 
 const Topbar = () => {
 	const { userId, isAuthenticated } = useAuth();
@@ -33,9 +34,21 @@ const Topbar = () => {
 			<div className="relative bg-slate-800 flex items-center px-3 py-2 sticky top-0 z-10">
 				<div className="absolute left-3">{isMobile && isAuthenticated && <AppSidebarTrigger />}</div>
 				{isAuthenticated && (
-					<div className="m-auto">
-						<UserSearchBar />
-					</div>
+					<>
+						<div className="relative m-auto">
+							<UserSearchBar />
+							{!isMobile && (
+								<div className="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-9">
+									<Notifications />
+								</div>
+							)}
+						</div>
+						{isMobile && (
+							<div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+								<Notifications />
+							</div>
+						)}
+					</>
 				)}
 				{!isAuthenticated && (
 					<div className="flex-1 flex justify-end">
