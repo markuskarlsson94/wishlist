@@ -3,13 +3,14 @@ import wishlistService from "../services/wishlistService.js";
 import { isAuthenticated } from "../passport.js";
 import logger from "../logger.js";
 import notificationService from "../services/notificationService.js";
+import { StatusCodes } from "http-status-codes";
 
 const wishlistRouter = express.Router();
 
 wishlistRouter.get("/wishlists", isAuthenticated(), async (_req, res) => {
 	try {
 		const wishlists = await wishlistService.getAll();
-		res.status(200).json({ wishlists });
+		res.status(StatusCodes.OK).json({ wishlists });
 	} catch (error) {
 		res.status(error.status).json(error.message);
 	}
@@ -23,7 +24,7 @@ wishlistRouter.post("/wishlist", isAuthenticated(), async (req, res) => {
 		const id = await wishlistService.add(user, user.id, title, description, type);
 		logger.info(`Wishlist (id: ${id}) created by user (id: ${user.id})`);
 
-		res.status(201).json({
+		res.status(StatusCodes.CREATED).json({
 			message: "Wishlist created",
 			id,
 		});
@@ -36,7 +37,7 @@ wishlistRouter.patch("/wishlist/:id", isAuthenticated(), async (req, res) => {
 	try {
 		await wishlistService.update(req.user, req.params.id, req.body);
 
-		res.status(200).json({
+		res.status(StatusCodes.OK).json({
 			message: "Wishlist updated",
 		});
 	} catch (error) {
@@ -52,7 +53,7 @@ wishlistRouter.delete("/wishlist/:id", isAuthenticated(), async (req, res) => {
 		await wishlistService.remove(user, id);
 		logger.info(`Wishlist (id: ${id}) removed by user (id: ${user.id})`);
 
-		res.status(200).json({
+		res.status(StatusCodes.OK).json({
 			message: "Wishlist removed",
 		});
 	} catch (error) {
@@ -74,7 +75,7 @@ wishlistRouter.post("/item", isAuthenticated(), async (req, res) => {
 		});
 		logger.info(`Wishlist item (id: ${id}) created by user (id: ${user.id})`);
 
-		res.status(201).json({
+		res.status(StatusCodes.CREATED).json({
 			message: "Wishlist item created",
 			id,
 		});
@@ -87,7 +88,7 @@ wishlistRouter.patch("/item/:id", isAuthenticated(), async (req, res) => {
 	try {
 		await wishlistService.item.update(req.user, req.params.id, req.body);
 
-		res.status(200).json({
+		res.status(StatusCodes.OK).json({
 			message: "Item updated",
 		});
 	} catch (error) {
@@ -100,7 +101,7 @@ wishlistRouter.get("/item/:id", isAuthenticated(), async (req, res) => {
 		const user = req.user;
 		const item = await wishlistService.item.getById(user, req.params.id);
 
-		res.status(200).json({
+		res.status(StatusCodes.OK).json({
 			item,
 		});
 	} catch (error) {
@@ -113,7 +114,7 @@ wishlistRouter.get("/item/:id/owner", isAuthenticated(), async (req, res) => {
 		const user = req.user;
 		const owner = await wishlistService.item.getOwner(user, req.params.id);
 
-		res.status(200).json({
+		res.status(StatusCodes.OK).json({
 			owner,
 		});
 	} catch (error) {
@@ -128,7 +129,7 @@ wishlistRouter.get("/item/:id/reservation", isAuthenticated(), async (req, res) 
 
 		const data = await wishlistService.reservation.getByItemId(user, itemId);
 
-		res.status(200).json({ reservation: data });
+		res.status(StatusCodes.OK).json({ reservation: data });
 	} catch (error) {
 		res.status(error.status).json(error.message);
 	}
@@ -142,7 +143,7 @@ wishlistRouter.get("/item/:id/notifications", isAuthenticated(), async (req, res
 			Number(req.params.id),
 		);
 
-		res.status(200).json({ notifications });
+		res.status(StatusCodes.OK).json({ notifications });
 	} catch (error) {
 		res.status(error.status).json(error.message);
 	}
@@ -151,7 +152,7 @@ wishlistRouter.get("/item/:id/notifications", isAuthenticated(), async (req, res
 wishlistRouter.delete("/item/:id/notifications", isAuthenticated(), async (req, res) => {
 	try {
 		await notificationService.removeByUserIdAndItemId(req.user, req.user.id, Number(req.params.id));
-		res.status(200).json({ message: "Notifications removed" });
+		res.status(StatusCodes.OK).json({ message: "Notifications removed" });
 	} catch (error) {
 		res.status(error.status).json(error.message);
 	}
@@ -165,7 +166,7 @@ wishlistRouter.delete("/item/:id", isAuthenticated(), async (req, res) => {
 		await wishlistService.item.remove(user, id);
 		logger.info(`Wishlist item (id: ${id}) removed by user (id: ${user.id})`);
 
-		res.status(200).json({
+		res.status(StatusCodes.OK).json({
 			message: "Wishlist item removed",
 		});
 	} catch (error) {
@@ -182,7 +183,7 @@ wishlistRouter.post("/item/:id/reserve", isAuthenticated(), async (req, res) => 
 		const reservation = await wishlistService.item.reserve(user, id);
 		logger.info(`Wishlist item (id: ${id}) reserved by user (id: ${user.id})`);
 
-		res.status(200).json({
+		res.status(StatusCodes.OK).json({
 			message: "Wishlist item reserved",
 			reservation,
 		});
@@ -199,7 +200,7 @@ wishlistRouter.post("/item/:id/comment", isAuthenticated(), async (req, res) => 
 
 		await wishlistService.item.comment.add(user, id, user.id, comment.comment, comment?.asAdmin);
 
-		res.status(200).json({
+		res.status(StatusCodes.OK).json({
 			message: "Comment added",
 		});
 	} catch (error) {
@@ -215,7 +216,7 @@ wishlistRouter.patch("/comment/:id", isAuthenticated(), async (req, res) => {
 
 		await wishlistService.item.comment.update(user, id, comment);
 
-		res.status(200).json({
+		res.status(StatusCodes.OK).json({
 			message: "Comment updated",
 		});
 	} catch (error) {
@@ -230,7 +231,7 @@ wishlistRouter.delete("/comment/:id", isAuthenticated(), async (req, res) => {
 
 		await wishlistService.item.comment.remove(user, id);
 
-		res.status(200).json({
+		res.status(StatusCodes.OK).json({
 			message: "Comment removed",
 		});
 	} catch (error) {
@@ -245,7 +246,7 @@ wishlistRouter.get("/item/:id/comments", isAuthenticated(), async (req, res) => 
 
 		const comments = await wishlistService.item.comment.getByItemId(user, id);
 
-		res.status(200).json({
+		res.status(StatusCodes.OK).json({
 			comments,
 		});
 	} catch (error) {
@@ -257,7 +258,7 @@ wishlistRouter.get("/wishlist/types", isAuthenticated(), async (req, res) => {
 	try {
 		const types = await wishlistService.getTypes();
 
-		res.status(200).json({
+		res.status(StatusCodes.OK).json({
 			types,
 		});
 	} catch (error) {
@@ -270,7 +271,7 @@ wishlistRouter.get("/wishlist/:id", isAuthenticated(), async (req, res) => {
 		const user = req.user;
 		const wishlist = await wishlistService.getById(user, req.params.id);
 
-		res.status(200).json({
+		res.status(StatusCodes.OK).json({
 			wishlist,
 		});
 	} catch (error) {
@@ -283,7 +284,7 @@ wishlistRouter.get("/wishlist/:id/items", isAuthenticated(), async (req, res) =>
 		const user = req.user;
 		const items = await wishlistService.getItems(user, req.params.id);
 
-		res.status(200).json({
+		res.status(StatusCodes.OK).json({
 			items,
 		});
 	} catch (error) {
@@ -296,7 +297,7 @@ wishlistRouter.put("/wishlist/:id/type", isAuthenticated(), async (req, res) => 
 		const user = req.user;
 		await wishlistService.setType(user, req.params.id, req.body.type);
 
-		res.status(200).json({
+		res.status(StatusCodes.OK).json({
 			message: "Wishlist type updated",
 		});
 	} catch (error) {
@@ -309,7 +310,7 @@ wishlistRouter.get("/reservation/:id", isAuthenticated(), async (req, res) => {
 		const user = req.user;
 		const reservation = await wishlistService.reservation.getById(user, req.params.id);
 
-		res.status(200).json({
+		res.status(StatusCodes.OK).json({
 			reservation,
 		});
 	} catch (error) {
@@ -322,7 +323,7 @@ wishlistRouter.delete("/reservation/:id", isAuthenticated(), async (req, res) =>
 		const user = req.user;
 		await wishlistService.reservation.remove(user, req.params.id);
 
-		res.status(200).json({
+		res.status(StatusCodes.OK).json({
 			message: "Reservation removed",
 		});
 	} catch (error) {
