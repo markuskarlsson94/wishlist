@@ -370,6 +370,31 @@ const errorMessages = {
 		status: StatusCodes.INTERNAL_SERVER_ERROR,
 		message: "Unable to upload profile picture",
 	},
+
+	unableToGetNotifcations: {
+		status: StatusCodes.INTERNAL_SERVER_ERROR,
+		message: "Unable to get notifications",
+	},
+
+	unableToAddNotification: {
+		status: StatusCodes.INTERNAL_SERVER_ERROR,
+		message: "Unable to add notification",
+	},
+
+	unableToRemoveNotification: {
+		status: StatusCodes.INTERNAL_SERVER_ERROR,
+		message: "Unable to remove notification",
+	},
+
+	unauthorizedToGetNotification: {
+		status: StatusCodes.UNAUTHORIZED,
+		message: "Unauthorized to get notification",
+	},
+
+	unauthorizedToRemoveNotification: {
+		status: StatusCodes.UNAUTHORIZED,
+		message: "Unauthorized to remove notification",
+	},
 };
 
 export default errorMessages;
