@@ -26,6 +26,7 @@ import {
 import NotFound from "./NotFound";
 import ProfilePicture from "./ProfilePicture";
 import { Badge } from "./ui/badge";
+import Navbar from "./Navbar";
 
 const User = () => {
 	const params = useParams<{ userId: string }>();
@@ -139,42 +140,49 @@ const User = () => {
 		navigate(`/user/${userId}/friends`);
 	};
 
+	const breadcrumbs = () => {
+		return [{ title: `${user?.firstName} ${user?.lastName}` }];
+	};
+
 	if (notFound) {
 		return <NotFound type="User" />;
 	}
 
 	return (
-		<RoundedRect>
-			<div className="flex flex-col gap-y-6">
-				<div className="flex justify-between items-center">
-					<div className="flex gap-x-3 items-center">
-						<ProfilePicture src={user?.profilePicture} className="h-16 w-16" />
-						<div className="flex flex-col gap-y-1">
-							<p className="text-large font-medium">
-								{user?.firstName} {user?.lastName} {userId === viewer && <span> (You)</span>}
-							</p>
-							{!isSelf && !userIsFriend && commonFriends >= 1 && (
-								<Badge variant={"secondary"}>
-									<div className="flex gap-x-2 items-center ">
-										<>
-											<Users size={16} />
-											<p>{commonFriendString(commonFriends)}</p>
-										</>
-									</div>
-								</Badge>
-							)}
+		<div className="flex flex-col gap-y-2">
+			<Navbar breadcrumbs={breadcrumbs()} />
+			<RoundedRect>
+				<div className="flex flex-col gap-y-6">
+					<div className="flex justify-between items-center">
+						<div className="flex gap-x-3 items-center">
+							<ProfilePicture src={user?.profilePicture} className="h-16 w-16" />
+							<div className="flex flex-col gap-y-1">
+								<p className="text-large font-medium">
+									{user?.firstName} {user?.lastName} {userId === viewer && <span> (You)</span>}
+								</p>
+								{!isSelf && !userIsFriend && commonFriends >= 1 && (
+									<Badge variant={"secondary"}>
+										<div className="flex gap-x-2 items-center ">
+											<>
+												<Users size={16} />
+												<p>{commonFriendString(commonFriends)}</p>
+											</>
+										</div>
+									</Badge>
+								)}
+							</div>
 						</div>
 					</div>
-				</div>
-				<div className="flex flex-wrap justify-between gap-y-3">
-					<div className="flex gap-x-2">
-						<Button onClick={handleGoToWishlists}>Wishlists</Button>
-						<Button onClick={handleGoToFriends}>Friends</Button>
+					<div className="flex flex-wrap justify-between gap-y-3">
+						<div className="flex gap-x-2">
+							<Button onClick={handleGoToWishlists}>Wishlists</Button>
+							<Button onClick={handleGoToFriends}>Friends</Button>
+						</div>
+						<FriendButton />
 					</div>
-					<FriendButton />
 				</div>
-			</div>
-		</RoundedRect>
+			</RoundedRect>
+		</div>
 	);
 };
 
