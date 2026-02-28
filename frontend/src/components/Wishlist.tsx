@@ -126,10 +126,11 @@ const Wishlist = () => {
 
 	const breadcrumbs = () => {
 		return isOwner
-			? [{ title: "My Wishlists", link: `/user/${userId}/wishlists` }]
+			? [{ title: "My Wishlists", link: `/user/${userId}/wishlists` }, { title: wishlist?.title }]
 			: [
 					{ title: user?.firstName, link: `/user/${user?.id}`, userId: user?.id },
 					{ title: "Wishlists", link: `/user/${wishlist?.owner}/wishlists` },
+					{ title: wishlist?.title },
 			  ];
 	};
 
