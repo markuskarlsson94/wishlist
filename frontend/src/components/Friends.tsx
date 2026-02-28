@@ -149,7 +149,7 @@ const Friends = () => {
 	};
 
 	const breadcrumbs = () => {
-		return [{ title: user?.firstName, link: `/user/${user?.id}`, userId: user?.id }];
+		return [{ title: user?.firstName, link: `/user/${user?.id}`, userId: user?.id }, { title: "Friends" }];
 	};
 
 	if (notFound) {
