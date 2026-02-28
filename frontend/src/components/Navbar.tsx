@@ -1,5 +1,5 @@
 import RoundedRect from "./RoundedRect";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import {
 	Breadcrumb,
 	BreadcrumbList,
@@ -11,6 +11,7 @@ import {
 import React from "react";
 import ProfilePicture from "./ProfilePicture";
 import { useGetUser } from "@/hooks/user";
+import BackButton from "./BackButton";
 
 type BreadCrumbType = {
 	title?: string;
@@ -34,18 +35,27 @@ const BreadcrumbItemCustom = ({ breadcrumb }: { breadcrumb: BreadCrumbType }) =>
 };
 
 const Navbar = ({ breadcrumbs }: { breadcrumbs?: BreadCrumbType[] }) => {
+	const navigate = useNavigate();
+
+	const handleBack = () => {
+		navigate(-1);
+	};
+
 	return (
 		<RoundedRect>
-			<Breadcrumb className="font-medium">
-				<BreadcrumbList className="text-xs md:text-sm">
-					{breadcrumbs?.map((breadcrumb, index) => (
-						<React.Fragment key={breadcrumb.link}>
-							<BreadcrumbItemCustom breadcrumb={breadcrumb} />
-							{index < breadcrumbs.length - 1 && <BreadcrumbSeparator />}
-						</React.Fragment>
-					))}
-				</BreadcrumbList>
-			</Breadcrumb>
+			<div className="flex gap-x-3 items-center">
+				<BackButton onClick={handleBack} />
+				<Breadcrumb className="font-medium">
+					<BreadcrumbList className="text-xs md:text-sm">
+						{breadcrumbs?.map((breadcrumb, index) => (
+							<React.Fragment key={breadcrumb.link}>
+								<BreadcrumbItemCustom breadcrumb={breadcrumb} />
+								{index < breadcrumbs.length - 1 && <BreadcrumbSeparator />}
+							</React.Fragment>
+						))}
+					</BreadcrumbList>
+				</Breadcrumb>
+			</div>
 		</RoundedRect>
 	);
 };
