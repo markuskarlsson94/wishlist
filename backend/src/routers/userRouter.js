@@ -6,6 +6,7 @@ import wishlistService from "../services/wishlistService.js";
 import envConfig from "../envConfig.js";
 import logger from "../logger.js";
 import notificationService from "../services/notificationService.js";
+import { StatusCodes } from "http-status-codes";
 
 const profilePictureMaxSize = 20 * 1024 * 1024; // 20 MB
 
@@ -37,7 +38,7 @@ userRouter.post("/register", async (req, res) => {
 			logger.info(token);
 		}
 
-		res.status(201).json({ message: "User registered successfully" });
+		res.status(StatusCodes.CREATED).json({ message: "User registered successfully" });
 	} catch (error) {
 		res.status(error.status).json(error.message);
 	}
@@ -68,7 +69,7 @@ userRouter.post("/update-name", isAuthenticated(), async (req, res) => {
 	try {
 		const { firstName, lastName } = req.body;
 		await userService.update(req.user, req.user.id, { firstName, lastName });
-		res.status(200).json({ message: "User name updated" });
+		res.status(StatusCodes.OK).json({ message: "User name updated" });
 	} catch (error) {
 		res.status(error.status).json(error.message);
 	}
@@ -80,7 +81,7 @@ userRouter.post("/update-password", isAuthenticated(), async (req, res) => {
 	try {
 		await userService.updatePassword(req.user, req.user.id, passwordCur, passwordNew, passwordNewRepeated);
 
-		res.status(200).json({ message: "Password updated" });
+		res.status(StatusCodes.OK).json({ message: "Password updated" });
 	} catch (error) {
 		res.status(error.status).json(error.message);
 	}
@@ -89,7 +90,7 @@ userRouter.post("/update-password", isAuthenticated(), async (req, res) => {
 userRouter.patch("/update-profile-picture", isAuthenticated(), upload.single("image"), async (req, res) => {
 	try {
 		await userService.updateProfilePicture(req.user, req.user.id, req.file);
-		res.status(200).json({ message: "Profile picture updated" });
+		res.status(StatusCodes.OK).json({ message: "Profile picture updated" });
 	} catch (error) {
 		res.status(error.status).json(error.message);
 	}
@@ -98,7 +99,7 @@ userRouter.patch("/update-profile-picture", isAuthenticated(), upload.single("im
 userRouter.patch("/use-google-profile-picture", isAuthenticated(), async (req, res) => {
 	try {
 		await userService.useGoogleProfilePicture(req.user, req.user.id);
-		res.status(200).json({ message: "Profile picture updated" });
+		res.status(StatusCodes.OK).json({ message: "Profile picture updated" });
 	} catch (error) {
 		res.status(error.status).json(error.message);
 	}
@@ -107,7 +108,7 @@ userRouter.patch("/use-google-profile-picture", isAuthenticated(), async (req, r
 userRouter.delete("/remove-profile-picture", isAuthenticated(), async (req, res) => {
 	try {
 		await userService.removeProfilePicture(req.user, req.user.id);
-		res.status(200).json({ message: "Profile picture removed" });
+		res.status(StatusCodes.OK).json({ message: "Profile picture removed" });
 	} catch (error) {
 		res.status(error.status).json(error.message);
 	}
@@ -118,7 +119,7 @@ userRouter.post("/request-password-reset", async (req, res) => {
 
 	try {
 		await userService.requestPasswordReset(email);
-		res.status(200).json({ message: "Password reset requested" });
+		res.status(StatusCodes.OK).json({ message: "Password reset requested" });
 	} catch (error) {
 		return res.status(error.status).json(error.message);
 	}
@@ -133,7 +134,7 @@ userRouter.post("/reset-password", async (req, res) => {
 		return res.status(error.status).json(error.message);
 	}
 
-	res.status(200).json({ message: "Password updated" });
+	res.status(StatusCodes.OK).json({ message: "Password updated" });
 });
 
 userRouter.get("/search", isAuthenticated(), async (req, res) => {
@@ -142,13 +143,13 @@ userRouter.get("/search", isAuthenticated(), async (req, res) => {
 		const page = Number(req.query.page);
 
 		if (query === undefined || page === undefined) {
-			return res.status(400).json({ message: "'query' or 'page' parameters missing" });
+			return res.status(StatusCodes.BAD_REQUEST).json({ message: "'query' or 'page' parameters missing" });
 		}
 
 		const limit = 10;
 		const data = await userService.getByFullName(query, limit, page * limit);
 
-		res.status(200).json(data);
+		res.status(StatusCodes.OK).json(data);
 	} catch (error) {
 		res.status(error.status).json(error.message);
 	}
@@ -157,7 +158,7 @@ userRouter.get("/search", isAuthenticated(), async (req, res) => {
 userRouter.get("/roles", isAuthenticated(), async (_req, res) => {
 	try {
 		const roles = await userService.getUserRoles();
-		res.status(200).json({ roles });
+		res.status(StatusCodes.OK).json({ roles });
 	} catch (error) {
 		res.status(error.status).json(error.message);
 	}
@@ -166,7 +167,7 @@ userRouter.get("/roles", isAuthenticated(), async (_req, res) => {
 userRouter.get("/:userId/sentfriendrequests", isAuthenticated(), async (req, res) => {
 	try {
 		const requests = await userService.friendRequest.getBySenderId(req.user, Number(req.params.userId));
-		res.status(200).json({ requests });
+		res.status(StatusCodes.OK).json({ requests });
 	} catch (error) {
 		res.status(error.status).json(error.message);
 	}
@@ -175,7 +176,7 @@ userRouter.get("/:userId/sentfriendrequests", isAuthenticated(), async (req, res
 userRouter.get("/:userId/receivedfriendrequests", isAuthenticated(), async (req, res) => {
 	try {
 		const requests = await userService.friendRequest.getByReceiverId(req.user, Number(req.params.userId));
-		res.status(200).json({ requests });
+		res.status(StatusCodes.OK).json({ requests });
 	} catch (error) {
 		res.status(error.status).json(error.message);
 	}
@@ -184,7 +185,7 @@ userRouter.get("/:userId/receivedfriendrequests", isAuthenticated(), async (req,
 userRouter.post("/friendrequest", isAuthenticated(), async (req, res) => {
 	try {
 		await userService.friendRequest.add(req.user, req.body.senderId, req.body.receiverId);
-		res.status(200).json({ message: "Friend request created" });
+		res.status(StatusCodes.OK).json({ message: "Friend request created" });
 	} catch (error) {
 		res.status(error.status).json(error.message);
 	}
@@ -193,7 +194,7 @@ userRouter.post("/friendrequest", isAuthenticated(), async (req, res) => {
 userRouter.delete("/friendrequest/:id", isAuthenticated(), async (req, res) => {
 	try {
 		await userService.friendRequest.remove(req.user, req.params.id);
-		res.status(200).json({ message: "Friend request deleted" });
+		res.status(StatusCodes.OK).json({ message: "Friend request deleted" });
 	} catch (error) {
 		res.status(error.status).json(error.message);
 	}
@@ -202,7 +203,7 @@ userRouter.delete("/friendrequest/:id", isAuthenticated(), async (req, res) => {
 userRouter.put("/friendrequest/:id/accept", isAuthenticated(), async (req, res) => {
 	try {
 		await userService.friendRequest.accept(req.user, req.params.id);
-		res.status(200).json({ message: "Friend request accepted" });
+		res.status(StatusCodes.OK).json({ message: "Friend request accepted" });
 	} catch (error) {
 		res.status(error.status).json(error.message);
 	}
@@ -211,7 +212,7 @@ userRouter.put("/friendrequest/:id/accept", isAuthenticated(), async (req, res) 
 userRouter.get("/friendRequest/:id", isAuthenticated(), async (req, res) => {
 	try {
 		const friendRequest = await userService.friendRequest.getById(req.user, Number(req.params.id));
-		res.status(200).json({ friendRequest });
+		res.status(StatusCodes.OK).json({ friendRequest });
 	} catch (error) {
 		res.status(error.status).json(error.message);
 	}
@@ -220,7 +221,7 @@ userRouter.get("/friendRequest/:id", isAuthenticated(), async (req, res) => {
 userRouter.get("/:userId", isAuthenticated(), async (req, res) => {
 	try {
 		const user = await userService.getById(req.user, Number(req.params.userId));
-		res.status(200).json({ user });
+		res.status(StatusCodes.OK).json({ user });
 	} catch (error) {
 		res.status(error.status).json(error.message);
 	}
@@ -229,7 +230,7 @@ userRouter.get("/:userId", isAuthenticated(), async (req, res) => {
 userRouter.get("/:userId/wishlists", isAuthenticated(), async (req, res) => {
 	try {
 		const wishlists = await wishlistService.getByUserId(req.user, Number(req.params.userId));
-		res.status(200).json({ wishlists });
+		res.status(StatusCodes.OK).json({ wishlists });
 	} catch (error) {
 		res.status(error.status).json(error.message);
 	}
@@ -238,7 +239,7 @@ userRouter.get("/:userId/wishlists", isAuthenticated(), async (req, res) => {
 userRouter.get("/:userId/reservations", isAuthenticated(), async (req, res) => {
 	try {
 		const reservations = await wishlistService.reservation.getByUserId(req.user, Number(req.params.userId));
-		res.status(200).json({ reservations });
+		res.status(StatusCodes.OK).json({ reservations });
 	} catch (error) {
 		res.status(error.status).json(error.message);
 	}
@@ -249,7 +250,7 @@ userRouter.get("/:userId/friends", isAuthenticated(), async (req, res) => {
 
 	try {
 		const friends = await userService.friend.getByUserId(req.user, userId);
-		res.status(200).json({ friends });
+		res.status(StatusCodes.OK).json({ friends });
 	} catch (error) {
 		res.status(error.status).json(error.message);
 	}
@@ -258,7 +259,7 @@ userRouter.get("/:userId/friends", isAuthenticated(), async (req, res) => {
 userRouter.delete("/friend/:id", isAuthenticated(), async (req, res) => {
 	try {
 		await userService.friend.remove(req.user, req.user.id, Number(req.params.id));
-		res.status(200).json({ message: "Friend removed" });
+		res.status(StatusCodes.OK).json({ message: "Friend removed" });
 	} catch (error) {
 		res.status(error.status).json(error.message);
 	}
@@ -269,7 +270,7 @@ userRouter.delete("/:userId", isAuthenticated(), verifyRecentLogin(), async (req
 
 	try {
 		await userService.remove(req.user, userToDeleteId);
-		res.status(200).json({ message: "User successfully deleted" });
+		res.status(StatusCodes.OK).json({ message: "User successfully deleted" });
 	} catch (error) {
 		res.status(error.status).json(error.message);
 	}
@@ -278,7 +279,7 @@ userRouter.delete("/:userId", isAuthenticated(), verifyRecentLogin(), async (req
 userRouter.get("/:userId/notifications", isAuthenticated(), async (req, res) => {
 	try {
 		const notifications = await notificationService.getByUserId(req.user, Number(req.params.userId));
-		res.status(200).json({ notifications });
+		res.status(StatusCodes.OK).json({ notifications });
 	} catch (error) {
 		res.status(error.status).json(error.message);
 	}
@@ -287,7 +288,7 @@ userRouter.get("/:userId/notifications", isAuthenticated(), async (req, res) => 
 userRouter.delete("/:userId/notifications", isAuthenticated(), async (req, res) => {
 	try {
 		await notificationService.removeByUserId(req.user, Number(req.params.userId));
-		res.status(200).json({ message: "Notifications deleted" });
+		res.status(StatusCodes.OK).json({ message: "Notifications deleted" });
 	} catch (error) {
 		res.status(error.status).json(error.message);
 	}
