@@ -15,6 +15,8 @@ export const friendRequestsTable = "friendRequests";
 export const commentsTable = "comments";
 export const waitlistTable = "waitlist";
 export const passwordTokenTable = "passwordReset";
+export const notificationTypeTable = "notificationTypes";
+export const notificationTable = "notifications";
 
 let dbClient;
 
@@ -640,6 +642,58 @@ const db = {
 
 		remove: async (id) => {
 			await dbClient(passwordTokenTable).del().where({ id });
+		},
+	},
+
+	notification: {
+		add: async (userId, type, data) => {
+			return (
+				await dbClient(notificationTable)
+					.insert({ user: userId, type, ...data })
+					.returning("id")
+			)[0].id;
+		},
+
+		getById: async (id) => {
+			return await dbClient(notificationTable).select("*").where({ id }).first();
+		},
+
+		getByUserId: async (id) => {
+			return await dbClient(notificationTable).select("*").where({ user: id });
+		},
+
+		getByUserIdAndFriendRequestId: async (userId, friendRequestId) => {
+			return await dbClient(notificationTable)
+				.select("*")
+				.where({ user: userId, friendRequest: friendRequestId });
+		},
+
+		getByUserIdAndItemId: async (userId, itemId) => {
+			return await dbClient(notificationTable).select("*").where({ user: userId, item: itemId });
+		},
+
+		getAll: async () => {
+			return await dbClient(notificationTable).select("*");
+		},
+
+		remove: async (id) => {
+			return await dbClient(notificationTable).del().where({ id });
+		},
+
+		removeByUserId: async (id) => {
+			await dbClient(notificationTable).del().where({ user: id });
+		},
+
+		removeByUserAndItem: async (userId, itemId) => {
+			await dbClient(notificationTable).del().where({ user: userId, item: itemId });
+		},
+
+		removeAll: async () => {
+			await dbClient(notificationTable).del();
+		},
+
+		getTypes: async () => {
+			return await dbClient(notificationTypeTable).select("*");
 		},
 	},
 };
