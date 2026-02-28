@@ -2,6 +2,26 @@ import { QueryClient, useMutation, useQuery, useQueryClient } from "@tanstack/re
 import axiosInstance from "../axiosInstance";
 import FriendRequest from "../types/FriendRequesstType";
 import { invalidateFriends } from "./friend";
+import { invalidateNotifications } from "./notification";
+
+type FriendRequestResponse = {
+	data: {
+		friendRequest: FriendRequest;
+	};
+};
+
+export const useGetFriendRequest = (id: number | undefined) => {
+	const { data, ...rest } = useQuery<FriendRequestResponse>({
+		queryKey: sentFriendRequestsQueryKey(id),
+		queryFn: () => axiosInstance.get(`/user/friendRequest/${id}`),
+		enabled: !!id,
+	});
+
+	return {
+		friendRequest: data?.data.friendRequest,
+		...rest,
+	};
+};
 
 type FriendRequestsResponse = {
 	data: {
@@ -97,6 +117,8 @@ export const useDeleteFriendRequest = (config?: UseDeleteFriendRequestConfig) =>
 			if (config?.onSuccess) {
 				config.onSuccess();
 			}
+
+			if (config?.userId) invalidateNotifications(queryClient, config.userId);
 		},
 		onError: (error: Error) => {
 			if (config?.onError) {
@@ -135,6 +157,8 @@ export const useAcceptFriendRequest = (config?: UseAcceptFriendRequestConfig) =>
 			if (config?.onSuccess) {
 				config.onSuccess();
 			}
+
+			if (config?.userId) invalidateNotifications(queryClient, config.userId);
 		},
 		onError: (error) => {
 			if (config?.onError) {
