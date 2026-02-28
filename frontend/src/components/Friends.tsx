@@ -1,4 +1,4 @@
-import { NavLink, useParams } from "react-router-dom";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { useAcceptFriendRequest, useDeleteFriendRequest, useGetFriendRequests } from "../hooks/friendRequest";
 import FriendRequest from "../types/FriendRequesstType";
 import { useAuth } from "../contexts/AuthContext";
@@ -13,6 +13,7 @@ import NotFound from "./NotFound";
 import ProfilePicture from "./ProfilePicture";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion";
 import Navbar from "./Navbar";
+import BackButton from "./BackButton";
 
 const ReceivedFriendRequest = ({ friendRequest }: { friendRequest: FriendRequest }) => {
 	const { userId } = useAuth();
@@ -113,8 +114,13 @@ const Friends = () => {
 	const { userId: viewer } = useAuth();
 	const { sentFriendRequests, receivedFriendRequests } = useGetFriendRequests(userId);
 	const { friends, isSuccess: isSuccessFriends } = useGetFriends(userId);
+	const navigate = useNavigate();
 
 	const isOwner: boolean = userId === viewer;
+
+	const handleBack = () => {
+		navigate(-1);
+	};
 
 	const FriendRequests = () => {
 		const requestCount = receivedFriendRequests.length + sentFriendRequests.length;
@@ -155,7 +161,14 @@ const Friends = () => {
 			{!isOwner && <Navbar breadcrumbs={breadcrumbs()} />}
 			<RoundedRect>
 				<div className="flex flex-col gap-y-5">
-					<p className="font-medium">{isOwner ? "My Friends" : "Friends"}</p>
+					{isOwner ? (
+						<div className="relative flex gap-x-3 items-center">
+							<BackButton onClick={handleBack} />
+							<p className="absolute left-1/2 transform -translate-x-1/2 font-medium">My Friends</p>
+						</div>
+					) : (
+						<p className="font-medium">Friends</p>
+					)}
 					{viewer === userId && <FriendRequests />}
 					{friends.length === 0 && (
 						<p className="m-auto text-2xl font-medium text-gray-300">No friends yet</p>
