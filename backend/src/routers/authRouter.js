@@ -5,6 +5,7 @@ import { adminRole } from "../roles.js";
 import { generateTokens } from "../services/authService.js";
 import passport from "../passport.js";
 import envConfig from "../envConfig.js";
+import { StatusCodes } from "http-status-codes";
 
 const authRouter = express.Router();
 
@@ -13,7 +14,7 @@ authRouter.post("/login", async (req, res) => {
 
 	try {
 		const { accessToken, refreshToken } = await authService.login(email, password);
-		res.status(200).json({
+		res.status(StatusCodes.OK).json({
 			accessToken,
 			refreshToken,
 		});
@@ -25,7 +26,7 @@ authRouter.post("/login", async (req, res) => {
 authRouter.post("/logout", isAuthenticated(), async (req, res) => {
 	try {
 		await authService.logout(req.user, req.body.userId);
-		res.status(200).json({ message: "User logged out" });
+		res.status(StatusCodes.OK).json({ message: "User logged out" });
 	} catch (error) {
 		res.status(error.status).json(error.message);
 	}
@@ -82,14 +83,14 @@ authRouter.post("/verify", async (req, res) => {
 		const token = req.query.token;
 
 		if (!token) {
-			return res.status(400).json({
+			return res.status(StatusCodes.BAD_REQUEST).json({
 				message: "Missing token",
 			});
 		}
 
 		await authService.verify(token);
 
-		res.status(201).json({
+		res.status(StatusCodes.CREATED).json({
 			message: "User successfully verified",
 		});
 	} catch (error) {
