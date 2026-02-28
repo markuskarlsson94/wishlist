@@ -166,11 +166,13 @@ const Item = () => {
 			? [
 					{ title: "My Wishlists", link: `/user/${userId}/wishlists` },
 					{ title: wishlist?.title, link: `/wishlist/${wishlist?.id}` },
+					{ title: item?.title },
 			  ]
 			: [
 					{ title: itemOwner?.firstName, link: `/user/${item?.owner}`, userId: itemOwner?.id },
 					{ title: "Wishlists", link: `/user/${item?.owner}/wishlists` },
 					{ title: wishlist?.title, link: `/wishlist/${wishlist?.id}` },
+					{ title: item?.title },
 			  ];
 	};
 
