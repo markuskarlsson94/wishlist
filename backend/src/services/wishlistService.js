@@ -513,7 +513,7 @@ const canViewWishlistItem = async (user, itemId) => {
 	return await canViewWishlist(user, wishlistId);
 };
 
-const canManageWishlistItem = async (user, itemId) => {
+export const canManageWishlistItem = async (user, itemId) => {
 	const wishlistId = await db.wishlist.item.getWishlist(itemId);
 	return await canManageWishlist(user, wishlistId);
 };
