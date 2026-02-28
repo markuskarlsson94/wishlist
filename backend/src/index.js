@@ -10,6 +10,8 @@ import { initUserRoles } from "./roles.js";
 import { initWishlistTypes } from "./wishlistTypes.js";
 import cors from "cors";
 import envConfig from "./envConfig.js";
+import notificationRouter from "./routers/notificationRouter.js";
+import { initNotificationTypes } from "./notifications.js";
 
 await db.connect();
 
@@ -26,6 +28,7 @@ app.disable("x-powered-by");
 const router = express.Router();
 router.use("/auth", authRouter);
 router.use("/user", userRouter);
+router.use("/notification", notificationRouter);
 router.use("/", wishlistRouter);
 app.use("/api/v1", router);
 
@@ -37,6 +40,7 @@ app.listen(port, () => {
 
 await initUserRoles();
 await initWishlistTypes();
+await initNotificationTypes();
 
 const populateDB = false;
 if (populateDB) {
