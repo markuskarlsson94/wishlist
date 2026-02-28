@@ -6,6 +6,7 @@ import { adminRole, userRole } from "./roles.js";
 import db from "./db.js";
 import logger from "./logger.js";
 import envConfig from "./envConfig.js";
+import { StatusCodes } from "http-status-codes";
 
 export const passportErrors = {
 	userAlreadyExists: "User already exists",
@@ -101,7 +102,7 @@ export const isAuthenticatedAdmin = () => {
 			if (req.user && req.user.role === adminRole()) {
 				return next();
 			} else {
-				return res.status(403).json({
+				return res.status(StatusCodes.FORBIDDEN).json({
 					message: "Access denied: Insufficient privileges",
 				});
 			}
@@ -120,7 +121,9 @@ export const verifyRecentLogin = () => {
 		const authorizationHeader = req.headers.authorization;
 
 		if (!authorizationHeader || !authorizationHeader.startsWith("Bearer ")) {
-			return res.status(401).json({ message: "Unauthorized: Missing or invalid access token" });
+			return res
+				.status(StatusCodes.UNAUTHORIZED)
+				.json({ message: "Unauthorized: Missing or invalid access token" });
 		}
 
 		const accessToken = authorizationHeader.split(" ")[1];
@@ -129,7 +132,7 @@ export const verifyRecentLogin = () => {
 		if (decoded.issuedAtLogin) {
 			return next();
 		} else {
-			return res.status(403).json({
+			return res.status(StatusCodes.FORBIDDEN).json({
 				message: "Access expired: Login to request new access token",
 			});
 		}
