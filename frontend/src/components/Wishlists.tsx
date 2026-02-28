@@ -1,4 +1,4 @@
-import { NavLink, useParams } from "react-router-dom";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
 import WishlistType from "../types/WishlistType";
 import WishlistInputType from "../types/WishlistInputType";
 import useWishlistTypes from "../hooks/useWishlistTypes";
@@ -13,6 +13,7 @@ import { useGetUser } from "@/hooks/user";
 import NotFound from "./NotFound";
 import { Badge } from "./ui/badge";
 import Navbar from "./Navbar";
+import BackButton from "./BackButton";
 
 const Wishlists = () => {
 	const params = useParams<{ userId: string }>();
@@ -22,6 +23,7 @@ const Wishlists = () => {
 	const createWishlist = useCreateWishlist();
 	const { wishlists } = useGetWishlists(userId);
 	const { types } = useWishlistTypes();
+	const navigate = useNavigate();
 
 	const isOwner: boolean = userId === viewer;
 
@@ -56,6 +58,10 @@ const Wishlists = () => {
 		createWishlist(input, userId);
 	};
 
+	const handleBack = () => {
+		navigate(-1);
+	};
+
 	const values = {
 		title: "",
 		description: "",
@@ -75,7 +81,14 @@ const Wishlists = () => {
 			{!isOwner && <Navbar breadcrumbs={breadcrumbs()} />}
 			<RoundedRect>
 				<div className="flex flex-col gap-y-5">
-					<p className="font-medium">{isOwner ? "My Wishlists" : "Wishlists"}</p>
+					{isOwner ? (
+						<div className="relative flex gap-x-3 items-center">
+							<BackButton onClick={handleBack} />
+							<p className="absolute left-1/2 transform -translate-x-1/2 font-medium">My Wishlists</p>
+						</div>
+					) : (
+						<p className="font-medium">Wishlists</p>
+					)}
 
 					{wishlists && wishlists.length === 0 && (
 						<div className="flex">
