@@ -5,6 +5,7 @@ import userService from "../services/userService.js";
 import wishlistService from "../services/wishlistService.js";
 import envConfig from "../envConfig.js";
 import logger from "../logger.js";
+import notificationService from "../services/notificationService.js";
 
 const profilePictureMaxSize = 20 * 1024 * 1024; // 20 MB
 
@@ -260,6 +261,24 @@ userRouter.delete("/:userId", isAuthenticated(), verifyRecentLogin(), async (req
 	try {
 		await userService.remove(req.user, userToDeleteId);
 		res.status(200).json({ message: "User successfully deleted" });
+	} catch (error) {
+		res.status(error.status).json(error.message);
+	}
+});
+
+userRouter.get("/:userId/notifications", isAuthenticated(), async (req, res) => {
+	try {
+		const notifications = await notificationService.getByUserId(req.user, Number(req.params.userId));
+		res.status(200).json({ notifications });
+	} catch (error) {
+		res.status(error.status).json(error.message);
+	}
+});
+
+userRouter.delete("/:userId/notifications", isAuthenticated(), async (req, res) => {
+	try {
+		await notificationService.removeByUserId(req.user, Number(req.params.userId));
+		res.status(200).json({ message: "Notifications deleted" });
 	} catch (error) {
 		res.status(error.status).json(error.message);
 	}
