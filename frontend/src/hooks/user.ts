@@ -88,12 +88,14 @@ export const useUpdateName = (config?: UseUpdateNameConfig) => {
 };
 
 export const useSearchUser = (query: string) => {
+	const q = query.trim();
+
 	const { data, isFetching, isSuccess, hasNextPage, fetchNextPage } = useInfiniteQuery<UserPage>({
-		queryKey: ["userSearch", query],
-		queryFn: ({ pageParam }) => axiosInstance.get(`/user/search?query=${query}&page=${pageParam}`),
+		queryKey: ["userSearch", q],
+		queryFn: ({ pageParam }) => axiosInstance.get(`/user/search?query=${q}&page=${pageParam}`),
 		initialPageParam: 0,
 		getNextPageParam: (lastPage, _allPages, _lastPageParam, _allPagesParams) => lastPage.data.nextPage,
-		enabled: query.length >= 3,
+		enabled: q.length >= 3,
 	});
 
 	const users = data ? data.pages.flatMap((p) => p.data.users) : [];
