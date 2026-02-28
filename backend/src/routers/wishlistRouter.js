@@ -2,6 +2,7 @@ import express from "express";
 import wishlistService from "../services/wishlistService.js";
 import { isAuthenticated } from "../passport.js";
 import logger from "../logger.js";
+import notificationService from "../services/notificationService.js";
 
 const wishlistRouter = express.Router();
 
@@ -128,6 +129,29 @@ wishlistRouter.get("/item/:id/reservation", isAuthenticated(), async (req, res) 
 		const data = await wishlistService.reservation.getByItemId(user, itemId);
 
 		res.status(200).json({ reservation: data });
+	} catch (error) {
+		res.status(error.status).json(error.message);
+	}
+});
+
+wishlistRouter.get("/item/:id/notifications", isAuthenticated(), async (req, res) => {
+	try {
+		const notifications = await notificationService.getByUserIdAndItemId(
+			req.user,
+			req.user.id,
+			Number(req.params.id),
+		);
+
+		res.status(200).json({ notifications });
+	} catch (error) {
+		res.status(error.status).json(error.message);
+	}
+});
+
+wishlistRouter.delete("/item/:id/notifications", isAuthenticated(), async (req, res) => {
+	try {
+		await notificationService.removeByUserIdAndItemId(req.user, req.user.id, Number(req.params.id));
+		res.status(200).json({ message: "Notifications removed" });
 	} catch (error) {
 		res.status(error.status).json(error.message);
 	}
