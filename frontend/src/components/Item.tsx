@@ -36,6 +36,7 @@ import UserType from "@/types/UserType";
 import Tooltip from "./Tooltip";
 import Navbar from "./Navbar";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useDeleteNotificationsByItem } from "@/hooks/notification";
 
 const Item = () => {
 	const [isOwner, setIsOwner] = useState<boolean>(false);
@@ -60,6 +61,7 @@ const Item = () => {
 	const [comment, setComment] = useState<string>("");
 	const formRef = useRef<HTMLFormElement | null>(null);
 	const isMobile = useIsMobile();
+	const deleteNotificationsByItem = useDeleteNotificationsByItem({ userId });
 
 	const onDeleteItem = () => {
 		if (item?.wishlist) {
@@ -72,6 +74,7 @@ const Item = () => {
 	useEffect(() => {
 		if (isSuccess) {
 			setIsOwner(item?.owner === userId);
+			if (item) deleteNotificationsByItem(item.id);
 		}
 	}, [item, isSuccess]);
 
