@@ -208,6 +208,15 @@ userRouter.put("/friendrequest/:id/accept", isAuthenticated(), async (req, res) 
 	}
 });
 
+userRouter.get("/friendRequest/:id", isAuthenticated(), async (req, res) => {
+	try {
+		const friendRequest = await userService.friendRequest.getById(req.user, Number(req.params.id));
+		res.status(200).json({ friendRequest });
+	} catch (error) {
+		res.status(error.status).json(error.message);
+	}
+});
+
 userRouter.get("/:userId", isAuthenticated(), async (req, res) => {
 	try {
 		const user = await userService.getById(req.user, Number(req.params.userId));
