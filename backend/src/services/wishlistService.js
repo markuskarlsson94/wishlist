@@ -5,7 +5,8 @@ import logger from "../logger.js";
 import { adminRole } from "../roles.js";
 import { publicType, allTypes, hiddenType, friendType } from "../wishlistTypes.js";
 import { PostgresError } from "pg-error-enum";
-import { canViewUser, canManageUser, usersAreFriends } from "./userService.js";
+import { canManageUser, usersAreFriends } from "./userService.js";
+import notificationService from "./notificationService.js";
 
 const wishlistService = {
 	add: async (user, userId, title, description, type = publicType()) => {
@@ -280,12 +281,46 @@ const wishlistService = {
 					asAdmin = false;
 				}
 
+				let commentId;
+
 				try {
-					return await db.wishlist.item.comment.add(itemId, userId, comment, asAdmin);
+					commentId = await db.wishlist.item.comment.add(itemId, userId, comment, asAdmin);
 				} catch (error) {
 					logger.error(error.message);
 					throw new ErrorMessage(errorMessages.unableToAddComment);
 				}
+
+				try {
+					// Send a notification to each previous commenter, reserver, and item owner
+					const comments = await db.wishlist.item.comment.getByItemId(itemId);
+					const userIds = comments.map((comment) => comment.user);
+
+					const owner = await db.wishlist.item.getOwner(itemId);
+					userIds.push(owner);
+
+					const reservations = await db.reservation.getByItemId(itemId);
+					if (reservations?.length > 0) {
+						userIds.push(reservations[0].user);
+					}
+
+					const uniqueIds = [];
+
+					userIds.forEach((id) => {
+						if (!uniqueIds.includes(id)) {
+							uniqueIds.push(id);
+						}
+					});
+
+					const filteredIds = uniqueIds.filter((id) => id !== userId); // Remove poster
+
+					for (const id of filteredIds) {
+						await notificationService.sendCommentNotification(id, itemId);
+					}
+				} catch (error) {
+					logger.error(error.message);
+				}
+
+				return commentId;
 			},
 
 			update: async (user, commentId, comment) => {
