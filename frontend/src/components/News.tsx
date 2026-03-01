@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router-dom";
 import BackButton from "./BackButton";
 import RoundedRect from "./RoundedRect";
 import { CardHeader, CardTitle } from "./ui/card";
@@ -12,12 +11,6 @@ import Tooltip from "./Tooltip";
 import NewsType from "@/types/NewsType";
 
 const News = () => {
-	const navigate = useNavigate();
-
-	const handleBack = () => {
-		navigate(-1);
-	};
-
 	const DateWrapper = React.forwardRef<HTMLDivElement, { article: NewsType; children: React.ReactNode }>(
 		({ article, children }, ref) => {
 			return (
@@ -57,7 +50,7 @@ const News = () => {
 		<RoundedRect>
 			<div className="flex flex-col gap-y-6">
 				<div className="relative flex items-center">
-					<BackButton onClick={handleBack} />
+					<BackButton />
 					<p className="absolute left-1/2 transform -translate-x-1/2 font-medium">News Archive</p>
 				</div>
 

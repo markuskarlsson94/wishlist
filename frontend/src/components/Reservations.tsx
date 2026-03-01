@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router-dom";
 import { useDeleteReservation, useGetReservations } from "../hooks/reservation";
 import { useAuth } from "../contexts/AuthContext";
 import ReservationType from "../types/ReservationType";
@@ -102,11 +101,6 @@ const UserCard = ({ reservations }: { reservations: ReservationType[] }) => {
 const Reservations = () => {
 	const { userId } = useAuth();
 	const { reservations } = useGetReservations(userId);
-	const navigate = useNavigate();
-
-	const handleBack = () => {
-		navigate(-1);
-	};
 
 	const groupedReservations = useMemo((): ReservationType[][] => {
 		let result = reservations.reduce((acc: { [key: string]: ReservationType[] }, reservation: ReservationType) => {
@@ -130,7 +124,7 @@ const Reservations = () => {
 		<RoundedRect>
 			<div className="flex flex-col gap-y-3">
 				<div className="relative flex items-center">
-					<BackButton onClick={handleBack} />
+					<BackButton />
 					<p className="absolute left-1/2 transform -translate-x-1/2 font-medium">My Reservations</p>
 				</div>
 

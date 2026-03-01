@@ -1,5 +1,5 @@
 import RoundedRect from "./RoundedRect";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import {
 	Breadcrumb,
 	BreadcrumbList,
@@ -41,18 +41,12 @@ const BreadcrumbItemCustom = ({ breadcrumb }: { breadcrumb: BreadCrumbType }) =>
 };
 
 const Navbar = ({ props }: { props: BreadCrumbProps }) => {
-	const navigate = useNavigate();
-
-	const handleBack = () => {
-		navigate(-1);
-	};
-
 	const breadcrumbs = props.breadcrumbs;
 
 	return (
 		<RoundedRect>
 			<div className="flex gap-x-3">
-				<BackButton onClick={handleBack} />
+				<BackButton />
 				{props?.isLoading ? (
 					<div className="flex items-center">
 						<Skeleton className="h-6 w-[200px]" />

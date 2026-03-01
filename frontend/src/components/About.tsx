@@ -1,21 +1,14 @@
-import { useNavigate } from "react-router-dom";
 import BackButton from "./BackButton";
 import RoundedRect from "./RoundedRect";
 import { NavLink } from "react-router-dom";
 import { APP_NAME } from "@/constants";
 
 const About = () => {
-	const navigate = useNavigate();
-
-	const handleBack = () => {
-		navigate(-1);
-	};
-
 	return (
 		<RoundedRect>
 			<div className="flex flex-col gap-y-6">
 				<div className="relative flex items-center">
-					<BackButton onClick={handleBack} />
+					<BackButton />
 					<p className="absolute left-1/2 transform -translate-x-1/2 font-medium">About {APP_NAME}</p>
 				</div>
 

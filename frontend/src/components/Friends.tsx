@@ -1,4 +1,4 @@
-import { NavLink, useNavigate, useParams } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 import { useAcceptFriendRequest, useDeleteFriendRequest, useGetFriendRequests } from "../hooks/friendRequest";
 import FriendRequest from "../types/FriendRequesstType";
 import { useAuth } from "../contexts/AuthContext";
@@ -114,13 +114,8 @@ const Friends = () => {
 	const { userId: viewer } = useAuth();
 	const { sentFriendRequests, receivedFriendRequests } = useGetFriendRequests(userId);
 	const { friends, isSuccess: isSuccessFriends } = useGetFriends(userId);
-	const navigate = useNavigate();
 
 	const isOwner: boolean = userId === viewer;
-
-	const handleBack = () => {
-		navigate(-1);
-	};
 
 	const FriendRequests = () => {
 		const requestCount = receivedFriendRequests.length + sentFriendRequests.length;
@@ -169,7 +164,7 @@ const Friends = () => {
 				<div className="flex flex-col gap-y-5">
 					{isOwner ? (
 						<div className="relative flex gap-x-3 items-center">
-							<BackButton onClick={handleBack} />
+							<BackButton />
 							<p className="absolute left-1/2 transform -translate-x-1/2 font-medium">My Friends</p>
 						</div>
 					) : (

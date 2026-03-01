@@ -1,20 +1,13 @@
-import { useNavigate } from "react-router-dom";
 import RoundedRect from "./RoundedRect";
 import BackButton from "./BackButton";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion";
 
 const FAQ = () => {
-	const navigate = useNavigate();
-
-	const handleBack = () => {
-		navigate(-1);
-	};
-
 	return (
 		<RoundedRect>
 			<div className="flex flex-col gap-y-6">
 				<div className="relative flex items-center">
-					<BackButton onClick={handleBack} />
+					<BackButton />
 					<p className="absolute left-1/2 transform -translate-x-1/2 font-medium">FAQ</p>
 				</div>
 
