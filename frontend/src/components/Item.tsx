@@ -12,7 +12,7 @@ import Comment from "./Comment";
 import RoundedRect from "./RoundedRect";
 import { Button, buttonVariants } from "./ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
-import { Copy, EllipsisVertical } from "lucide-react";
+import { Check, Copy, EllipsisVertical } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
 import ItemForm from "@/forms/ItemForm";
 import {
@@ -33,9 +33,7 @@ import { useGetWishlist } from "@/hooks/wishlist";
 import { useGetUser } from "@/hooks/user";
 import ProfilePicture from "./ProfilePicture";
 import UserType from "@/types/UserType";
-import Tooltip from "./Tooltip";
 import Navbar from "./Navbar";
-import { useIsMobile } from "@/hooks/use-mobile";
 import { useDeleteNotificationsByItem } from "@/hooks/notification";
 
 const Item = () => {
@@ -60,8 +58,8 @@ const Item = () => {
 	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false);
 	const [comment, setComment] = useState<string>("");
 	const formRef = useRef<HTMLFormElement | null>(null);
-	const isMobile = useIsMobile();
 	const deleteNotificationsByItem = useDeleteNotificationsByItem({ userId });
+	const [copied, setCopied] = useState(false);
 
 	const onDeleteItem = () => {
 		if (item?.wishlist) {
@@ -149,6 +147,18 @@ const Item = () => {
 			formRef.current.submit();
 			setComment("");
 		}
+	};
+
+	const handleCopy = () => {
+		if (copied) return;
+
+		if (item) navigator.clipboard.writeText(item.link || "");
+
+		setCopied(true);
+
+		setTimeout(() => {
+			setCopied(false);
+		}, 3000);
 	};
 
 	const itemValues: ItemInputType = {
@@ -264,31 +274,24 @@ const Item = () => {
 					<p>{item?.description}</p>
 				</div>
 				{item?.link && (
-					<>
-						{isMobile ? (
-							<Link to={item?.link} className="block break-all text-blue-500 hover:underline">
-								{item?.link}
-							</Link>
-						) : (
-							<div className="flex flex-row">
-								<Button
-									variant={"link"}
-									className={"block overflow-hidden whitespace-nowrap text-ellipsis max-w-full"}
-								>
-									<NavLink to={`${item.link}`}>{item.link}</NavLink>
-								</Button>
-								<Tooltip tooltip="Copy link">
-									<Button
-										variant={"ghost"}
-										className="w-9"
-										onClick={() => navigator.clipboard.writeText(item.link || "")}
-									>
-										<Copy />
-									</Button>
-								</Tooltip>
-							</div>
-						)}
-					</>
+					<div className="flex flex-col gap-y-3">
+						<Link to={item?.link} className="block break-all text-blue-500 hover:underline">
+							{item?.link}
+						</Link>
+						<Button variant={"ghost"} onClick={handleCopy} className="ml-auto">
+							{copied ? (
+								<>
+									<Check />
+									Link copied
+								</>
+							) : (
+								<>
+									<Copy />
+									Copy link
+								</>
+							)}
+						</Button>
+					</div>
 				)}
 				{reserver && (
 					<div className="mt-6">
