@@ -76,7 +76,7 @@ const LoginDialog = (config: LoginDialogConfig) => {
 			}}
 		>
 			<DialogTrigger asChild>
-				<Button variant={"secondary"}>
+				<Button variant={"ghost"} className="text-white">
 					Login <LogIn />
 				</Button>
 			</DialogTrigger>
