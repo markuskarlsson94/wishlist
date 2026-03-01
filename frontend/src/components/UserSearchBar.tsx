@@ -5,20 +5,19 @@ import { Popover, PopoverAnchor, PopoverContent } from "./ui/popover";
 import { Button } from "./ui/button";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { ScrollArea } from "./ui/scroll-area";
 import ProfilePicture from "./ProfilePicture";
 
 const UserSearchBar = () => {
 	const [query, setQuery] = useState<string>("");
 	const [queryCount, setQueryCount] = useState<number>(0);
 	const [resultsOpen, setResultsOpen] = useState<boolean>(false);
-	const [resultsHeight, setResultsHeight] = useState<number>(0);
 	const [disabled, setDisabled] = useState<boolean>(true);
 	const { userId: viewer } = useAuth();
 	const { users, isFetching, isSuccess, hasNextPage, fetchNextPage } = useSearchUser(query);
 	const searchBarRef = useRef<HTMLDivElement>(null);
-	const userRef = useRef<HTMLDivElement>(null);
 	const loadMoreRef = useRef<HTMLDivElement>(null);
+
+	const maxHeight = 360;
 
 	const handleSearch = (input: string) => {
 		setQuery(input);
@@ -54,12 +53,6 @@ const UserSearchBar = () => {
 		}
 	}, [isSuccess, queryCount]);
 
-	useEffect(() => {
-		if (userRef.current && loadMoreRef.current) {
-			setResultsHeight(userRef.current.offsetHeight * 10 + loadMoreRef.current.offsetHeight);
-		}
-	}, [users]);
-
 	const User = ({ id }: { id: number }) => {
 		const { user } = useGetUser(id);
 
@@ -83,8 +76,8 @@ const UserSearchBar = () => {
 		return (
 			<>
 				<div className="flex flex-col gap-y-2">
-					{users.map((userId, index) => (
-						<div key={userId} ref={index === 0 ? userRef : null}>
+					{users.map((userId) => (
+						<div key={userId}>
 							<User key={userId} id={userId} />
 						</div>
 					))}
@@ -130,17 +123,13 @@ const UserSearchBar = () => {
 					onInteractOutside={(e) => handleInteractOutside(e.target)}
 					onKeyDown={(e) => handleKeyDown(e.key)}
 				>
-					{users.length >= 10 ? (
-						<ScrollArea
-							style={{
-								height: users.length > 10 ? `${resultsHeight}px` : "auto",
-							}}
-						>
-							<SearchResult />
-						</ScrollArea>
-					) : (
+					<div
+						style={{ maxHeight: `${maxHeight}px` }}
+						className="overflow-y-auto pr-2 md:[&::-webkit-scrollbar]:w-2 md:[&::-webkit-scrollbar-track]:bg-gray-100
+  md:[&::-webkit-scrollbar-thumb]:bg-gray-300"
+					>
 						<SearchResult />
-					)}
+					</div>
 				</PopoverContent>
 			</Popover>
 		</div>
