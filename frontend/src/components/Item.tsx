@@ -161,24 +161,30 @@ const Item = () => {
 		return <NotFound type="Item" />;
 	}
 
-	const breadcrumbs = () => {
+	const breadcrumbProps = () => {
 		return isOwner
-			? [
-					{ title: "My Wishlists", link: `/user/${userId}/wishlists` },
-					{ title: wishlist?.title, link: `/wishlist/${wishlist?.id}` },
-					{ title: item?.title },
-			  ]
-			: [
-					{ title: itemOwner?.firstName, link: `/user/${item?.owner}`, userId: itemOwner?.id },
-					{ title: "Wishlists", link: `/user/${item?.owner}/wishlists` },
-					{ title: wishlist?.title, link: `/wishlist/${wishlist?.id}` },
-					{ title: item?.title },
-			  ];
+			? {
+					breadcrumbs: [
+						{ title: "My Wishlists", link: `/user/${userId}/wishlists` },
+						{ title: wishlist?.title, link: `/wishlist/${wishlist?.id}` },
+						{ title: item?.title },
+					],
+					isLoading: !userId || !wishlist || !item,
+			  }
+			: {
+					breadcrumbs: [
+						{ title: itemOwner?.firstName, link: `/user/${item?.owner}`, userId: itemOwner?.id },
+						{ title: "Wishlists", link: `/user/${item?.owner}/wishlists` },
+						{ title: wishlist?.title, link: `/wishlist/${wishlist?.id}` },
+						{ title: item?.title },
+					],
+					isLoading: !itemOwner || !item || !wishlist,
+			  };
 	};
 
 	return (
 		<div className="flex flex-col gap-y-2">
-			<Navbar breadcrumbs={breadcrumbs()} />
+			<Navbar props={breadcrumbProps()} />
 			<RoundedRect>
 				<div className="flex items-center justify-between">
 					<p className="font-medium">{item?.title}</p>

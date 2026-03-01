@@ -148,8 +148,14 @@ const Friends = () => {
 		);
 	};
 
-	const breadcrumbs = () => {
-		return [{ title: user?.firstName, link: `/user/${user?.id}`, userId: user?.id }, { title: "Friends" }];
+	const breadcrumbProps = () => {
+		return {
+			breadcrumbs: [
+				{ title: user?.firstName, link: `/user/${user?.id}`, userId: user?.id },
+				{ title: "Friends" },
+			],
+			isLoading: !user,
+		};
 	};
 
 	if (notFound) {
@@ -158,7 +164,7 @@ const Friends = () => {
 
 	return (
 		<div className="flex flex-col gap-y-2">
-			{!isOwner && <Navbar breadcrumbs={breadcrumbs()} />}
+			{!isOwner && <Navbar props={breadcrumbProps()} />}
 			<RoundedRect>
 				<div className="flex flex-col gap-y-5">
 					{isOwner ? (

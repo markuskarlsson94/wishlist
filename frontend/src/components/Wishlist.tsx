@@ -124,14 +124,23 @@ const Wishlist = () => {
 		type: wishlist?.type || types[0]?.id,
 	};
 
-	const breadcrumbs = () => {
+	const breadcrumbProps = () => {
 		return isOwner
-			? [{ title: "My Wishlists", link: `/user/${userId}/wishlists` }, { title: wishlist?.title }]
-			: [
-					{ title: user?.firstName, link: `/user/${user?.id}`, userId: user?.id },
-					{ title: "Wishlists", link: `/user/${wishlist?.owner}/wishlists` },
-					{ title: wishlist?.title },
-			  ];
+			? {
+					breadcrumbs: [
+						{ title: "My Wishlists", link: `/user/${userId}/wishlists` },
+						{ title: wishlist?.title },
+					],
+					isLoading: !userId || !wishlist,
+			  }
+			: {
+					breadcrumbs: [
+						{ title: user?.firstName, link: `/user/${user?.id}`, userId: user?.id },
+						{ title: "Wishlists", link: `/user/${wishlist?.owner}/wishlists` },
+						{ title: wishlist?.title },
+					],
+					isLoading: !user || !wishlist,
+			  };
 	};
 
 	if (notFound) {
@@ -140,7 +149,7 @@ const Wishlist = () => {
 
 	return (
 		<div className="flex flex-col gap-y-2">
-			<Navbar breadcrumbs={breadcrumbs()} />
+			<Navbar props={breadcrumbProps()} />
 			<RoundedRect>
 				<div className="flex justify-between items-start">
 					<p className="font-medium">{wishlist?.title}</p>

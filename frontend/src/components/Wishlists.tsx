@@ -72,13 +72,19 @@ const Wishlists = () => {
 		return <NotFound type="User" />;
 	}
 
-	const breadcrumbs = () => {
-		return [{ title: user?.firstName, link: `/user/${user?.id}`, userId: user?.id }, { title: "Wishlists" }];
+	const breadcrumbProps = () => {
+		return {
+			breadcrumbs: [
+				{ title: user?.firstName, link: `/user/${user?.id}`, userId: user?.id },
+				{ title: "Wishlists" },
+			],
+			isLoading: !user,
+		};
 	};
 
 	return (
 		<div className="flex flex-col gap-y-2">
-			{!isOwner && <Navbar breadcrumbs={breadcrumbs()} />}
+			{!isOwner && <Navbar props={breadcrumbProps()} />}
 			<RoundedRect>
 				<div className="flex flex-col gap-y-5">
 					{isOwner ? (

@@ -140,8 +140,8 @@ const User = () => {
 		navigate(`/user/${userId}/friends`);
 	};
 
-	const breadcrumbs = () => {
-		return [{ title: `${user?.firstName} ${user?.lastName}` }];
+	const breadcrumbProps = () => {
+		return { breadcrumbs: [{ title: `${user?.firstName} ${user?.lastName}` }], isLoading: !user };
 	};
 
 	if (notFound) {
@@ -150,7 +150,7 @@ const User = () => {
 
 	return (
 		<div className="flex flex-col gap-y-2">
-			<Navbar breadcrumbs={breadcrumbs()} />
+			<Navbar props={breadcrumbProps()} />
 			<RoundedRect>
 				<div className="flex flex-col gap-y-6">
 					<div className="flex justify-between items-center">
