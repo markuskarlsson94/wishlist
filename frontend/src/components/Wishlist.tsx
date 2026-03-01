@@ -41,6 +41,7 @@ import { Badge } from "./ui/badge";
 import NotFound from "./NotFound";
 import { useGetUser } from "@/hooks/user";
 import Navbar from "./Navbar";
+import { cn } from "@/lib/utils";
 
 const Wishlist = () => {
 	const [isOwner, setIsOwner] = useState<boolean>(false);
@@ -152,7 +153,7 @@ const Wishlist = () => {
 			<Navbar props={breadcrumbProps()} />
 			<RoundedRect>
 				<div className="flex justify-between items-start">
-					<p className="font-medium">{wishlist?.title}</p>
+					<p className={cn("font-medium", isOwner ? "pt-1" : "")}>{wishlist?.title}</p>
 					<div className="flex gap-x-3 items-center">
 						{type && (
 							<Badge variant={"secondary"}>
