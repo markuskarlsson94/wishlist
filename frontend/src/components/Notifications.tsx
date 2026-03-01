@@ -5,7 +5,7 @@ import {
 	useGetNotificationTypes,
 	useGetUserNotifications,
 } from "@/hooks/notification";
-import { Bell } from "lucide-react";
+import { Bell, ChevronLeft } from "lucide-react";
 import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from "./ui/popover";
 import NotificationType from "@/types/NotificationType";
 import NotificationTypeType from "@/types/NotificationTypeType";
@@ -21,6 +21,8 @@ import { Separator } from "./ui/separator";
 import { X } from "lucide-react";
 import Tooltip from "./Tooltip";
 import { Button } from "./ui/button";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 
 const FriendRequestNotification = ({
 	notification,
@@ -116,6 +118,7 @@ const Notifications = () => {
 	const { types } = useGetNotificationTypes();
 	const [open, setOpen] = useState<boolean>(false);
 	const deleteNotifications = useDeleteNotifcationsByUser({ userId });
+	const isMobile = useIsMobile();
 
 	const maxHeight = 360;
 	const friendRequestNotificationId = types?.find((t: NotificationTypeType) => t.name === "friendRequest").id;
@@ -163,6 +166,40 @@ const Notifications = () => {
 			</div>
 		);
 	};
+
+	if (isMobile)
+		return (
+			<Sheet open={open} onOpenChange={setOpen}>
+				<SheetTrigger asChild>
+					<div className="cursor-pointer">
+						<Bell color={color} />
+						{active && (
+							<div className="absolute right-[9px] top-[-10px] rounded-full bg-red-500 text-sm font-medium px-1 text-white text-white border-2 border-slate-800">
+								{notificationCountText()}
+							</div>
+						)}
+					</div>
+				</SheetTrigger>
+				<SheetContent side={"top"} className="max-h-[75vh] flex flex-col">
+					<div className="flex gap-x-3 items-center mb-4">
+						<Button size={"icon"} variant={"secondary"} onClick={() => setOpen(false)}>
+							<ChevronLeft />
+						</Button>
+						<p className="font-medium">Notifications</p>
+					</div>
+					<div className="overflow-y-auto pr-2">
+						<NotificationsContent />
+					</div>
+					{active && (
+						<div>
+							<Button variant={"secondary"} onClick={() => deleteNotifications()}>
+								Clear all
+							</Button>
+						</div>
+					)}
+				</SheetContent>
+			</Sheet>
+		);
 
 	return (
 		<div className="relative">
