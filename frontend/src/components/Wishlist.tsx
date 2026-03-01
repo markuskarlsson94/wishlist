@@ -242,7 +242,7 @@ const Wishlist = () => {
 					</div>
 				</div>
 
-				<div className="my-5 px-4">
+				<div className="my-5">
 					<p>{wishlist?.description}</p>
 				</div>
 
