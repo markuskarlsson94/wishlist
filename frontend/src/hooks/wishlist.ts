@@ -24,7 +24,7 @@ export const useGetWishlist = (id: number | undefined) => {
 };
 
 export const useGetWishlists = (userId: number) => {
-	const { data, isSuccess } = useQuery<WishlistType[]>({
+	const { data, ...rest } = useQuery<WishlistType[]>({
 		queryKey: ["wishlists", userId],
 		queryFn: async () => {
 			const data = await axiosInstance.get(`user/${userId}/wishlists`);
@@ -34,7 +34,7 @@ export const useGetWishlists = (userId: number) => {
 
 	return {
 		wishlists: data,
-		isSuccess,
+		...rest,
 	};
 };
 
