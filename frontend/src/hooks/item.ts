@@ -13,6 +13,7 @@ export const useGetItem = (id: number) => {
 		data: dataItem,
 		isSuccess: isSuccessItem,
 		error,
+		...rest
 	} = useQuery({
 		queryKey: ["item", id],
 		queryFn: () => axiosInstance.get(`item/${id}`),
@@ -47,13 +48,14 @@ export const useGetItem = (id: number) => {
 		item,
 		isSuccess: isSuccessItem && isSuccessOwner,
 		notFound,
+		...rest,
 	};
 };
 
 export const useGetItems = (wishlistId: number) => {
 	const [items, setItems] = useState<ItemType[]>([]);
 
-	const { data, isSuccess } = useQuery({
+	const { data, isSuccess, ...rest } = useQuery({
 		queryKey: ["items", wishlistId],
 		queryFn: () => axiosInstance.get(`wishlist/${wishlistId}/items`),
 		enabled: !!wishlistId,
@@ -68,6 +70,7 @@ export const useGetItems = (wishlistId: number) => {
 	return {
 		items,
 		isSuccess,
+		...rest,
 	};
 };
 
