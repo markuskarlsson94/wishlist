@@ -47,7 +47,7 @@ const Wishlist = () => {
 	const [isOwner, setIsOwner] = useState<boolean>(false);
 	const params = useParams<{ id: string }>();
 	const id = Number(params.id);
-	const { wishlist, isSuccess, notFound } = useGetWishlist(id);
+	const { wishlist, isSuccess: isSuccessWishlist, notFound } = useGetWishlist(id);
 	const updateWishlist = useUpdateWishlist();
 	const { userId } = useAuth();
 	const { user } = useGetUser(wishlist?.owner);
@@ -57,7 +57,7 @@ const Wishlist = () => {
 			navigate(`/user/${userId}/wishlists`, { replace: true });
 		},
 	});
-	const { items } = useGetItems(id);
+	const { items, isSuccess: isSuccessItems } = useGetItems(id);
 	const { createItem } = useCreateItem();
 	const { types } = useWishlistTypes();
 	const [isEditDialogOpen, setIsEditDialogOpen] = useState<boolean>(false);
@@ -66,12 +66,14 @@ const Wishlist = () => {
 	const formattedTypes = types.map((t) => getFormattedType(t));
 	const [type, setType] = useState<WishlistTypeInfoType | undefined>(undefined);
 
+	const isSuccess = isSuccessWishlist && isSuccessItems;
+
 	useEffect(() => {
-		if (isSuccess) {
+		if (isSuccessWishlist) {
 			setIsOwner(wishlist?.owner === userId);
 			if (wishlist) setType(findFormattedType(formattedTypes, wishlist.type));
 		}
-	}, [wishlist, isSuccess]);
+	}, [wishlist, isSuccessWishlist]);
 
 	const Item = ({ item }: { item: ItemType }) => {
 		const { comments } = useGetComments(item.id);
@@ -152,125 +154,131 @@ const Wishlist = () => {
 		<div className="flex flex-col gap-y-2">
 			<Navbar props={breadcrumbProps()} />
 			<RoundedRect>
-				<div className="flex justify-between items-start">
-					<p className={cn("font-medium", isOwner ? "pt-1" : "")}>{wishlist?.title}</p>
-					<div className="flex gap-x-3 items-center">
-						{type && (
-							<Badge variant={"secondary"}>
-								<Tooltip tooltip={type.description}>
-									<div className="flex items-center gap-x-1">
-										<p className="text-sm text-gray-500">{type.name}</p>
+				{isSuccess && wishlist && (
+					<>
+						<div className="flex items-start justify-between">
+							<p className={cn("font-medium", isOwner ? "pt-1" : "")}>{wishlist.title}</p>
+
+							<div className="flex gap-x-3 items-center">
+								{type && (
+									<Badge variant={"secondary"}>
+										<Tooltip tooltip={type.description}>
+											<p className="text-sm text-gray-500">{type.name}</p>
+										</Tooltip>
+									</Badge>
+								)}
+
+								{isOwner && (
+									<div className="float-right">
+										<DropdownMenu>
+											<DropdownMenuTrigger asChild>
+												<Button size={"icon"} variant={"ghost"}>
+													<EllipsisVertical />
+												</Button>
+											</DropdownMenuTrigger>
+											<DropdownMenuContent align="end">
+												<DropdownMenuItem
+													onClick={() => setIsEditDialogOpen(true)}
+													className="flex justify-between items-center"
+												>
+													<span>Edit</span>
+													<EditIcon />
+												</DropdownMenuItem>
+												<DropdownMenuItem
+													onClick={() => setIsDeleteDialogOpen(true)}
+													className="flex justify-between items-center"
+												>
+													<span>Delete</span>
+													<DeleteIcon />
+												</DropdownMenuItem>
+											</DropdownMenuContent>
+										</DropdownMenu>
+
+										<Dialog
+											open={isEditDialogOpen}
+											onOpenChange={() => setIsEditDialogOpen(!isEditDialogOpen)}
+										>
+											<DialogTrigger></DialogTrigger>
+											<DialogContent>
+												<DialogHeader>
+													<DialogTitle>Edit wishlist</DialogTitle>
+												</DialogHeader>
+												<WishlistForm
+													config={{
+														open: isEditDialogOpen,
+														values: wishlistValues,
+														onSubmit: onSubmitWishlist,
+														submitButtonTitle: "Save",
+													}}
+												/>
+											</DialogContent>
+										</Dialog>
+
+										<AlertDialog
+											open={isDeleteDialogOpen}
+											onOpenChange={() => setIsDeleteDialogOpen(!isDeleteDialogOpen)}
+										>
+											<AlertDialogTrigger asChild></AlertDialogTrigger>
+											<AlertDialogContent>
+												<AlertDialogHeader>
+													<AlertDialogTitle>Delete wishlist</AlertDialogTitle>
+													<AlertDialogDescription>
+														Are you sure you want to permanently delete this wishlist and
+														all its items?
+													</AlertDialogDescription>
+												</AlertDialogHeader>
+												<AlertDialogFooter>
+													<AlertDialogCancel>Cancel</AlertDialogCancel>
+													<AlertDialogAction
+														className={buttonVariants({ variant: "destructive" })}
+														onClick={() => {
+															if (wishlist) {
+																deleteWishlist(wishlist.id);
+															}
+														}}
+													>
+														Delete
+													</AlertDialogAction>
+												</AlertDialogFooter>
+											</AlertDialogContent>
+										</AlertDialog>
 									</div>
-								</Tooltip>
-							</Badge>
-						)}
-						{isOwner && (
-							<div className="float-right">
-								<DropdownMenu>
-									<DropdownMenuTrigger asChild>
-										<Button size={"icon"} variant={"ghost"}>
-											<EllipsisVertical />
-										</Button>
-									</DropdownMenuTrigger>
-									<DropdownMenuContent align="end">
-										<DropdownMenuItem
-											onClick={() => setIsEditDialogOpen(true)}
-											className="flex justify-between items-center"
-										>
-											<span>Edit</span>
-											<EditIcon />
-										</DropdownMenuItem>
-										<DropdownMenuItem
-											onClick={() => setIsDeleteDialogOpen(true)}
-											className="flex justify-between items-center"
-										>
-											<span>Delete</span>
-											<DeleteIcon />
-										</DropdownMenuItem>
-									</DropdownMenuContent>
-								</DropdownMenu>
-
-								<Dialog
-									open={isEditDialogOpen}
-									onOpenChange={() => setIsEditDialogOpen(!isEditDialogOpen)}
-								>
-									<DialogTrigger></DialogTrigger>
-									<DialogContent>
-										<DialogHeader>
-											<DialogTitle>Edit wishlist</DialogTitle>
-										</DialogHeader>
-										<WishlistForm
-											config={{
-												open: isEditDialogOpen,
-												values: wishlistValues,
-												onSubmit: onSubmitWishlist,
-												submitButtonTitle: "Save",
-											}}
-										/>
-									</DialogContent>
-								</Dialog>
-
-								<AlertDialog
-									open={isDeleteDialogOpen}
-									onOpenChange={() => setIsDeleteDialogOpen(!isDeleteDialogOpen)}
-								>
-									<AlertDialogTrigger asChild></AlertDialogTrigger>
-									<AlertDialogContent>
-										<AlertDialogHeader>
-											<AlertDialogTitle>Delete wishlist</AlertDialogTitle>
-											<AlertDialogDescription>
-												Are you sure you want to permanently delete this wishlist and all its
-												items?
-											</AlertDialogDescription>
-										</AlertDialogHeader>
-										<AlertDialogFooter>
-											<AlertDialogCancel>Cancel</AlertDialogCancel>
-											<AlertDialogAction
-												className={buttonVariants({ variant: "destructive" })}
-												onClick={() => {
-													if (wishlist) {
-														deleteWishlist(wishlist.id);
-													}
-												}}
-											>
-												Delete
-											</AlertDialogAction>
-										</AlertDialogFooter>
-									</AlertDialogContent>
-								</AlertDialog>
+								)}
 							</div>
+						</div>
+
+						{items && (
+							<>
+								<div className="my-6">
+									<p>{wishlist.description}</p>
+								</div>
+
+								<div className="flex flex-col gap-y-3">
+									{items.length === 0 && (
+										<div className="flex">
+											<p className="m-auto text-2xl font-medium text-gray-300">No items</p>
+										</div>
+									)}
+									{items.map((item) => (
+										<Item key={item.id} item={item} />
+									))}
+									{isOwner && (
+										<div className="self-end mt-3">
+											<ItemDialog
+												config={{
+													title: "Add item",
+													submitButtonTitle: "Add",
+													onSubmit: onSubmitItem,
+													values: itemValues,
+												}}
+											/>
+										</div>
+									)}
+								</div>
+							</>
 						)}
-					</div>
-				</div>
-
-				<div className="my-5">
-					<p>{wishlist?.description}</p>
-				</div>
-
-				<div className="h-3" />
-
-				<div className="flex flex-col gap-y-3">
-					{items && items.length === 0 && (
-						<div className="flex">
-							<p className="m-auto text-2xl font-medium text-gray-300">No items</p>
-						</div>
-					)}
-					{items?.map((item) => (
-						<Item key={item.id} item={item} />
-					))}
-					{isOwner && (
-						<div className="self-end mt-6">
-							<ItemDialog
-								config={{
-									title: "Add item",
-									submitButtonTitle: "Add",
-									onSubmit: onSubmitItem,
-									values: itemValues,
-								}}
-							/>
-						</div>
-					)}
-				</div>
+					</>
+				)}
 			</RoundedRect>
 		</div>
 	);
