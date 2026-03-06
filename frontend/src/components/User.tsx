@@ -27,12 +27,13 @@ import NotFound from "./NotFound";
 import ProfilePicture from "./ProfilePicture";
 import { Badge } from "./ui/badge";
 import Navbar from "./Navbar";
+import LoadingSpinner from "./LoadingSpinner";
 
 const User = () => {
 	const params = useParams<{ userId: string }>();
 	const userId = Number(params.userId);
 	const { userId: viewer } = useAuth();
-	const { user, isSuccess, notFound } = useGetUser(userId);
+	const { user, isSuccess, isLoading, notFound } = useGetUser(userId);
 	const createFriendRequest = useCreateFriendRequest({ userId });
 	const { sentFriendRequests, receivedFriendRequests } = useGetFriendRequests(viewer);
 	const acceptFriendRequest = useAcceptFriendRequest({ userId: viewer });
@@ -152,6 +153,7 @@ const User = () => {
 		<div className="flex flex-col gap-y-2">
 			<Navbar props={breadcrumbProps()} />
 			<RoundedRect>
+				{isLoading && <LoadingSpinner className="m-auto" />}
 				{isSuccess && user && (
 					<div className="flex flex-col gap-y-6">
 						<div className="flex justify-between items-center">
