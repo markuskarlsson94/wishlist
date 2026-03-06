@@ -196,136 +196,150 @@ const Item = () => {
 		<div className="flex flex-col gap-y-2">
 			<Navbar props={breadcrumbProps()} />
 			<RoundedRect>
-				<div className="flex items-center justify-between">
-					<p className="font-medium">{item?.title}</p>
-					{isOwner && (
-						<div>
-							<DropdownMenu>
-								<DropdownMenuTrigger asChild>
-									<Button size={"icon"} variant={"ghost"}>
-										<EllipsisVertical />
-									</Button>
-								</DropdownMenuTrigger>
-								<DropdownMenuContent align="end">
-									<DropdownMenuItem
-										onClick={() => setIsEditDialogOpen(true)}
-										className="flex justify-between items-center"
-									>
-										<span>Edit</span>
-										<EditIcon />
-									</DropdownMenuItem>
-									<DropdownMenuItem
-										onClick={() => setIsDeleteDialogOpen(true)}
-										className="flex justify-between items-center"
-									>
-										<span>Delete</span>
-										<DeleteIcon />
-									</DropdownMenuItem>
-								</DropdownMenuContent>
-							</DropdownMenu>
+				{isSuccess && item && (
+					<>
+						<div className="flex items-center justify-between">
+							<p className="font-medium">{item.title}</p>
 
-							<Dialog open={isEditDialogOpen} onOpenChange={() => setIsEditDialogOpen(!isEditDialogOpen)}>
-								<DialogTrigger></DialogTrigger>
-								<DialogContent>
-									<DialogHeader>
-										<DialogTitle>Edit item</DialogTitle>
-									</DialogHeader>
-									<ItemForm
-										config={{
-											open: isEditDialogOpen,
-											values: itemValues,
-											onSubmit: onSubmitItem,
-											submitButtonTitle: "Save",
-										}}
-									/>
-								</DialogContent>
-							</Dialog>
+							{isOwner && (
+								<div>
+									<DropdownMenu>
+										<DropdownMenuTrigger asChild>
+											<Button size={"icon"} variant={"ghost"}>
+												<EllipsisVertical />
+											</Button>
+										</DropdownMenuTrigger>
+										<DropdownMenuContent align="end">
+											<DropdownMenuItem
+												onClick={() => setIsEditDialogOpen(true)}
+												className="flex justify-between items-center"
+											>
+												<span>Edit</span>
+												<EditIcon />
+											</DropdownMenuItem>
+											<DropdownMenuItem
+												onClick={() => setIsDeleteDialogOpen(true)}
+												className="flex justify-between items-center"
+											>
+												<span>Delete</span>
+												<DeleteIcon />
+											</DropdownMenuItem>
+										</DropdownMenuContent>
+									</DropdownMenu>
 
-							<AlertDialog
-								open={isDeleteDialogOpen}
-								onOpenChange={() => setIsDeleteDialogOpen(!isDeleteDialogOpen)}
-							>
-								<AlertDialogTrigger asChild></AlertDialogTrigger>
-								<AlertDialogContent>
-									<AlertDialogHeader>
-										<AlertDialogTitle>Delete item</AlertDialogTitle>
-										<AlertDialogDescription>
-											Are you sure you want to permanently delete this item?
-										</AlertDialogDescription>
-									</AlertDialogHeader>
-									<AlertDialogFooter>
-										<AlertDialogCancel>Cancel</AlertDialogCancel>
-										<AlertDialogAction
-											className={buttonVariants({ variant: "destructive" })}
-											onClick={() => {
-												handleDelete();
-											}}
-										>
-											Delete
-										</AlertDialogAction>
-									</AlertDialogFooter>
-								</AlertDialogContent>
-							</AlertDialog>
-						</div>
-					)}
-				</div>
-				<div className="my-3"></div>
-				<div className="my-3">
-					<p>{item?.description}</p>
-				</div>
-				{item?.link && (
-					<div className="flex flex-col gap-y-3">
-						<Link to={item?.link} className="block break-all text-blue-500 hover:underline">
-							{item?.link}
-						</Link>
-						<Button variant={"ghost"} onClick={handleCopy} className="ml-auto">
-							{copied ? (
-								<>
-									<Check />
-									Link copied
-								</>
-							) : (
-								<>
-									<Copy />
-									Copy link
-								</>
+									<Dialog
+										open={isEditDialogOpen}
+										onOpenChange={() => setIsEditDialogOpen(!isEditDialogOpen)}
+									>
+										<DialogTrigger></DialogTrigger>
+										<DialogContent>
+											<DialogHeader>
+												<DialogTitle>Edit item</DialogTitle>
+											</DialogHeader>
+											<ItemForm
+												config={{
+													open: isEditDialogOpen,
+													values: itemValues,
+													onSubmit: onSubmitItem,
+													submitButtonTitle: "Save",
+												}}
+											/>
+										</DialogContent>
+									</Dialog>
+
+									<AlertDialog
+										open={isDeleteDialogOpen}
+										onOpenChange={() => setIsDeleteDialogOpen(!isDeleteDialogOpen)}
+									>
+										<AlertDialogTrigger asChild></AlertDialogTrigger>
+										<AlertDialogContent>
+											<AlertDialogHeader>
+												<AlertDialogTitle>Delete item</AlertDialogTitle>
+												<AlertDialogDescription>
+													Are you sure you want to permanently delete this item?
+												</AlertDialogDescription>
+											</AlertDialogHeader>
+											<AlertDialogFooter>
+												<AlertDialogCancel>Cancel</AlertDialogCancel>
+												<AlertDialogAction
+													className={buttonVariants({ variant: "destructive" })}
+													onClick={() => {
+														handleDelete();
+													}}
+												>
+													Delete
+												</AlertDialogAction>
+											</AlertDialogFooter>
+										</AlertDialogContent>
+									</AlertDialog>
+								</div>
 							)}
-						</Button>
-					</div>
-				)}
-				{reserver && (
-					<div className="mt-6">
-						<ReservationInfo reserver={reserver} />
-					</div>
-				)}
-				<div className="h-6" />
-				<div className="flex flex-col gap-y-3">
-					{item && comments.map((comment) => <Comment key={comment.id} comment={comment} item={item} />)}
-					<div className="flex flex-col gap-y-3 mt-5">
-						{!isOwner && (
-							<p className="flex m-auto text-sm text-gray-400">
-								Your comment will be anonymous to all users
-							</p>
-						)}
-						<AddCommentForm
-							config={{
-								onSubmit: handleAddComment,
-								onCommentChange(comment) {
-									setComment(comment);
-								},
-							}}
-							ref={formRef}
-						/>
-					</div>
-					<div className="flex flex-row">
-						<div className="flex gap-x-2 ml-auto">
-							<Button onClick={handleSubmitComment} disabled={comment === ""}>
-								Add comment
-							</Button>
-							{!isOwner && (reservedByCurrentUser ? <UnreserveButton /> : <ReserveButton />)}
 						</div>
-					</div>
-				</div>
+
+						<div className="my-3">
+							<p>{item.description}</p>
+						</div>
+
+						{item.link && (
+							<div className="flex flex-col gap-y-3">
+								<Link to={item?.link} className="block break-all text-blue-500 hover:underline">
+									{item?.link}
+								</Link>
+								<Button variant={"ghost"} onClick={handleCopy} className="ml-auto">
+									{copied ? (
+										<>
+											<Check />
+											Link copied
+										</>
+									) : (
+										<>
+											<Copy />
+											Copy link
+										</>
+									)}
+								</Button>
+							</div>
+						)}
+
+						{reserver && (
+							<div className="mt-6">
+								<ReservationInfo reserver={reserver} />
+							</div>
+						)}
+
+						{item && (
+							<div className="flex flex-col gap-y-3 mt-6">
+								{comments.map((comment) => (
+									<Comment key={comment.id} comment={comment} item={item} />
+								))}
+								<div className="flex flex-col gap-y-3 mt-5">
+									{!isOwner && (
+										<p className="flex m-auto text-sm text-gray-400">
+											Your comment will be anonymous to all users
+										</p>
+									)}
+									<AddCommentForm
+										config={{
+											onSubmit: handleAddComment,
+											onCommentChange(comment) {
+												setComment(comment);
+											},
+										}}
+										ref={formRef}
+									/>
+								</div>
+								<div className="flex">
+									<div className="flex gap-x-2 ml-auto">
+										<Button onClick={handleSubmitComment} disabled={comment === ""}>
+											Add comment
+										</Button>
+										{!isOwner && (reservedByCurrentUser ? <UnreserveButton /> : <ReserveButton />)}
+									</div>
+								</div>
+							</div>
+						)}
+					</>
+				)}
 			</RoundedRect>
 		</div>
 	);
