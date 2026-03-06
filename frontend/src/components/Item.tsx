@@ -35,6 +35,7 @@ import ProfilePicture from "./ProfilePicture";
 import UserType from "@/types/UserType";
 import Navbar from "./Navbar";
 import { useDeleteNotificationsByItem } from "@/hooks/notification";
+import LoadingSpinner from "./LoadingSpinner";
 
 const Item = () => {
 	const [isOwner, setIsOwner] = useState<boolean>(false);
@@ -42,7 +43,7 @@ const Item = () => {
 	const id = Number(params.id);
 	const navigate = useNavigate();
 	const { userId } = useAuth();
-	const { item, isSuccess, notFound } = useGetItem(id);
+	const { item, isSuccess, isLoading, notFound } = useGetItem(id);
 	const { wishlist } = useGetWishlist(item?.wishlist);
 	const createReservation = useCreateReservation({ userId });
 	const deleteReservation = useDeleteReservation({ userId });
@@ -196,6 +197,7 @@ const Item = () => {
 		<div className="flex flex-col gap-y-2">
 			<Navbar props={breadcrumbProps()} />
 			<RoundedRect>
+				{isLoading && <LoadingSpinner className="m-auto" />}
 				{isSuccess && item && (
 					<>
 						<div className="flex items-center justify-between">
