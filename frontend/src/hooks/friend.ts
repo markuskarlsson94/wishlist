@@ -9,7 +9,7 @@ type FriendResponse = {
 };
 
 export const useGetFriends = (userId: number | undefined) => {
-	const { data, isSuccess } = useQuery<FriendResponse>({
+	const { data, ...rest } = useQuery<FriendResponse>({
 		queryKey: friendsQueryKey(userId),
 		queryFn: () => axiosInstance.get(`/user/${userId}/friends`),
 		enabled: !!userId,
@@ -25,7 +25,7 @@ export const useGetFriends = (userId: number | undefined) => {
 
 	return {
 		friends,
-		isSuccess,
+		...rest,
 	};
 };
 
