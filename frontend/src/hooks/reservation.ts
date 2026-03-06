@@ -3,7 +3,7 @@ import axiosInstance from "../axiosInstance";
 import ReservationType from "../types/ReservationType";
 
 export const useGetReservations = (userId: number | undefined) => {
-	const { data, isSuccess } = useQuery<ReservationType[]>({
+	const { data, ...rest } = useQuery<ReservationType[]>({
 		queryKey: ["reservations", userId],
 		queryFn: async () => {
 			const data = await axiosInstance.get(`user/${userId}/reservations`);
@@ -16,7 +16,7 @@ export const useGetReservations = (userId: number | undefined) => {
 
 	return {
 		reservations,
-		isSuccess,
+		...rest,
 	};
 };
 
