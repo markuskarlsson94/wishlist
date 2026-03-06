@@ -14,6 +14,7 @@ import ProfilePicture from "./ProfilePicture";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion";
 import Navbar from "./Navbar";
 import BackButton from "./BackButton";
+import LoadingSpinner from "./LoadingSpinner";
 
 const ReceivedFriendRequest = ({ friendRequest }: { friendRequest: FriendRequest }) => {
 	const { userId } = useAuth();
@@ -113,7 +114,7 @@ const Friends = () => {
 	const { user, notFound } = useGetUser(userId);
 	const { userId: viewer } = useAuth();
 	const { sentFriendRequests, receivedFriendRequests } = useGetFriendRequests(userId);
-	const { friends, isSuccess } = useGetFriends(userId);
+	const { friends, isSuccess, isLoading } = useGetFriends(userId);
 
 	const isOwner: boolean = userId === viewer;
 
@@ -159,6 +160,7 @@ const Friends = () => {
 		<div className="flex flex-col gap-y-2">
 			{!isOwner && <Navbar props={breadcrumbProps()} />}
 			<RoundedRect>
+				{isLoading && <LoadingSpinner className="m-auto" />}
 				{isSuccess && friends && (
 					<div className="flex flex-col gap-y-6">
 						{isOwner ? (
