@@ -14,6 +14,7 @@ import NotFound from "./NotFound";
 import { Badge } from "./ui/badge";
 import Navbar from "./Navbar";
 import BackButton from "./BackButton";
+import LoadingSpinner from "./LoadingSpinner";
 
 const Wishlists = () => {
 	const params = useParams<{ userId: string }>();
@@ -21,7 +22,7 @@ const Wishlists = () => {
 	const { user, notFound } = useGetUser(userId);
 	const { userId: viewer } = useAuth();
 	const createWishlist = useCreateWishlist();
-	const { wishlists, isSuccess } = useGetWishlists(userId);
+	const { wishlists, isSuccess, isLoading } = useGetWishlists(userId);
 	const { types } = useWishlistTypes();
 
 	const isOwner: boolean = userId === viewer;
@@ -81,6 +82,7 @@ const Wishlists = () => {
 		<div className="flex flex-col gap-y-2">
 			{!isOwner && <Navbar props={breadcrumbProps()} />}
 			<RoundedRect>
+				{isLoading && <LoadingSpinner className="m-auto" />}
 				{isSuccess && wishlists && (
 					<div className="flex flex-col gap-y-6">
 						{isOwner ? (
