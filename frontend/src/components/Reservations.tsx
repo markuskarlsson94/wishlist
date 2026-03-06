@@ -22,6 +22,7 @@ import { useGetUser } from "@/hooks/user";
 import { useGetWishlist } from "@/hooks/wishlist";
 import ProfilePicture from "./ProfilePicture";
 import { useMemo } from "react";
+import LoadingSpinner from "./LoadingSpinner";
 
 const ReservationItem = ({ reservation }: { reservation: ReservationType }) => {
 	const { userId } = useAuth();
@@ -100,7 +101,7 @@ const UserCard = ({ reservations }: { reservations: ReservationType[] }) => {
 
 const Reservations = () => {
 	const { userId } = useAuth();
-	const { reservations, isSuccess } = useGetReservations(userId);
+	const { reservations, isSuccess, isLoading } = useGetReservations(userId);
 
 	const groupedReservations = useMemo((): ReservationType[][] => {
 		let result = reservations.reduce((acc: { [key: string]: ReservationType[] }, reservation: ReservationType) => {
@@ -122,6 +123,7 @@ const Reservations = () => {
 
 	return (
 		<RoundedRect>
+			{isLoading && <LoadingSpinner className="m-auto" />}
 			{isSuccess && reservations && (
 				<div className="flex flex-col gap-y-6">
 					<div className="relative flex items-center">
