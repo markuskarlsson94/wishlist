@@ -113,7 +113,7 @@ const Friends = () => {
 	const { user, notFound } = useGetUser(userId);
 	const { userId: viewer } = useAuth();
 	const { sentFriendRequests, receivedFriendRequests } = useGetFriendRequests(userId);
-	const { friends, isSuccess: isSuccessFriends } = useGetFriends(userId);
+	const { friends, isSuccess } = useGetFriends(userId);
 
 	const isOwner: boolean = userId === viewer;
 
@@ -123,21 +123,19 @@ const Friends = () => {
 		return (
 			<>
 				{requestCount !== 0 && (
-					<>
-						<Accordion type="single" collapsible defaultValue="friendRequests">
-							<AccordionItem value="friendRequests">
-								<AccordionTrigger>Friend requests</AccordionTrigger>
-								<AccordionContent>
-									{receivedFriendRequests.map((friendRequest) => (
-										<ReceivedFriendRequest key={friendRequest.id} friendRequest={friendRequest} />
-									))}
-									{sentFriendRequests.map((friendRequest) => (
-										<SentFriendRequest key={friendRequest.id} friendRequest={friendRequest} />
-									))}
-								</AccordionContent>
-							</AccordionItem>
-						</Accordion>
-					</>
+					<Accordion type="single" collapsible defaultValue="friendRequests">
+						<AccordionItem value="friendRequests">
+							<AccordionTrigger>Friend requests</AccordionTrigger>
+							<AccordionContent>
+								{receivedFriendRequests.map((friendRequest) => (
+									<ReceivedFriendRequest key={friendRequest.id} friendRequest={friendRequest} />
+								))}
+								{sentFriendRequests.map((friendRequest) => (
+									<SentFriendRequest key={friendRequest.id} friendRequest={friendRequest} />
+								))}
+							</AccordionContent>
+						</AccordionItem>
+					</Accordion>
 				)}
 			</>
 		);
@@ -161,21 +159,25 @@ const Friends = () => {
 		<div className="flex flex-col gap-y-2">
 			{!isOwner && <Navbar props={breadcrumbProps()} />}
 			<RoundedRect>
-				<div className="flex flex-col gap-y-5">
-					{isOwner ? (
-						<div className="relative flex gap-x-3 items-center">
-							<BackButton />
-							<p className="absolute left-1/2 transform -translate-x-1/2 font-medium">My Friends</p>
-						</div>
-					) : (
-						<p className="font-medium">Friends</p>
-					)}
-					{viewer === userId && <FriendRequests />}
-					{friends.length === 0 && (
-						<p className="m-auto text-2xl font-medium text-gray-300">No friends yet</p>
-					)}
-					{isSuccessFriends && friends?.map((friend) => <Friend key={friend.userId} friend={friend} />)}
-				</div>
+				{isSuccess && friends && (
+					<div className="flex flex-col gap-y-6">
+						{isOwner ? (
+							<div className="relative flex gap-x-3 items-center">
+								<BackButton />
+								<p className="absolute left-1/2 transform -translate-x-1/2 font-medium">My Friends</p>
+							</div>
+						) : (
+							<p className="font-medium">Friends</p>
+						)}
+						{viewer === userId && <FriendRequests />}
+						{friends.length === 0 && (
+							<p className="m-auto text-2xl font-medium text-gray-300">No friends yet</p>
+						)}
+						{friends.map((friend) => (
+							<Friend key={friend.userId} friend={friend} />
+						))}
+					</div>
+				)}
 			</RoundedRect>
 		</div>
 	);
