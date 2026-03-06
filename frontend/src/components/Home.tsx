@@ -46,7 +46,7 @@ const Home = () => {
 				<div className="h-8" />
 
 				<div className="flex flex-col">
-					<p className="text-4xl font-bold self-center text-white">{APP_NAME}</p>
+					<h1 className="text-4xl font-bold self-center text-white">{APP_NAME}</h1>
 					<p className="font-medium self-center text-gray-100">The simple and intuitive wishlist manager</p>
 				</div>
 
