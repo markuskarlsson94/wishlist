@@ -42,12 +42,13 @@ import NotFound from "./NotFound";
 import { useGetUser } from "@/hooks/user";
 import Navbar from "./Navbar";
 import { cn } from "@/lib/utils";
+import LoadingSpinner from "./LoadingSpinner";
 
 const Wishlist = () => {
 	const [isOwner, setIsOwner] = useState<boolean>(false);
 	const params = useParams<{ id: string }>();
 	const id = Number(params.id);
-	const { wishlist, isSuccess: isSuccessWishlist, notFound } = useGetWishlist(id);
+	const { wishlist, isSuccess: isSuccessWishlist, isLoading: isLoadingWishlist, notFound } = useGetWishlist(id);
 	const updateWishlist = useUpdateWishlist();
 	const { userId } = useAuth();
 	const { user } = useGetUser(wishlist?.owner);
@@ -57,7 +58,7 @@ const Wishlist = () => {
 			navigate(`/user/${userId}/wishlists`, { replace: true });
 		},
 	});
-	const { items, isSuccess: isSuccessItems } = useGetItems(id);
+	const { items, isSuccess: isSuccessItems, isLoading: isLoadingItems } = useGetItems(id);
 	const { createItem } = useCreateItem();
 	const { types } = useWishlistTypes();
 	const [isEditDialogOpen, setIsEditDialogOpen] = useState<boolean>(false);
@@ -67,6 +68,7 @@ const Wishlist = () => {
 	const [type, setType] = useState<WishlistTypeInfoType | undefined>(undefined);
 
 	const isSuccess = isSuccessWishlist && isSuccessItems;
+	const isLoading = isLoadingWishlist || isLoadingItems;
 
 	useEffect(() => {
 		if (isSuccessWishlist) {
@@ -154,6 +156,7 @@ const Wishlist = () => {
 		<div className="flex flex-col gap-y-2">
 			<Navbar props={breadcrumbProps()} />
 			<RoundedRect>
+				{isLoading && <LoadingSpinner className="m-auto" />}
 				{isSuccess && wishlist && (
 					<>
 						<div className="flex items-start justify-between">
