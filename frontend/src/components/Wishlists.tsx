@@ -21,7 +21,7 @@ const Wishlists = () => {
 	const { user, notFound } = useGetUser(userId);
 	const { userId: viewer } = useAuth();
 	const createWishlist = useCreateWishlist();
-	const { wishlists } = useGetWishlists(userId);
+	const { wishlists, isSuccess } = useGetWishlists(userId);
 	const { types } = useWishlistTypes();
 
 	const isOwner: boolean = userId === viewer;
@@ -81,38 +81,42 @@ const Wishlists = () => {
 		<div className="flex flex-col gap-y-2">
 			{!isOwner && <Navbar props={breadcrumbProps()} />}
 			<RoundedRect>
-				<div className="flex flex-col gap-y-5">
-					{isOwner ? (
-						<div className="relative flex gap-x-3 items-center">
-							<BackButton />
-							<p className="absolute left-1/2 transform -translate-x-1/2 font-medium">My Wishlists</p>
-						</div>
-					) : (
-						<p className="font-medium">Wishlists</p>
-					)}
+				{isSuccess && wishlists && (
+					<div className="flex flex-col gap-y-6">
+						{isOwner ? (
+							<div className="relative flex gap-x-3 items-center">
+								<BackButton />
+								<p className="absolute left-1/2 transform -translate-x-1/2 font-medium">My Wishlists</p>
+							</div>
+						) : (
+							<p className="font-medium">Wishlists</p>
+						)}
 
-					{wishlists && wishlists.length === 0 && (
-						<div className="flex">
-							<p className="m-auto text-2xl font-medium text-gray-300">No wishlists</p>
+						<div className="flex flex-col gap-y-3">
+							{wishlists.length === 0 && (
+								<div className="flex">
+									<p className="m-auto text-2xl font-medium text-gray-300">No wishlists</p>
+								</div>
+							)}
+							{wishlists.map((wishlist) => (
+								<Wishlist key={wishlist.id} wishlist={wishlist} />
+							))}
 						</div>
-					)}
-					{wishlists?.map((wishlist) => (
-						<Wishlist key={wishlist.id} wishlist={wishlist} />
-					))}
 
-					{isOwner && (
-						<div className="self-end mt-6">
-							<WishlistDialog
-								config={{
-									title: "Create new wishlist",
-									submitButtonTitle: "Create",
-									onSubmit,
-									values,
-								}}
-							/>
-						</div>
-					)}
-				</div>
+						{isOwner && (
+							<div className="self-end">
+								<WishlistDialog
+									config={{
+										title: "Create new wishlist",
+										submitButtonTitle: "Create",
+										onSubmit,
+										values,
+									}}
+								/>
+							</div>
+						)}
+					</div>
+				)}
 			</RoundedRect>
 		</div>
 	);
