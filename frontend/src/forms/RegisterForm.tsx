@@ -185,7 +185,7 @@ const RegisterForm = (config?: RegisterConfig) => {
 								<div className="space-y-1 leading-none">
 									<FormLabel>
 										I have read and agree to the{" "}
-										<NavLink to={"/terms-of-service"}>
+										<NavLink to={"/terms-of-service"} target="_blank">
 											<span className="underline hover:no-underline hover:text-gray-400">
 												Terms of Service
 											</span>
