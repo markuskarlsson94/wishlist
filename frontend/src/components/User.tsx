@@ -32,7 +32,7 @@ const User = () => {
 	const params = useParams<{ userId: string }>();
 	const userId = Number(params.userId);
 	const { userId: viewer } = useAuth();
-	const { user, notFound } = useGetUser(userId);
+	const { user, isSuccess, notFound } = useGetUser(userId);
 	const createFriendRequest = useCreateFriendRequest({ userId });
 	const { sentFriendRequests, receivedFriendRequests } = useGetFriendRequests(viewer);
 	const acceptFriendRequest = useAcceptFriendRequest({ userId: viewer });
@@ -152,35 +152,37 @@ const User = () => {
 		<div className="flex flex-col gap-y-2">
 			<Navbar props={breadcrumbProps()} />
 			<RoundedRect>
-				<div className="flex flex-col gap-y-6">
-					<div className="flex justify-between items-center">
-						<div className="flex gap-x-3 items-center">
-							<ProfilePicture src={user?.profilePicture} className="h-16 w-16" />
-							<div className="flex flex-col gap-y-1">
-								<p className="text-large font-medium">
-									{user?.firstName} {user?.lastName} {userId === viewer && <span> (You)</span>}
-								</p>
-								{!isSelf && !userIsFriend && commonFriends >= 1 && (
-									<Badge variant={"secondary"}>
-										<div className="flex gap-x-2 items-center ">
-											<>
-												<Users size={16} />
-												<p>{commonFriendString(commonFriends)}</p>
-											</>
-										</div>
-									</Badge>
-								)}
+				{isSuccess && user && (
+					<div className="flex flex-col gap-y-6">
+						<div className="flex justify-between items-center">
+							<div className="flex gap-x-3 items-center">
+								<ProfilePicture src={user.profilePicture} className="h-16 w-16" />
+								<div className="flex flex-col gap-y-1">
+									<p className="text-large font-medium">
+										{user.firstName} {user.lastName} {userId === viewer && <span> (You)</span>}
+									</p>
+									{!isSelf && !userIsFriend && commonFriends >= 1 && (
+										<Badge variant={"secondary"}>
+											<div className="flex gap-x-2 items-center ">
+												<>
+													<Users size={16} />
+													<p>{commonFriendString(commonFriends)}</p>
+												</>
+											</div>
+										</Badge>
+									)}
+								</div>
 							</div>
 						</div>
-					</div>
-					<div className="flex flex-wrap justify-between gap-y-3">
-						<div className="flex gap-x-2">
-							<Button onClick={handleGoToWishlists}>Wishlists</Button>
-							<Button onClick={handleGoToFriends}>Friends</Button>
+						<div className="flex flex-wrap justify-between gap-y-3">
+							<div className="flex gap-x-2">
+								<Button onClick={handleGoToWishlists}>Wishlists</Button>
+								<Button onClick={handleGoToFriends}>Friends</Button>
+							</div>
+							<FriendButton />
 						</div>
-						<FriendButton />
 					</div>
-				</div>
+				)}
 			</RoundedRect>
 		</div>
 	);
