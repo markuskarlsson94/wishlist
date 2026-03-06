@@ -100,7 +100,7 @@ const UserCard = ({ reservations }: { reservations: ReservationType[] }) => {
 
 const Reservations = () => {
 	const { userId } = useAuth();
-	const { reservations } = useGetReservations(userId);
+	const { reservations, isSuccess } = useGetReservations(userId);
 
 	const groupedReservations = useMemo((): ReservationType[][] => {
 		let result = reservations.reduce((acc: { [key: string]: ReservationType[] }, reservation: ReservationType) => {
@@ -122,25 +122,25 @@ const Reservations = () => {
 
 	return (
 		<RoundedRect>
-			<div className="flex flex-col gap-y-3">
-				<div className="relative flex items-center">
-					<BackButton />
-					<p className="absolute left-1/2 transform -translate-x-1/2 font-medium">My Reservations</p>
-				</div>
-
-				<div className="h-3" />
-
-				{reservations.length === 0 && (
-					<div className="flex">
-						<p className="m-auto text-2xl font-medium text-gray-300">No reservations</p>
-					</div>
-				)}
+			{isSuccess && reservations && (
 				<div className="flex flex-col gap-y-6">
-					{groupedReservations.map((reservations: ReservationType[], groupIndex) => (
-						<UserCard reservations={reservations} key={groupIndex} />
-					))}
+					<div className="relative flex items-center">
+						<BackButton />
+						<p className="absolute left-1/2 transform -translate-x-1/2 font-medium">My Reservations</p>
+					</div>
+
+					{reservations.length === 0 && (
+						<div className="flex">
+							<p className="m-auto text-2xl font-medium text-gray-300">No reservations</p>
+						</div>
+					)}
+					<div className="flex flex-col gap-y-6">
+						{groupedReservations.map((reservations: ReservationType[], groupIndex) => (
+							<UserCard reservations={reservations} key={groupIndex} />
+						))}
+					</div>
 				</div>
-			</div>
+			)}
 		</RoundedRect>
 	);
 };
