@@ -46,7 +46,7 @@ const FriendRequestNotification = ({
 					<div className="flex gap-x-2 items-center">
 						<ProfilePicture src={user?.profilePicture} className="h-8 w-8" />
 						<p>
-							<span className="font-medium">
+							<span className="font-medium break-all">
 								{user?.firstName} {user?.lastName}
 							</span>
 							{" sent you a friend request"}
@@ -74,7 +74,7 @@ const CommentNotification = ({
 			return (
 				<NavLink to={`item/${item?.id}`} onClick={() => setOpen(false)}>
 					<p>
-						New comment on <span className="font-medium">{item?.title}</span>
+						New comment on <span className="font-medium break-all">{item?.title}</span>
 					</p>
 				</NavLink>
 			);
