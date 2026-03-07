@@ -3,6 +3,7 @@ import axiosInstance from "../axiosInstance";
 import WishlistType from "../types/WishlistType";
 import WishlistInputType from "../types/WishlistInputType";
 import { StatusCodes } from "http-status-codes";
+import { AxiosError } from "axios";
 
 export const useGetWishlist = (id: number | undefined) => {
 	const { data, error, ...rest } = useQuery<WishlistType>({
@@ -40,7 +41,7 @@ export const useGetWishlists = (userId: number) => {
 
 type UseCreateWishlistConfig = {
 	onSuccess?: () => void;
-	onError?: (error: Error) => void;
+	onError?: (error: AxiosError) => void;
 };
 
 export const useCreateWishlist = (config?: UseCreateWishlistConfig) => {
@@ -61,7 +62,7 @@ export const useCreateWishlist = (config?: UseCreateWishlistConfig) => {
 				config.onSuccess();
 			}
 		},
-		onError: (error: Error) => {
+		onError: (error: AxiosError) => {
 			if (config?.onError) {
 				config.onError(error);
 			}
@@ -77,7 +78,7 @@ export const useCreateWishlist = (config?: UseCreateWishlistConfig) => {
 
 type UseDeleteWishlistConfig = {
 	onSuccess?: () => void;
-	onError?: (error: Error) => void;
+	onError?: (error: AxiosError) => void;
 };
 
 export const useDeleteWishlist = (config?: UseDeleteWishlistConfig) => {
@@ -97,7 +98,7 @@ export const useDeleteWishlist = (config?: UseDeleteWishlistConfig) => {
 				config.onSuccess();
 			}
 		},
-		onError: (error: Error) => {
+		onError: (error: AxiosError) => {
 			if (config?.onError) {
 				config.onError(error);
 			}
@@ -113,7 +114,7 @@ export const useDeleteWishlist = (config?: UseDeleteWishlistConfig) => {
 
 type UseUpdateWishlistConfig = {
 	onSuccess?: () => void;
-	onError?: (error: Error) => void;
+	onError?: (error: AxiosError) => void;
 };
 
 export const useUpdateWishlist = (config?: UseUpdateWishlistConfig) => {
@@ -131,7 +132,7 @@ export const useUpdateWishlist = (config?: UseUpdateWishlistConfig) => {
 				config.onSuccess();
 			}
 		},
-		onError: (error: Error) => {
+		onError: (error: AxiosError) => {
 			if (config?.onError) {
 				config.onError(error);
 			}
