@@ -160,7 +160,7 @@ const User = () => {
 							<div className="flex gap-x-3 items-center">
 								<ProfilePicture src={user.profilePicture} className="h-16 w-16" />
 								<div className="flex flex-col gap-y-1">
-									<p className="text-large font-medium">
+									<p className="text-large font-medium break-all">
 										{user.firstName} {user.lastName} {userId === viewer && <span> (You)</span>}
 									</p>
 									{!isSelf && !userIsFriend && commonFriends >= 1 && (
