@@ -16,6 +16,10 @@ const wishlistService = {
 			}
 		}
 
+		const maxAmount = 50;
+		const count = await db.wishlist.getCountByUserId(userId);
+		if (count >= maxAmount) throw new ErrorMessage(errorMessages.tooManyWishlists);
+
 		try {
 			return await db.wishlist.add(userId, title, description, type);
 		} catch (error) {
