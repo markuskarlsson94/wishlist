@@ -159,8 +159,8 @@ const Wishlist = () => {
 				{isLoading && <LoadingSpinner className="m-auto" />}
 				{isSuccess && wishlist && (
 					<>
-						<div className="flex items-start justify-between">
-							<p className={cn("font-medium", isOwner ? "pt-1" : "")}>{wishlist.title}</p>
+						<div className="flex items-start justify-between gap-x-3">
+							<p className={cn("font-medium break-all", isOwner ? "pt-1" : "")}>{wishlist.title}</p>
 
 							<div className="flex gap-x-3 items-center">
 								{type && (
@@ -253,7 +253,7 @@ const Wishlist = () => {
 						{items && (
 							<>
 								<div className="my-6">
-									<p>{wishlist.description}</p>
+									<p className="break-all">{wishlist.description}</p>
 								</div>
 
 								<div className="flex flex-col gap-y-3">
