@@ -539,6 +539,10 @@ const db = {
 					.orderBy("createdAt", "asc");
 			},
 
+			getCountByWishlistId: async (wishlistId) => {
+				return (await dbClient(wishlistItemTable).count().where({ wishlist: wishlistId }).first())?.count;
+			},
+
 			getWishlist: async (id) => {
 				return (await dbClient(wishlistItemTable).select("wishlist").where({ id }).first())?.wishlist;
 			},
