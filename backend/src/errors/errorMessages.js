@@ -61,6 +61,11 @@ const errorMessages = {
 		message: "Unable to add less than one item",
 	},
 
+	tooManyItems: {
+		status: StatusCodes.FORBIDDEN,
+		message: "Too many items",
+	},
+
 	amountToReserveTooSmall: {
 		status: StatusCodes.BAD_REQUEST,
 		message: "Amount to reserve is too small",
