@@ -43,6 +43,8 @@ import { useGetUser } from "@/hooks/user";
 import Navbar from "./Navbar";
 import { cn } from "@/lib/utils";
 import LoadingSpinner from "./LoadingSpinner";
+import { StatusCodes } from "http-status-codes";
+import { AxiosError } from "axios";
 
 const Wishlist = () => {
 	const [isOwner, setIsOwner] = useState<boolean>(false);
@@ -59,13 +61,20 @@ const Wishlist = () => {
 		},
 	});
 	const { items, isSuccess: isSuccessItems, isLoading: isLoadingItems } = useGetItems(id);
-	const { createItem } = useCreateItem();
+	const { createItem } = useCreateItem({
+		onError: (error: AxiosError) => {
+			if (error.response?.status === StatusCodes.FORBIDDEN) {
+				setErrorOpen(true);
+			}
+		},
+	});
 	const { types } = useWishlistTypes();
 	const [isEditDialogOpen, setIsEditDialogOpen] = useState<boolean>(false);
 	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false);
 	const { reservations } = useGetReservations(userId);
 	const formattedTypes = types.map((t) => getFormattedType(t));
 	const [type, setType] = useState<WishlistTypeInfoType | undefined>(undefined);
+	const [errorOpen, setErrorOpen] = useState(false);
 
 	const isSuccess = isSuccessWishlist && isSuccessItems;
 	const isLoading = isLoadingWishlist || isLoadingItems;
@@ -280,6 +289,15 @@ const Wishlist = () => {
 								</div>
 							</>
 						)}
+						<AlertDialog open={errorOpen} onOpenChange={setErrorOpen}>
+							<AlertDialogContent>
+								<AlertDialogHeader className="font-medium">Error</AlertDialogHeader>
+								Too many items
+								<AlertDialogFooter>
+									<AlertDialogCancel>Close</AlertDialogCancel>
+								</AlertDialogFooter>
+							</AlertDialogContent>
+						</AlertDialog>
 					</>
 				)}
 			</RoundedRect>
