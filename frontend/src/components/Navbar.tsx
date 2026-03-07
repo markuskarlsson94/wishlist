@@ -53,7 +53,7 @@ const Navbar = ({ props }: { props: BreadCrumbProps }) => {
 					</div>
 				) : (
 					<Breadcrumb className="flex min-h-9 font-medium items-center">
-						<BreadcrumbList className="text-xs md:text-sm">
+						<BreadcrumbList className="text-xs md:text-sm break-all">
 							{breadcrumbs?.map((breadcrumb, index) => (
 								<React.Fragment key={`${breadcrumb.title}-${index}`}>
 									<BreadcrumbItemCustom breadcrumb={breadcrumb} />
