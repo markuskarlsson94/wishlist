@@ -35,7 +35,7 @@ const ReceivedFriendRequest = ({ friendRequest }: { friendRequest: FriendRequest
 			<Card>
 				<CardHeader>
 					<CardTitle>
-						<div className="flex flex-wrap gap-y-2 justify-between items-center">
+						<div className="flex flex-wrap gap-x-3 gap-y-2 justify-between items-center">
 							<NavLink to={`/user/${friendRequest.sender}`}>
 								<div className="flex gap-x-3 items-center">
 									<ProfilePicture src={user?.profilePicture} />
@@ -70,7 +70,7 @@ const SentFriendRequest = ({ friendRequest }: { friendRequest: FriendRequest }) 
 			<Card>
 				<CardHeader>
 					<CardTitle>
-						<div className="flex justify-between items-center">
+						<div className="flex flex-wrap gap-x-3 gap-y-2 justify-between items-center">
 							<NavLink to={`/user/${friendRequest.receiver}`}>
 								<div className="flex gap-x-3 items-center">
 									<ProfilePicture src={user?.profilePicture} />
@@ -128,12 +128,14 @@ const Friends = () => {
 						<AccordionItem value="friendRequests">
 							<AccordionTrigger>Friend requests</AccordionTrigger>
 							<AccordionContent>
-								{receivedFriendRequests.map((friendRequest) => (
-									<ReceivedFriendRequest key={friendRequest.id} friendRequest={friendRequest} />
-								))}
-								{sentFriendRequests.map((friendRequest) => (
-									<SentFriendRequest key={friendRequest.id} friendRequest={friendRequest} />
-								))}
+								<div className="flex flex-col gap-y-3">
+									{receivedFriendRequests.map((friendRequest) => (
+										<ReceivedFriendRequest key={friendRequest.id} friendRequest={friendRequest} />
+									))}
+									{sentFriendRequests.map((friendRequest) => (
+										<SentFriendRequest key={friendRequest.id} friendRequest={friendRequest} />
+									))}
+								</div>
 							</AccordionContent>
 						</AccordionItem>
 					</Accordion>
@@ -162,7 +164,7 @@ const Friends = () => {
 			<RoundedRect>
 				{isLoading && <LoadingSpinner className="m-auto" />}
 				{isSuccess && friends && (
-					<div className="flex flex-col gap-y-6">
+					<div className="flex flex-col gap-y-3">
 						{isOwner ? (
 							<div className="relative flex gap-x-3 items-center">
 								<BackButton />
