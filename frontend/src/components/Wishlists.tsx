@@ -15,15 +15,32 @@ import { Badge } from "./ui/badge";
 import Navbar from "./Navbar";
 import BackButton from "./BackButton";
 import LoadingSpinner from "./LoadingSpinner";
+import {
+	AlertDialog,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogFooter,
+	AlertDialogHeader,
+} from "./ui/alert-dialog";
+import { useState } from "react";
+import { StatusCodes } from "http-status-codes";
+import { AxiosError } from "axios";
 
 const Wishlists = () => {
 	const params = useParams<{ userId: string }>();
 	const userId = Number(params.userId);
 	const { user, notFound } = useGetUser(userId);
 	const { userId: viewer } = useAuth();
-	const createWishlist = useCreateWishlist();
+	const createWishlist = useCreateWishlist({
+		onError: (error: AxiosError) => {
+			if (error.response?.status === StatusCodes.FORBIDDEN) {
+				setErrorOpen(true);
+			}
+		},
+	});
 	const { wishlists, isSuccess, isLoading } = useGetWishlists(userId);
 	const { types } = useWishlistTypes();
+	const [errorOpen, setErrorOpen] = useState(false);
 
 	const isOwner: boolean = userId === viewer;
 
@@ -117,6 +134,15 @@ const Wishlists = () => {
 								/>
 							</div>
 						)}
+						<AlertDialog open={errorOpen} onOpenChange={setErrorOpen}>
+							<AlertDialogContent>
+								<AlertDialogHeader className="font-medium">Error</AlertDialogHeader>
+								Too many wishlists
+								<AlertDialogFooter>
+									<AlertDialogCancel>Close</AlertDialogCancel>
+								</AlertDialogFooter>
+							</AlertDialogContent>
+						</AlertDialog>
 					</div>
 				)}
 			</RoundedRect>
