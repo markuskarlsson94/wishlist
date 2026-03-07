@@ -5,6 +5,7 @@ import ItemType from "../types/ItemType";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import ItemInputType from "../types/ItemInputType";
 import { StatusCodes } from "http-status-codes";
+import { AxiosError } from "axios";
 
 export const useGetItem = (id: number) => {
 	const [item, setItem] = useState<ItemType | undefined>(undefined);
@@ -76,7 +77,7 @@ export const useGetItems = (wishlistId: number) => {
 
 type UseCreateItemConfig = {
 	onSuccess?: () => void;
-	onError?: (error: Error) => void;
+	onError?: (error: AxiosError) => void;
 };
 
 export const useCreateItem = (config?: UseCreateItemConfig) => {
@@ -98,7 +99,7 @@ export const useCreateItem = (config?: UseCreateItemConfig) => {
 				config.onSuccess();
 			}
 		},
-		onError: (error: Error) => {
+		onError: (error: AxiosError) => {
 			if (config?.onError) {
 				config.onError(error);
 			}
@@ -114,7 +115,7 @@ export const useCreateItem = (config?: UseCreateItemConfig) => {
 
 type UseDeleteItemConfig = {
 	onSuccess?: () => void;
-	onError?: (error: Error) => void;
+	onError?: (error: AxiosError) => void;
 };
 
 export const useDeleteItem = (config?: UseDeleteItemConfig) => {
@@ -132,7 +133,7 @@ export const useDeleteItem = (config?: UseDeleteItemConfig) => {
 				config.onSuccess();
 			}
 		},
-		onError: (error: Error) => {
+		onError: (error: AxiosError) => {
 			if (config?.onError) {
 				config.onError(error);
 			}
@@ -148,7 +149,7 @@ export const useDeleteItem = (config?: UseDeleteItemConfig) => {
 
 type UseUpdateItemConfig = {
 	onSuccess?: () => void;
-	onError?: (error: Error) => void;
+	onError?: (error: AxiosError) => void;
 };
 
 export const useUpdateItem = (config?: UseUpdateItemConfig) => {
@@ -166,7 +167,7 @@ export const useUpdateItem = (config?: UseUpdateItemConfig) => {
 				config.onSuccess();
 			}
 		},
-		onError: (error: Error) => {
+		onError: (error: AxiosError) => {
 			if (config?.onError) {
 				config.onError(error);
 			}
