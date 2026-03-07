@@ -454,6 +454,10 @@ const db = {
 				.orderBy("createdAt", "asc");
 		},
 
+		getCountByUserId: async (userId) => {
+			return (await dbClient(wishlistTable).count().where({ owner: userId }).first())?.count;
+		},
+
 		getAll: async () => {
 			return await dbClient(wishlistTable).select("*");
 		},
