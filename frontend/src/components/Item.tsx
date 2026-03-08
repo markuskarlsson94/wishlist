@@ -201,7 +201,7 @@ const Item = () => {
 				{isSuccess && item && (
 					<>
 						<div className="flex items-center justify-between">
-							<p className="font-medium">{item.title}</p>
+							<p className="font-medium break-all">{item.title}</p>
 
 							{isOwner && (
 								<div>
@@ -279,7 +279,7 @@ const Item = () => {
 						</div>
 
 						<div className="my-3">
-							<p>{item.description}</p>
+							<p className="break-all">{item.description}</p>
 						</div>
 
 						{item.link && (
