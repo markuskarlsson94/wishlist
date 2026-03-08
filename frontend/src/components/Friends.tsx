@@ -39,7 +39,9 @@ const ReceivedFriendRequest = ({ friendRequest }: { friendRequest: FriendRequest
 							<NavLink to={`/user/${friendRequest.sender}`}>
 								<div className="flex gap-x-3 items-center">
 									<ProfilePicture src={user?.profilePicture} />
-									{user?.firstName} {user?.lastName}
+									<p className="break-all">
+										{user?.firstName} {user?.lastName}
+									</p>
 								</div>
 							</NavLink>
 							<div className="flex gap-x-3">
@@ -74,7 +76,9 @@ const SentFriendRequest = ({ friendRequest }: { friendRequest: FriendRequest }) 
 							<NavLink to={`/user/${friendRequest.receiver}`}>
 								<div className="flex gap-x-3 items-center">
 									<ProfilePicture src={user?.profilePicture} />
-									{user?.firstName} {user?.lastName}
+									<p className="break-all">
+										{user?.firstName} {user?.lastName}
+									</p>
 								</div>
 							</NavLink>
 							<Button onClick={handleCancel}>Cancel</Button>
@@ -96,10 +100,10 @@ const Friend = ({ friend }: { friend: FriendType }) => {
 					<CardTitle className="flex justify-between items-center">
 						<div className="flex gap-x-3 items-center">
 							<ProfilePicture src={friend.profilePicture} />
-							<div>
+							<p className="break-all">
 								{friend?.firstName} {friend?.lastName}
-								{friend.userId === userId && <span> (You)</span>}
-							</div>
+								<span>{friend.userId === userId ? "(You)" : ""}</span>
+							</p>
 						</div>
 					</CardTitle>
 				</CardHeader>
