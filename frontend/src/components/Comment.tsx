@@ -166,7 +166,7 @@ const Comment = ({ comment, item }: { comment: CommentType; item: ItemType }) =>
 							<div className="flex gap-x-3 items-center">
 								<CommentProfilePicture comment={comment} />
 								<div className="flex flex-wrap gap-y-1 gap-x-3 items-center">
-									<p>{title}</p>
+									<p className="break-all">{title}</p>
 									<Badge variant={"secondary"}>
 										<DateComponent comment={comment} />
 									</Badge>
@@ -176,9 +176,7 @@ const Comment = ({ comment, item }: { comment: CommentType; item: ItemType }) =>
 					</CardTitle>
 				</CardHeader>
 				<CardContent>
-					<div className="">
-						<p>{comment.comment}</p>
-					</div>
+					<p className="break-all">{comment.comment}</p>
 				</CardContent>
 			</Card>
 		);
