@@ -41,8 +41,8 @@ const ReservationItem = ({ reservation }: { reservation: ReservationType }) => {
 			<CardHeader>
 				<div className="flex flex-wrap gap-y-1 justify-between">
 					<NavLink to={`/item/${item.id}`}>
-						<CardTitle>{item?.title}</CardTitle>
-						<CardDescription>{wishlist?.title}</CardDescription>
+						<CardTitle className="break-all">{item?.title}</CardTitle>
+						<CardDescription className="break-all">{wishlist?.title}</CardDescription>
 					</NavLink>
 
 					<div className="ml-auto">
@@ -84,7 +84,7 @@ const UserCard = ({ reservations }: { reservations: ReservationType[] }) => {
 				<ProfilePicture src={owner?.profilePicture} />
 				{owner && (
 					<>
-						<NavLink className="font-medium" to={`/user/${owner?.id}`}>
+						<NavLink className="font-medium break-all" to={`/user/${owner?.id}`}>
 							{owner.firstName + " " + owner.lastName}
 						</NavLink>
 					</>
