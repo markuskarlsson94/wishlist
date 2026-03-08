@@ -98,8 +98,8 @@ const Wishlist = () => {
 						<CardHeader>
 							<div className="flex flex-wrap gap-y-1 items-start">
 								<div>
-									<CardTitle>{item.title}</CardTitle>
-									<CardDescription>{item.description}</CardDescription>
+									<CardTitle className="break-all">{item.title}</CardTitle>
+									<CardDescription className="break-all">{item.description}</CardDescription>
 								</div>
 								<div className="flex gap-x-3 ml-auto">
 									{reserved && <Badge>Reserved by you</Badge>}
