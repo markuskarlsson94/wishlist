@@ -113,21 +113,31 @@ const Item = () => {
 				{reservedByCurrentUser ? (
 					<>
 						<ProfilePicture src={reserver.profilePicture} />
-						<span> You have reserved this item</span>
+						<div className="flex flex-col">
+							<p> You have reserved this item</p>
+							<p className="text-sm text-gray-400 break-all">
+								{itemOwner?.firstName} can't see your reservation
+							</p>
+						</div>
 					</>
 				) : (
 					<>
 						<NavLink to={`/user/${reserver.id}`}>
 							<ProfilePicture src={reserver.profilePicture} />
 						</NavLink>
-						<p>
-							<NavLink to={`/user/${reserver.id}`}>
-								<span className="font-medium">
-									{reserver.firstName} {reserver.lastName}
-								</span>
-							</NavLink>
-							<span> has reserved this item</span>
-						</p>
+						<div className="flex flex-col">
+							<p>
+								<NavLink to={`/user/${reserver.id}`}>
+									<span className="font-medium break-all">
+										{reserver.firstName} {reserver.lastName}
+									</span>
+								</NavLink>
+								<span> has reserved this item</span>
+							</p>
+							<p className="text-sm text-gray-400 break-all">
+								{itemOwner?.firstName} can't see this reservation
+							</p>
+						</div>
 					</>
 				)}
 			</div>
