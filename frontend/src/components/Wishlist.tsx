@@ -169,13 +169,15 @@ const Wishlist = () => {
 				{isSuccess && wishlist && (
 					<>
 						<div className="flex items-start justify-between gap-x-3">
-							<p className={cn("font-medium break-all", isOwner ? "pt-1" : "")}>{wishlist.title}</p>
+							<p className={cn("font-medium break-all", isOwner ? "pt-[0.3rem]" : "")}>
+								{wishlist.title}
+							</p>
 
 							<div className="flex gap-x-3 items-center">
 								{type && (
 									<Badge variant={"secondary"}>
 										<Tooltip tooltip={type.description}>
-											<p className="text-sm text-gray-500">{type.name}</p>
+											<p className="text-sm text-gray-500 text-nowrap">{type.name}</p>
 										</Tooltip>
 									</Badge>
 								)}
