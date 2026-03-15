@@ -180,7 +180,7 @@ const Notifications = () => {
 						)}
 					</div>
 				</SheetTrigger>
-				<SheetContent side={"top"} className="max-h-[75vh] flex flex-col">
+				<SheetContent side={"top"} className="max-h-[75vh] flex flex-col [&>button]:hidden">
 					<div className="flex gap-x-3 items-center mb-4">
 						<Button size={"icon"} variant={"secondary"} onClick={() => setOpen(false)}>
 							<ChevronLeft />
