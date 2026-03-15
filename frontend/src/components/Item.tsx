@@ -210,8 +210,8 @@ const Item = () => {
 				{isLoading && <LoadingSpinner className="m-auto" />}
 				{isSuccess && item && (
 					<>
-						<div className="flex items-center justify-between">
-							<p className="font-medium break-all">{item.title}</p>
+						<div className="flex items-start justify-between">
+							<p className="font-medium break-all pt-[0.3rem]">{item.title}</p>
 
 							{isOwner && (
 								<div>
