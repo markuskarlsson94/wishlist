@@ -177,7 +177,7 @@ const Wishlist = () => {
 								{type && (
 									<Badge variant={"secondary"}>
 										<Tooltip tooltip={type.description}>
-											<p className="text-sm text-gray-500 text-nowrap">{type.name}</p>
+											<p className="text-nowrap">{type.name}</p>
 										</Tooltip>
 									</Badge>
 								)}
