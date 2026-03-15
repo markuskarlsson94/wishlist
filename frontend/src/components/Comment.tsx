@@ -120,7 +120,7 @@ const Comment = ({ comment, item }: { comment: CommentType; item: ItemType }) =>
 		const DateWrapperWithComment = (props: any) => <DateWrapper {...props} comment={comment} />;
 
 		return (
-			<span className="font-medium text-sm text-gray-500">
+			<span>
 				<ReactTimeAgo
 					date={new Date(comment.createdAt)}
 					tooltip={false}
