@@ -55,8 +55,10 @@ const Wishlists = () => {
 						<CardHeader>
 							<div className="flex flex-wrap gap-y-1 items-start">
 								<div className="pt-[0.14rem]">
-									<CardTitle className="break-all">{wishlist.title}</CardTitle>
-									<CardDescription className="break-all">{wishlist.description}</CardDescription>
+									<CardTitle className="[overflow-wrap:anywhere]">{wishlist.title}</CardTitle>
+									<CardDescription className="[overflow-wrap:anywhere]">
+										{wishlist.description}
+									</CardDescription>
 								</div>
 								{itemCount > 0 && (
 									<Badge variant={"secondary"} className="ml-auto">

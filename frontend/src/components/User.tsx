@@ -92,7 +92,7 @@ const User = () => {
 					<AlertDialogContent>
 						<AlertDialogHeader>
 							<AlertDialogTitle>Remove friend?</AlertDialogTitle>
-							<AlertDialogDescription>{`Are you sure you want to remove ${user?.firstName} as a friend?`}</AlertDialogDescription>
+							<AlertDialogDescription className="[overflow-wrap:anywhere]">{`Are you sure you want to remove ${user?.firstName} as a friend?`}</AlertDialogDescription>
 						</AlertDialogHeader>
 						<AlertDialogFooter>
 							<AlertDialogCancel>Cancel</AlertDialogCancel>
@@ -160,7 +160,7 @@ const User = () => {
 							<div className="flex gap-x-3 items-center">
 								<ProfilePicture src={user.profilePicture} className="h-16 w-16" />
 								<div className="flex flex-col gap-y-1">
-									<p className="text-large font-medium break-all">
+									<p className="text-large font-medium [overflow-wrap:anywhere]">
 										{user.firstName} {user.lastName} {userId === viewer && <span> (You)</span>}
 									</p>
 									{!isSelf && !userIsFriend && commonFriends >= 1 && (

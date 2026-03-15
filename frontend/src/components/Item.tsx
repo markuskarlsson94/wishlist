@@ -115,7 +115,7 @@ const Item = () => {
 						<ProfilePicture src={reserver.profilePicture} />
 						<div className="flex flex-col">
 							<p> You have reserved this item</p>
-							<p className="text-sm text-gray-400 break-all">
+							<p className="text-sm text-gray-400 [overflow-wrap:anywhere]">
 								{itemOwner?.firstName} can't see your reservation
 							</p>
 						</div>
@@ -128,13 +128,13 @@ const Item = () => {
 						<div className="flex flex-col">
 							<p>
 								<NavLink to={`/user/${reserver.id}`}>
-									<span className="font-medium break-all">
+									<span className="font-medium [overflow-wrap:anywhere]">
 										{reserver.firstName} {reserver.lastName}
 									</span>
 								</NavLink>
 								<span> has reserved this item</span>
 							</p>
-							<p className="text-sm text-gray-400 break-all">
+							<p className="text-sm text-gray-400 [overflow-wrap:anywhere]">
 								{itemOwner?.firstName} can't see this reservation
 							</p>
 						</div>
@@ -211,7 +211,7 @@ const Item = () => {
 				{isSuccess && item && (
 					<>
 						<div className="flex items-start justify-between">
-							<p className="font-medium break-all pt-[0.3rem]">{item.title}</p>
+							<p className="font-medium [overflow-wrap:anywhere] pt-[0.3rem]">{item.title}</p>
 
 							{isOwner && (
 								<div>
@@ -289,12 +289,15 @@ const Item = () => {
 						</div>
 
 						<div className="my-3">
-							<p className="break-all">{item.description}</p>
+							<p className="[overflow-wrap:anywhere]">{item.description}</p>
 						</div>
 
 						{item.link && (
 							<div className="flex flex-col gap-y-3">
-								<Link to={item?.link} className="block break-all text-blue-500 hover:underline">
+								<Link
+									to={item?.link}
+									className="block [overflow-wrap:anywhere] text-blue-500 hover:underline"
+								>
 									{item?.link}
 								</Link>
 								<Button variant={"ghost"} onClick={handleCopy} className="ml-auto">

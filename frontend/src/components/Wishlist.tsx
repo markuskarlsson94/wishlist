@@ -98,8 +98,10 @@ const Wishlist = () => {
 						<CardHeader>
 							<div className="flex flex-wrap gap-y-1 items-start">
 								<div className="pt-[0.14rem]">
-									<CardTitle className="break-all">{item.title}</CardTitle>
-									<CardDescription className="break-all">{item.description}</CardDescription>
+									<CardTitle className="[overflow-wrap:anywhere]">{item.title}</CardTitle>
+									<CardDescription className="[overflow-wrap:anywhere]">
+										{item.description}
+									</CardDescription>
 								</div>
 								<div className="flex gap-x-3 ml-auto">
 									{reserved && <Badge>Reserved by you</Badge>}
@@ -169,7 +171,7 @@ const Wishlist = () => {
 				{isSuccess && wishlist && (
 					<>
 						<div className="flex items-start justify-between gap-x-3">
-							<p className={cn("font-medium break-all", isOwner ? "pt-[0.3rem]" : "")}>
+							<p className={cn("font-medium [overflow-wrap:anywhere]", isOwner ? "pt-[0.3rem]" : "")}>
 								{wishlist.title}
 							</p>
 
@@ -264,7 +266,7 @@ const Wishlist = () => {
 						{items && (
 							<>
 								<div className="my-6">
-									<p className="break-all">{wishlist.description}</p>
+									<p className="[overflow-wrap:anywhere]">{wishlist.description}</p>
 								</div>
 
 								<div className="flex flex-col gap-y-3">
