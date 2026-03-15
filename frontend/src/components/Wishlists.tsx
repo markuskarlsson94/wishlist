@@ -54,7 +54,7 @@ const Wishlists = () => {
 					<HoverCard>
 						<CardHeader>
 							<div className="flex flex-wrap gap-y-1 items-start">
-								<div>
+								<div className="pt-[0.14rem]">
 									<CardTitle className="break-all">{wishlist.title}</CardTitle>
 									<CardDescription className="break-all">{wishlist.description}</CardDescription>
 								</div>
