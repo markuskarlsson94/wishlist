@@ -2,89 +2,128 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
 import RegisterDialog from "./dialogs/RegisterDialog";
 import RegistrationConfirmedDialog from "./dialogs/RegistrationConfirmedDialog";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { APP_NAME } from "@/constants";
-import { Ghost, Heart, ListChecks, LucideIcon, Scroll } from "lucide-react";
+import {
+	Carousel,
+	type CarouselApi,
+	CarouselContent,
+	CarouselItem,
+	CarouselNext,
+	CarouselPrevious,
+} from "./ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
+import React from "react";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { cn } from "@/lib/utils";
 
 const Home = () => {
 	const [registrationConfirmedDialogOpen, setRegistrationConfirmedDialogOpen] = useState<boolean>(false);
 	const [registredEmail, setRegistredEmail] = useState<string | undefined>(undefined);
-
+	const [featureCount, setFeatureCount] = React.useState(0);
+	const [currentFeature, setCurrentFeature] = React.useState(0);
+	const isMobile = useIsMobile();
 	const navigate = useNavigate();
+	const [api, setApi] = useState<CarouselApi>();
 
 	const handleReadMore = () => {
 		navigate("/about");
 	};
 
-	const Feature = ({
-		title,
-		description,
-		Icon,
-		delay = "0ms",
-	}: {
-		title: string;
-		description: string;
-		Icon: LucideIcon;
-		delay?: string;
-	}) => {
-		return (
-			<div className="animate-fade-slide-in opacity-0" style={{ animationDelay: delay }}>
-				<div className="flex flex-row gap-x-3 items-center transform transition-transform duration-150 ease-in-out hover:scale-105">
-					<Icon size={24} color={"white"} />
-					<div className="max-w-[18rem]">
-						<p className="font-medium text-slate-800">{title}</p>
-						<p className="text-sm font-medium text-gray-100">{description}</p>
-					</div>
-				</div>
-			</div>
-		);
-	};
+	const autoplay = React.useRef(Autoplay({ delay: 6000, stopOnInteraction: true, stopOnMouseEnter: true }));
+
+	useEffect(() => {
+		if (!api) return;
+
+		setFeatureCount(api.scrollSnapList().length);
+		setCurrentFeature(api.selectedScrollSnap() + 1);
+
+		api.on("select", () => {
+			setCurrentFeature(api.selectedScrollSnap() + 1);
+		});
+	}, [api]);
+
+	const features = [
+		{
+			description: "Build your wishlists in seconds",
+			descriptionSmall: "Control who can see them: Everyone, your friends, or just you",
+			image: "./../../wishlist.png",
+		},
+		{
+			description: "Connect with friends",
+			descriptionSmall: "Keep track of their lists and wishes",
+			image: "./../../friends.png",
+		},
+		{
+			description: "Reserve items",
+			descriptionSmall: "No more duplicate gifts! The wishlist owner can't see what has been reserved",
+			image: "./../../reservation.png",
+		},
+		{
+			description: "Comment anonymously",
+			descriptionSmall: "Got a question about an item? Your identity will be hidden for other users",
+			image: "./../../comments.png",
+		},
+	];
 
 	return (
 		<div>
 			<div className="relative flex flex-col">
-				<div className="h-8" />
+				<div className="md:h-8" />
 
 				<div className="flex flex-col">
 					<h1 className="text-4xl font-bold self-center text-white">{APP_NAME}</h1>
-					<p className="font-medium self-center text-gray-100">The simple and intuitive wishlist manager</p>
+					<p className="font-medium self-center text-gray-100 text-center">
+						The simple and intuitive wishlist manager
+					</p>
 				</div>
 
-				<div className="h-12" />
-
-				<div className="flex flex-col gap-y-10 self-center">
-					<Feature
-						title="Create and Manage Wishlists"
-						description="Build your wishlist in seconds. Choose who can see it: Everyone, friends, or just you."
-						Icon={Scroll}
-						delay="500ms"
-					/>
-
-					<Feature
-						title="Connect with Friends"
-						description="Keep track of your friends wishes and share yours. Make gift-giving organized and fun."
-						Icon={Heart}
-						delay="750ms"
-					/>
-
-					<Feature
-						title="Reserve Items"
-						description="Avoid duplicate gifts. The wishlist owner can't see what you reserve."
-						Icon={ListChecks}
-						delay="1000ms"
-					/>
-
-					<Feature
-						title="Anonymous Comments"
-						description="Ask questions about wishlist items without revealing your identity."
-						Icon={Ghost}
-						delay="1250ms"
-					/>
-				</div>
+				<div className="h-8 md:h-12" />
 			</div>
-			<div className="h-12" />
-			<div className="flex justify-center pb-20 md:pb-0">
-				<div className="flex gap-x-4 animate-fade-slide-in opacity-0" style={{ animationDelay: "2250ms" }}>
+
+			<div className="flex flex-col gap-y-4">
+				<Carousel className="m-auto px-0 w-full md:w-80" plugins={[autoplay.current]} setApi={setApi}>
+					<CarouselContent className="items-center">
+						{features.map((feature) => (
+							<CarouselItem key={feature.description}>
+								<img src={feature.image ?? "./../../wishlist.png"} className="rounded-lg"></img>
+							</CarouselItem>
+						))}
+					</CarouselContent>
+					{!isMobile && (
+						<>
+							<CarouselPrevious />
+							<CarouselNext />
+						</>
+					)}
+				</Carousel>
+				<>
+					<div className="flex gap-x-2 m-auto">
+						{Array.from({ length: featureCount }, (_, i) => (
+							<div
+								key={i}
+								className={cn(
+									"h-[8px] rounded-full",
+									i + 1 === currentFeature ? "w-[8px] bg-white" : "w-[8px] bg-white opacity-25",
+								)}
+							/>
+						))}
+					</div>
+					<div className="m-auto w-72">
+						<p className="text-white font-medium text-lg text-center">
+							{features[currentFeature - 1]?.description}
+						</p>
+						<p className="text-gray-100 font-medium text-sm text-center min-h-[2lh]">
+							{features[currentFeature - 1]?.descriptionSmall}
+						</p>
+					</div>
+				</>
+			</div>
+
+			<div className="h-8 md:h-4" />
+
+			<div className="flex justify-center pb-10 md:pb-0">
+				<div className="flex gap-x-4">
 					<RegisterDialog
 						setRegistrationConfirmedDialogOpen={setRegistrationConfirmedDialogOpen}
 						setRegistredEmail={setRegistredEmail}
