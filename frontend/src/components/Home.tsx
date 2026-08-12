@@ -82,11 +82,11 @@ const Home = () => {
 			</div>
 
 			<div className="flex flex-col gap-y-4">
-				<Carousel className="m-auto px-0 w-full md:w-80" plugins={[autoplay.current]} setApi={setApi}>
+				<Carousel className="m-auto px-0 w-[328px] md:w-80" plugins={[autoplay.current]} setApi={setApi}>
 					<CarouselContent className="items-center">
 						{features.map((feature) => (
 							<CarouselItem key={feature.description}>
-								<img src={feature.image ?? "./../../wishlist.png"} className="rounded-lg"></img>
+								<img src={feature.image ?? "./../../wishlist.png"} className="m-auto"></img>
 							</CarouselItem>
 						))}
 					</CarouselContent>
