@@ -78,7 +78,7 @@ const Home = () => {
 					</p>
 				</div>
 
-				<div className="h-8 md:h-12" />
+				<div className="h-6 md:h-12" />
 			</div>
 
 			<div className="flex flex-col gap-y-4">
@@ -120,7 +120,7 @@ const Home = () => {
 				</>
 			</div>
 
-			<div className="h-8 md:h-4" />
+			<div className="h-4 md:h-4" />
 
 			<div className="flex justify-center pb-10 md:pb-0">
 				<div className="flex gap-x-4">
