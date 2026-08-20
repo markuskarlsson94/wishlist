@@ -15,18 +15,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
-import {
-	Bell,
-	Check,
-	Copy,
-	Heart,
-	ListChecks,
-	LogOut,
-	LucideIcon,
-	MessageCircle,
-	Scroll,
-	Settings,
-} from "lucide-react";
+import { Bell, Heart, ListChecks, LogOut, LucideIcon, MessageCircle, Scroll, Settings } from "lucide-react";
 import { useLogout } from "@/hooks/useLogout";
 import { useGetFriendRequests } from "@/hooks/friendRequest";
 import { useGetUser } from "@/hooks/user";
@@ -34,6 +23,7 @@ import { APP_NAME } from "@/constants";
 import ProfilePicture from "./ProfilePicture";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import { useState } from "react";
+import CopyLinkButton from "./CopyLinkButton";
 
 const AppSidebar = () => {
 	const { userId } = useAuth();
@@ -41,7 +31,6 @@ const AppSidebar = () => {
 	const { isMobile, setOpenMobile } = useSidebar();
 	const { user } = useGetUser(userId);
 	const [shareDialogOpen, setShareDialogOpen] = useState<boolean>(false);
-	const [copied, setCopied] = useState<boolean>(false);
 
 	const navigateTo = (to: string) => {
 		navigate(to);
@@ -59,17 +48,6 @@ const AppSidebar = () => {
 
 	const onOpenShareDialog = () => {
 		setShareDialogOpen(true);
-	};
-
-	const onCopy = () => {
-		if (copied) return;
-
-		navigator.clipboard.writeText(import.meta.env.VITE_APP_DOMAIN);
-		setCopied(true);
-
-		setTimeout(() => {
-			setCopied(false);
-		}, 3000);
 	};
 
 	const AppSidebarButton = ({ title, to, Icon }: { title: string; to: string; Icon: LucideIcon }) => {
@@ -203,19 +181,7 @@ const AppSidebar = () => {
 						</p>
 						<div className="flex flex-wrap items-center justify-between gap-y-2">
 							<p>{import.meta.env.VITE_APP_DOMAIN}</p>
-							<Button onClick={onCopy}>
-								{copied ? (
-									<>
-										<Check />
-										Link copied
-									</>
-								) : (
-									<>
-										<Copy />
-										Copy link
-									</>
-								)}
-							</Button>
+							<CopyLinkButton textToCopy={`${import.meta.env.VITE_APP_DOMAIN}`} />
 						</div>
 					</div>
 				</DialogContent>
