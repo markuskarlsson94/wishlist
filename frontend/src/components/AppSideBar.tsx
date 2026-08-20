@@ -207,21 +207,19 @@ const AppSidebar = () => {
 						</p>
 						<div className="flex flex-wrap items-center justify-between gap-y-2">
 							<p>{import.meta.env.VITE_APP_DOMAIN}</p>
-							<div className="">
-								<Button onClick={onCopy}>
-									{copied ? (
-										<>
-											<Check />
-											Link copied
-										</>
-									) : (
-										<>
-											<Copy />
-											Copy link
-										</>
-									)}
-								</Button>
-							</div>
+							<Button onClick={onCopy}>
+								{copied ? (
+									<>
+										<Check />
+										Link copied
+									</>
+								) : (
+									<>
+										<Copy />
+										Copy link
+									</>
+								)}
+							</Button>
 						</div>
 					</div>
 				</DialogContent>
