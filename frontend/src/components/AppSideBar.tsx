@@ -59,10 +59,6 @@ const AppSidebar = () => {
 
 	const onOpenShareDialog = () => {
 		setShareDialogOpen(true);
-
-		if (isMobile) {
-			setOpenMobile(false);
-		}
 	};
 
 	const onCopy = () => {
