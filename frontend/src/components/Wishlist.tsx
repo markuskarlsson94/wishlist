@@ -25,7 +25,7 @@ import {
 	AlertDialogTitle,
 	AlertDialogTrigger,
 } from "./ui/alert-dialog";
-import { EllipsisVertical } from "lucide-react";
+import { EllipsisVertical, Share2Icon } from "lucide-react";
 import { CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { useGetComments } from "@/hooks/comment";
 import ItemType from "@/types/ItemType";
@@ -45,6 +45,7 @@ import { cn } from "@/lib/utils";
 import LoadingSpinner from "./LoadingSpinner";
 import { StatusCodes } from "http-status-codes";
 import { AxiosError } from "axios";
+import CopyLinkButton from "./CopyLinkButton";
 
 const Wishlist = () => {
 	const [isOwner, setIsOwner] = useState<boolean>(false);
@@ -70,6 +71,7 @@ const Wishlist = () => {
 	});
 	const { types } = useWishlistTypes();
 	const [isEditDialogOpen, setIsEditDialogOpen] = useState<boolean>(false);
+	const [isShareDialogOpen, setIsShareDialogOpen] = useState<boolean>(false);
 	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false);
 	const { reservations } = useGetReservations(userId);
 	const formattedTypes = types.map((t) => getFormattedType(t));
@@ -159,6 +161,12 @@ const Wishlist = () => {
 			  };
 	};
 
+	const getShareLink = () => {
+		if (!wishlist) return "";
+
+		return `${import.meta.env.VITE_APP_DOMAIN}/wishlist/${wishlist.id}`;
+	};
+
 	if (notFound) {
 		return <NotFound type="Wishlist" />;
 	}
@@ -184,15 +192,15 @@ const Wishlist = () => {
 									</Badge>
 								)}
 
-								{isOwner && (
-									<div className="float-right">
-										<DropdownMenu>
-											<DropdownMenuTrigger asChild>
-												<Button size={"icon"} variant={"ghost"}>
-													<EllipsisVertical />
-												</Button>
-											</DropdownMenuTrigger>
-											<DropdownMenuContent align="end">
+								<div>
+									<DropdownMenu>
+										<DropdownMenuTrigger asChild>
+											<Button size={"icon"} variant={"ghost"}>
+												<EllipsisVertical />
+											</Button>
+										</DropdownMenuTrigger>
+										<DropdownMenuContent align="end">
+											{isOwner && (
 												<DropdownMenuItem
 													onClick={() => setIsEditDialogOpen(true)}
 													className="flex justify-between items-center"
@@ -200,6 +208,15 @@ const Wishlist = () => {
 													<span>Edit</span>
 													<EditIcon />
 												</DropdownMenuItem>
+											)}
+											<DropdownMenuItem
+												onClick={() => setIsShareDialogOpen(true)}
+												className="flex justify-between items-center"
+											>
+												<span>Share</span>
+												<Share2Icon />
+											</DropdownMenuItem>
+											{isOwner && (
 												<DropdownMenuItem
 													onClick={() => setIsDeleteDialogOpen(true)}
 													className="flex justify-between items-center"
@@ -207,59 +224,77 @@ const Wishlist = () => {
 													<span>Delete</span>
 													<DeleteIcon />
 												</DropdownMenuItem>
-											</DropdownMenuContent>
-										</DropdownMenu>
+											)}
+										</DropdownMenuContent>
+									</DropdownMenu>
 
-										<Dialog
-											open={isEditDialogOpen}
-											onOpenChange={() => setIsEditDialogOpen(!isEditDialogOpen)}
-										>
-											<DialogTrigger></DialogTrigger>
-											<DialogContent>
-												<DialogHeader>
-													<DialogTitle>Edit wishlist</DialogTitle>
-												</DialogHeader>
-												<WishlistForm
-													config={{
-														open: isEditDialogOpen,
-														values: wishlistValues,
-														onSubmit: onSubmitWishlist,
-														submitButtonTitle: "Save",
+									<Dialog
+										open={isEditDialogOpen}
+										onOpenChange={() => setIsEditDialogOpen(!isEditDialogOpen)}
+									>
+										<DialogTrigger></DialogTrigger>
+										<DialogContent>
+											<DialogHeader>
+												<DialogTitle>Edit wishlist</DialogTitle>
+											</DialogHeader>
+											<WishlistForm
+												config={{
+													open: isEditDialogOpen,
+													values: wishlistValues,
+													onSubmit: onSubmitWishlist,
+													submitButtonTitle: "Save",
+												}}
+											/>
+										</DialogContent>
+									</Dialog>
+
+									<Dialog
+										open={isShareDialogOpen}
+										onOpenChange={() => setIsShareDialogOpen(!isShareDialogOpen)}
+									>
+										<DialogTrigger></DialogTrigger>
+										<DialogContent>
+											<DialogHeader>
+												<DialogTitle>Share wishlist</DialogTitle>
+											</DialogHeader>
+											<div className="flex flex-col gap-y-4">
+												<p className="">{getShareLink()}</p>
+												<div className="ml-auto">
+													<CopyLinkButton textToCopy={getShareLink()} />
+												</div>
+											</div>
+										</DialogContent>
+									</Dialog>
+
+									<AlertDialog
+										open={isDeleteDialogOpen}
+										onOpenChange={() => setIsDeleteDialogOpen(!isDeleteDialogOpen)}
+									>
+										<AlertDialogTrigger asChild></AlertDialogTrigger>
+										<AlertDialogContent>
+											<AlertDialogHeader>
+												<AlertDialogTitle>Delete wishlist</AlertDialogTitle>
+												<AlertDialogDescription>
+													Are you sure you want to permanently delete this wishlist and all
+													its items?
+												</AlertDialogDescription>
+											</AlertDialogHeader>
+											<AlertDialogFooter>
+												<AlertDialogCancel>Cancel</AlertDialogCancel>
+												<AlertDialogAction
+													className={buttonVariants({ variant: "destructive" })}
+													onClick={() => {
+														if (wishlist) {
+															deleteWishlist(wishlist.id);
+														}
 													}}
-												/>
-											</DialogContent>
-										</Dialog>
-
-										<AlertDialog
-											open={isDeleteDialogOpen}
-											onOpenChange={() => setIsDeleteDialogOpen(!isDeleteDialogOpen)}
-										>
-											<AlertDialogTrigger asChild></AlertDialogTrigger>
-											<AlertDialogContent>
-												<AlertDialogHeader>
-													<AlertDialogTitle>Delete wishlist</AlertDialogTitle>
-													<AlertDialogDescription>
-														Are you sure you want to permanently delete this wishlist and
-														all its items?
-													</AlertDialogDescription>
-												</AlertDialogHeader>
-												<AlertDialogFooter>
-													<AlertDialogCancel>Cancel</AlertDialogCancel>
-													<AlertDialogAction
-														className={buttonVariants({ variant: "destructive" })}
-														onClick={() => {
-															if (wishlist) {
-																deleteWishlist(wishlist.id);
-															}
-														}}
-													>
-														Delete
-													</AlertDialogAction>
-												</AlertDialogFooter>
-											</AlertDialogContent>
-										</AlertDialog>
-									</div>
-								)}
+												>
+													Delete
+												</AlertDialogAction>
+											</AlertDialogFooter>
+										</AlertDialogContent>
+									</AlertDialog>
+								</div>
 							</div>
 						</div>
 
