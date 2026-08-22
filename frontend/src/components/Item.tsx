@@ -12,7 +12,7 @@ import Comment from "./Comment";
 import RoundedRect from "./RoundedRect";
 import { Button, buttonVariants } from "./ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
-import { Check, Copy, EllipsisVertical } from "lucide-react";
+import { Check, Copy, EllipsisVertical, Share2Icon } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
 import ItemForm from "@/forms/ItemForm";
 import {
@@ -36,6 +36,7 @@ import UserType from "@/types/UserType";
 import Navbar from "./Navbar";
 import { useDeleteNotificationsByItem } from "@/hooks/notification";
 import LoadingSpinner from "./LoadingSpinner";
+import CopyLinkButton from "./CopyLinkButton";
 
 const Item = () => {
 	const [isOwner, setIsOwner] = useState<boolean>(false);
@@ -61,6 +62,7 @@ const Item = () => {
 	const formRef = useRef<HTMLFormElement | null>(null);
 	const deleteNotificationsByItem = useDeleteNotificationsByItem({ userId });
 	const [copied, setCopied] = useState(false);
+	const [isShareDialogOpen, setIsShareDialogOpen] = useState<boolean>(false);
 
 	const onDeleteItem = () => {
 		if (item?.wishlist) {
@@ -203,6 +205,12 @@ const Item = () => {
 			  };
 	};
 
+	const getShareLink = () => {
+		if (!item) return "";
+
+		return `${import.meta.env.VITE_APP_DOMAIN}/item/${item.id}`;
+	};
+
 	return (
 		<div className="flex flex-col gap-y-2">
 			<Navbar props={breadcrumbProps()} />
@@ -213,15 +221,15 @@ const Item = () => {
 						<div className="flex items-start justify-between">
 							<p className="font-medium [overflow-wrap:anywhere] pt-[0.3rem]">{item.title}</p>
 
-							{isOwner && (
-								<div>
-									<DropdownMenu>
-										<DropdownMenuTrigger asChild>
-											<Button size={"icon"} variant={"ghost"}>
-												<EllipsisVertical />
-											</Button>
-										</DropdownMenuTrigger>
-										<DropdownMenuContent align="end">
+							<div>
+								<DropdownMenu>
+									<DropdownMenuTrigger asChild>
+										<Button size={"icon"} variant={"ghost"}>
+											<EllipsisVertical />
+										</Button>
+									</DropdownMenuTrigger>
+									<DropdownMenuContent align="end">
+										{isOwner && (
 											<DropdownMenuItem
 												onClick={() => setIsEditDialogOpen(true)}
 												className="flex justify-between items-center"
@@ -229,6 +237,15 @@ const Item = () => {
 												<span>Edit</span>
 												<EditIcon />
 											</DropdownMenuItem>
+										)}
+										<DropdownMenuItem
+											onClick={() => setIsShareDialogOpen(true)}
+											className="flex justify-between items-center"
+										>
+											<span>Share</span>
+											<Share2Icon />
+										</DropdownMenuItem>
+										{isOwner && (
 											<DropdownMenuItem
 												onClick={() => setIsDeleteDialogOpen(true)}
 												className="flex justify-between items-center"
@@ -236,56 +253,74 @@ const Item = () => {
 												<span>Delete</span>
 												<DeleteIcon />
 											</DropdownMenuItem>
-										</DropdownMenuContent>
-									</DropdownMenu>
+										)}
+									</DropdownMenuContent>
+								</DropdownMenu>
 
-									<Dialog
-										open={isEditDialogOpen}
-										onOpenChange={() => setIsEditDialogOpen(!isEditDialogOpen)}
-									>
-										<DialogTrigger></DialogTrigger>
-										<DialogContent>
-											<DialogHeader>
-												<DialogTitle>Edit item</DialogTitle>
-											</DialogHeader>
-											<ItemForm
-												config={{
-													open: isEditDialogOpen,
-													values: itemValues,
-													onSubmit: onSubmitItem,
-													submitButtonTitle: "Save",
+								<Dialog
+									open={isEditDialogOpen}
+									onOpenChange={() => setIsEditDialogOpen(!isEditDialogOpen)}
+								>
+									<DialogTrigger></DialogTrigger>
+									<DialogContent>
+										<DialogHeader>
+											<DialogTitle>Edit item</DialogTitle>
+										</DialogHeader>
+										<ItemForm
+											config={{
+												open: isEditDialogOpen,
+												values: itemValues,
+												onSubmit: onSubmitItem,
+												submitButtonTitle: "Save",
+											}}
+										/>
+									</DialogContent>
+								</Dialog>
+
+								<Dialog
+									open={isShareDialogOpen}
+									onOpenChange={() => setIsShareDialogOpen(!isShareDialogOpen)}
+								>
+									<DialogTrigger></DialogTrigger>
+									<DialogContent>
+										<DialogHeader>
+											<DialogTitle>Share item</DialogTitle>
+										</DialogHeader>
+										<div className="flex flex-col gap-y-4">
+											<p className="">{getShareLink()}</p>
+											<div className="ml-auto">
+												<CopyLinkButton textToCopy={getShareLink()} />
+											</div>
+										</div>
+									</DialogContent>
+								</Dialog>
+
+								<AlertDialog
+									open={isDeleteDialogOpen}
+									onOpenChange={() => setIsDeleteDialogOpen(!isDeleteDialogOpen)}
+								>
+									<AlertDialogTrigger asChild></AlertDialogTrigger>
+									<AlertDialogContent>
+										<AlertDialogHeader>
+											<AlertDialogTitle>Delete item</AlertDialogTitle>
+											<AlertDialogDescription>
+												Are you sure you want to permanently delete this item?
+											</AlertDialogDescription>
+										</AlertDialogHeader>
+										<AlertDialogFooter>
+											<AlertDialogCancel>Cancel</AlertDialogCancel>
+											<AlertDialogAction
+												className={buttonVariants({ variant: "destructive" })}
+												onClick={() => {
+													handleDelete();
 												}}
-											/>
-										</DialogContent>
-									</Dialog>
-
-									<AlertDialog
-										open={isDeleteDialogOpen}
-										onOpenChange={() => setIsDeleteDialogOpen(!isDeleteDialogOpen)}
-									>
-										<AlertDialogTrigger asChild></AlertDialogTrigger>
-										<AlertDialogContent>
-											<AlertDialogHeader>
-												<AlertDialogTitle>Delete item</AlertDialogTitle>
-												<AlertDialogDescription>
-													Are you sure you want to permanently delete this item?
-												</AlertDialogDescription>
-											</AlertDialogHeader>
-											<AlertDialogFooter>
-												<AlertDialogCancel>Cancel</AlertDialogCancel>
-												<AlertDialogAction
-													className={buttonVariants({ variant: "destructive" })}
-													onClick={() => {
-														handleDelete();
-													}}
-												>
-													Delete
-												</AlertDialogAction>
-											</AlertDialogFooter>
-										</AlertDialogContent>
-									</AlertDialog>
-								</div>
-							)}
+											>
+												Delete
+											</AlertDialogAction>
+										</AlertDialogFooter>
+									</AlertDialogContent>
+								</AlertDialog>
+							</div>
 						</div>
 
 						<div className="my-3">
