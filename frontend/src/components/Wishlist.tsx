@@ -47,6 +47,41 @@ import { StatusCodes } from "http-status-codes";
 import { AxiosError } from "axios";
 import CopyLinkButton from "./CopyLinkButton";
 
+const Item = ({ item }: { item: ItemType }) => {
+	const { userId } = useAuth();
+	const { comments } = useGetComments(item.id);
+	const commentCount = comments.length;
+	const { reservations } = useGetReservations(userId);
+	const reserved = reservations.some((r: ReservationType) => r.item === item.id);
+
+	return (
+		<div>
+			<NavLink to={`/item/${item.id}`}>
+				<HoverCard>
+					<CardHeader>
+						<div className="flex flex-wrap gap-y-1 items-start">
+							<div className="pt-[0.14rem]">
+								<CardTitle className="[overflow-wrap:anywhere]">{item.title}</CardTitle>
+								<CardDescription className="[overflow-wrap:anywhere]">
+									{item.description}
+								</CardDescription>
+							</div>
+							<div className="flex gap-x-3 ml-auto">
+								{reserved && <Badge>Reserved by you</Badge>}
+								{commentCount > 0 && (
+									<Badge variant={"secondary"}>{`${commentCount} ${
+										commentCount > 1 ? "comments" : "comment"
+									}`}</Badge>
+								)}
+							</div>
+						</div>
+					</CardHeader>
+				</HoverCard>
+			</NavLink>
+		</div>
+	);
+};
+
 const Wishlist = () => {
 	const [isOwner, setIsOwner] = useState<boolean>(false);
 	const params = useParams<{ id: string }>();
@@ -73,7 +108,6 @@ const Wishlist = () => {
 	const [isEditDialogOpen, setIsEditDialogOpen] = useState<boolean>(false);
 	const [isShareDialogOpen, setIsShareDialogOpen] = useState<boolean>(false);
 	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false);
-	const { reservations } = useGetReservations(userId);
 	const formattedTypes = types.map((t) => getFormattedType(t));
 	const [type, setType] = useState<WishlistTypeInfoType | undefined>(undefined);
 	const [errorOpen, setErrorOpen] = useState(false);
@@ -87,39 +121,6 @@ const Wishlist = () => {
 			if (wishlist) setType(findFormattedType(formattedTypes, wishlist.type));
 		}
 	}, [wishlist, isSuccessWishlist]);
-
-	const Item = ({ item }: { item: ItemType }) => {
-		const { comments } = useGetComments(item.id);
-		const commentCount = comments.length;
-		const reserved = reservations.some((r: ReservationType) => r.item === item.id);
-
-		return (
-			<div>
-				<NavLink to={`/item/${item.id}`}>
-					<HoverCard>
-						<CardHeader>
-							<div className="flex flex-wrap gap-y-1 items-start">
-								<div className="pt-[0.14rem]">
-									<CardTitle className="[overflow-wrap:anywhere]">{item.title}</CardTitle>
-									<CardDescription className="[overflow-wrap:anywhere]">
-										{item.description}
-									</CardDescription>
-								</div>
-								<div className="flex gap-x-3 ml-auto">
-									{reserved && <Badge>Reserved by you</Badge>}
-									{commentCount > 0 && (
-										<Badge variant={"secondary"}>{`${commentCount} ${
-											commentCount > 1 ? "comments" : "comment"
-										}`}</Badge>
-									)}
-								</div>
-							</div>
-						</CardHeader>
-					</HoverCard>
-				</NavLink>
-			</div>
-		);
-	};
 
 	const onSubmitItem = (input: ItemInputType) => {
 		if (wishlist) createItem(input, wishlist.id);
