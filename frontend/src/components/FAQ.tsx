@@ -26,6 +26,12 @@ const FAQ = () => {
 							</ul>
 						</AccordionContent>
 					</AccordionItem>
+					<AccordionItem value="reservationVisibility">
+						<AccordionTrigger>Who can see my reservation?</AccordionTrigger>
+						<AccordionContent>
+							All users who can access the item except for the owner can see it.
+						</AccordionContent>
+					</AccordionItem>
 					<AccordionItem value="wishlistReservations">
 						<AccordionTrigger>
 							Is there any way to see who has reserved the items in my wishlist?
