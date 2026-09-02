@@ -12,7 +12,7 @@ const FAQ = () => {
 				</div>
 
 				<Accordion type="multiple">
-					<AccordionItem value="1">
+					<AccordionItem value="reservationDisappear">
 						<AccordionTrigger>Why did my reservation disappear for seemingly no reason?</AccordionTrigger>
 						<AccordionContent>
 							<p>A reservation can disappear for a number of different reasons</p>
@@ -26,13 +26,13 @@ const FAQ = () => {
 							</ul>
 						</AccordionContent>
 					</AccordionItem>
-					<AccordionItem value="2">
+					<AccordionItem value="wishlistReservations">
 						<AccordionTrigger>
 							Is there any way to see who has reserved the items in my wishlist?
 						</AccordionTrigger>
 						<AccordionContent>No, it is not possible.</AccordionContent>
 					</AccordionItem>
-					<AccordionItem value="3">
+					<AccordionItem value="removeItemAfterDelivery">
 						<AccordionTrigger>
 							Should I remove the item from my wishlist after I have received it?
 						</AccordionTrigger>
@@ -41,25 +41,25 @@ const FAQ = () => {
 							then also be removed from the user who gifted it to you.
 						</AccordionContent>
 					</AccordionItem>
-					<AccordionItem value="4">
+					<AccordionItem value="edit">
 						<AccordionTrigger>How do I edit or delete an item/wishlist?</AccordionTrigger>
 						<AccordionContent>
 							Press the three dots in the upper right corner to open the edit/delete options.
 						</AccordionContent>
 					</AccordionItem>
-					<AccordionItem value="5">
+					<AccordionItem value="messages">
 						<AccordionTrigger>Can I send direct messages to users?</AccordionTrigger>
 						<AccordionContent>
 							There is currently no way to message users other than through anonymous comments on items.
 						</AccordionContent>
 					</AccordionItem>
-					<AccordionItem value="6">
+					<AccordionItem value="accountRecovery">
 						<AccordionTrigger>Can I recover my account after I deleted it?</AccordionTrigger>
 						<AccordionContent>
 							No, there is unfourtunately no way to recover a deleted account currently.
 						</AccordionContent>
 					</AccordionItem>
-					<AccordionItem value="7">
+					<AccordionItem value="loginMethod">
 						<AccordionTrigger>
 							Can I change login method to another one than I registred with?
 						</AccordionTrigger>
