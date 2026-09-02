@@ -20,7 +20,7 @@ const Bottombar = () => {
 					<Column>
 						<p className="font-medium text-slate-200">{import.meta.env.VITE_APP_NAME}</p>
 						<Link to={"/about"} title={"About"} />
-						<Link to={"/news"} title="News Archive" />
+						<Link to={"/blog"} title="Blog" />
 					</Column>
 					<Column>
 						<p className="font-medium text-slate-200">Policy</p>

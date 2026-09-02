@@ -25,7 +25,7 @@ const News = () => {
 		const DateWrapperWithArticle = (props: any) => <DateWrapper {...props} article={article} />;
 
 		return (
-			<NavLink to={`/news/${article.id}`}>
+			<NavLink to={`/blog/${article.id}`}>
 				<HoverCard>
 					<CardHeader>
 						<CardTitle>
@@ -51,7 +51,7 @@ const News = () => {
 			<div className="flex flex-col gap-y-6">
 				<div className="relative flex items-center">
 					<BackButton />
-					<p className="absolute left-1/2 transform -translate-x-1/2 font-medium">News Archive</p>
+					<p className="absolute left-1/2 transform -translate-x-1/2 font-medium">Blog Archive</p>
 				</div>
 
 				<div className="flex flex-col gap-y-3">

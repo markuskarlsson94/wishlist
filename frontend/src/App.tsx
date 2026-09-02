@@ -42,8 +42,8 @@ function App() {
 						</Route>
 						<Route path="beta-info" element={<BetaInfo />} />
 						<Route path="about" element={<About />} />
-						<Route path="news" element={<News />} />
-						<Route path="news/:id" element={<NewsArticle />} />
+						<Route path="blog" element={<News />} />
+						<Route path="blog/:id" element={<NewsArticle />} />
 						<Route path="faq" element={<FAQ />} />
 						<Route path="terms-of-service" element={<TermsOfService />} />
 						<Route path="verify" element={<Verification />} />
