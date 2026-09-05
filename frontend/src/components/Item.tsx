@@ -363,11 +363,7 @@ const Item = () => {
 									<Comment key={comment.id} comment={comment} item={item} />
 								))}
 								<div className="flex flex-col gap-y-3 mt-5">
-									{!isOwner && (
-										<p className="flex m-auto text-sm text-gray-400">
-											Your comment will be anonymous to all users
-										</p>
-									)}
+									{!isOwner && <Infobox>Your comment will be anonymous to all users</Infobox>}
 									<AddCommentForm
 										config={{
 											onSubmit: handleAddComment,
