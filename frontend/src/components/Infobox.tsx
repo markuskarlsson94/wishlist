@@ -6,7 +6,7 @@ const Infobox = ({ children }: { children: React.ReactNode }) => {
 			<div>
 				<Info color="#90a1b9" />
 			</div>
-			<div className="text-sm font-medium m-auto">
+			<div className="text-sm font-medium m-auto text-slate-500">
 				<p>{children}</p>
 			</div>
 		</div>
