@@ -37,6 +37,7 @@ import Navbar from "./Navbar";
 import { useDeleteNotificationsByItem } from "@/hooks/notification";
 import LoadingSpinner from "./LoadingSpinner";
 import CopyLinkButton from "./CopyLinkButton";
+import Infobox from "./Infobox";
 
 const Item = () => {
 	const [isOwner, setIsOwner] = useState<boolean>(false);
