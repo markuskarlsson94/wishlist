@@ -75,6 +75,60 @@ export const useCreateReservation = (config: UseCreateReservationConfig) => {
 	return createReservation;
 };
 
+type UseSetReservationFulfilledConfig = {
+	userId: number | undefined;
+	onSuccess?: () => void;
+	onError?: (error: Error) => void;
+};
+
+export const useSetReservationFulfilled = (config: UseSetReservationFulfilledConfig) => {
+	const queryClient = useQueryClient();
+
+	const setReservationFulfilledFn = async ({
+		reservationId,
+		fulfilled,
+		itemId,
+	}: {
+		reservationId: number;
+		fulfilled: boolean;
+		itemId: number | undefined;
+	}) => {
+		if (!reservationId || !config.userId) return;
+
+		await axiosInstance.patch(`/reservation/${reservationId}/fulfilled`, { fulfilled });
+		queryClient.invalidateQueries({ queryKey: ["reservations", config.userId] });
+		if (itemId) queryClient.invalidateQueries({ queryKey: ["itemReservation", itemId] });
+	};
+
+	const setReservationFulfilledMutation = useMutation({
+		mutationFn: setReservationFulfilledFn,
+		onSuccess: () => {
+			if (config?.onSuccess) {
+				config.onSuccess();
+			}
+		},
+		onError: (error: Error) => {
+			if (config?.onError) {
+				config.onError(error);
+			}
+		},
+	});
+
+	const setReservationFulfilled = ({
+		reservationId,
+		fulfilled,
+		itemId,
+	}: {
+		reservationId: number;
+		fulfilled: boolean;
+		itemId: number | undefined;
+	}) => {
+		setReservationFulfilledMutation.mutate({ reservationId, fulfilled, itemId });
+	};
+
+	return setReservationFulfilled;
+};
+
 type UseDeleteReservationConfig = {
 	userId: number | undefined;
 	onSuccess?: () => void;
