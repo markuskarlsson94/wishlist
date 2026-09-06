@@ -10,9 +10,8 @@ import {
 } from "../hooks/reservation";
 import ItemInputType from "../types/ItemInputType";
 import { NavLink } from "react-router-dom";
-import { useAddComment, useGetComments } from "../hooks/comment";
+import { useGetComments } from "../hooks/comment";
 import AddCommentForm from "../forms/AddCommentForm";
-import CommentInputType from "../types/CommentInputType";
 import Comment from "./Comment";
 import RoundedRect from "./RoundedRect";
 import { Button, buttonVariants } from "./ui/button";
@@ -62,10 +61,8 @@ const Item = () => {
 	const reservationExists = reservation && reservation?.length > 0;
 	const updateItem = useUpdateItem();
 	const { comments } = useGetComments(id);
-	const addComment = useAddComment({ itemId: id });
 	const [isEditDialogOpen, setIsEditDialogOpen] = useState<boolean>(false);
 	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false);
-	const [comment, setComment] = useState<string>("");
 	const formRef = useRef<HTMLFormElement | null>(null);
 	const deleteNotificationsByItem = useDeleteNotificationsByItem({ userId });
 	const [copied, setCopied] = useState(false);
@@ -198,10 +195,6 @@ const Item = () => {
 				)}
 			</div>
 		);
-	};
-
-	const handleAddComment = (comment: CommentInputType) => {
-		addComment(comment);
 	};
 
 	const onSubmitItem = (input: ItemInputType) => {
@@ -420,10 +413,7 @@ const Item = () => {
 									{!isOwner && <Infobox>Your comment will be anonymous to all users</Infobox>}
 									<AddCommentForm
 										config={{
-											onSubmit: handleAddComment,
-											onCommentChange(comment) {
-												setComment(comment);
-											},
+											itemId: item.id,
 										}}
 										ref={formRef}
 									/>
