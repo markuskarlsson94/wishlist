@@ -37,6 +37,11 @@ const About = () => {
 				</p>
 
 				<p>
+					After you have given an item to a user you can mark it as "gifted". This acts as an reminder to both
+					yourself and the owner that it has been delivered. The owner of the wishlist can then remove it.
+				</p>
+
+				<p>
 					Please note that the website is currently in a beta stage and may not fully function as intended.
 					You can read more in the{" "}
 					<NavLink to={"/beta-info"}>
