@@ -429,9 +429,6 @@ const Item = () => {
 									/>
 								</div>
 								<div className="flex flex-wrap gap-x-2 gap-y-2 ml-auto">
-									<Button onClick={handleSubmitComment} disabled={comment === ""}>
-										Add comment
-									</Button>
 									{!isOwner &&
 										(reservedByCurrentUser ? (
 											<>
