@@ -8,11 +8,10 @@ import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupTextarea } from "@/components/ui/input-group";
 import { useAuth } from "@/contexts/AuthContext";
 import commentSchema from "@/schemas/commentSchema";
-import CommentInputType from "../types/CommentInputType";
+import { useAddComment } from "@/hooks/comment";
 
 type AddCommentFormConfig = {
-	onSubmit: (values: CommentInputType) => void;
-	onCommentChange?: (comment: string) => void;
+	itemId: number;
 };
 
 export interface AddCommentFormRef {
@@ -21,6 +20,7 @@ export interface AddCommentFormRef {
 
 const AddCommentForm = forwardRef<AddCommentFormRef, { config: AddCommentFormConfig }>(({ config }, ref) => {
 	const { isAdmin } = useAuth();
+	const addComment = useAddComment({ itemId: config?.itemId });
 
 	const form = useForm<z.infer<typeof commentSchema>>({
 		resolver: zodResolver(commentSchema),
@@ -32,7 +32,7 @@ const AddCommentForm = forwardRef<AddCommentFormRef, { config: AddCommentFormCon
 	const commentValue = useWatch({ control: form.control, name: "comment" });
 
 	const handleSubmit = (values: z.infer<typeof commentSchema>) => {
-		config.onSubmit(values);
+		addComment(values);
 		form.reset();
 	};
 
@@ -50,14 +50,7 @@ const AddCommentForm = forwardRef<AddCommentFormRef, { config: AddCommentFormCon
 						render={({ field }) => (
 							<FormItem className="w-full">
 								<FormControl>
-									<InputGroupTextarea
-										placeholder="Type your comment here"
-										{...field}
-										onChange={(e) => {
-											field.onChange(e);
-											config.onCommentChange?.(e.target.value);
-										}}
-									/>
+									<InputGroupTextarea placeholder="Type your comment here" {...field} />
 								</FormControl>
 							</FormItem>
 						)}
