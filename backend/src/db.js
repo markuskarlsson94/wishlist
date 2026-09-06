@@ -626,6 +626,10 @@ const db = {
 			return (await dbClient(reservationsTable).select("user").where({ id }).first())?.user;
 		},
 
+		setFulfilled: async (id, fulfilled) => {
+			await dbClient(reservationsTable).update({ fulfilled }).where({ id });
+		},
+
 		clearByUserId: async (userId) => {
 			await dbClient(reservationsTable).del().where({ user: userId });
 		},
