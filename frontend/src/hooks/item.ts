@@ -194,7 +194,7 @@ const itemOwnerQueryKey = (id: number) => {
 };
 
 const itemReservationQueryKey = (id: number) => {
-	return ["item", id];
+	return ["itemReservation", id];
 };
 
 const invalidateItems = (queryClient: QueryClient, wishlistId: number) => {
