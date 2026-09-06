@@ -1,8 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
-import { useGetItem, useDeleteItem, useUpdateItem } from "../hooks/item";
-import { useCreateReservation, useDeleteReservation, useGetReservationByItemId } from "../hooks/reservation";
+import { useGetItem, useDeleteItem, useUpdateItem, useItemHasFulfilledReservation } from "../hooks/item";
+import {
+	useCreateReservation,
+	useDeleteReservation,
+	useGetReservationByItemId,
+	useSetReservationFulfilled,
+} from "../hooks/reservation";
 import ItemInputType from "../types/ItemInputType";
 import { NavLink } from "react-router-dom";
 import { useAddComment, useGetComments } from "../hooks/comment";
@@ -37,6 +42,7 @@ import Navbar from "./Navbar";
 import { useDeleteNotificationsByItem } from "@/hooks/notification";
 import LoadingSpinner from "./LoadingSpinner";
 import CopyLinkButton from "./CopyLinkButton";
+import ReservationType from "@/types/ReservationType";
 import Infobox from "./Infobox";
 
 const Item = () => {
@@ -64,6 +70,10 @@ const Item = () => {
 	const deleteNotificationsByItem = useDeleteNotificationsByItem({ userId });
 	const [copied, setCopied] = useState(false);
 	const [isShareDialogOpen, setIsShareDialogOpen] = useState<boolean>(false);
+	const setReservationFulfilled = useSetReservationFulfilled({
+		userId,
+	});
+	const { hasFulfilledReservation, isSuccess: isSuccessFulfilled } = useItemHasFulfilledReservation(item?.id);
 
 	const onDeleteItem = () => {
 		if (item?.wishlist) {
@@ -107,7 +117,50 @@ const Item = () => {
 	};
 
 	const UnreserveButton = () => {
-		return <Button onClick={handleUnreserve}>Unreserve</Button>;
+		return (
+			<Button variant={"secondary"} onClick={handleUnreserve}>
+				Unreserve
+			</Button>
+		);
+	};
+
+	const FulfillButton = ({ reservation }: { reservation: ReservationType }) => {
+		const handleFulfilled = () => {
+			setReservationFulfilled({
+				reservationId: reservation.id,
+				fulfilled: !reservation.fulfilled,
+				itemId: item?.id,
+			});
+		};
+
+		return (
+			<AlertDialog>
+				<AlertDialogTrigger asChild>
+					<Button className="flex-1">{reservation.fulfilled ? "Unmark as gifted" : "Mark as gifted"}</Button>
+				</AlertDialogTrigger>
+				<AlertDialogContent>
+					<AlertDialogHeader>
+						<AlertDialogTitle>
+							{reservation.fulfilled ? "Unmark as gifted" : "Mark as gifted"}
+						</AlertDialogTitle>
+						<AlertDialogDescription>
+							{reservation.fulfilled
+								? "Do you want to unmark this as gifted?"
+								: "Marking this item as gifted can be used as a reminder to the owner to remove the item after they have received it. Do you want to continue?"}
+						</AlertDialogDescription>
+					</AlertDialogHeader>
+					<AlertDialogFooter>
+						<AlertDialogCancel>No, cancel</AlertDialogCancel>
+						<AlertDialogAction
+							className={buttonVariants({ variant: "default" })}
+							onClick={() => handleFulfilled()}
+						>
+							{reservation.fulfilled ? "Yes, unmark as gifted" : "Yes, mark as gifted"}
+						</AlertDialogAction>
+					</AlertDialogFooter>
+				</AlertDialogContent>
+			</AlertDialog>
+		);
 	};
 
 	const ReservationInfo = ({ reserver }: { reserver: UserType }) => {
@@ -352,10 +405,17 @@ const Item = () => {
 							</div>
 						)}
 
-						{reserver && (
+						{reserver && !isOwner && (
 							<div className="mt-6">
 								<ReservationInfo reserver={reserver} />
 							</div>
+						)}
+
+						{isSuccessFulfilled && hasFulfilledReservation && (
+							<Infobox>
+								The user who reserved this item has marked it as gifted. Consider removing it if you
+								have recieved it
+							</Infobox>
 						)}
 
 						{item && (
@@ -375,13 +435,19 @@ const Item = () => {
 										ref={formRef}
 									/>
 								</div>
-								<div className="flex">
-									<div className="flex gap-x-2 ml-auto">
-										<Button onClick={handleSubmitComment} disabled={comment === ""}>
-											Add comment
-										</Button>
-										{!isOwner && (reservedByCurrentUser ? <UnreserveButton /> : <ReserveButton />)}
-									</div>
+								<div className="flex flex-wrap gap-x-2 gap-y-2 ml-auto">
+									<Button onClick={handleSubmitComment} disabled={comment === ""}>
+										Add comment
+									</Button>
+									{!isOwner &&
+										(reservedByCurrentUser ? (
+											<>
+												<UnreserveButton />
+												{reservation && <FulfillButton reservation={reservation[0]} />}
+											</>
+										) : (
+											<ReserveButton />
+										))}
 								</div>
 							</div>
 						)}
