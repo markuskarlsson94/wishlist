@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import ItemInputType from "../types/ItemInputType";
 import { useParams, useNavigate, NavLink } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
-import { useCreateItem, useGetItems } from "../hooks/item";
+import { useCreateItem, useGetItems, useItemHasFulfilledReservation } from "../hooks/item";
 import { useDeleteWishlist, useGetWishlist, useUpdateWishlist } from "../hooks/wishlist";
 import useWishlistTypes from "../hooks/useWishlistTypes";
 import WishlistInputType from "../types/WishlistInputType";
@@ -53,6 +53,7 @@ const Item = ({ item }: { item: ItemType }) => {
 	const commentCount = comments.length;
 	const { reservations } = useGetReservations(userId);
 	const reserved = reservations.some((r: ReservationType) => r.item === item.id);
+	const { hasFulfilledReservation } = useItemHasFulfilledReservation(item.id);
 
 	return (
 		<div>
@@ -68,6 +69,7 @@ const Item = ({ item }: { item: ItemType }) => {
 							</div>
 							<div className="flex gap-x-3 ml-auto">
 								{reserved && <Badge>Reserved by you</Badge>}
+								{hasFulfilledReservation && <Badge>Gifted</Badge>}
 								{commentCount > 0 && (
 									<Badge variant={"secondary"}>{`${commentCount} ${
 										commentCount > 1 ? "comments" : "comment"
