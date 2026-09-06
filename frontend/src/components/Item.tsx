@@ -209,13 +209,6 @@ const Item = () => {
 		setIsEditDialogOpen(false);
 	};
 
-	const handleSubmitComment = () => {
-		if (formRef.current) {
-			formRef.current.submit();
-			setComment("");
-		}
-	};
-
 	const handleCopy = () => {
 		if (copied) return;
 
