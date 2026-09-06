@@ -191,9 +191,19 @@ const errorMessages = {
 		message: "Unauthorized to remove reservation",
 	},
 
+	unauthorizedToUpdateReservation: {
+		status: StatusCodes.FORBIDDEN,
+		message: "Unauthorized to update reservation",
+	},
+
 	unauthorizedToViewReservations: {
 		status: StatusCodes.FORBIDDEN,
 		message: "Unauthorized to view reservations",
+	},
+
+	unauthorizedToViewReservationInfo: {
+		status: StatusCodes.FORBIDDEN,
+		message: "Unauthorized to view reservation info",
 	},
 
 	unauthorizedToAddFriend: {
