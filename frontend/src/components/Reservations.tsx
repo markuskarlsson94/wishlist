@@ -1,4 +1,4 @@
-import { useDeleteReservation, useGetReservations } from "../hooks/reservation";
+import { useDeleteReservation, useGetReservations, useSetReservationFulfilled } from "../hooks/reservation";
 import { useAuth } from "../contexts/AuthContext";
 import ReservationType from "../types/ReservationType";
 import { useGetItem } from "../hooks/item";
@@ -29,6 +29,9 @@ const ReservationItem = ({ reservation }: { reservation: ReservationType }) => {
 	const { item, isSuccess } = useGetItem(reservation.item);
 	const { wishlist } = reservation.wishlist ? useGetWishlist(reservation.wishlist) : { wishlist: undefined };
 	const deleteReservation = useDeleteReservation({ userId });
+	const setReservationFulfilled = useSetReservationFulfilled({
+		userId,
+	});
 
 	if (!isSuccess || !item) return null;
 
@@ -36,19 +39,25 @@ const ReservationItem = ({ reservation }: { reservation: ReservationType }) => {
 		deleteReservation(reservation.id, item.id);
 	};
 
+	const handleFulfilled = () => {
+		setReservationFulfilled({ reservationId: reservation.id, fulfilled: !reservation.fulfilled, itemId: item.id });
+	};
+
 	return (
 		<Card>
 			<CardHeader>
-				<div className="flex flex-wrap gap-y-1 justify-between">
+				<div className="flex flex-wrap gap-y-2 justify-between">
 					<NavLink to={`/item/${item.id}`}>
 						<CardTitle className="[overflow-wrap:anywhere]">{item?.title}</CardTitle>
 						<CardDescription className="[overflow-wrap:anywhere]">{wishlist?.title}</CardDescription>
 					</NavLink>
 
-					<div className="ml-auto">
+					<div className="ml-auto flex flex-wrap gap-x-2 gap-y-2 px-2">
 						<AlertDialog>
 							<AlertDialogTrigger asChild>
-								<Button>Unreserve</Button>
+								<Button variant={"secondary"} className="flex-1">
+									Unreserve
+								</Button>
 							</AlertDialogTrigger>
 							<AlertDialogContent>
 								<AlertDialogHeader>
@@ -64,6 +73,35 @@ const ReservationItem = ({ reservation }: { reservation: ReservationType }) => {
 										onClick={() => handleDelete()}
 									>
 										Remove
+									</AlertDialogAction>
+								</AlertDialogFooter>
+							</AlertDialogContent>
+						</AlertDialog>
+
+						<AlertDialog>
+							<AlertDialogTrigger asChild>
+								<Button className="flex-1" variant={reservation.fulfilled ? "secondary" : "default"}>
+									{reservation.fulfilled ? "Unmark as gifted" : "Mark as gifted"}
+								</Button>
+							</AlertDialogTrigger>
+							<AlertDialogContent>
+								<AlertDialogHeader>
+									<AlertDialogTitle>
+										{reservation.fulfilled ? "Unmark as gifted" : "Mark as gifted"}
+									</AlertDialogTitle>
+									<AlertDialogDescription>
+										{reservation.fulfilled
+											? "Do you want to unmark this as gifted?"
+											: "Marking this item as gifted can be used as a reminder to the owner to remove the item after they have received it. Do you want to continue?"}
+									</AlertDialogDescription>
+								</AlertDialogHeader>
+								<AlertDialogFooter>
+									<AlertDialogCancel>No, cancel</AlertDialogCancel>
+									<AlertDialogAction
+										className={buttonVariants({ variant: "default" })}
+										onClick={handleFulfilled}
+									>
+										{reservation.fulfilled ? "Yes, unmark as gifted" : "Yes, mark as gifted"}
 									</AlertDialogAction>
 								</AlertDialogFooter>
 							</AlertDialogContent>
