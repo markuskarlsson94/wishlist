@@ -142,19 +142,22 @@ const Reservations = () => {
 	const { reservations, isSuccess, isLoading } = useGetReservations(userId);
 
 	const groupedReservations = useMemo((): ReservationType[][] => {
-		let result = reservations.reduce((acc: { [key: string]: ReservationType[] }, reservation: ReservationType) => {
-			const key = reservation.owner.toString();
+		let result = reservations.reduce(
+			(acc: { [key: string]: ReservationType[] }, reservation: ReservationType) => {
+				const key = reservation.owner.toString();
 
-			if (key) {
-				if (!acc[key]) {
-					acc[key] = [];
+				if (key) {
+					if (!acc[key]) {
+						acc[key] = [];
+					}
+
+					acc[key].push(reservation);
 				}
 
-				acc[key].push(reservation);
-			}
-
-			return acc;
-		}, {} as { [key: string]: ReservationType[] });
+				return acc;
+			},
+			{} as { [key: string]: ReservationType[] },
+		);
 
 		return Object.values(result);
 	}, [reservations]);
