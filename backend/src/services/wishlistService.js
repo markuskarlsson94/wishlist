@@ -245,6 +245,20 @@ const wishlistService = {
 			return reservation;
 		},
 
+		hasFulfilledReservation: async (user, itemId) => {
+			if (!(await canViewWishlistItem(user, itemId))) {
+				throw new ErrorMessage(errorMessages.wishlistItemNotFound);
+			}
+
+			if (!(await canManageWishlistItem(user, itemId))) {
+				throw new ErrorMessage(errorMessages.unauthorizedToViewReservationInfo);
+			}
+
+			const reservations = await db.reservation.getByItemId(itemId);
+
+			return reservations.some((r) => r.fulfilled);
+		},
+
 		getById: async (user, id) => {
 			if (!(await canViewWishlistItem(user, id))) {
 				throw new ErrorMessage(errorMessages.wishlistItemNotFound);
@@ -440,7 +454,9 @@ const wishlistService = {
 				throw new ErrorMessage(errorMessages.reservationNotFound);
 			}
 
-			return await db.reservation.getById(id);
+			const reservation = await db.reservation.getById(id);
+			const filteredReservation = await createFilteredReservation(user, reservation);
+			return filteredReservation;
 		},
 
 		getByUserId: async (user, id) => {
@@ -465,7 +481,27 @@ const wishlistService = {
 				throw new ErrorMessage(errorMessages.unauthorizedToViewReservations);
 			}
 
-			return db.reservation.getByItemId(id);
+			const reservations = await db.reservation.getByItemId(id);
+
+			let filteredReservations = [];
+			for (const reservation of reservations) {
+				const r = createFilteredReservation(user, reservation);
+				filteredReservations.push(r);
+			}
+
+			return filteredReservations;
+		},
+
+		setFulfilled: async (user, id, fulfilled) => {
+			if (!(await canViewReservation(user, id))) {
+				throw new ErrorMessage(errorMessages.reservationNotFound);
+			}
+
+			if (!(await canManageReservation(user, id))) {
+				throw new ErrorMessage(errorMessages.unauthorizedToUpdateReservation);
+			}
+
+			await db.reservation.setFulfilled(id, fulfilled);
 		},
 
 		clearByUserId: async (user, userId) => {
@@ -580,6 +616,16 @@ const createFilteredWishlistItem = async (user, item) => {
 	}
 
 	return obj;
+};
+
+const createFilteredReservation = (user, reservation) => {
+	const isAdmin = user.role === adminRole();
+	const isOwner = reservation.user === user.id;
+
+	if (isAdmin || isOwner) return reservation;
+
+	const { fulfilled, ...rest } = reservation;
+	return rest;
 };
 
 export default wishlistService;
