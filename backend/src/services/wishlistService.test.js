@@ -1050,6 +1050,90 @@ describe("reservations", () => {
 			expect(reservations.some((r) => r.item === item1));
 		});
 	});
+
+	describe("reseravtion fulfillments", () => {
+		let itemId;
+		let reservationId;
+
+		beforeAll(async () => {
+			await wishlistService.reservation.clearByUserId(user1, user1Id);
+			let reseravtions = await wishlistService.reservation.getByUserId(user1, user1Id);
+			expect(reseravtions.length).toBe(0);
+
+			const wishlist = await wishlistService.add(user2, user2Id, "w3", "", publicType());
+
+			itemId = await wishlistService.item.add({
+				user: user2,
+				wishlist: wishlist,
+				title: "i3",
+				description: "",
+			});
+
+			reservationId = await wishlistService.item.reserve(user1, itemId);
+			reseravtions = await wishlistService.reservation.getByUserId(user1, user1Id);
+			expect(reseravtions.length).toBe(1);
+		});
+
+		afterAll(async () => {
+			await wishlistService.reservation.clearByUserId(user1, user1Id);
+		});
+
+		it("should only allow reserver and admin to fulfill", async () => {
+			await wishlistService.reservation.setFulfilled(user1, reservationId, true);
+			await wishlistService.reservation.setFulfilled(admin, reservationId, true);
+
+			await expect(
+				(async () => {
+					await wishlistService.reservation.setFulfilled(user3, reservationId, true);
+				})(),
+			).rejects.toThrowError(errorMessages.reservationNotFound.message);
+		});
+
+		it(
+			"should only show fulfillment to reserver, owner, and admin",
+			async () => {
+				/* 
+				Does not need to be tested at the moment since only reserver 
+				and admin can view the reservation. If reservation becomes
+				viewable to other users in the future we might need to test
+				if fulfillment status should be displayed.
+				*/
+
+				let reservation = await wishlistService.reservation.getById(user1, reservationId);
+				expect(reservation.fulfilled).toBeDefined();
+
+				reservation = await wishlistService.reservation.getById(user2, reservationId);
+				expect(reservation.fulfilled).toBeDedefined();
+
+				reservation = await wishlistService.reservation.getById(admin, reservationId);
+				expect(reservation.fulfilled).toBeDedefined();
+
+				reservation = await wishlistService.reservation.getById(user3, reservationId);
+				expect(reservation.fulfilled).toBeUndedefined();
+			},
+			{ skip: true },
+		);
+
+		it("should only show if item has fulfillment status to owner and admin", async () => {
+			let hasFulfillReservation = await wishlistService.item.hasFulfilledReservation(user2, itemId);
+			expect(hasFulfillReservation).toBe(true);
+
+			hasFulfillReservation = await wishlistService.item.hasFulfilledReservation(admin, itemId);
+			expect(hasFulfillReservation).toBe(true);
+
+			await expect(
+				(async () => {
+					await wishlistService.item.hasFulfilledReservation(user1, itemId);
+				})(),
+			).rejects.toThrowError(errorMessages.unauthorizedToViewReservationInfo.message);
+
+			await expect(
+				(async () => {
+					await wishlistService.item.hasFulfilledReservation(user3, itemId);
+				})(),
+			).rejects.toThrowError(errorMessages.unauthorizedToViewReservationInfo.message);
+		});
+	});
 });
 
 describe("removing wishlist items", () => {
