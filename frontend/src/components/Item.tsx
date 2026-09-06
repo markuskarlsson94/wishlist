@@ -136,7 +136,7 @@ const Item = () => {
 		return (
 			<AlertDialog>
 				<AlertDialogTrigger asChild>
-					<Button className="flex-1">{reservation.fulfilled ? "Unmark as gifted" : "Mark as gifted"}</Button>
+					<Button>{reservation.fulfilled ? "Unmark as gifted" : "Mark as gifted"}</Button>
 				</AlertDialogTrigger>
 				<AlertDialogContent>
 					<AlertDialogHeader>
