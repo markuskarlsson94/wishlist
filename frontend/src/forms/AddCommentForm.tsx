@@ -1,76 +1,98 @@
-import { z } from "zod";
-import CommentInputType from "../types/CommentInputType";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Textarea } from "@/components/ui/textarea";
 import { forwardRef, useImperativeHandle } from "react";
-import commentSchema from "@/schemas/commentSchema";
-import { useAuth } from "@/contexts/AuthContext";
+import { useForm, useWatch } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
 import { Checkbox } from "@/components/ui/checkbox";
+import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
+import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupTextarea } from "@/components/ui/input-group";
+import { useAuth } from "@/contexts/AuthContext";
+import commentSchema from "@/schemas/commentSchema";
+import CommentInputType from "../types/CommentInputType";
 
 type AddCommentFormConfig = {
 	onSubmit: (values: CommentInputType) => void;
 	onCommentChange?: (comment: string) => void;
 };
 
-const AddCommentForm = forwardRef(({ config }: { config: AddCommentFormConfig }, ref) => {
+export interface AddCommentFormRef {
+	submit: () => void;
+}
+
+const AddCommentForm = forwardRef<AddCommentFormRef, { config: AddCommentFormConfig }>(({ config }, ref) => {
 	const { isAdmin } = useAuth();
 
 	const form = useForm<z.infer<typeof commentSchema>>({
 		resolver: zodResolver(commentSchema),
-		values: { comment: "", asAdmin: false },
+		defaultValues: { comment: "", asAdmin: false },
 	});
 
-	const onSubmit = (values: z.infer<typeof commentSchema>) => {
+	const commentValue = useWatch({ control: form.control, name: "comment" });
+
+	const handleSubmit = (values: z.infer<typeof commentSchema>) => {
 		config.onSubmit(values);
 		form.reset();
 	};
 
 	useImperativeHandle(ref, () => ({
-		submit: () => form.handleSubmit(onSubmit)(),
+		submit: () => form.handleSubmit(handleSubmit)(),
 	}));
 
 	return (
 		<Form {...form}>
-			<form onSubmit={form.handleSubmit(onSubmit)}>
-				<FormField
-					control={form.control}
-					name="comment"
-					render={({ field }) => (
-						<FormItem>
-							<FormControl>
-								<Textarea
-									placeholder="Type your comment here"
-									{...field}
-									onChange={(e) => {
-										field.onChange(e);
-										if (config.onCommentChange) {
-											config.onCommentChange(e.target.value);
-										}
-									}}
-								/>
-							</FormControl>
-							<FormMessage />
-						</FormItem>
-					)}
-				></FormField>
-				{isAdmin && (
+			<form onSubmit={form.handleSubmit(handleSubmit)}>
+				<InputGroup>
 					<FormField
 						control={form.control}
-						name="asAdmin"
+						name="comment"
 						render={({ field }) => (
-							<FormItem>
-								<div className="flex items-center gap-x-2 pt-2">
-									<FormLabel>Comment as admin</FormLabel>
-									<FormControl>
-										<Checkbox checked={field.value} onCheckedChange={field.onChange} />
-									</FormControl>
-								</div>
+							<FormItem className="w-full">
+								<FormControl>
+									<InputGroupTextarea
+										placeholder="Type your comment here"
+										{...field}
+										onChange={(e) => {
+											field.onChange(e);
+											config.onCommentChange?.(e.target.value);
+										}}
+									/>
+								</FormControl>
 							</FormItem>
 						)}
 					/>
-				)}
+
+					<InputGroupAddon align="block-end">
+						<div className="flex w-full items-center justify-between">
+							{isAdmin && (
+								<FormField
+									control={form.control}
+									name="asAdmin"
+									render={({ field }) => (
+										<FormItem className="flex items-center space-y-0">
+											<FormControl>
+												<label className="flex items-center gap-x-2 text-sm cursor-pointer select-none">
+													<Checkbox checked={field.value} onCheckedChange={field.onChange} />
+													<FormLabel className="cursor-pointer">As admin</FormLabel>
+												</label>
+											</FormControl>
+										</FormItem>
+									)}
+								/>
+							)}
+
+							<div className="ml-auto">
+								<InputGroupButton
+									type="submit"
+									variant="default"
+									size="sm"
+									disabled={!commentValue?.trim()}
+								>
+									Add comment
+								</InputGroupButton>
+							</div>
+						</div>
+					</InputGroupAddon>
+				</InputGroup>
 			</form>
 		</Form>
 	);
