@@ -4,6 +4,7 @@ type ReservationType = {
 	item: number;
 	createdAt: Date;
 	owner: number;
+	fulfilled?: boolean;
 	wishlist?: number;
 };
 
