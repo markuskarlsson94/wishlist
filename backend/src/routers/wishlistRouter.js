@@ -124,12 +124,24 @@ wishlistRouter.get("/item/:id/owner", isAuthenticated(), async (req, res) => {
 
 wishlistRouter.get("/item/:id/reservation", isAuthenticated(), async (req, res) => {
 	try {
-		const itemId = req.params.id;
 		const user = req.user;
+		const itemId = req.params.id;
 
 		const data = await wishlistService.reservation.getByItemId(user, itemId);
 
 		res.status(StatusCodes.OK).json({ reservation: data });
+	} catch (error) {
+		res.status(error.status).json(error.message);
+	}
+});
+
+wishlistRouter.get("/item/:id/hasFulfilledReservation", isAuthenticated(), async (req, res) => {
+	try {
+		const user = req.user;
+		const itemId = req.params.id;
+
+		const hasFulfilledReservation = await wishlistService.item.hasFulfilledReservation(user, itemId);
+		res.status(StatusCodes.OK).json({ hasFulfilledReservation });
 	} catch (error) {
 		res.status(error.status).json(error.message);
 	}
@@ -313,6 +325,16 @@ wishlistRouter.get("/reservation/:id", isAuthenticated(), async (req, res) => {
 		res.status(StatusCodes.OK).json({
 			reservation,
 		});
+	} catch (error) {
+		res.status(error.status).json(error.message);
+	}
+});
+
+wishlistRouter.patch("/reservation/:id/fulfilled", isAuthenticated(), async (req, res) => {
+	try {
+		await wishlistService.reservation.setFulfilled(req.user, req.params.id, req.body.fulfilled);
+
+		res.status(StatusCodes.OK).json({ message: "Reservation updated" });
 	} catch (error) {
 		res.status(error.status).json(error.message);
 	}
