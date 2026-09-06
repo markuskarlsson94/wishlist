@@ -4,7 +4,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Checkbox } from "@/components/ui/checkbox";
-import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupTextarea } from "@/components/ui/input-group";
 import { useAuth } from "@/contexts/AuthContext";
 import commentSchema from "@/schemas/commentSchema";
@@ -25,6 +25,8 @@ const AddCommentForm = forwardRef<AddCommentFormRef, { config: AddCommentFormCon
 	const form = useForm<z.infer<typeof commentSchema>>({
 		resolver: zodResolver(commentSchema),
 		defaultValues: { comment: "", asAdmin: false },
+		mode: "onSubmit",
+		reValidateMode: "onSubmit",
 	});
 
 	const commentValue = useWatch({ control: form.control, name: "comment" });
