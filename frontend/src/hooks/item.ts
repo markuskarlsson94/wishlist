@@ -75,6 +75,19 @@ export const useGetItems = (wishlistId: number) => {
 	};
 };
 
+export const useItemHasFulfilledReservation = (itemId: number | undefined) => {
+	const { data, ...rest } = useQuery({
+		queryKey: ["itemHasFulfilledReservation", itemId],
+		queryFn: () => axiosInstance.get(`item/${itemId}/hasFulfilledReservation`),
+		enabled: !!itemId,
+	});
+
+	return {
+		hasFulfilledReservation: data?.data.hasFulfilledReservation,
+		...rest,
+	};
+};
+
 type UseCreateItemConfig = {
 	onSuccess?: () => void;
 	onError?: (error: AxiosError) => void;
