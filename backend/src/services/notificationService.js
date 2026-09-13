@@ -1,6 +1,6 @@
 import ErrorMessage from "../errors/ErrorMessage.js";
 import errorMessages from "../errors/errorMessages.js";
-import { commentType, friendRequestType } from "../notifications.js";
+import { commentType, friendRequestType, fulfillmentType } from "../notifications.js";
 import { canManageUser } from "./userService.js";
 import { canManageWishlistItem } from "./wishlistService.js";
 import logger from "../logger.js";
@@ -38,7 +38,15 @@ const notificationService = {
 		}
 
 		try {
-			return await db.notification.getByUserId(id);
+			const notifications = await db.notification.getByUserId(id);
+			const filteredNotifications = [];
+
+			for (let notification of notifications) {
+				const n = await createFilteredNotification(notification);
+				filteredNotifications.push(n);
+			}
+
+			return filteredNotifications;
 		} catch (error) {
 			throw new ErrorMessage(errorMessages.unableToGetNotifcations);
 		}
@@ -50,7 +58,9 @@ const notificationService = {
 		}
 
 		try {
-			return await db.notification.getByUserIdAndItemId(userId, itemId);
+			const notification = await db.notification.getByUserIdAndItemId(userId, itemId);
+			const filteredNotification = await createFilteredNotification(notification);
+			return filteredNotification;
 		} catch (error) {
 			throw new ErrorMessage(errorMessages.unableToGetNotifcations);
 		}
@@ -62,7 +72,9 @@ const notificationService = {
 		}
 
 		try {
-			return await db.notification.getByUserIdAndFriendRequestId(userId, friendRequestId);
+			const notification = await db.notification.getByUserIdAndFriendRequestId(userId, friendRequestId);
+			const filteredNotification = await createFilteredNotification(notification);
+			return filteredNotification;
 		} catch (error) {
 			throw new ErrorMessage(errorMessages.unableToGetNotifcations);
 		}
