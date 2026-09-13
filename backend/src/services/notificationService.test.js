@@ -3,7 +3,7 @@ import db from "../db";
 import userService from "./userService";
 import errorMessages from "../errors/errorMessages";
 import { initUserRoles, adminRole } from "../roles";
-import { commentType, friendRequestType, initNotificationTypes } from "../notifications";
+import { commentType, friendRequestType, fulfillmentType, initNotificationTypes } from "../notifications";
 import notificationService from "./notificationService";
 import { initWishlistTypes, publicType } from "../wishlistTypes";
 import wishlistService from "./wishlistService";
@@ -378,5 +378,77 @@ describe("comment notifications", () => {
 
 		notifications = await notificationService.getByUserId(user3, user3.id);
 		expect(notifications.length).toBe(2);
+	});
+});
+
+describe("fulfillment notifications", () => {
+	let wishlistId, itemId, reservationId;
+
+	beforeAll(async () => {
+		await db.notification.removeAll();
+		let notifications = await db.notification.getAll();
+		expect(notifications.length).toBe(0);
+
+		wishlistId = await db.wishlist.add(user1.id, "testWishlist", "description", publicType());
+		itemId = await db.wishlist.item.add(wishlistId, "testItem", "description", null, 1);
+		reservationId = await wishlistService.item.reserve(user2, itemId);
+	});
+
+	afterAll(async () => {
+		await db.wishlist.remove(wishlistId);
+		await db.notification.removeAll();
+	});
+
+	it("should create notification when reservation fulfilled", async () => {
+		await wishlistService.reservation.setFulfilled(user2, reservationId, true);
+
+		const notifications = await notificationService.getByUserId(user1, user1.id);
+		expect(notifications.length).toBe(1);
+
+		const notification = notifications[0];
+		expect(notification.reservation).toBeUndefined();
+		expect(notification.item).toBe(itemId);
+		expect(notification.type).toBe(fulfillmentType());
+	});
+
+	it("should not create another notification for same reservation", async () => {
+		await wishlistService.reservation.setFulfilled(user2, reservationId, true);
+
+		const notifications = await notificationService.getByUserId(user1, user1.id);
+		expect(notifications.length).toBe(1);
+	});
+
+	it("should remove notification when reservation unfulfilled", async () => {
+		await wishlistService.reservation.setFulfilled(user2, reservationId, false);
+
+		const notifications = await notificationService.getByUserId(user1, user1.id);
+		expect(notifications.length).toBe(0);
+	});
+
+	it("should remove notification when reservation removed", async () => {
+		await wishlistService.reservation.setFulfilled(user2, reservationId, true);
+
+		let notifications = await notificationService.getByUserId(user1, user1.id);
+		expect(notifications.length).toBe(1);
+
+		await wishlistService.reservation.remove(user2, reservationId);
+
+		notifications = await notificationService.getByUserId(user1, user1.id);
+		expect(notifications.length).toBe(0);
+	});
+
+	it("should not throw error when trying to remove non existing notification", async () => {
+		reservationId = await wishlistService.item.reserve(user2, itemId);
+		await wishlistService.reservation.setFulfilled(user2, reservationId, true);
+
+		let notifications = await notificationService.getByUserId(user1, user1.id);
+		expect(notifications.length).toBe(1);
+
+		await notificationService.removeByUserId(user1, user1.id);
+
+		notifications = await notificationService.getByUserId(user1, user1.id);
+		expect(notifications.length).toBe(0);
+
+		await wishlistService.reservation.setFulfilled(user2, reservationId, false);
 	});
 });
