@@ -492,16 +492,32 @@ const wishlistService = {
 			return filteredReservations;
 		},
 
-		setFulfilled: async (user, id, fulfilled) => {
-			if (!(await canViewReservation(user, id))) {
+		setFulfilled: async (user, reservationId, fulfilled) => {
+			if (!(await canViewReservation(user, reservationId))) {
 				throw new ErrorMessage(errorMessages.reservationNotFound);
 			}
 
-			if (!(await canManageReservation(user, id))) {
+			if (!(await canManageReservation(user, reservationId))) {
 				throw new ErrorMessage(errorMessages.unauthorizedToUpdateReservation);
 			}
 
-			await db.reservation.setFulfilled(id, fulfilled);
+			const itemId = await db.reservation.getItem(reservationId);
+			const owner = await db.wishlist.item.getOwner(itemId);
+
+			try {
+				await db.reservation.setFulfilled(reservationId, fulfilled);
+			} catch (error) {
+				logger.error(error.message);
+				throw new ErrorMessage(errorMessages.unableToUpdateFulfillmentStatus);
+			}
+
+			try {
+				if (fulfilled) {
+					await notificationService.sendFulfillmentNotification(owner, reservationId);
+				} else {
+					await notificationService.removeFulfillmentNotification(user, owner, reservationId);
+				}
+			} catch {}
 		},
 
 		clearByUserId: async (user, userId) => {
