@@ -415,6 +415,11 @@ const errorMessages = {
 		status: StatusCodes.UNAUTHORIZED,
 		message: "Unauthorized to remove notification",
 	},
+
+	unableToUpdateFulfillmentStatus: {
+		status: StatusCodes.INTERNAL_SERVER_ERROR,
+		message: "Unable to update fulfillment status",
+	},
 };
 
 export default errorMessages;
