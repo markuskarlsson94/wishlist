@@ -116,4 +116,17 @@ const notificationService = {
 	},
 };
 
+const createFilteredNotification = async (notification) => {
+	if (notification.type === fulfillmentType()) {
+		const reservationId = notification.reservation;
+		const item = await db.reservation.getItem(reservationId);
+		notification.item = item;
+	}
+
+	// Remove reservation since we don't want to reveal it to the user
+	const { reservation, ...rest } = notification;
+
+	return rest;
+};
+
 export default notificationService;
