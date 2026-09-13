@@ -31,30 +31,28 @@ const FriendRequestNotification = ({
 	notification: NotificationType;
 	setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-	if (notification.friendRequest) {
-		const { friendRequest, isSuccess } = useGetFriendRequest(notification.friendRequest);
-		const { user } = useGetUser(friendRequest?.sender);
+	const { friendRequest } = useGetFriendRequest(notification.friendRequest);
+	const { user, isSuccess: isSuccessUser } = useGetUser(friendRequest?.sender);
 
-		if (isSuccess) {
-			return (
-				<NavLink
-					to={`user/${user?.id}`}
-					onClick={() => {
-						setOpen(false);
-					}}
-				>
-					<div className="flex gap-x-2 items-center">
-						<ProfilePicture src={user?.profilePicture} className="h-8 w-8" />
-						<p>
-							<span className="font-medium [overflow-wrap:anywhere]">
-								{user?.firstName} {user?.lastName}
-							</span>
-							{" sent you a friend request"}
-						</p>
-					</div>
-				</NavLink>
-			);
-		}
+	if (isSuccessUser && user) {
+		return (
+			<NavLink
+				to={`user/${user.id}`}
+				onClick={() => {
+					setOpen(false);
+				}}
+			>
+				<div className="flex gap-x-2 items-center">
+					<ProfilePicture src={user.profilePicture} className="h-8 w-8" />
+					<p>
+						<span className="font-medium [overflow-wrap:anywhere]">
+							{user.firstName} {user.lastName}
+						</span>
+						{" sent you a friend request"}
+					</p>
+				</div>
+			</NavLink>
+		);
 	}
 
 	return <></>;
@@ -67,17 +65,16 @@ const CommentNotification = ({
 	notification: NotificationType;
 	setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-	if (notification.item) {
-		const { item, isSuccess } = useGetItem(notification.item);
+	const { item, isSuccess } = useGetItem(notification.item);
 
-		if (isSuccess)
-			return (
-				<NavLink to={`item/${item?.id}`} onClick={() => setOpen(false)}>
-					<p>
-						New comment on <span className="font-medium [overflow-wrap:anywhere]">{item?.title}</span>
-					</p>
-				</NavLink>
-			);
+	if (isSuccess) {
+		return (
+			<NavLink to={`item/${item?.id}`} onClick={() => setOpen(false)}>
+				<p>
+					New comment on <span className="font-medium [overflow-wrap:anywhere]">{item?.title}</span>
+				</p>
+			</NavLink>
+		);
 	}
 
 	return <></>;
@@ -90,18 +87,17 @@ const FulfillmentNotification = ({
 	notification: NotificationType;
 	setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-	if (notification.item) {
-		const { item, isSuccess } = useGetItem(notification.item);
+	const { item, isSuccess } = useGetItem(notification.item);
 
-		if (isSuccess)
-			return (
-				<NavLink to={`item/${item?.id}`} onClick={() => setOpen(false)}>
-					<p>
-						<span className="font-medium [overflow-wrap:anywhere]">{item?.title}</span> has been marked as
-						gifted
-					</p>
-				</NavLink>
-			);
+	if (isSuccess) {
+		return (
+			<NavLink to={`item/${item?.id}`} onClick={() => setOpen(false)}>
+				<p>
+					<span className="font-medium [overflow-wrap:anywhere]">{item?.title}</span> has been marked as
+					gifted
+				</p>
+			</NavLink>
+		);
 	}
 
 	return <></>;
