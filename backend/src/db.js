@@ -2,6 +2,7 @@ import logger from "./logger.js";
 import { generatePassword } from "./utilities/password.js";
 import userService from "./services/userService.js";
 import envConfig from "./envConfig.js";
+import { fulfillmentType } from "./notifications.js";
 
 export const tokenTable = "tokens";
 export const userTable = "users";
@@ -698,6 +699,12 @@ const db = {
 
 		removeByUserAndItem: async (userId, itemId) => {
 			await dbClient(notificationTable).del().where({ user: userId, item: itemId });
+		},
+
+		removeFulfillmentNotificationByUserIdAndReservationId: async (userId, reservationId) => {
+			await dbClient(notificationTable)
+				.del()
+				.where({ user: userId, reservation: reservationId, type: fulfillmentType() });
 		},
 
 		removeAll: async () => {
