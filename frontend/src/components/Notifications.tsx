@@ -83,6 +83,30 @@ const CommentNotification = ({
 	return <></>;
 };
 
+const FulfillmentNotification = ({
+	notification,
+	setOpen,
+}: {
+	notification: NotificationType;
+	setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
+	if (notification.item) {
+		const { item, isSuccess } = useGetItem(notification.item);
+
+		if (isSuccess)
+			return (
+				<NavLink to={`item/${item?.id}`} onClick={() => setOpen(false)}>
+					<p>
+						<span className="font-medium [overflow-wrap:anywhere]">{item?.title}</span> has been marked as
+						gifted
+					</p>
+				</NavLink>
+			);
+	}
+
+	return <></>;
+};
+
 const NotificationWrapper = ({
 	notification,
 	children,
@@ -123,6 +147,7 @@ const Notifications = () => {
 	const maxHeight = 360;
 	const friendRequestNotificationId = types?.find((t: NotificationTypeType) => t.name === "friendRequest").id;
 	const commentNotificationId = types?.find((t: NotificationTypeType) => t.name === "comment").id;
+	const fulfillmentNotificationId = types?.find((t: NotificationTypeType) => t.name === "fulfillment").id;
 
 	const active = notifications.length > 0;
 	const color = active ? "#ffffff" : "#62748e";
@@ -143,6 +168,7 @@ const Notifications = () => {
 			return <FriendRequestNotification notification={n} setOpen={setOpen} />;
 
 		if (n.type === commentNotificationId) return <CommentNotification notification={n} setOpen={setOpen} />;
+		if (n.type === fulfillmentNotificationId) return <FulfillmentNotification notification={n} setOpen={setOpen} />;
 
 		return <>Unknown Notificaion</>;
 	};
