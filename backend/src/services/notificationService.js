@@ -24,6 +24,15 @@ const notificationService = {
 		}
 	},
 
+	sendFulfillmentNotification: async (userId, reservationId) => {
+		try {
+			return await db.notification.add(userId, fulfillmentType(), { reservation: reservationId });
+		} catch (error) {
+			logger.error(error.message);
+			throw new ErrorMessage(errorMessages.unableToAddNotification);
+		}
+	},
+
 	getById: async (id) => {
 		try {
 			return await db.notification.getById(id);
@@ -113,6 +122,14 @@ const notificationService = {
 
 		try {
 			await db.notification.removeByUserAndItem(userId, itemId);
+		} catch (error) {
+			throw new ErrorMessage(errorMessages.unableToRemoveNotification);
+		}
+	},
+
+	removeFulfillmentNotification: async (user, userId, reservationId) => {
+		try {
+			await db.notification.removeFulfillmentNotificationByUserIdAndReservationId(userId, reservationId);
 		} catch (error) {
 			throw new ErrorMessage(errorMessages.unableToRemoveNotification);
 		}
