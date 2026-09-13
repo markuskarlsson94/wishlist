@@ -48,13 +48,7 @@ const notificationService = {
 
 		try {
 			const notifications = await db.notification.getByUserId(id);
-			const filteredNotifications = [];
-
-			for (let notification of notifications) {
-				const n = await createFilteredNotification(notification);
-				filteredNotifications.push(n);
-			}
-
+			const filteredNotifications = createFilteredNotifications(notifications);
 			return filteredNotifications;
 		} catch (error) {
 			throw new ErrorMessage(errorMessages.unableToGetNotifcations);
@@ -67,9 +61,9 @@ const notificationService = {
 		}
 
 		try {
-			const notification = await db.notification.getByUserIdAndItemId(userId, itemId);
-			const filteredNotification = await createFilteredNotification(notification);
-			return filteredNotification;
+			const notifications = await db.notification.getByUserIdAndItemId(userId, itemId);
+			const filteredNotifications = createFilteredNotifications(notifications);
+			return filteredNotifications;
 		} catch (error) {
 			throw new ErrorMessage(errorMessages.unableToGetNotifcations);
 		}
@@ -81,9 +75,9 @@ const notificationService = {
 		}
 
 		try {
-			const notification = await db.notification.getByUserIdAndFriendRequestId(userId, friendRequestId);
-			const filteredNotification = await createFilteredNotification(notification);
-			return filteredNotification;
+			const notifications = await db.notification.getByUserIdAndFriendRequestId(userId, friendRequestId);
+			const filteredNotifications = await createFilteredNotifications(notifications);
+			return filteredNotifications;
 		} catch (error) {
 			throw new ErrorMessage(errorMessages.unableToGetNotifcations);
 		}
@@ -156,6 +150,17 @@ const createFilteredNotification = async (notification) => {
 	const { reservation, ...rest } = notification;
 
 	return rest;
+};
+
+const createFilteredNotifications = async (notifications) => {
+	const filteredNotifications = [];
+
+	for (let notification of notifications) {
+		const n = await createFilteredNotification(notification);
+		filteredNotifications.push(n);
+	}
+
+	return filteredNotifications;
 };
 
 export default notificationService;
