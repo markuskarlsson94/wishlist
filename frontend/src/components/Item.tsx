@@ -64,7 +64,7 @@ const Item = () => {
 	const [isEditDialogOpen, setIsEditDialogOpen] = useState<boolean>(false);
 	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false);
 	const formRef = useRef<HTMLFormElement | null>(null);
-	const deleteNotificationsByItem = useDeleteNotificationsByItem({ userId });
+	// const deleteNotificationsByItem = useDeleteNotificationsByItem({ userId });
 	const [copied, setCopied] = useState(false);
 	const [isShareDialogOpen, setIsShareDialogOpen] = useState<boolean>(false);
 	const setReservationFulfilled = useSetReservationFulfilled({
@@ -83,7 +83,12 @@ const Item = () => {
 	useEffect(() => {
 		if (isSuccess) {
 			setIsOwner(item?.owner === userId);
+			/* 
+			TODO: Sometimes causes infinite request loop since fulfillment notifications 
+			are not deleted because they are stored on reservation instead of item
+			
 			if (item) deleteNotificationsByItem(item.id);
+			*/
 		}
 	}, [item, isSuccess]);
 
@@ -233,16 +238,17 @@ const Item = () => {
 						{ title: item?.title },
 					],
 					isLoading: !userId || !wishlist || !item,
-			  }
+				}
 			: {
 					breadcrumbs: [
-						{ title: itemOwner?.firstName, link: `/user/${item?.owner}`, userId: itemOwner?.id },
+						{ title: itemOwner?.firstName, link: `/user/${item?.owner}` },
 						{ title: "Wishlists", link: `/user/${item?.owner}/wishlists` },
 						{ title: wishlist?.title, link: `/wishlist/${wishlist?.id}` },
 						{ title: item?.title },
 					],
 					isLoading: !itemOwner || !item || !wishlist,
-			  };
+					user: itemOwner,
+				};
 	};
 
 	const getShareLink = () => {
