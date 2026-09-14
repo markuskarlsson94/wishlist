@@ -38,7 +38,6 @@ import { useGetUser } from "@/hooks/user";
 import ProfilePicture from "./ProfilePicture";
 import UserType from "@/types/UserType";
 import Navbar from "./Navbar";
-import { useDeleteNotificationsByItem } from "@/hooks/notification";
 import LoadingSpinner from "./LoadingSpinner";
 import CopyLinkButton from "./CopyLinkButton";
 import ReservationType from "@/types/ReservationType";
