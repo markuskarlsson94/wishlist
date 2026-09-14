@@ -16,7 +16,7 @@ export const useGetUserNotifications = (userId: number | undefined) => {
 	};
 };
 
-export const useGetCommentNotifications = (itemId: number | undefined) => {
+export const useGetItemNotifications = (itemId: number | undefined) => {
 	const { data, ...rest } = useQuery({
 		queryKey: ["itemNotifications", itemId],
 		queryFn: () => axiosInstance.get(`/item/${itemId}/notifications`),
