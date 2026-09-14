@@ -164,6 +164,7 @@ wishlistRouter.get("/item/:id/notifications", isAuthenticated(), async (req, res
 wishlistRouter.delete("/item/:id/notifications", isAuthenticated(), async (req, res) => {
 	try {
 		await notificationService.removeByUserIdAndItemId(req.user, req.user.id, Number(req.params.id));
+		// TODO: Also remove fulfillment notifications where reservations refer to the item?
 		res.status(StatusCodes.OK).json({ message: "Notifications removed" });
 	} catch (error) {
 		res.status(error.status).json(error.message);
