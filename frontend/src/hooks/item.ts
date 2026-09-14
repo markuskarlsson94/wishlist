@@ -7,7 +7,7 @@ import ItemInputType from "../types/ItemInputType";
 import { StatusCodes } from "http-status-codes";
 import { AxiosError } from "axios";
 
-export const useGetItem = (id: number) => {
+export const useGetItem = (id: number | undefined) => {
 	const [item, setItem] = useState<ItemType | undefined>(undefined);
 
 	const {
