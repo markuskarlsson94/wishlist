@@ -1023,31 +1023,40 @@ describe("reservations", () => {
 				description: "",
 			});
 
-			item2 = await wishlistService.item.add({
-				user: user2,
-				wishlist: wishlist2,
-				title: "i2",
-				description: "",
-			});
-
 			reservation1 = await wishlistService.item.reserve(user1, item1);
-			reservation2 = await wishlistService.item.reserve(user1, item2);
+
+			await userService.friend.remove(user1, user1Id, user2Id);
+
+			const isFriends = await userService.friend.with(user1Id, user2Id);
+			expect(isFriends).toBe(false);
 		});
 
-		it("should hide reservation if item is hidden for user", async () => {
+		it("should not hide item and reservation if item's wishlist is hidden for user", async () => {
 			let reservations = await wishlistService.reservation.getByUserId(user1, user1Id);
 
-			expect(reservations.length).toBe(2);
+			expect(reservations.length).toBe(1);
 			expect(reservations.some((r) => r.item === item1));
-			expect(reservations.some((r) => r.item === item2));
 
-			await wishlistService.update(user2, wishlist2, { type: hiddenType() });
+			await wishlistService.update(user2, wishlist1, { type: friendType() });
 
-			// User 2 hides wishlist 2, which should cause one of user1's reservations to also be hidden
 			reservations = await wishlistService.reservation.getByUserId(user1, user1Id);
 
 			expect(reservations.length).toBe(1);
 			expect(reservations.some((r) => r.item === item1));
+
+			let item = await wishlistService.item.getById(user1, item1);
+			expect(item.id).toBe(item1);
+
+			await wishlistService.update(user2, wishlist1, { type: hiddenType() });
+
+			reservations = await wishlistService.reservation.getByUserId(user1, user1Id);
+
+			expect(reservations.length).toBe(1);
+			expect(reservations.some((r) => r.item === item1));
+			expect(reservations.some((r) => r.item === item2));
+
+			item = await wishlistService.item.getById(user1, item1);
+			expect(item.id).toBe(item1);
 		});
 	});
 
