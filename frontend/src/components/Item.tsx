@@ -423,7 +423,7 @@ const Item = () => {
 										ref={formRef}
 									/>
 								</div>
-								<div className="flex flex-wrap gap-x-2 gap-y-2 ml-auto">
+								<div className="flex flex-wrap gap-x-2 gap-y-2 mt-3 ml-auto">
 									{!isOwner &&
 										(reservedByCurrentUser ? (
 											<>
