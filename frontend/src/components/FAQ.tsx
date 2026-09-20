@@ -15,14 +15,10 @@ const FAQ = () => {
 					<AccordionItem value="reservationDisappear">
 						<AccordionTrigger>Why did my reservation disappear for seemingly no reason?</AccordionTrigger>
 						<AccordionContent>
-							<p>A reservation can disappear for a number of different reasons</p>
+							<p>A reservation can disappear for the following reasons</p>
 							<ul className="list-disc list-inside pl-4">
 								<li>The item or wishlist was removed by the owner</li>
 								<li>The user profile of the owner was deleted</li>
-								<li>
-									The visibility level of the corresponding wishlist has changed so that you no longer
-									can access it
-								</li>
 							</ul>
 						</AccordionContent>
 					</AccordionItem>
