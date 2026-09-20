@@ -50,7 +50,7 @@ const Item = () => {
 	const navigate = useNavigate();
 	const { userId } = useAuth();
 	const { item, isSuccess, isLoading, notFound } = useGetItem(id);
-	const { wishlist } = useGetWishlist(item?.wishlist);
+	const { wishlist, isLoading: isLoadingWishlist, notFound: notFoundWishlist } = useGetWishlist(item?.wishlist);
 	const createReservation = useCreateReservation({ userId });
 	const deleteReservation = useDeleteReservation({ userId });
 	const { reservation } = useGetReservationByItemId(item?.id);
@@ -242,10 +242,12 @@ const Item = () => {
 					breadcrumbs: [
 						{ title: itemOwner?.firstName, link: `/user/${item?.owner}` },
 						{ title: "Wishlists", link: `/user/${item?.owner}/wishlists` },
-						{ title: wishlist?.title, link: `/wishlist/${wishlist?.id}` },
+						wishlist
+							? { title: wishlist?.title, link: `/wishlist/${wishlist?.id}` }
+							: { title: "Unknown wishlist" },
 						{ title: item?.title },
 					],
-					isLoading: !itemOwner || !item || !wishlist,
+					isLoading: !itemOwner || !item || isLoadingWishlist,
 					user: itemOwner,
 				};
 	};
@@ -406,6 +408,13 @@ const Item = () => {
 							<Infobox>
 								The user who reserved this item has marked it as gifted. Consider removing it if you
 								have recieved it
+							</Infobox>
+						)}
+
+						{notFoundWishlist && !isOwner && (
+							<Infobox className="mt-6">
+								This item belongs to a wishlist you are not allowed to access. You can still see it
+								because you have reserved it
 							</Infobox>
 						)}
 
