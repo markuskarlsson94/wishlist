@@ -568,7 +568,21 @@ const canViewWishlist = async (user, wishlistId) => {
 	return false;
 };
 
+const userHasReservedItem = async (user, itemId) => {
+	const reservations = await db.reservation.getByItemId(itemId);
+
+	for (const reservation of reservations) {
+		const reserver = await db.reservation.getUser(reservation.id);
+		if (reserver === user.id) return true;
+	}
+
+	return false;
+};
+
 const canViewWishlistItem = async (user, itemId) => {
+	const isReserver = await userHasReservedItem(user, itemId);
+	if (isReserver) return true;
+
 	const wishlistId = await db.wishlist.item.getWishlist(itemId);
 	return await canViewWishlist(user, wishlistId);
 };
