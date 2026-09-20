@@ -1103,13 +1103,13 @@ describe("reservations", () => {
 				expect(reservation.fulfilled).toBeDefined();
 
 				reservation = await wishlistService.reservation.getById(user2, reservationId);
-				expect(reservation.fulfilled).toBeDedefined();
+				expect(reservation.fulfilled).toBeDefined();
 
 				reservation = await wishlistService.reservation.getById(admin, reservationId);
-				expect(reservation.fulfilled).toBeDedefined();
+				expect(reservation.fulfilled).toBeDefined();
 
 				reservation = await wishlistService.reservation.getById(user3, reservationId);
-				expect(reservation.fulfilled).toBeUndedefined();
+				expect(reservation.fulfilled).toBeUndefined();
 			},
 			{ skip: true },
 		);
