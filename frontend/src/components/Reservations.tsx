@@ -49,7 +49,9 @@ const ReservationItem = ({ reservation }: { reservation: ReservationType }) => {
 				<div className="flex flex-wrap gap-y-2 justify-between">
 					<NavLink to={`/item/${item.id}`}>
 						<CardTitle className="[overflow-wrap:anywhere]">{item?.title}</CardTitle>
-						<CardDescription className="[overflow-wrap:anywhere]">{wishlist?.title}</CardDescription>
+						<CardDescription className="[overflow-wrap:anywhere]">
+							{wishlist ? wishlist?.title : "Unknown wishlist"}
+						</CardDescription>
 					</NavLink>
 
 					<div className="ml-auto flex flex-wrap gap-x-2 gap-y-2 px-2">
