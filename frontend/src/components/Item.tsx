@@ -248,7 +248,6 @@ const Item = () => {
 						{ title: item?.title },
 					],
 					isLoading: !itemOwner || !item || isLoadingWishlist,
-					user: itemOwner,
 				};
 	};
 
