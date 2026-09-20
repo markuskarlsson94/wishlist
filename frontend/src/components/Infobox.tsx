@@ -1,8 +1,9 @@
+import { cn } from "@/lib/utils";
 import { Info } from "lucide-react";
 
-const Infobox = ({ children }: { children: React.ReactNode }) => {
+const Infobox = ({ className, children }: { className?: string; children: React.ReactNode }) => {
 	return (
-		<div className="flex gap-x-2 bg-slate-100 rounded-lg p-2 mt-2">
+		<div className={cn("flex gap-x-2 bg-slate-100 rounded-lg p-2 mt-2", className)}>
 			<div>
 				<Info color="#90a1b9" />
 			</div>
