@@ -93,7 +93,6 @@ const ReserveButton = () => {
 	const id = Number(params.id);
 	const { item } = useGetItem(id);
 	const { reservation } = useGetReservationByItemId(item?.id);
-	const reservationExists = reservation && reservation?.length > 0;
 	const createReservation = useCreateReservation({ userId });
 
 	const handleReserve = () => {
@@ -103,7 +102,7 @@ const ReserveButton = () => {
 	};
 
 	return (
-		<Button disabled={reservationExists} onClick={handleReserve}>
+		<Button disabled={!!reservation} onClick={handleReserve}>
 			Reserve
 		</Button>
 	);
@@ -119,7 +118,7 @@ const UnreserveButton = () => {
 
 	const handleUnreserve = () => {
 		if (reservation && item) {
-			deleteReservation(reservation[0].id, item.id);
+			deleteReservation(reservation.id, item.id);
 		}
 	};
 
@@ -184,7 +183,7 @@ const Item = () => {
 	const { item, isSuccess, isLoading, notFound } = useGetItem(id);
 	const { wishlist, isLoading: isLoadingWishlist, notFound: notFoundWishlist } = useGetWishlist(item?.wishlist);
 	const { reservation } = useGetReservationByItemId(item?.id);
-	const { user: reserver } = useGetUser(reservation?.[0]?.user);
+	const { user: reserver } = useGetUser(reservation?.user);
 	const { user: itemOwner } = useGetUser(item?.owner);
 	const reservedByCurrentUser = reserver?.id === userId;
 	const updateItem = useUpdateItem();
@@ -459,7 +458,7 @@ const Item = () => {
 										(reservedByCurrentUser ? (
 											<>
 												<UnreserveButton />
-												{reservation && <FulfillButton reservation={reservation[0]} />}
+												{reservation && <FulfillButton reservation={reservation} />}
 											</>
 										) : (
 											<ReserveButton />
