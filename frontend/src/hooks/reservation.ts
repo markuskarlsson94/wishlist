@@ -31,7 +31,7 @@ export const useGetReservationByItemId = (itemId: number | undefined) => {
 	});
 
 	return {
-		reservation: data,
+		reservation: data?.[0],
 		isSuccess,
 	};
 };
