@@ -43,6 +43,138 @@ import CopyLinkButton from "./CopyLinkButton";
 import ReservationType from "@/types/ReservationType";
 import Infobox from "./Infobox";
 
+const ReservationInfo = ({ reserver }: { reserver: UserType }) => {
+	const { userId } = useAuth();
+	const params = useParams<{ id: string }>();
+	const id = Number(params.id);
+	const { item } = useGetItem(id);
+	const { user: itemOwner } = useGetUser(item?.owner);
+	const reservedByCurrentUser = reserver?.id === userId;
+
+	return (
+		<div className="flex gap-x-2 items-center">
+			{reservedByCurrentUser ? (
+				<>
+					<ProfilePicture src={reserver.profilePicture} />
+					<div className="flex flex-col">
+						<p> You have reserved this item</p>
+						<p className="text-sm text-gray-400 [overflow-wrap:anywhere]">
+							{itemOwner?.firstName} can't see your reservation
+						</p>
+					</div>
+				</>
+			) : (
+				<>
+					<NavLink to={`/user/${reserver.id}`}>
+						<ProfilePicture src={reserver.profilePicture} />
+					</NavLink>
+					<div className="flex flex-col">
+						<p>
+							<NavLink to={`/user/${reserver.id}`}>
+								<span className="font-medium [overflow-wrap:anywhere]">
+									{reserver.firstName} {reserver.lastName}
+								</span>
+							</NavLink>
+							<span> has reserved this item</span>
+						</p>
+						<p className="text-sm text-gray-400 [overflow-wrap:anywhere]">
+							{itemOwner?.firstName} can't see this reservation
+						</p>
+					</div>
+				</>
+			)}
+		</div>
+	);
+};
+
+const ReserveButton = () => {
+	const { userId } = useAuth();
+	const params = useParams<{ id: string }>();
+	const id = Number(params.id);
+	const { item } = useGetItem(id);
+	const { reservation } = useGetReservationByItemId(item?.id);
+	const reservationExists = reservation && reservation?.length > 0;
+	const createReservation = useCreateReservation({ userId });
+
+	const handleReserve = () => {
+		if (item) {
+			createReservation(item.id);
+		}
+	};
+
+	return (
+		<Button disabled={reservationExists} onClick={handleReserve}>
+			Reserve
+		</Button>
+	);
+};
+
+const UnreserveButton = () => {
+	const { userId } = useAuth();
+	const params = useParams<{ id: string }>();
+	const id = Number(params.id);
+	const { item } = useGetItem(id);
+	const { reservation } = useGetReservationByItemId(item?.id);
+	const deleteReservation = useDeleteReservation({ userId });
+
+	const handleUnreserve = () => {
+		if (reservation && item) {
+			deleteReservation(reservation[0].id, item.id);
+		}
+	};
+
+	return (
+		<Button variant={"secondary"} onClick={handleUnreserve}>
+			Unreserve
+		</Button>
+	);
+};
+
+const FulfillButton = ({ reservation }: { reservation: ReservationType }) => {
+	const { userId } = useAuth();
+	const params = useParams<{ id: string }>();
+	const id = Number(params.id);
+	const { item } = useGetItem(id);
+	const setReservationFulfilled = useSetReservationFulfilled({
+		userId,
+	});
+
+	const handleFulfilled = () => {
+		setReservationFulfilled({
+			reservationId: reservation.id,
+			fulfilled: !reservation.fulfilled,
+			itemId: item?.id,
+		});
+	};
+
+	return (
+		<AlertDialog>
+			<AlertDialogTrigger asChild>
+				<Button>{reservation.fulfilled ? "Unmark as gifted" : "Mark as gifted"}</Button>
+			</AlertDialogTrigger>
+			<AlertDialogContent>
+				<AlertDialogHeader>
+					<AlertDialogTitle>{reservation.fulfilled ? "Unmark as gifted" : "Mark as gifted"}</AlertDialogTitle>
+					<AlertDialogDescription>
+						{reservation.fulfilled
+							? "Do you want to unmark this as gifted?"
+							: "Marking this item as gifted can be used as a reminder to the owner to remove the item after they have received it. Do you want to continue?"}
+					</AlertDialogDescription>
+				</AlertDialogHeader>
+				<AlertDialogFooter>
+					<AlertDialogCancel>No, cancel</AlertDialogCancel>
+					<AlertDialogAction
+						className={buttonVariants({ variant: "default" })}
+						onClick={() => handleFulfilled()}
+					>
+						{reservation.fulfilled ? "Yes, unmark as gifted" : "Yes, mark as gifted"}
+					</AlertDialogAction>
+				</AlertDialogFooter>
+			</AlertDialogContent>
+		</AlertDialog>
+	);
+};
+
 const Item = () => {
 	const [isOwner, setIsOwner] = useState<boolean>(false);
 	const params = useParams<{ id: string }>();
@@ -51,13 +183,10 @@ const Item = () => {
 	const { userId } = useAuth();
 	const { item, isSuccess, isLoading, notFound } = useGetItem(id);
 	const { wishlist, isLoading: isLoadingWishlist, notFound: notFoundWishlist } = useGetWishlist(item?.wishlist);
-	const createReservation = useCreateReservation({ userId });
-	const deleteReservation = useDeleteReservation({ userId });
 	const { reservation } = useGetReservationByItemId(item?.id);
 	const { user: reserver } = useGetUser(reservation?.[0]?.user);
 	const { user: itemOwner } = useGetUser(item?.owner);
 	const reservedByCurrentUser = reserver?.id === userId;
-	const reservationExists = reservation && reservation?.length > 0;
 	const updateItem = useUpdateItem();
 	const { comments } = useGetComments(id);
 	const [isEditDialogOpen, setIsEditDialogOpen] = useState<boolean>(false);
@@ -66,9 +195,7 @@ const Item = () => {
 	// const deleteNotificationsByItem = useDeleteNotificationsByItem({ userId });
 	const [copied, setCopied] = useState(false);
 	const [isShareDialogOpen, setIsShareDialogOpen] = useState<boolean>(false);
-	const setReservationFulfilled = useSetReservationFulfilled({
-		userId,
-	});
+
 	const { hasFulfilledReservation, isSuccess: isSuccessFulfilled } = useItemHasFulfilledReservation(item?.id);
 
 	const onDeleteItem = () => {
@@ -95,110 +222,6 @@ const Item = () => {
 		if (item) {
 			deleteItem(item);
 		}
-	};
-
-	const handleReserve = () => {
-		if (item) {
-			createReservation(item.id);
-		}
-	};
-
-	const handleUnreserve = () => {
-		if (reservation && item) {
-			deleteReservation(reservation[0].id, item.id);
-		}
-	};
-
-	const ReserveButton = () => {
-		return (
-			<Button disabled={reservationExists} onClick={handleReserve}>
-				Reserve
-			</Button>
-		);
-	};
-
-	const UnreserveButton = () => {
-		return (
-			<Button variant={"secondary"} onClick={handleUnreserve}>
-				Unreserve
-			</Button>
-		);
-	};
-
-	const FulfillButton = ({ reservation }: { reservation: ReservationType }) => {
-		const handleFulfilled = () => {
-			setReservationFulfilled({
-				reservationId: reservation.id,
-				fulfilled: !reservation.fulfilled,
-				itemId: item?.id,
-			});
-		};
-
-		return (
-			<AlertDialog>
-				<AlertDialogTrigger asChild>
-					<Button>{reservation.fulfilled ? "Unmark as gifted" : "Mark as gifted"}</Button>
-				</AlertDialogTrigger>
-				<AlertDialogContent>
-					<AlertDialogHeader>
-						<AlertDialogTitle>
-							{reservation.fulfilled ? "Unmark as gifted" : "Mark as gifted"}
-						</AlertDialogTitle>
-						<AlertDialogDescription>
-							{reservation.fulfilled
-								? "Do you want to unmark this as gifted?"
-								: "Marking this item as gifted can be used as a reminder to the owner to remove the item after they have received it. Do you want to continue?"}
-						</AlertDialogDescription>
-					</AlertDialogHeader>
-					<AlertDialogFooter>
-						<AlertDialogCancel>No, cancel</AlertDialogCancel>
-						<AlertDialogAction
-							className={buttonVariants({ variant: "default" })}
-							onClick={() => handleFulfilled()}
-						>
-							{reservation.fulfilled ? "Yes, unmark as gifted" : "Yes, mark as gifted"}
-						</AlertDialogAction>
-					</AlertDialogFooter>
-				</AlertDialogContent>
-			</AlertDialog>
-		);
-	};
-
-	const ReservationInfo = ({ reserver }: { reserver: UserType }) => {
-		return (
-			<div className="flex gap-x-2 items-center">
-				{reservedByCurrentUser ? (
-					<>
-						<ProfilePicture src={reserver.profilePicture} />
-						<div className="flex flex-col">
-							<p> You have reserved this item</p>
-							<p className="text-sm text-gray-400 [overflow-wrap:anywhere]">
-								{itemOwner?.firstName} can't see your reservation
-							</p>
-						</div>
-					</>
-				) : (
-					<>
-						<NavLink to={`/user/${reserver.id}`}>
-							<ProfilePicture src={reserver.profilePicture} />
-						</NavLink>
-						<div className="flex flex-col">
-							<p>
-								<NavLink to={`/user/${reserver.id}`}>
-									<span className="font-medium [overflow-wrap:anywhere]">
-										{reserver.firstName} {reserver.lastName}
-									</span>
-								</NavLink>
-								<span> has reserved this item</span>
-							</p>
-							<p className="text-sm text-gray-400 [overflow-wrap:anywhere]">
-								{itemOwner?.firstName} can't see this reservation
-							</p>
-						</div>
-					</>
-				)}
-			</div>
-		);
 	};
 
 	const onSubmitItem = (input: ItemInputType) => {
