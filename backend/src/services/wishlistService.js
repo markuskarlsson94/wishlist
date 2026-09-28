@@ -203,7 +203,9 @@ const wishlistService = {
 			await db.wishlist.item.update(itemId, rest);
 		},
 
-		reserve: async (user, id, amount = 1) => {
+		reserve: async (user, id, options = {}) => {
+			const { isAnonymous = false, amount = 1 } = options;
+
 			if (!(await canViewWishlistItem(user, id))) {
 				throw new ErrorMessage(errorMessages.wishlistItemNotFound);
 			}
@@ -231,7 +233,7 @@ const wishlistService = {
 			let reservation;
 
 			try {
-				reservation = await db.wishlist.item.reserve(user.id, id, amount);
+				reservation = await db.wishlist.item.reserve(user.id, id, isAnonymous, amount);
 			} catch (error) {
 				logger.error(error.message);
 
