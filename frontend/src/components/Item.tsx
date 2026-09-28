@@ -95,16 +95,49 @@ const ReserveButton = () => {
 	const { reservation } = useGetReservationByItemId(item?.id);
 	const createReservation = useCreateReservation({ userId });
 
-	const handleReserve = () => {
+	const handleReservePublicly = () => {
 		if (item) {
-			createReservation(item.id);
+			createReservation(item.id, false);
+		}
+	};
+
+	const handleReserveAnonymously = () => {
+		if (item) {
+			createReservation(item.id, true);
 		}
 	};
 
 	return (
-		<Button disabled={!!reservation} onClick={handleReserve}>
-			Reserve
-		</Button>
+		<Dialog>
+			<DialogTrigger asChild>
+				<Button disabled={!!reservation}>Reserve</Button>
+			</DialogTrigger>
+			<DialogContent>
+				<DialogHeader>
+					<DialogTitle>Reserve item</DialogTitle>
+					<DialogDescription>
+						<div className="flex flex-col gap-y-3">
+							<p>How would you like to reserve this item?</p>
+							<div className="flex flex-col gap-y-3 my-3">
+								<p className="text-left">
+									<span className="font-medium">Publicly:</span> All users that can access the item
+									can see that you have reserved it.
+								</p>
+								<p className="text-left">
+									<span className="font-medium">Anonymously:</span> Your identiy will be hidden from
+									all users.
+								</p>
+							</div>
+							<p className="text-left">
+								In both cases the item will be marked as reserved for everyone except the owner.
+							</p>
+						</div>
+					</DialogDescription>
+				</DialogHeader>
+				<Button onClick={handleReservePublicly}>Publicly</Button>
+				<Button onClick={handleReserveAnonymously}>Anonymously</Button>
+			</DialogContent>
+		</Dialog>
 	);
 };
 
