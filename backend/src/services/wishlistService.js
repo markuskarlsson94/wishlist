@@ -471,7 +471,8 @@ const wishlistService = {
 
 			for (const reservation of reservations) {
 				if (await canViewWishlistItem(user, reservation.item)) {
-					filteredReservations.push(reservation);
+					const r = createFilteredReservation(user, reservation);
+					filteredReservations.push(r);
 				}
 			}
 
