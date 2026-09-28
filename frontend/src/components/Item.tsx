@@ -41,6 +41,7 @@ import LoadingSpinner from "./LoadingSpinner";
 import CopyLinkButton from "./CopyLinkButton";
 import ReservationType from "@/types/ReservationType";
 import Infobox from "./Infobox";
+import ProfilePictureAnonymous from "./ProfilePictureAnonymous";
 
 const ReservationInfoWrapper = ({ children }: { children: React.ReactNode }) => {
 	return <div className="flex gap-x-2 items-center">{children}</div>;
@@ -86,7 +87,7 @@ const ReservationInfo = ({ reservation }: { reservation: ReservationType }) => {
 	if (reservation.isAnonymous) {
 		return (
 			<ReservationInfoWrapper>
-				<ProfilePicture src={undefined} />
+				<ProfilePictureAnonymous />
 				<div className="flex flex-col">
 					<p className="[overflow-wrap:anywhere]">Reserved by an anonymous user</p>
 					<p className="text-sm text-gray-400 [overflow-wrap:anywhere]">
