@@ -1061,6 +1061,7 @@ describe("reservations", () => {
 	});
 
 	describe("reseravtion fulfillments", () => {
+		let wishlistId;
 		let itemId;
 		let reservationId;
 
@@ -1069,12 +1070,12 @@ describe("reservations", () => {
 			let reseravtions = await wishlistService.reservation.getByUserId(user1, user1Id);
 			expect(reseravtions.length).toBe(0);
 
-			const wishlist = await wishlistService.add(user2, user2Id, "w3", "", publicType());
+			wishlistId = await wishlistService.add(user2, user2Id, "wishlist", "", publicType());
 
 			itemId = await wishlistService.item.add({
 				user: user2,
-				wishlist: wishlist,
-				title: "i3",
+				wishlist: wishlistId,
+				title: "item",
 				description: "",
 			});
 
@@ -1085,6 +1086,7 @@ describe("reservations", () => {
 
 		afterAll(async () => {
 			await wishlistService.reservation.clearByUserId(user1, user1Id);
+			await wishlistService.remove(user2, wishlistId);
 		});
 
 		it("should only allow reserver and admin to fulfill", async () => {
