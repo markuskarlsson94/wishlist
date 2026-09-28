@@ -17,7 +17,7 @@ import RoundedRect from "./RoundedRect";
 import { Button, buttonVariants } from "./ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import { Check, Copy, EllipsisVertical, Share2Icon } from "lucide-react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
 import ItemForm from "@/forms/ItemForm";
 import {
 	AlertDialog,
@@ -36,54 +36,86 @@ import NotFound from "./NotFound";
 import { useGetWishlist } from "@/hooks/wishlist";
 import { useGetUser } from "@/hooks/user";
 import ProfilePicture from "./ProfilePicture";
-import UserType from "@/types/UserType";
 import Navbar from "./Navbar";
 import LoadingSpinner from "./LoadingSpinner";
 import CopyLinkButton from "./CopyLinkButton";
 import ReservationType from "@/types/ReservationType";
 import Infobox from "./Infobox";
 
-const ReservationInfo = ({ reserver }: { reserver: UserType }) => {
+const ReservationInfoWrapper = ({ children }: { children: React.ReactNode }) => {
+	return <div className="flex gap-x-2 items-center">{children}</div>;
+};
+
+const ReservationInfo = ({ reservation }: { reservation: ReservationType }) => {
 	const { userId } = useAuth();
 	const params = useParams<{ id: string }>();
 	const id = Number(params.id);
+	const { user: reserver } = useGetUser(reservation.user);
 	const { item } = useGetItem(id);
 	const { user: itemOwner } = useGetUser(item?.owner);
 	const reservedByCurrentUser = reserver?.id === userId;
 
+	if (reservedByCurrentUser) {
+		if (reservation.isAnonymous) {
+			return (
+				<ReservationInfoWrapper>
+					<ProfilePicture src={reserver?.profilePicture} />
+					<div className="flex flex-col">
+						<p>Reserved anonymously by you</p>
+						<p className="text-sm text-gray-400 [overflow-wrap:anywhere]">
+							{itemOwner?.firstName} can't see your reservation and your identity is hidden for all
+						</p>
+					</div>
+				</ReservationInfoWrapper>
+			);
+		}
+
+		return (
+			<ReservationInfoWrapper>
+				<ProfilePicture src={reserver?.profilePicture} />
+				<div className="flex flex-col">
+					<p>Reserved by you</p>
+					<p className="text-sm text-gray-400 [overflow-wrap:anywhere]">
+						{itemOwner?.firstName} can't see your reservation
+					</p>
+				</div>
+			</ReservationInfoWrapper>
+		);
+	}
+
+	if (reservation.isAnonymous) {
+		return (
+			<ReservationInfoWrapper>
+				<ProfilePicture src={undefined} />
+				<div className="flex flex-col">
+					<p className="[overflow-wrap:anywhere]">Reserved by an anonymous user</p>
+					<p className="text-sm text-gray-400 [overflow-wrap:anywhere]">
+						{itemOwner?.firstName} can't see this reservation
+					</p>
+				</div>
+			</ReservationInfoWrapper>
+		);
+	}
+
 	return (
-		<div className="flex gap-x-2 items-center">
-			{reservedByCurrentUser ? (
-				<>
-					<ProfilePicture src={reserver.profilePicture} />
-					<div className="flex flex-col">
-						<p> You have reserved this item</p>
-						<p className="text-sm text-gray-400 [overflow-wrap:anywhere]">
-							{itemOwner?.firstName} can't see your reservation
-						</p>
-					</div>
-				</>
-			) : (
-				<>
-					<NavLink to={`/user/${reserver.id}`}>
-						<ProfilePicture src={reserver.profilePicture} />
+		<ReservationInfoWrapper>
+			<NavLink to={`/user/${reserver?.id}`}>
+				<ProfilePicture src={reserver?.profilePicture} />
+			</NavLink>
+			<div className="flex flex-col">
+				<p>
+					<span>Reserved by </span>
+					<NavLink to={`/user/${reserver?.id}`}>
+						<span className="font-medium [overflow-wrap:anywhere]">
+							{reserver?.firstName} {reserver?.lastName}
+						</span>
 					</NavLink>
-					<div className="flex flex-col">
-						<p>
-							<NavLink to={`/user/${reserver.id}`}>
-								<span className="font-medium [overflow-wrap:anywhere]">
-									{reserver.firstName} {reserver.lastName}
-								</span>
-							</NavLink>
-							<span> has reserved this item</span>
-						</p>
-						<p className="text-sm text-gray-400 [overflow-wrap:anywhere]">
-							{itemOwner?.firstName} can't see this reservation
-						</p>
-					</div>
-				</>
-			)}
-		</div>
+				</p>
+				<p className="text-sm text-gray-400 [overflow-wrap:anywhere]">
+					{itemOwner?.firstName} can't see this reservation
+				</p>
+			</div>
+		</ReservationInfoWrapper>
 	);
 };
 
@@ -452,9 +484,9 @@ const Item = () => {
 							</div>
 						)}
 
-						{reserver && !isOwner && (
+						{reservation && !isOwner && (
 							<div className="mt-6">
-								<ReservationInfo reserver={reserver} />
+								<ReservationInfo reservation={reservation} />
 							</div>
 						)}
 
