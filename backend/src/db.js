@@ -506,12 +506,13 @@ const db = {
 					.where({ id });
 			},
 
-			reserve: async (user, id, amount) => {
+			reserve: async (user, id, isAnonymous, amount) => {
 				return (
 					await dbClient(reservationsTable)
 						.insert({
 							user,
 							item: id,
+							isAnonymous,
 							amount,
 						})
 						.returning("id")
