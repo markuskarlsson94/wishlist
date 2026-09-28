@@ -1145,6 +1145,42 @@ describe("reservations", () => {
 			).rejects.toThrowError(errorMessages.unauthorizedToViewReservationInfo.message);
 		});
 	});
+
+	describe("anonymous reservations", () => {
+		let wishlistId;
+		let itemId;
+		let reservationId;
+
+		beforeAll(async () => {
+			wishlistId = await wishlistService.add(user2, user2Id, "wishlist", "", publicType());
+
+			itemId = await wishlistService.item.add({
+				user: user2,
+				wishlist: wishlistId,
+				title: "item",
+				description: "",
+			});
+
+			reservationId = await wishlistService.item.reserve(user1, itemId, { isAnonymous: true });
+			const reseravtions = await wishlistService.reservation.getByUserId(user1, user1Id);
+			expect(reseravtions.length).toBe(1);
+		});
+
+		afterAll(async () => {
+			await wishlistService.remove(user2, wishlistId);
+		});
+
+		it("should hide identity from all users except reserver and admin", async () => {
+			let reservations = await wishlistService.reservation.getByItemId(user3, itemId);
+			expect(reservations[0].user).toBeUndefined();
+
+			reservations = await wishlistService.reservation.getByItemId(user1, itemId);
+			expect(reservations[0].user).toBe(user1.id);
+
+			reservations = await wishlistService.reservation.getByItemId(admin, itemId);
+			expect(reservations[0].user).toBe(user1.id);
+		});
+	});
 });
 
 describe("removing wishlist items", () => {
