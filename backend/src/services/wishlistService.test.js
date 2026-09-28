@@ -624,7 +624,7 @@ describe("reservations", () => {
 		it("should not allow user to reserve less than one item", async () => {
 			await expect(
 				(async () => {
-					await wishlistService.item.reserve(user1, item1AdminId, 0);
+					await wishlistService.item.reserve(user1, item1AdminId, { amount: 0 });
 				})(),
 			).rejects.toThrowError(errorMessages.amountToReserveTooSmall.message);
 		});
@@ -632,7 +632,7 @@ describe("reservations", () => {
 		it("should not allow user to reserve more than available amount", async () => {
 			await expect(
 				(async () => {
-					await wishlistService.item.reserve(user1, item1AdminId, 2);
+					await wishlistService.item.reserve(user1, item1AdminId, { amount: 2 });
 				})(),
 			).rejects.toThrowError(errorMessages.amountToReserveTooLarge.message);
 		});
@@ -688,7 +688,7 @@ describe("reservations", () => {
 			expect(reservation.item).toBe(item3AdminId);
 			expect(reservation.amount).toBe(1);
 
-			reservation1User2Id = await wishlistService.item.reserve(user2, item3AdminId, 2);
+			reservation1User2Id = await wishlistService.item.reserve(user2, item3AdminId, { amount: 2 });
 
 			reservation = await wishlistService.reservation.getById(user2, reservation1User2Id);
 			expect(reservation.id).toBe(reservation1User2Id);
@@ -700,7 +700,7 @@ describe("reservations", () => {
 		it("should not allow user to reserve fully reserved item", async () => {
 			await expect(
 				(async () => {
-					await wishlistService.item.reserve(user2, item1AdminId, 1);
+					await wishlistService.item.reserve(user2, item1AdminId);
 				})(),
 			).rejects.toThrowError(errorMessages.amountToReserveTooLarge.message);
 		});
@@ -720,7 +720,7 @@ describe("reservations", () => {
 			let item = await wishlistService.item.getById(user1, item3user1Id);
 			expect(item.amount).toBe(2);
 
-			await wishlistService.item.reserve(user2, item3user1Id, 1);
+			await wishlistService.item.reserve(user2, item3user1Id);
 
 			item = await wishlistService.item.getById(user1, item3user1Id);
 			expect(item.amount).toBe(2);
