@@ -45,10 +45,10 @@ type UseCreateReservationConfig = {
 export const useCreateReservation = (config: UseCreateReservationConfig) => {
 	const queryClient = useQueryClient();
 
-	const createReservationFn = async (itemId: number) => {
+	const createReservationFn = async ({ itemId, isAnonymous }: { itemId: number; isAnonymous: boolean }) => {
 		if (!config?.userId) return;
 
-		await axiosInstance.post(`/item/${itemId}/reserve`);
+		await axiosInstance.post(`/item/${itemId}/reserve`, { isAnonymous });
 
 		queryClient.invalidateQueries({ queryKey: ["reservations", config.userId] });
 		queryClient.invalidateQueries({ queryKey: ["itemReservation", itemId] });
@@ -68,8 +68,8 @@ export const useCreateReservation = (config: UseCreateReservationConfig) => {
 		},
 	});
 
-	const createReservation = (itemId: number) => {
-		createReservationMutation.mutate(itemId);
+	const createReservation = (itemId: number, isAnonymous: boolean) => {
+		createReservationMutation.mutate({ itemId, isAnonymous });
 	};
 
 	return createReservation;
