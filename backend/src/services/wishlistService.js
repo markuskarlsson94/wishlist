@@ -654,8 +654,16 @@ const createFilteredReservation = (user, reservation) => {
 
 	if (isAdmin || isOwner) return reservation;
 
-	const { fulfilled, ...rest } = reservation;
-	return rest;
+	const { fulfilled, user: reserver, ...rest } = reservation;
+
+	if (reservation.isAnonymous) {
+		return rest;
+	}
+
+	return {
+		user: reserver,
+		...rest,
+	};
 };
 
 export default wishlistService;
