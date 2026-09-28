@@ -192,8 +192,9 @@ wishlistRouter.post("/item/:id/reserve", isAuthenticated(), async (req, res) => 
 		// const { amount } = req.body; // TODO: implement amount
 		const id = req.params.id;
 		const user = req.user;
+		const { isAnonymous } = req.body;
 
-		const reservation = await wishlistService.item.reserve(user, id);
+		const reservation = await wishlistService.item.reserve(user, id, { isAnonymous });
 		logger.info(`Wishlist item (id: ${id}) reserved by user (id: ${user.id})`);
 
 		res.status(StatusCodes.OK).json({
