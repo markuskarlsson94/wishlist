@@ -28,6 +28,7 @@ import ItemType from "@/types/ItemType";
 import { useGetUser } from "@/hooks/user";
 import { Badge } from "./ui/badge";
 import ProfilePicture from "./ProfilePicture";
+import ProfilePictureAnonymous from "./ProfilePictureAnonymous";
 
 const Comment = ({ comment, item }: { comment: CommentType; item: ItemType }) => {
 	const { id: itemId, owner } = item;
@@ -153,7 +154,11 @@ const Comment = ({ comment, item }: { comment: CommentType; item: ItemType }) =>
 			return <ProfilePicture src={user?.profilePicture ?? undefined} />;
 		}
 
-		return <ProfilePicture src={undefined} />;
+		return comment.anonymizedUserId ? (
+			<ProfilePictureAnonymous index={comment.anonymizedUserId + itemId} />
+		) : (
+			<ProfilePictureAnonymous />
+		);
 	};
 
 	const CommentContent = ({ title, comment }: { title: string; comment: CommentType }) => {
