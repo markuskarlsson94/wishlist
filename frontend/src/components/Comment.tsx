@@ -148,7 +148,7 @@ const Comment = ({ comment, item }: { comment: CommentType; item: ItemType }) =>
 	);
 
 	const CommentProfilePicture = ({ comment }: { comment: CommentType }) => {
-		if (comment.isAdmin) return <></>;
+		if (comment.isAdmin) return <ProfilePicture src={"./../../profileAdmin.png"} />;
 
 		if (comment.isItemOwner) {
 			return <ProfilePicture src={user?.profilePicture ?? undefined} />;
