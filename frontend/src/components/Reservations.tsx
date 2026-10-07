@@ -21,8 +21,9 @@ import {
 import { useGetUser } from "@/hooks/user";
 import { useGetWishlist } from "@/hooks/wishlist";
 import ProfilePicture from "./ProfilePicture";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import LoadingSpinner from "./LoadingSpinner";
+import { stringToBoolean } from "@/utils/wishlist/utils";
 
 const ReservationItem = ({ reservation }: { reservation: ReservationType }) => {
 	const { userId } = useAuth();
@@ -142,22 +143,38 @@ const UserCard = ({ reservations }: { reservations: ReservationType[] }) => {
 const Reservations = () => {
 	const { userId } = useAuth();
 	const { reservations, isSuccess, isLoading } = useGetReservations(userId);
+	const [hideFulfilled, setHideFulfilled] = useState<boolean>(
+		stringToBoolean(localStorage.getItem("hideFulfilledReservations")) || false,
+	);
 
-	const groupedReservations = useMemo(() => {
+	const { groupedReservations, hiddenCount } = useMemo(() => {
 		const grouped: { [key: string]: ReservationType[] } = {};
+		let keptCount = 0;
 
 		for (const reservation of reservations) {
 			const key = reservation.owner?.toString();
 			if (!key) continue;
 
+			if (hideFulfilled && reservation.fulfilled) continue;
+
 			if (!grouped[key]) {
 				grouped[key] = [];
 			}
+
 			grouped[key].push(reservation);
+			keptCount++;
 		}
 
-		return Object.values(grouped);
-	}, [reservations]);
+		return {
+			groupedReservations: Object.values(grouped),
+			hiddenCount: reservations.length - keptCount,
+		};
+	}, [reservations, hideFulfilled]);
+
+	const handleToggleShowFulfilled = () => {
+		localStorage.setItem("hideFulfilledReservations", (!hideFulfilled).toString());
+		setHideFulfilled(!hideFulfilled);
+	};
 
 	return (
 		<RoundedRect>
@@ -169,11 +186,16 @@ const Reservations = () => {
 						<p className="absolute left-1/2 transform -translate-x-1/2 font-medium">My Reservations</p>
 					</div>
 
-					{reservations.length === 0 && (
+					<Button onClick={handleToggleShowFulfilled}>
+						{hideFulfilled ? `Show gifted reservations (${hiddenCount})` : "Hide gifted reservations"}
+					</Button>
+
+					{groupedReservations.length === 0 && (
 						<div className="flex">
 							<p className="m-auto text-2xl font-medium text-gray-300">No reservations</p>
 						</div>
 					)}
+
 					<div className="flex flex-col gap-y-6">
 						{groupedReservations.map((reservations: ReservationType[], groupIndex) => (
 							<UserCard reservations={reservations} key={groupIndex} />
