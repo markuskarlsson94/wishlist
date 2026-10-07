@@ -30,3 +30,8 @@ export const getFormattedType = (type: WishlistTypeType): WishlistTypeInfoType =
 			};
 	}
 };
+
+export const stringToBoolean = (val: string | null): boolean => {
+	if (val === "true") return true;
+	return false;
+};
