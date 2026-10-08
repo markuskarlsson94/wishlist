@@ -152,8 +152,7 @@ const Reservations = () => {
 		let keptCount = 0;
 
 		for (const reservation of reservations) {
-			const key = reservation.owner?.toString();
-			if (!key) continue;
+			const key = reservation.owner.toString();
 
 			if (hideFulfilled && reservation.fulfilled) continue;
 
