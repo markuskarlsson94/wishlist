@@ -147,12 +147,15 @@ const Reservations = () => {
 		stringToBoolean(localStorage.getItem("hideFulfilledReservations")) || false,
 	);
 
-	const { groupedReservations, hiddenCount } = useMemo(() => {
+	const { groupedReservations, hiddenCount, anyFulfilled } = useMemo(() => {
 		const grouped: { [key: string]: ReservationType[] } = {};
 		let keptCount = 0;
+		let anyFulfilled = false;
 
 		for (const reservation of reservations) {
 			const key = reservation.owner.toString();
+
+			if (reservation.fulfilled) anyFulfilled = true;
 
 			if (hideFulfilled && reservation.fulfilled) continue;
 
@@ -167,6 +170,7 @@ const Reservations = () => {
 		return {
 			groupedReservations: Object.values(grouped),
 			hiddenCount: reservations.length - keptCount,
+			anyFulfilled,
 		};
 	}, [reservations, hideFulfilled]);
 
@@ -185,13 +189,19 @@ const Reservations = () => {
 						<p className="absolute left-1/2 transform -translate-x-1/2 font-medium">My Reservations</p>
 					</div>
 
-					<Button onClick={handleToggleShowFulfilled}>
-						{hideFulfilled ? `Show gifted reservations (${hiddenCount})` : "Hide gifted reservations"}
-					</Button>
+					{anyFulfilled && (
+						<Button onClick={handleToggleShowFulfilled}>
+							{hideFulfilled
+								? `Show all reservations (${hiddenCount} hidden)`
+								: "Hide gifted reservations"}
+						</Button>
+					)}
 
 					{groupedReservations.length === 0 && (
 						<div className="flex">
-							<p className="m-auto text-2xl font-medium text-gray-300">No reservations</p>
+							<p className="m-auto text-2xl font-medium text-gray-300">
+								{hiddenCount > 0 ? "No ungifted reservations" : "No reservations"}
+							</p>
 						</div>
 					)}
 
