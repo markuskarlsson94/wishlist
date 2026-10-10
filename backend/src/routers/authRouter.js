@@ -70,10 +70,13 @@ authRouter.post("/refresh", async (req, res) => {
 });
 
 authRouter.get("/me", isAuthenticated(), async (req, res) => {
+	const { id, role, isAdmin } = req.user;
+
 	res.json({
 		user: {
-			id: req.user.id,
-			isAdmin: req.user.role === adminRole(),
+			id,
+			role,
+			isAdmin,
 		},
 	});
 });
