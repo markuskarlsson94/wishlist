@@ -292,7 +292,7 @@ const wishlistService = {
 		},
 
 		comment: {
-			add: async (user, itemId, userId, comment, asAdmin = false) => {
+			add: async (user, itemId, userId, comment) => {
 				if (!(await canViewWishlistItem(user, itemId))) {
 					throw new ErrorMessage(errorMessages.wishlistItemNotFound);
 				}
@@ -301,14 +301,10 @@ const wishlistService = {
 					throw new ErrorMessage(errorMessages.unauthorizedToAddComment);
 				}
 
-				if (asAdmin && user.role !== adminRole()) {
-					asAdmin = false;
-				}
-
 				let commentId;
 
 				try {
-					commentId = await db.wishlist.item.comment.add(itemId, userId, comment, asAdmin);
+					commentId = await db.wishlist.item.comment.add(itemId, userId, comment, user.role === adminRole());
 				} catch (error) {
 					logger.error(error.message);
 					throw new ErrorMessage(errorMessages.unableToAddComment);
