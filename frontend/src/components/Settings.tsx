@@ -8,6 +8,7 @@ import { useInvalidateCurrentUser, useGetRoles, useGetUser } from "@/hooks/user"
 import { useAuth } from "@/contexts/AuthContext";
 import { Checkbox } from "./ui/checkbox";
 import { useState } from "react";
+import { Field, FieldLabel } from "./ui/field";
 
 const Settings = () => {
 	const { userId, isAdmin, role } = useAuth();
@@ -47,10 +48,14 @@ const Settings = () => {
 						)}
 						<ProfilePictureDialog />
 						{isAdmin && (
-							<div className="flex gap-x-2 items-center">
-								<Checkbox checked={requestedRole === adminRole} onClick={handleToggleAdminMode} />
-								<p>Admin mode</p>
-							</div>
+							<Field orientation={"horizontal"}>
+								<Checkbox
+									checked={requestedRole === adminRole}
+									onClick={handleToggleAdminMode}
+									id="adminMode"
+								/>
+								<FieldLabel htmlFor="adminMode">Admin mode</FieldLabel>
+							</Field>
 						)}
 						<div className="h-2" />
 						<UserDeleteDialog />
