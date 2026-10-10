@@ -57,7 +57,7 @@ const Settings = () => {
 								<FieldLabel htmlFor="adminMode">Admin mode</FieldLabel>
 							</Field>
 						)}
-						<div className="h-2" />
+						<div className="h-12" />
 						<UserDeleteDialog />
 					</div>
 				</div>
