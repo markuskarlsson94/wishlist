@@ -3,6 +3,7 @@ import axiosInstance from "../axiosInstance";
 import UserType from "../types/UserType";
 import { AxiosError } from "axios";
 import { StatusCodes } from "http-status-codes";
+import RoleType from "../types/RoleType";
 
 type CurrentUserResponse = {
 	data: {
@@ -233,6 +234,18 @@ export const useUseGoogleProfilePicture = (config?: UseUseGoogleProfilePictureCo
 	};
 
 	return { useGoogleProfilePicture, ...mutation };
+};
+
+export const useGetRoles = () => {
+	const { data, ...rest } = useQuery({
+		queryKey: ["roles"],
+		queryFn: () => axiosInstance.get("/user/roles"),
+	});
+
+	const userRole = data?.data.roles.find((r: RoleType) => r.name === "user")?.id;
+	const adminRole = data?.data.roles.find((r: RoleType) => r.name === "admin")?.id;
+
+	return { roles: data?.data.roles, userRole, adminRole, ...rest };
 };
 
 const userQueryKey = (id: number) => {
