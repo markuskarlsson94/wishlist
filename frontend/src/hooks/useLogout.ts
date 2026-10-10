@@ -22,6 +22,7 @@ export const useLogout = (config?: UseLogoutConfig) => {
 		onSettled: () => {
 			localStorage.removeItem("accessToken");
 			localStorage.removeItem("refreshToken");
+			localStorage.removeItem("requestedRole");
 			setIsAuthenticated(false);
 			setUserId(undefined);
 			queryClient.removeQueries({ queryKey: ["user"] });
