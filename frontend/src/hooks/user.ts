@@ -9,6 +9,7 @@ type CurrentUserResponse = {
 	data: {
 		user: {
 			id: number;
+			role: number;
 			isAdmin: boolean;
 		};
 	};
