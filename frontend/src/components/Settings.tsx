@@ -4,12 +4,28 @@ import PasswordUpdateDialog from "./dialogs/PasswordUpdateDialog";
 import NameUpdateDialog from "./dialogs/NameUpdateDialog";
 import UserDeleteDialog from "./dialogs/UserDeleteDialog";
 import ProfilePictureDialog from "./ProfilePictureDialog";
-import { useGetUser } from "@/hooks/user";
+import { useInvalidateCurrentUser, useGetRoles, useGetUser } from "@/hooks/user";
 import { useAuth } from "@/contexts/AuthContext";
+import { Checkbox } from "./ui/checkbox";
+import { useState } from "react";
 
 const Settings = () => {
-	const { userId } = useAuth();
+	const { userId, isAdmin, role } = useAuth();
 	const { user } = useGetUser(userId);
+	const { userRole, adminRole } = useGetRoles();
+	const invalidateCurrentUser = useInvalidateCurrentUser();
+	const storedRole = localStorage.getItem("requestedRole");
+	const [requestedRole, setRequestedRole] = useState<number | null>(storedRole !== null ? Number(storedRole) : null);
+
+	const handleToggleAdminMode = () => {
+		if (user) {
+			const currentRole = requestedRole ?? role;
+			const newRole = currentRole === userRole ? adminRole : userRole;
+			localStorage.setItem("requestedRole", newRole);
+			setRequestedRole(newRole);
+			invalidateCurrentUser();
+		}
+	};
 
 	return (
 		<RoundedRect>
@@ -30,6 +46,12 @@ const Settings = () => {
 							</>
 						)}
 						<ProfilePictureDialog />
+						{isAdmin && (
+							<div className="flex gap-x-2 items-center">
+								<Checkbox checked={requestedRole === adminRole} onClick={handleToggleAdminMode} />
+								<p>Admin mode</p>
+							</div>
+						)}
 						<div className="h-2" />
 						<UserDeleteDialog />
 					</div>
