@@ -15,21 +15,34 @@ export const passportErrors = {
 const options = {
 	jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
 	secretOrKey: process.env.ACCESS_SECRET_KEY,
+	passReqToCallback: true,
 };
 
 passport.use(
-	new JwtStrategy(options, async (payload, done) => {
+	new JwtStrategy(options, async (req, payload, done) => {
 		const user = await db.user.getById(payload.id);
 
-		if (user) {
-			// passport sets req.user to the object in the second parameter
-			return done(null, {
-				id: user.id,
-				role: user.role,
-			});
+		if (!user) return done(null, false);
+
+		const isAdmin = user.role === adminRole();
+		const headerValue = req.headers["x-requested-role"];
+		let grantedRole = userRole();
+
+		if (isAdmin && headerValue !== undefined && headerValue !== "") {
+			const requestedRole = Number(headerValue);
+			const allowedRoles = [userRole(), adminRole()];
+
+			if (!Number.isNaN(requestedRole) && allowedRoles.includes(requestedRole)) {
+				grantedRole = requestedRole;
+			}
 		}
 
-		return done(null, false);
+		// passport sets req.user to the object in the second parameter
+		return done(null, {
+			id: user.id,
+			role: grantedRole,
+			isAdmin,
+		});
 	}),
 );
 
