@@ -249,6 +249,16 @@ export const useGetRoles = () => {
 	return { roles: data?.data.roles, userRole, adminRole, ...rest };
 };
 
+export const useInvalidateCurrentUser = () => {
+	const queryClient = useQueryClient();
+
+	const invalidateCurrentUser = () => {
+		queryClient.invalidateQueries({ queryKey: ["user"] });
+	};
+
+	return invalidateCurrentUser;
+};
+
 const userQueryKey = (id: number) => {
 	return ["user", id];
 };
