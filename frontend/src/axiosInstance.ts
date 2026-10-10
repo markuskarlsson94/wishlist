@@ -18,6 +18,12 @@ axiosInstance.interceptors.request.use(
 			config.headers["Authorization"] = `Bearer ${token}`;
 		}
 
+		const requestedRole = localStorage.getItem("requestedRole");
+
+		if (requestedRole) {
+			config.headers["X-Requested-Role"] = requestedRole;
+		}
+
 		return config;
 	},
 	(error) => {
