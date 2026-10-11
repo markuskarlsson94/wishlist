@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import ItemInputType from "../types/ItemInputType";
 import { useParams, useNavigate, NavLink } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
-import { useCreateItem, useGetItems, useItemHasFulfilledReservation } from "../hooks/item";
+import { useCreateItem, useGetItems } from "../hooks/item";
 import { useDeleteWishlist, useGetWishlist, useUpdateWishlist } from "../hooks/wishlist";
 import useWishlistTypes from "../hooks/useWishlistTypes";
 import WishlistInputType from "../types/WishlistInputType";
@@ -33,8 +33,7 @@ import HoverCard from "./HoverCard";
 import EditIcon from "./icons/EditIcon";
 import DeleteIcon from "./icons/DeleteIcon";
 import Tooltip from "./Tooltip";
-import { useGetReservations } from "@/hooks/reservation";
-import ReservationType from "@/types/ReservationType";
+import { useGetReservationByItemId } from "@/hooks/reservation";
 import { findFormattedType, getFormattedType } from "@/utils/wishlist/utils";
 import WishlistTypeInfoType from "@/types/WishlistTypeInfoType";
 import { Badge } from "./ui/badge";
@@ -47,13 +46,23 @@ import { StatusCodes } from "http-status-codes";
 import { AxiosError } from "axios";
 import CopyLinkButton from "./CopyLinkButton";
 
-const Item = ({ item }: { item: ItemType }) => {
+const ReservationBadge = ({ item }: { item: ItemType }) => {
 	const { userId } = useAuth();
+	const { reservation } = useGetReservationByItemId(item.id);
+	const reserved = !!reservation;
+
+	if (reservation?.fulfilled) return <Badge>Gifted</Badge>;
+
+	if (reservation?.user === userId) return <Badge className="whitespace-nowrap">Reserved by you</Badge>;
+
+	if (reserved) return <Badge variant={"secondary"}>Reserved</Badge>;
+
+	return <></>;
+};
+
+const Item = ({ item }: { item: ItemType }) => {
 	const { comments } = useGetComments(item.id);
 	const commentCount = comments.length;
-	const { reservations } = useGetReservations(userId);
-	const reserved = reservations.some((r: ReservationType) => r.item === item.id);
-	const { hasFulfilledReservation } = useItemHasFulfilledReservation(item.id);
 
 	return (
 		<div>
@@ -67,11 +76,10 @@ const Item = ({ item }: { item: ItemType }) => {
 									{item.description}
 								</CardDescription>
 							</div>
-							<div className="flex gap-x-3 ml-auto">
-								{reserved && <Badge>Reserved by you</Badge>}
-								{hasFulfilledReservation && <Badge>Gifted</Badge>}
+							<div className="flex flex-wrap gap-x-3 gap-y-2 ml-auto">
+								<ReservationBadge item={item} />
 								{commentCount > 0 && (
-									<Badge variant={"secondary"}>{`${commentCount} ${
+									<Badge variant={"secondary"} className="whitespace-nowrap">{`${commentCount} ${
 										commentCount > 1 ? "comments" : "comment"
 									}`}</Badge>
 								)}
