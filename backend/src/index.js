@@ -46,3 +46,5 @@ const populateDB = false;
 if (populateDB) {
 	await db.populate();
 }
+
+logger.info(`Running node version ${process.versions.node}`);
