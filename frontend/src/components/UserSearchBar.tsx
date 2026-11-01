@@ -114,6 +114,7 @@ const UserSearchBar = () => {
 						onKeyDown={handleKeyDown}
 						onClear={handleClear}
 						disabled={disabled}
+						className="w-64 md:w-80 pr-16"
 					/>
 				</div>
 				<PopoverAnchor />
