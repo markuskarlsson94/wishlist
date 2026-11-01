@@ -2,6 +2,7 @@ import { Search, X } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { useRef, useState } from "react";
+import { cn } from "@/lib/utils";
 
 const Searchbar = ({
 	placeholder,
@@ -10,6 +11,7 @@ const Searchbar = ({
 	onChange,
 	onKeyDown,
 	onClear,
+	className,
 }: {
 	placeholder?: string;
 	disabled: boolean;
@@ -17,6 +19,7 @@ const Searchbar = ({
 	onChange?: (input: string) => void;
 	onKeyDown?: (key: string) => void;
 	onClear?: () => void;
+	className?: string;
 }) => {
 	const [input, setinput] = useState<string>("");
 	const inputRef = useRef<HTMLInputElement>(null);
@@ -65,7 +68,7 @@ const Searchbar = ({
 				type={"text"}
 				ref={inputRef}
 				placeholder={placeholder}
-				className="w-64 md:w-80 bg-white pr-16"
+				className={cn("bg-white", className)}
 				onChange={(e) => handleInputChange(e.target.value)}
 				onKeyDown={handleKeyDown}
 			/>
