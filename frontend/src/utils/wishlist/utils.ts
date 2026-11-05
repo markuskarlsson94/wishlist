@@ -20,6 +20,12 @@ export const getFormattedType = (type: WishlistTypeType): WishlistTypeInfoType =
 				name: "Friends only",
 				description: "Friends only-wishlists can only be seen by your friends",
 			};
+		case "invite":
+			return {
+				id: type.id,
+				name: "Invite",
+				description: "Invite-wishlist can only be seen by users that you add on the invite list",
+			};
 		case "hidden":
 			return { id: type.id, name: "Private", description: "Private wishlists can only be seen by you" };
 		default:
