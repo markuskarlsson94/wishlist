@@ -18,6 +18,7 @@ export const waitlistTable = "waitlist";
 export const passwordTokenTable = "passwordReset";
 export const notificationTypeTable = "notificationTypes";
 export const notificationTable = "notifications";
+export const invitesTable = "invites";
 
 let dbClient;
 
@@ -599,6 +600,31 @@ const db = {
 				getAll: async () => {
 					return await dbClient(commentsTable).select("*");
 				},
+			},
+		},
+
+		invitations: {
+			add: async (wishlistId, userId) => {
+				await dbClient(invitesTable).insert({ wishlist: wishlistId, user: userId });
+			},
+
+			getByWishlistId: async (wishlistId) => {
+				return (await dbClient(invitesTable).select("user").where({ wishlist: wishlistId })).map(
+					(res) => res.user,
+				);
+			},
+
+			remove: async (wishlistId, userId) => {
+				await dbClient(invitesTable).del().where({ wishlist: wishlistId, user: userId });
+			},
+
+			exists: async (wishlistId, userId) => {
+				const invite = await dbClient(invitesTable)
+					.select("id")
+					.where({ wishlist: wishlistId, user: userId })
+					.first();
+
+				return !!invite;
 			},
 		},
 	},
