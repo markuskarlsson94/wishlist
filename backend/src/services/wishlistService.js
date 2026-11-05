@@ -3,7 +3,7 @@ import ErrorMessage from "../errors/ErrorMessage.js";
 import errorMessages from "../errors/errorMessages.js";
 import logger from "../logger.js";
 import { adminRole } from "../roles.js";
-import { publicType, allTypes, hiddenType, friendType } from "../wishlistTypes.js";
+import { publicType, allTypes, hiddenType, friendType, inviteType } from "../wishlistTypes.js";
 import { PostgresError } from "pg-error-enum";
 import { canManageUser, usersAreFriends } from "./userService.js";
 import notificationService from "./notificationService.js";
@@ -103,7 +103,7 @@ const wishlistService = {
 
 	getTypes: async () => {
 		try {
-			return (await db.wishlist.getTypes()).filter((type) => type.name !== "invite");
+			return await db.wishlist.getTypes();
 		} catch (error) {
 			logger.error(error.message);
 			throw new ErrorMessage(errorMessages.serverError);
@@ -539,6 +539,52 @@ const wishlistService = {
 			await db.reservation.remove(id);
 		},
 	},
+
+	invitations: {
+		add: async (user, wishlistId, userId) => {
+			if (!(await canManageWishlist(user, wishlistId))) {
+				throw new ErrorMessage(errorMessages.wishlistNotFound);
+			}
+
+			if (user.id === userId) {
+				throw new ErrorMessage(errorMessages.unableToInviteSameUser);
+			}
+
+			try {
+				await db.wishlist.invitations.add(wishlistId, userId);
+			} catch (error) {
+				if (error?.code === PostgresError.UNIQUE_VIOLATION) {
+					throw new ErrorMessage(errorMessages.userAlreadyInvited);
+				}
+
+				throw new ErrorMessage(errorMessages.serverError);
+			}
+		},
+
+		getByWishlistId: async (user, wishlistId) => {
+			if (!(await canManageWishlist(user, wishlistId))) {
+				throw new ErrorMessage(errorMessages.wishlistNotFound);
+			}
+
+			try {
+				return await db.wishlist.invitations.getByWishlistId(wishlistId);
+			} catch (error) {
+				throw new ErrorMessage(errorMessages.serverError);
+			}
+		},
+
+		remove: async (user, wishlistId, userId) => {
+			if (!(await canManageWishlist(user, wishlistId))) {
+				throw new ErrorMessage(errorMessages.wishlistNotFound);
+			}
+
+			try {
+				await db.wishlist.invitations.remove(wishlistId, userId);
+			} catch (error) {
+				throw new ErrorMessage(errorMessages.serverError);
+			}
+		},
+	},
 };
 
 const canManageWishlist = async (user, wishlistId) => {
@@ -556,13 +602,16 @@ const canViewWishlist = async (user, wishlistId) => {
 	if (user.role === adminRole() || type === publicType()) return true;
 
 	const owner = await db.wishlist.getOwner(wishlistId);
+	if (user.id === owner) return true;
 
 	if (type === friendType()) {
 		if (user.id === owner) return true;
 		return await usersAreFriends(user.id, owner);
 	}
 
-	if (user.id === owner) return true;
+	if (type === inviteType()) {
+		return await db.wishlist.invitations.exists(wishlistId, user.id);
+	}
 
 	return false;
 };
