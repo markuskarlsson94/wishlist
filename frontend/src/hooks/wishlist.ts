@@ -145,3 +145,54 @@ export const useUpdateWishlist = (config?: UseUpdateWishlistConfig) => {
 
 	return updateWishlist;
 };
+
+export const useInviteUser = () => {
+	const queryClient = useQueryClient();
+
+	const inviteFn = async ({ wishlistId, userId }: { wishlistId: number; userId: number }) => {
+		await axiosInstance.post(`/wishlist/${wishlistId}/invite`, { userId });
+		queryClient.invalidateQueries({ queryKey: ["invitations", wishlistId] });
+	};
+
+	const inviteMutation = useMutation({
+		mutationFn: inviteFn,
+	});
+
+	const invite = (wishlistId: number, userId: number) => {
+		inviteMutation.mutate({ wishlistId, userId });
+	};
+
+	return invite;
+};
+
+export const useGetInvitations = (wishlistId: number | undefined) => {
+	const { data, ...rest } = useQuery<number[]>({
+		queryKey: ["invitations", wishlistId],
+		queryFn: async () => {
+			const data = await axiosInstance.get(`/wishlist/${wishlistId}/invitations`);
+			return data.data.invitations;
+		},
+		enabled: !!wishlistId,
+	});
+
+	return { invitations: data, ...rest };
+};
+
+export const useUninviteUser = () => {
+	const queryClient = useQueryClient();
+
+	const uninviteFn = async ({ wishlistId, userId }: { wishlistId: number; userId: number }) => {
+		await axiosInstance.delete(`/wishlist/${wishlistId}/invite?userId=${userId}`);
+		queryClient.invalidateQueries({ queryKey: ["invitations", wishlistId] });
+	};
+
+	const uninviteMutation = useMutation({
+		mutationFn: uninviteFn,
+	});
+
+	const uninvite = (wishlistId: number, userId: number) => {
+		uninviteMutation.mutate({ wishlistId, userId });
+	};
+
+	return uninvite;
+};
