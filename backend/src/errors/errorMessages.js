@@ -420,6 +420,16 @@ const errorMessages = {
 		status: StatusCodes.INTERNAL_SERVER_ERROR,
 		message: "Unable to update fulfillment status",
 	},
+
+	userAlreadyInvited: {
+		status: StatusCodes.BAD_REQUEST,
+		message: "User already invited",
+	},
+
+	unableToInviteSameUser: {
+		status: StatusCodes.BAD_REQUEST,
+		message: "Unable to invite same user",
+	},
 };
 
 export default errorMessages;
