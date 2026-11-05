@@ -306,6 +306,18 @@ wishlistRouter.get("/wishlist/:id/items", isAuthenticated(), async (req, res) =>
 	}
 });
 
+wishlistRouter.get("/wishlist/:id/invitations", isAuthenticated(), async (req, res) => {
+	try {
+		const invitations = await wishlistService.invitations.getByWishlistId(req.user, Number(req.params.id));
+
+		res.status(StatusCodes.OK).json({
+			invitations,
+		});
+	} catch (error) {
+		res.status(error.status).json(error.message);
+	}
+});
+
 wishlistRouter.put("/wishlist/:id/type", isAuthenticated(), async (req, res) => {
 	try {
 		const user = req.user;
@@ -313,6 +325,36 @@ wishlistRouter.put("/wishlist/:id/type", isAuthenticated(), async (req, res) => 
 
 		res.status(StatusCodes.OK).json({
 			message: "Wishlist type updated",
+		});
+	} catch (error) {
+		res.status(error.status).json(error.message);
+	}
+});
+
+wishlistRouter.post("/wishlist/:id/invite", isAuthenticated(), async (req, res) => {
+	try {
+		const user = req.user;
+		const userId = req.body.userId;
+
+		await wishlistService.invitations.add(user, Number(req.params.id), userId);
+
+		res.status(StatusCodes.OK).json({
+			message: "User invited",
+		});
+	} catch (error) {
+		res.status(error.status).json(error.message);
+	}
+});
+
+wishlistRouter.delete("/wishlist/:id/invite", isAuthenticated(), async (req, res) => {
+	try {
+		const user = req.user;
+		const userId = Number(req.query.userId);
+
+		await wishlistService.invitations.remove(user, Number(req.params.id), userId);
+
+		res.status(StatusCodes.OK).json({
+			message: "User uninvited",
 		});
 	} catch (error) {
 		res.status(error.status).json(error.message);
