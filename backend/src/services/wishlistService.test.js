@@ -3,7 +3,7 @@ import db from "../db";
 import wishlistService from "./wishlistService";
 import { initUserRoles, adminRole, userRole } from "../roles";
 import errorMessages from "../errors/errorMessages";
-import { initWishlistTypes, publicType, hiddenType, friendType } from "../wishlistTypes";
+import { initWishlistTypes, publicType, hiddenType, friendType, inviteType } from "../wishlistTypes";
 import userService, { usersAreFriends } from "./userService";
 
 let adminId;
@@ -402,6 +402,141 @@ describe("finding wishlists", () => {
 		expect(wishlist.id).toBe(wishlistId);
 
 		await wishlistService.remove(user1, wishlistId);
+		await userService.friend.remove(user1, user1Id, user2Id);
+	});
+
+	it("should not find invite wishlists unless user is invited or admin", async () => {
+		const wishlistId = await wishlistService.add(user1, user1Id, "inviteTest", "test", inviteType());
+
+		expect(await usersAreFriends(user1Id, user2Id)).toBeFalsy();
+
+		await expect(
+			(async () => {
+				await wishlistService.getById(user2, wishlistId);
+			})(),
+		).rejects.toThrowError(errorMessages.wishlistNotFound.message);
+
+		await userService.friend.add(user1, user1Id, user2Id);
+		expect(await usersAreFriends(user1Id, user2Id)).toBeTruthy();
+
+		await expect(
+			(async () => {
+				await wishlistService.getById(user2, wishlistId);
+			})(),
+		).rejects.toThrowError(errorMessages.wishlistNotFound.message);
+
+		await wishlistService.invitations.add(user1, wishlistId, user2Id);
+
+		let wishlist = await wishlistService.getById(user2, wishlistId);
+		expect(wishlist.id).toBe(wishlistId);
+
+		expect(await usersAreFriends(user1Id, user3Id)).toBeFalsy();
+
+		await wishlistService.invitations.add(user1, wishlistId, user3Id);
+
+		wishlist = await wishlistService.getById(user3, wishlistId);
+		expect(wishlist.id).toBe(wishlistId);
+
+		wishlist = await wishlistService.getById(admin, wishlistId);
+		expect(wishlist.id).toBe(wishlistId);
+
+		await wishlistService.remove(user1, wishlistId);
+		await userService.friend.remove(user1, user1Id, user2Id);
+	});
+});
+
+describe("invite wishlists", () => {
+	let wishlistId;
+
+	beforeAll(async () => {
+		wishlistId = await wishlistService.add(user1, user1Id, "inviteTest", "test", inviteType());
+	});
+
+	afterAll(async () => {
+		await wishlistService.remove(user1, wishlistId);
+	});
+
+	it("should only allow owner and admin to invite users", async () => {
+		await expect(
+			(async () => {
+				await wishlistService.invitations.add(user2, wishlistId, user3Id);
+			})(),
+		).rejects.toThrowError(errorMessages.wishlistNotFound.message);
+
+		await wishlistService.invitations.add(user1, wishlistId, user2Id);
+		await wishlistService.invitations.add(admin, wishlistId, user3Id);
+	});
+
+	it("should only allow owner and admin to see invited users", async () => {
+		await expect(
+			(async () => {
+				await wishlistService.invitations.getByWishlistId(user2, wishlistId);
+			})(),
+		).rejects.toThrowError(errorMessages.wishlistNotFound.message);
+
+		let invitations = await wishlistService.invitations.getByWishlistId(user1, wishlistId);
+		expect(invitations.length).toBe(2);
+		expect(invitations.includes(user2Id)).toBeTruthy();
+		expect(invitations.includes(user3Id)).toBeTruthy();
+
+		invitations = await wishlistService.invitations.getByWishlistId(admin, wishlistId);
+		expect(invitations.length).toBe(2);
+		expect(invitations.includes(user2Id)).toBeTruthy();
+		expect(invitations.includes(user3Id)).toBeTruthy();
+	});
+
+	it("should persist invite list even after changing type", async () => {
+		await wishlistService.update(user1, wishlistId, { type: hiddenType() });
+		await wishlistService.update(user1, wishlistId, { type: inviteType() });
+
+		let invitations = await wishlistService.invitations.getByWishlistId(user1, wishlistId);
+		expect(invitations.length).toBe(2);
+		expect(invitations.includes(user2Id)).toBeTruthy();
+		expect(invitations.includes(user3Id)).toBeTruthy();
+	});
+
+	it("should only allow owner and admin to remove users", async () => {
+		await expect(
+			(async () => {
+				await wishlistService.invitations.remove(user2, wishlistId, user3Id);
+			})(),
+		).rejects.toThrowError(errorMessages.wishlistNotFound.message);
+
+		await wishlistService.invitations.remove(user1, wishlistId, user2Id);
+		await wishlistService.invitations.remove(admin, wishlistId, user3Id);
+	});
+
+	it("should not allow to invite owner", async () => {
+		await expect(
+			(async () => {
+				await wishlistService.invitations.add(user1, wishlistId, user1Id);
+			})(),
+		).rejects.toThrowError(errorMessages.unableToInviteSameUser.message);
+	});
+
+	it("should not allow to invite same user twice", async () => {
+		await wishlistService.invitations.add(user1, wishlistId, user2Id);
+
+		await expect(
+			(async () => {
+				await wishlistService.invitations.add(user1, wishlistId, user2Id);
+			})(),
+		).rejects.toThrowError(errorMessages.userAlreadyInvited.message);
+	});
+
+	it("should clear invites after removing wishlist", async () => {
+		const wid = await wishlistService.add(user1, user1Id, "inviteTest2", "test", inviteType());
+
+		await wishlistService.invitations.add(user1, wid, user2Id);
+		await wishlistService.invitations.add(user1, wid, user3Id);
+
+		let invitations = await db.wishlist.invitations.getByWishlistId(wid);
+		expect(invitations.length).toBe(2);
+
+		await db.wishlist.remove(wid);
+
+		invitations = await db.wishlist.invitations.getByWishlistId(wid);
+		expect(invitations.length).toBe(0);
 	});
 });
 
