@@ -1,3 +1,5 @@
+import FriendType from "@/types/FriendType";
+import UserType from "@/types/UserType";
 import WishlistTypeInfoType from "@/types/WishlistTypeInfoType";
 import WishlistTypeType from "@/types/WishlistTypeType";
 
@@ -40,4 +42,17 @@ export const getFormattedType = (type: WishlistTypeType): WishlistTypeInfoType =
 export const stringToBoolean = (val: string | null): boolean => {
 	if (val === "true") return true;
 	return false;
+};
+
+export const friendToUser = (friend: FriendType): UserType => {
+	return {
+		id: friend.userId,
+		firstName: friend.firstName,
+		lastName: friend.lastName,
+		profilePicture: friend.profilePicture,
+		createdAt: friend.createdAt,
+		email: "N/A",
+		role: -1,
+		isGoogleUser: false,
+	};
 };
