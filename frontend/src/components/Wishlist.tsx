@@ -182,24 +182,76 @@ const UninviteAlertDialog = ({
 	);
 };
 
+const Friend = ({
+	friend,
+	invitations,
+	setSelectedUser,
+	setInviteDialogOpen,
+	setUninviteDialogOpen,
+}: {
+	friend: FriendType;
+	invitations: number[] | undefined;
+	setSelectedUser: React.Dispatch<React.SetStateAction<UserType | undefined>>;
+	setInviteDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
+	setUninviteDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
+	const invited = invitations?.includes(friend.userId);
+
+	return (
+		<Card key={friend.userId} className="p-3">
+			<div className="flex gap-x-2 items-center">
+				<ProfilePicture src={friend.profilePicture} />
+				<div className="flex flex-wrap gap-y-2 items-center w-full">
+					<p className="[overflow-wrap:anywhere]">{`${friend.firstName} ${friend.lastName}`}</p>
+
+					{invited ? (
+						<Button
+							className="ml-auto"
+							variant={"secondary"}
+							onClick={() => {
+								setSelectedUser(friendToUser(friend));
+								setUninviteDialogOpen(true);
+							}}
+						>
+							Remove
+						</Button>
+					) : (
+						<Button
+							className="ml-auto"
+							onClick={() => {
+								setSelectedUser(friendToUser(friend));
+								setInviteDialogOpen(true);
+							}}
+						>
+							Add
+						</Button>
+					)}
+				</div>
+			</div>
+		</Card>
+	);
+};
+
 const SearchResultUser = ({
 	userId,
 	friends,
-	wishlist,
 	invitations,
+	setSelectedUser,
+	setInviteDialogOpen,
+	setUninviteDialogOpen,
 }: {
 	userId: number;
 	friends: FriendType[];
-	wishlist: WishlistType;
 	invitations: number[] | undefined;
+	setSelectedUser: React.Dispatch<React.SetStateAction<UserType | undefined>>;
+	setInviteDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
+	setUninviteDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
 	const { userId: viewer } = useAuth();
 	const { user } = useGetUser(userId);
-	const [uninviteDialogOpen, setUninviteDialogOpen] = useState<boolean>(false);
-	const [inviteDialogOpen, setInviteDialogOpen] = useState<boolean>(false);
 
 	const isFriend = friends?.some((friend: FriendType) => friend.userId === userId);
-	const isInvited = invitations?.includes(userId);
+	const invited = invitations?.includes(userId);
 	const isSelf = viewer === userId;
 
 	if (!user) return <></>;
@@ -218,30 +270,29 @@ const SearchResultUser = ({
 						<div>{isFriend && <Badge variant={"secondary"}>Friend</Badge>}</div>
 						<div>{isSelf && <Badge variant={"secondary"}>You</Badge>}</div>
 					</div>
-					{isInvited && (
-						<Button variant={"secondary"} className="ml-auto" onClick={() => setUninviteDialogOpen(true)}>
+					{invited && (
+						<Button
+							variant={"secondary"}
+							className="ml-auto"
+							onClick={() => {
+								setSelectedUser(user);
+								setUninviteDialogOpen(true);
+							}}
+						>
 							Remove
 						</Button>
 					)}
-					{!isInvited && !isSelf && (
-						<Button onClick={() => setInviteDialogOpen(true)} className="ml-auto">
+					{!invited && !isSelf && (
+						<Button
+							onClick={() => {
+								setSelectedUser(user);
+								setInviteDialogOpen(true);
+							}}
+							className="ml-auto"
+						>
 							Add
 						</Button>
 					)}
-
-					<UninviteAlertDialog
-						user={user}
-						wishlistId={wishlist.id}
-						open={uninviteDialogOpen}
-						onOpenChange={setUninviteDialogOpen}
-					/>
-
-					<InviteAlertDialog
-						user={user}
-						wishlistId={wishlist.id}
-						open={inviteDialogOpen}
-						onOpenChange={setInviteDialogOpen}
-					/>
 				</div>
 			</div>
 		</Card>
@@ -264,8 +315,9 @@ const InviteDialog = ({
 	const [query, setQuery] = useState<string>("");
 	let { users, isFetching, isSuccess, hasNextPage, fetchNextPage } = useSearchUser(query);
 	const [showResult, setShowResult] = useState<boolean>(false);
-	const [inviteDialogOpen, setIsInviteDialogOpen] = useState<boolean>(false);
-	const [selectedFriend, setSelectedFriend] = useState<FriendType | undefined>(undefined);
+	const [inviteDialogOpen, setInviteDialogOpen] = useState<boolean>(false);
+	const [uninviteDialogOpen, setUninviteDialogOpen] = useState<boolean>(false);
+	const [selectedUser, setSelectedUser] = useState<UserType | undefined>(undefined);
 
 	useEffect(() => {
 		if (!open) {
@@ -278,11 +330,6 @@ const InviteDialog = ({
 	useEffect(() => {
 		if (isSuccess) setShowResult(true);
 	}, [isSuccess]);
-
-	let filteredFriends: FriendType[] = [];
-	if (invitations) {
-		filteredFriends = friends.filter((friend: FriendType) => !invitations.includes(friend.userId));
-	}
 
 	const handleSearch = (input: string) => {
 		setQuery(input);
@@ -314,38 +361,20 @@ const InviteDialog = ({
   md:[&::-webkit-scrollbar-thumb]:bg-gray-300"
 							style={{ maxHeight: "400px" }}
 						>
-							{filteredFriends.map((friend: FriendType) => (
-								<Card key={friend.userId} className="p-3">
-									<div className="flex gap-x-2 items-center">
-										<ProfilePicture src={friend.profilePicture} />
-										<div className="flex flex-wrap gap-y-2 items-center w-full">
-											<p className="[overflow-wrap:anywhere]">{`${friend.firstName} ${friend.lastName}`}</p>
-											<Button
-												className="ml-auto"
-												onClick={() => {
-													setSelectedFriend(friend);
-													setIsInviteDialogOpen(true);
-												}}
-											>
-												Add
-											</Button>
-										</div>
-									</div>
-								</Card>
+							{friends.map((friend: FriendType) => (
+								<Friend
+									friend={friend}
+									invitations={invitations}
+									setSelectedUser={setSelectedUser}
+									setInviteDialogOpen={setInviteDialogOpen}
+									setUninviteDialogOpen={setUninviteDialogOpen}
+									key={friend.userId}
+								/>
 							))}
 							{friends.length === 0 && (
 								<p className="m-auto text-2xl font-medium text-gray-300 py-6">No more friends to add</p>
 							)}
 						</div>
-
-						{selectedFriend && (
-							<InviteAlertDialog
-								user={friendToUser(selectedFriend)}
-								wishlistId={wishlist.id}
-								open={inviteDialogOpen}
-								onOpenChange={setIsInviteDialogOpen}
-							/>
-						)}
 					</TabsContent>
 					<TabsContent value="all">
 						<div className="flex flex-col gap-y-6">
@@ -366,8 +395,10 @@ const InviteDialog = ({
 											<SearchResultUser
 												userId={user}
 												friends={friends}
-												wishlist={wishlist}
 												invitations={invitations}
+												setSelectedUser={setSelectedUser}
+												setInviteDialogOpen={setInviteDialogOpen}
+												setUninviteDialogOpen={setUninviteDialogOpen}
 												key={user}
 											/>
 										))}
@@ -391,6 +422,24 @@ const InviteDialog = ({
 						</div>
 					</TabsContent>
 				</Tabs>
+
+				{selectedUser && (
+					<>
+						<UninviteAlertDialog
+							user={selectedUser}
+							wishlistId={wishlist.id}
+							open={uninviteDialogOpen}
+							onOpenChange={setUninviteDialogOpen}
+						/>
+
+						<InviteAlertDialog
+							user={selectedUser}
+							wishlistId={wishlist.id}
+							open={inviteDialogOpen}
+							onOpenChange={setInviteDialogOpen}
+						/>
+					</>
+				)}
 			</DialogContent>
 		</Dialog>
 	);
