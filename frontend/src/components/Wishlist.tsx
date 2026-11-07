@@ -128,7 +128,7 @@ const InviteAlertDialog = ({
 			<AlertDialogTrigger asChild></AlertDialogTrigger>
 			<AlertDialogContent>
 				<AlertDialogHeader>
-					<AlertDialogTitle>Remove user</AlertDialogTitle>
+					<AlertDialogTitle>Add user</AlertDialogTitle>
 					<AlertDialogDescription>
 						<p className="[overflow-wrap:anywhere]">
 							{`Are you sure you want ${user.firstName} to get access to this wishlist?`}
