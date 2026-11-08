@@ -66,16 +66,17 @@ const ReservationItem = ({ reservation }: { reservation: ReservationType }) => {
 								<AlertDialogHeader>
 									<AlertDialogTitle>Remove reservation?</AlertDialogTitle>
 									<AlertDialogDescription>
-										Removing the reservation will let other users reserve the item.
+										Are you sure you want to remove this reservation? Removing it will let other
+										users reserve the item.
 									</AlertDialogDescription>
 								</AlertDialogHeader>
 								<AlertDialogFooter>
-									<AlertDialogCancel>Cancel</AlertDialogCancel>
+									<AlertDialogCancel>No, keep it</AlertDialogCancel>
 									<AlertDialogAction
 										className={buttonVariants({ variant: "destructive" })}
 										onClick={() => handleDelete()}
 									>
-										Remove
+										Yes, remove it
 									</AlertDialogAction>
 								</AlertDialogFooter>
 							</AlertDialogContent>

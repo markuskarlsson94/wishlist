@@ -95,14 +95,14 @@ const User = () => {
 							<AlertDialogDescription className="[overflow-wrap:anywhere]">{`Are you sure you want to remove ${user?.firstName} as a friend?`}</AlertDialogDescription>
 						</AlertDialogHeader>
 						<AlertDialogFooter>
-							<AlertDialogCancel>Cancel</AlertDialogCancel>
+							<AlertDialogCancel>No, keep friend</AlertDialogCancel>
 							<AlertDialogAction
 								className={buttonVariants({ variant: "destructive" })}
 								onClick={() => {
 									handleDeleteFriend();
 								}}
 							>
-								Remove
+								Yes, remove friend
 							</AlertDialogAction>
 						</AlertDialogFooter>
 					</AlertDialogContent>

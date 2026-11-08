@@ -442,14 +442,14 @@ const Item = () => {
 											</AlertDialogDescription>
 										</AlertDialogHeader>
 										<AlertDialogFooter>
-											<AlertDialogCancel>Cancel</AlertDialogCancel>
+											<AlertDialogCancel>No, keep it</AlertDialogCancel>
 											<AlertDialogAction
 												className={buttonVariants({ variant: "destructive" })}
 												onClick={() => {
 													handleDelete();
 												}}
 											>
-												Delete
+												Yes, delete it
 											</AlertDialogAction>
 										</AlertDialogFooter>
 									</AlertDialogContent>

@@ -57,7 +57,7 @@ const UserDeleteDialog = () => {
 						</AlertDialogDescription>
 					</AlertDialogHeader>
 					<AlertDialogFooter>
-						<AlertDialogCancel>No, don't delete</AlertDialogCancel>
+						<AlertDialogCancel>No, keep it</AlertDialogCancel>
 						<AlertDialogAction
 							className={buttonVariants({ variant: "destructive" })}
 							onClick={() => onDeleteUser()}
