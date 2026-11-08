@@ -29,34 +29,25 @@ import { Badge } from "./ui/badge";
 import Navbar from "./Navbar";
 import LoadingSpinner from "./LoadingSpinner";
 
-const User = () => {
+const FriendButton = () => {
 	const params = useParams<{ userId: string }>();
 	const userId = Number(params.userId);
 	const { userId: viewer } = useAuth();
-	const { user, isSuccess, isLoading, notFound } = useGetUser(userId);
+	const { user } = useGetUser(userId);
 	const createFriendRequest = useCreateFriendRequest({ userId });
-	const { sentFriendRequests, receivedFriendRequests } = useGetFriendRequests(viewer);
 	const acceptFriendRequest = useAcceptFriendRequest({ userId: viewer });
 	const deleteFriendRequest = useDeleteFriendRequest({ userId: viewer });
-	const { friends } = useGetFriends(viewer);
-	const { friends: userFriends } = useGetFriends(userId);
 	const deleteFriend = useDeleteFriend({ userId: viewer });
-	const navigate = useNavigate();
-
-	const isSelf = viewer === userId;
-	const sentFriendRequest = sentFriendRequests.find((r) => r.sender === viewer && r.receiver === userId);
-	const receivedFriendRequest = receivedFriendRequests.find((r) => r.sender === userId && r.receiver === viewer);
-
+	const { sentFriendRequests, receivedFriendRequests } = useGetFriendRequests(viewer);
+	const { friends } = useGetFriends(viewer);
 	const friendship = useMemo(() => {
 		return friends.find((f) => f.userId === userId);
 	}, [friends]);
 
 	const userIsFriend = friendship !== undefined;
-
-	const commonFriends = useMemo(
-		() => friends.filter((friend) => userFriends.some((f) => f.userId === friend.userId)).length,
-		[friends, userFriends],
-	);
+	const isSelf = viewer === userId;
+	const sentFriendRequest = sentFriendRequests.find((r) => r.sender === viewer && r.receiver === userId);
+	const receivedFriendRequest = receivedFriendRequests.find((r) => r.sender === userId && r.receiver === viewer);
 
 	const handleDeleteFriend = () => {
 		deleteFriend(userId);
@@ -80,54 +71,75 @@ const User = () => {
 		}
 	};
 
-	const FriendButton = () => {
-		if (!viewer || isSelf) return;
+	if (!viewer || isSelf) return;
 
-		if (userIsFriend) {
-			return (
-				<AlertDialog>
-					<AlertDialogTrigger asChild>
-						<Button variant={"secondary"}>Remove friend</Button>
-					</AlertDialogTrigger>
-					<AlertDialogContent>
-						<AlertDialogHeader>
-							<AlertDialogTitle>Remove friend?</AlertDialogTitle>
-							<AlertDialogDescription className="[overflow-wrap:anywhere]">{`Are you sure you want to remove ${user?.firstName} as a friend?`}</AlertDialogDescription>
-						</AlertDialogHeader>
-						<AlertDialogFooter>
-							<AlertDialogCancel>No, keep friend</AlertDialogCancel>
-							<AlertDialogAction
-								className={buttonVariants({ variant: "destructive" })}
-								onClick={() => {
-									handleDeleteFriend();
-								}}
-							>
-								Yes, remove friend
-							</AlertDialogAction>
-						</AlertDialogFooter>
-					</AlertDialogContent>
-				</AlertDialog>
-			);
-		} else if (sentFriendRequest) {
-			return (
-				<Button variant={"secondary"} onClick={handleCancelFriendRequest}>
-					Cancel friend request
-				</Button>
-			);
-		} else if (receivedFriendRequest) {
-			return (
-				<Button variant={"secondary"} onClick={handleAcceptFriendRequest}>
-					Accept friend request
-				</Button>
-			);
-		} else {
-			return (
-				<Button variant={"secondary"} onClick={handleSendFriendRequest}>
-					Send friend request
-				</Button>
-			);
-		}
-	};
+	if (userIsFriend) {
+		return (
+			<AlertDialog>
+				<AlertDialogTrigger asChild>
+					<Button variant={"secondary"}>Remove friend</Button>
+				</AlertDialogTrigger>
+				<AlertDialogContent>
+					<AlertDialogHeader>
+						<AlertDialogTitle>Remove friend?</AlertDialogTitle>
+						<AlertDialogDescription className="[overflow-wrap:anywhere]">{`Are you sure you want to remove ${user?.firstName} as a friend?`}</AlertDialogDescription>
+					</AlertDialogHeader>
+					<AlertDialogFooter>
+						<AlertDialogCancel>No, keep friend</AlertDialogCancel>
+						<AlertDialogAction
+							className={buttonVariants({ variant: "destructive" })}
+							onClick={() => {
+								handleDeleteFriend();
+							}}
+						>
+							Yes, remove friend
+						</AlertDialogAction>
+					</AlertDialogFooter>
+				</AlertDialogContent>
+			</AlertDialog>
+		);
+	} else if (sentFriendRequest) {
+		return (
+			<Button variant={"secondary"} onClick={handleCancelFriendRequest}>
+				Cancel friend request
+			</Button>
+		);
+	} else if (receivedFriendRequest) {
+		return (
+			<Button variant={"secondary"} onClick={handleAcceptFriendRequest}>
+				Accept friend request
+			</Button>
+		);
+	} else {
+		return (
+			<Button variant={"secondary"} onClick={handleSendFriendRequest}>
+				Send friend request
+			</Button>
+		);
+	}
+};
+
+const User = () => {
+	const params = useParams<{ userId: string }>();
+	const userId = Number(params.userId);
+	const { userId: viewer } = useAuth();
+	const { user, isSuccess, isLoading, notFound } = useGetUser(userId);
+	const { friends } = useGetFriends(viewer);
+	const { friends: userFriends } = useGetFriends(userId);
+	const navigate = useNavigate();
+
+	const isSelf = viewer === userId;
+
+	const friendship = useMemo(() => {
+		return friends.find((f) => f.userId === userId);
+	}, [friends]);
+
+	const userIsFriend = friendship !== undefined;
+
+	const commonFriends = useMemo(
+		() => friends.filter((friend) => userFriends.some((f) => f.userId === friend.userId)).length,
+		[friends, userFriends],
+	);
 
 	const commonFriendString = (commonFriends: number) => {
 		return commonFriends > 1 ? `${commonFriends} common friends` : "1 common friend";
