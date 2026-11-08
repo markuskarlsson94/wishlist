@@ -25,6 +25,49 @@ import {
 import { useState } from "react";
 import { StatusCodes } from "http-status-codes";
 import { AxiosError } from "axios";
+import Tooltip from "./Tooltip";
+import { findFormattedType, getFormattedType } from "@/utils/wishlist/utils";
+
+const Wishlist = ({ wishlist }: { wishlist: WishlistType }) => {
+	const { items } = useGetItems(wishlist.id);
+	const itemCount = items.length || 0;
+	const { types } = useWishlistTypes();
+	const formattedTypes = types.map((t) => getFormattedType(t));
+	const type = findFormattedType(formattedTypes, wishlist.type);
+
+	return (
+		<div>
+			<NavLink to={`/wishlist/${wishlist.id}`}>
+				<HoverCard>
+					<CardHeader>
+						<div className="flex flex-wrap gap-x-3 gap-y-2 items-center">
+							<div className="mr-auto">
+								<CardTitle className="[overflow-wrap:anywhere]">{wishlist.title}</CardTitle>
+								<CardDescription className="[overflow-wrap:anywhere]">
+									{wishlist.description}
+								</CardDescription>
+							</div>
+							<div className="flex flex-wrap gap-x-3 gap-y-2">
+								{itemCount > 0 && (
+									<Badge variant={"secondary"} className="text-nowrap">
+										{`${itemCount} ${itemCount > 1 ? "items" : "item"}`}
+									</Badge>
+								)}
+								{type && (
+									<Badge variant={"secondary"}>
+										<Tooltip tooltip={type.description}>
+											<p className="text-nowrap">{type.name}</p>
+										</Tooltip>
+									</Badge>
+								)}
+							</div>
+						</div>
+					</CardHeader>
+				</HoverCard>
+			</NavLink>
+		</div>
+	);
+};
 
 const Wishlists = () => {
 	const params = useParams<{ userId: string }>();
@@ -41,37 +84,7 @@ const Wishlists = () => {
 	const { wishlists, isSuccess, isLoading } = useGetWishlists(userId);
 	const { types } = useWishlistTypes();
 	const [errorOpen, setErrorOpen] = useState(false);
-
 	const isOwner: boolean = userId === viewer;
-
-	const Wishlist = ({ wishlist }: { wishlist: WishlistType }) => {
-		const { items } = useGetItems(wishlist.id);
-		const itemCount = items.length || 0;
-
-		return (
-			<div>
-				<NavLink to={`/wishlist/${wishlist.id}`}>
-					<HoverCard>
-						<CardHeader>
-							<div className="flex flex-wrap gap-y-1 items-start">
-								<div className="pt-[0.14rem]">
-									<CardTitle className="[overflow-wrap:anywhere]">{wishlist.title}</CardTitle>
-									<CardDescription className="[overflow-wrap:anywhere]">
-										{wishlist.description}
-									</CardDescription>
-								</div>
-								{itemCount > 0 && (
-									<Badge variant={"secondary"} className="ml-auto">
-										{`${itemCount} ${itemCount > 1 ? "items" : "item"}`}
-									</Badge>
-								)}
-							</div>
-						</CardHeader>
-					</HoverCard>
-				</NavLink>
-			</div>
-		);
-	};
 
 	const onSubmit = (input: WishlistInputType) => {
 		createWishlist(input, userId);
