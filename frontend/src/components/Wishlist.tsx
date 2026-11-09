@@ -15,7 +15,7 @@ import useWishlistTypes from "../hooks/useWishlistTypes";
 import WishlistInputType from "../types/WishlistInputType";
 import RoundedRect from "./RoundedRect";
 import ItemDialog from "./dialogs/ItemDialog";
-import { Button, buttonVariants } from "./ui/button";
+import { Button } from "./ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem } from "./ui/dropdown-menu";
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import { DialogTrigger } from "@radix-ui/react-dialog";
@@ -59,6 +59,7 @@ import ProfilePicture from "./ProfilePicture";
 import WishlistType from "@/types/WishlistType";
 import Searchbar from "./Searchbar";
 import UserType from "@/types/UserType";
+import DeleteDialog from "./DeleteDialog";
 
 const ReservationBadge = ({ item }: { item: ItemType }) => {
 	const { userId } = useAuth();
@@ -727,34 +728,18 @@ const Wishlist = () => {
 										onOpenChange={setIsUninviteDialogOpen}
 									/>
 
-									<AlertDialog
+									<DeleteDialog
+										title="Delete wishlist"
+										description="Are you sure you want to permanently delete this wishlist and all
+													its items?"
+										cancelText="No, keep it"
+										deleteText="Yes, delete it"
+										onDelete={() => {
+											if (wishlist) deleteWishlist(wishlist.id);
+										}}
 										open={isDeleteDialogOpen}
-										onOpenChange={() => setIsDeleteDialogOpen(!isDeleteDialogOpen)}
-									>
-										<AlertDialogTrigger asChild></AlertDialogTrigger>
-										<AlertDialogContent>
-											<AlertDialogHeader>
-												<AlertDialogTitle>Delete wishlist</AlertDialogTitle>
-												<AlertDialogDescription>
-													Are you sure you want to permanently delete this wishlist and all
-													its items?
-												</AlertDialogDescription>
-											</AlertDialogHeader>
-											<AlertDialogFooter>
-												<AlertDialogCancel>No, keep it</AlertDialogCancel>
-												<AlertDialogAction
-													className={buttonVariants({ variant: "destructive" })}
-													onClick={() => {
-														if (wishlist) {
-															deleteWishlist(wishlist.id);
-														}
-													}}
-												>
-													Yes, delete it
-												</AlertDialogAction>
-											</AlertDialogFooter>
-										</AlertDialogContent>
-									</AlertDialog>
+										onOpenChange={setIsDeleteDialogOpen}
+									/>
 								</div>
 							</div>
 						</div>

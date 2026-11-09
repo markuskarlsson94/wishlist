@@ -4,21 +4,10 @@ import { useDeleteComment, useUpdateComment } from "../hooks/comment";
 import CommentType from "../types/CommentType";
 import UpdateCommentForm from "../forms/UpdateCommentForm";
 import CommentInputType from "../types/CommentInputType";
-import { Button, buttonVariants } from "./ui/button";
+import { Button } from "./ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import { EllipsisVertical } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
-import {
-	AlertDialog,
-	AlertDialogAction,
-	AlertDialogCancel,
-	AlertDialogContent,
-	AlertDialogDescription,
-	AlertDialogFooter,
-	AlertDialogHeader,
-	AlertDialogTitle,
-	AlertDialogTrigger,
-} from "./ui/alert-dialog";
 import EditIcon from "./icons/EditIcon";
 import DeleteIcon from "./icons/DeleteIcon";
 import Tooltip from "./Tooltip";
@@ -29,14 +18,15 @@ import { useGetUser } from "@/hooks/user";
 import { Badge } from "./ui/badge";
 import ProfilePicture from "./ProfilePicture";
 import ProfilePictureAnonymous from "./ProfilePictureAnonymous";
+import DeleteDialog from "./DeleteDialog";
 
 const Comment = ({ comment, item }: { comment: CommentType; item: ItemType }) => {
 	const { id: itemId, owner } = item;
 	const { user } = useGetUser(owner);
 	const deleteComment = useDeleteComment({ itemId });
 	const updateComment = useUpdateComment({ itemId });
-	const [isEditDialogOpen, setIsEditDialogOpen] = useState<boolean>(false);
-	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false);
+	const [editDialogOpen, setEditDialogOpen] = useState<boolean>(false);
+	const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
 
 	const handleDelete = () => {
 		deleteComment(comment.id);
@@ -44,7 +34,7 @@ const Comment = ({ comment, item }: { comment: CommentType; item: ItemType }) =>
 
 	const handleEdit = (newComment: CommentInputType) => {
 		updateComment(comment.id, newComment.comment);
-		setIsEditDialogOpen(false);
+		setEditDialogOpen(false);
 	};
 
 	const CommentOptions = () => {
@@ -58,14 +48,14 @@ const Comment = ({ comment, item }: { comment: CommentType; item: ItemType }) =>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align="end">
 						<DropdownMenuItem
-							onClick={() => setIsEditDialogOpen(true)}
+							onClick={() => setEditDialogOpen(true)}
 							className="flex justify-between items-center"
 						>
 							<span>Edit</span>
 							<EditIcon />
 						</DropdownMenuItem>
 						<DropdownMenuItem
-							onClick={() => setIsDeleteDialogOpen(true)}
+							onClick={() => setDeleteDialogOpen(true)}
 							className="flex justify-between items-center"
 						>
 							<span>Delete</span>
@@ -74,7 +64,7 @@ const Comment = ({ comment, item }: { comment: CommentType; item: ItemType }) =>
 					</DropdownMenuContent>
 				</DropdownMenu>
 
-				<Dialog open={isEditDialogOpen} onOpenChange={() => setIsEditDialogOpen(!isEditDialogOpen)}>
+				<Dialog open={editDialogOpen} onOpenChange={() => setEditDialogOpen(!editDialogOpen)}>
 					<DialogTrigger></DialogTrigger>
 					<DialogContent>
 						<DialogHeader>
@@ -89,28 +79,15 @@ const Comment = ({ comment, item }: { comment: CommentType; item: ItemType }) =>
 					</DialogContent>
 				</Dialog>
 
-				<AlertDialog open={isDeleteDialogOpen} onOpenChange={() => setIsDeleteDialogOpen(!isDeleteDialogOpen)}>
-					<AlertDialogTrigger asChild></AlertDialogTrigger>
-					<AlertDialogContent>
-						<AlertDialogHeader>
-							<AlertDialogTitle>Delete comment</AlertDialogTitle>
-							<AlertDialogDescription>
-								Are you sure you want to permanently delete this comment?
-							</AlertDialogDescription>
-						</AlertDialogHeader>
-						<AlertDialogFooter>
-							<AlertDialogCancel>No, keep it</AlertDialogCancel>
-							<AlertDialogAction
-								className={buttonVariants({ variant: "destructive" })}
-								onClick={() => {
-									handleDelete();
-								}}
-							>
-								Yes, delete it
-							</AlertDialogAction>
-						</AlertDialogFooter>
-					</AlertDialogContent>
-				</AlertDialog>
+				<DeleteDialog
+					title="Delete comment"
+					description="Are you sure you want to permanently delete this comment?"
+					cancelText="No, keep it"
+					deleteText="Yes, delete it"
+					onDelete={handleDelete}
+					open={deleteDialogOpen}
+					onOpenChange={setDeleteDialogOpen}
+				/>
 			</div>
 		);
 	};

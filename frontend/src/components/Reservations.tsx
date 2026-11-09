@@ -24,11 +24,13 @@ import ProfilePicture from "./ProfilePicture";
 import { useMemo, useState } from "react";
 import LoadingSpinner from "./LoadingSpinner";
 import { stringToBoolean } from "@/utils/wishlist/utils";
+import DeleteDialog from "./DeleteDialog";
 
 const ReservationItem = ({ reservation }: { reservation: ReservationType }) => {
 	const { userId } = useAuth();
 	const { item, isSuccess } = useGetItem(reservation.item);
 	const { wishlist } = reservation.wishlist ? useGetWishlist(reservation.wishlist) : { wishlist: undefined };
+	const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
 	const deleteReservation = useDeleteReservation({ userId });
 	const setReservationFulfilled = useSetReservationFulfilled({
 		userId,
@@ -56,31 +58,20 @@ const ReservationItem = ({ reservation }: { reservation: ReservationType }) => {
 					</NavLink>
 
 					<div className="ml-auto flex flex-wrap gap-x-2 gap-y-2 px-2">
-						<AlertDialog>
-							<AlertDialogTrigger asChild>
-								<Button variant={"secondary"} className="flex-1">
-									Unreserve
-								</Button>
-							</AlertDialogTrigger>
-							<AlertDialogContent>
-								<AlertDialogHeader>
-									<AlertDialogTitle>Remove reservation?</AlertDialogTitle>
-									<AlertDialogDescription>
-										Are you sure you want to remove this reservation? Removing it will let other
-										users reserve the item.
-									</AlertDialogDescription>
-								</AlertDialogHeader>
-								<AlertDialogFooter>
-									<AlertDialogCancel>No, keep it</AlertDialogCancel>
-									<AlertDialogAction
-										className={buttonVariants({ variant: "destructive" })}
-										onClick={() => handleDelete()}
-									>
-										Yes, remove it
-									</AlertDialogAction>
-								</AlertDialogFooter>
-							</AlertDialogContent>
-						</AlertDialog>
+						<Button variant={"secondary"} className="flex-1" onClick={() => setDeleteDialogOpen(true)}>
+							Unreserve
+						</Button>
+
+						<DeleteDialog
+							title="Delete reservation"
+							description="Are you sure you want to delete this reservation? Removing it will let other
+											users reserve the item."
+							cancelText="No, keep it"
+							deleteText="Yes, delete it"
+							onDelete={handleDelete}
+							open={deleteDialogOpen}
+							onOpenChange={setDeleteDialogOpen}
+						/>
 
 						<AlertDialog>
 							<AlertDialogTrigger asChild>

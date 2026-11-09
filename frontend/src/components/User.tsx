@@ -9,25 +9,15 @@ import { useAuth } from "../contexts/AuthContext";
 import { useDeleteFriend, useGetFriends } from "../hooks/friend";
 import { useGetUser } from "../hooks/user";
 import RoundedRect from "./RoundedRect";
-import { Button, buttonVariants } from "./ui/button";
-import { useMemo } from "react";
+import { Button } from "./ui/button";
+import { useMemo, useState } from "react";
 import { Users } from "lucide-react";
-import {
-	AlertDialog,
-	AlertDialogAction,
-	AlertDialogCancel,
-	AlertDialogContent,
-	AlertDialogDescription,
-	AlertDialogFooter,
-	AlertDialogHeader,
-	AlertDialogTitle,
-	AlertDialogTrigger,
-} from "./ui/alert-dialog";
 import NotFound from "./NotFound";
 import ProfilePicture from "./ProfilePicture";
 import { Badge } from "./ui/badge";
 import Navbar from "./Navbar";
 import LoadingSpinner from "./LoadingSpinner";
+import DeleteDialog from "./DeleteDialog";
 
 const FriendButton = () => {
 	const params = useParams<{ userId: string }>();
@@ -43,6 +33,7 @@ const FriendButton = () => {
 	const friendship = useMemo(() => {
 		return friends.find((f) => f.userId === userId);
 	}, [friends]);
+	const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
 
 	const userIsFriend = friendship !== undefined;
 	const isSelf = viewer === userId;
@@ -75,28 +66,20 @@ const FriendButton = () => {
 
 	if (userIsFriend) {
 		return (
-			<AlertDialog>
-				<AlertDialogTrigger asChild>
-					<Button variant={"secondary"}>Remove friend</Button>
-				</AlertDialogTrigger>
-				<AlertDialogContent>
-					<AlertDialogHeader>
-						<AlertDialogTitle>Remove friend?</AlertDialogTitle>
-						<AlertDialogDescription className="[overflow-wrap:anywhere]">{`Are you sure you want to remove ${user?.firstName} as a friend?`}</AlertDialogDescription>
-					</AlertDialogHeader>
-					<AlertDialogFooter>
-						<AlertDialogCancel>No, keep friend</AlertDialogCancel>
-						<AlertDialogAction
-							className={buttonVariants({ variant: "destructive" })}
-							onClick={() => {
-								handleDeleteFriend();
-							}}
-						>
-							Yes, remove friend
-						</AlertDialogAction>
-					</AlertDialogFooter>
-				</AlertDialogContent>
-			</AlertDialog>
+			<>
+				<Button variant={"secondary"} onClick={() => setDeleteDialogOpen(true)}>
+					Remove friend
+				</Button>
+				<DeleteDialog
+					title="Remove friend"
+					description={`Are you sure you want to remove ${user?.firstName} as a friend?`}
+					cancelText="No, keep friend"
+					deleteText="Yes, remove friend"
+					onDelete={handleDeleteFriend}
+					open={deleteDialogOpen}
+					onOpenChange={setDeleteDialogOpen}
+				/>
+			</>
 		);
 	} else if (sentFriendRequest) {
 		return (
