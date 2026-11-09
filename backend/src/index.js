@@ -35,7 +35,7 @@ app.use("/api/v1", router);
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
-	logger.info(`Server started and listening on port ${port}.`);
+	logger.info(`Server started and listening on port ${port}`);
 });
 
 await initUserRoles();
