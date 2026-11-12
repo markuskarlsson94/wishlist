@@ -306,6 +306,11 @@ const errorMessages = {
 		message: "Unable to create wishlist",
 	},
 
+	unableToFetchImageFromURL: {
+		status: StatusCodes.INTERNAL_SERVER_ERROR,
+		message: "Unable to fetch image from URL",
+	},
+
 	tooManyWishlists: {
 		status: StatusCodes.FORBIDDEN,
 		message: "Too many wishlists",
