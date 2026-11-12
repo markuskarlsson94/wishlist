@@ -207,7 +207,21 @@ const wishlistService = {
 			const { id, wishlist, amount, createdAt, updatedAt, ...rest } = data;
 			if (Object.keys(rest).length === 0) return;
 
-			await db.wishlist.item.update(itemId, rest);
+			let { link, image } = rest;
+
+			if (link && !image) {
+				const img = await wishlistService.item.getURLImage(link);
+
+				if (img) {
+					image = img;
+				} else {
+					image = null;
+				}
+			} else if (image) {
+				if (image === "") image = null;
+			}
+
+			await db.wishlist.item.update(itemId, { ...rest, link, image });
 		},
 
 		reserve: async (user, id, options = {}) => {
