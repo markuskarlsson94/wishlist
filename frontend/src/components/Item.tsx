@@ -42,6 +42,7 @@ import CopyLinkButton from "./CopyLinkButton";
 import ReservationType from "@/types/ReservationType";
 import Infobox from "./Infobox";
 import ProfilePictureAnonymous from "./ProfilePictureAnonymous";
+import DeleteDialog from "./DeleteDialog";
 
 const ReservationInfoWrapper = ({ children }: { children: React.ReactNode }) => {
 	return <div className="flex gap-x-2 items-center">{children}</div>;
@@ -429,31 +430,15 @@ const Item = () => {
 									</DialogContent>
 								</Dialog>
 
-								<AlertDialog
+								<DeleteDialog
+									title="Delete Item"
+									description="Are you sure you want to permanently delete this item?"
+									cancelText="No, keep it"
+									deleteText="Yes, delete it"
+									onDelete={handleDelete}
 									open={isDeleteDialogOpen}
-									onOpenChange={() => setIsDeleteDialogOpen(!isDeleteDialogOpen)}
-								>
-									<AlertDialogTrigger asChild></AlertDialogTrigger>
-									<AlertDialogContent>
-										<AlertDialogHeader>
-											<AlertDialogTitle>Delete item</AlertDialogTitle>
-											<AlertDialogDescription>
-												Are you sure you want to permanently delete this item?
-											</AlertDialogDescription>
-										</AlertDialogHeader>
-										<AlertDialogFooter>
-											<AlertDialogCancel>No, keep it</AlertDialogCancel>
-											<AlertDialogAction
-												className={buttonVariants({ variant: "destructive" })}
-												onClick={() => {
-													handleDelete();
-												}}
-											>
-												Yes, delete it
-											</AlertDialogAction>
-										</AlertDialogFooter>
-									</AlertDialogContent>
-								</AlertDialog>
+									onOpenChange={setIsDeleteDialogOpen}
+								/>
 							</div>
 						</div>
 
