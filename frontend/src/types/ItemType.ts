@@ -6,6 +6,7 @@ type ItemType = {
 	createdAt: string;
 	owner: number;
 	link: string | null;
+	image: string | null;
 };
 
 export default ItemType;
