@@ -67,6 +67,13 @@ const FAQ = () => {
 						</AccordionTrigger>
 						<AccordionContent>No, this is not possible at the moment.</AccordionContent>
 					</AccordionItem>
+					<AccordionItem value="autoImages">
+						<AccordionTrigger>Why does some items get an image and some doesn't?</AccordionTrigger>
+						<AccordionContent>
+							When adding a link to an item our algorithm tries to fetch the product image from the link.
+							Sometimes this fails which causes no image to be displayed.
+						</AccordionContent>
+					</AccordionItem>
 				</Accordion>
 			</div>
 		</RoundedRect>
