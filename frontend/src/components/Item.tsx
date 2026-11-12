@@ -16,7 +16,7 @@ import Comment from "./Comment";
 import RoundedRect from "./RoundedRect";
 import { Button, buttonVariants } from "./ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
-import { Check, Copy, EllipsisVertical, Share2Icon } from "lucide-react";
+import { Check, Copy, EllipsisVertical, ImageMinus, Share2Icon } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
 import ItemForm from "@/forms/ItemForm";
 import {
@@ -261,6 +261,7 @@ const Item = () => {
 	// const deleteNotificationsByItem = useDeleteNotificationsByItem({ userId });
 	const [copied, setCopied] = useState(false);
 	const [isShareDialogOpen, setIsShareDialogOpen] = useState<boolean>(false);
+	const [isDeleteImageDialogOpen, setIsDeleteImageDialogOpen] = useState<boolean>(false);
 
 	const { hasFulfilledReservation, isSuccess: isSuccessFulfilled } = useItemHasFulfilledReservation(item?.id);
 
@@ -293,6 +294,11 @@ const Item = () => {
 	const onSubmitItem = (input: ItemInputType) => {
 		if (item) updateItem(item.id, input);
 		setIsEditDialogOpen(false);
+	};
+
+	const handleDeleteImage = () => {
+		if (!item) return;
+		updateItem(item.id, { image: null });
 	};
 
 	const handleCopy = () => {
@@ -381,13 +387,24 @@ const Item = () => {
 											<Share2Icon />
 										</DropdownMenuItem>
 										{isOwner && (
-											<DropdownMenuItem
-												onClick={() => setIsDeleteDialogOpen(true)}
-												className="flex justify-between items-center"
-											>
-												<span>Delete</span>
-												<DeleteIcon />
-											</DropdownMenuItem>
+											<>
+												{item?.image && (
+													<DropdownMenuItem
+														className="flex justify-between items-center"
+														onClick={() => setIsDeleteImageDialogOpen(true)}
+													>
+														<span>Delete image</span>
+														<ImageMinus />
+													</DropdownMenuItem>
+												)}
+												<DropdownMenuItem
+													onClick={() => setIsDeleteDialogOpen(true)}
+													className="flex justify-between items-center"
+												>
+													<span>Delete</span>
+													<DeleteIcon />
+												</DropdownMenuItem>
+											</>
 										)}
 									</DropdownMenuContent>
 								</DropdownMenu>
@@ -411,6 +428,23 @@ const Item = () => {
 										/>
 									</DialogContent>
 								</Dialog>
+
+								<AlertDialog open={isDeleteImageDialogOpen} onOpenChange={setIsDeleteImageDialogOpen}>
+									<AlertDialogContent>
+										<AlertDialogHeader>
+											<AlertDialogTitle>Delete image</AlertDialogTitle>
+											<AlertDialogDescription>
+												Are you sure you want to delete the image?
+											</AlertDialogDescription>
+										</AlertDialogHeader>
+										<AlertDialogFooter>
+											<AlertDialogCancel>No, keep it</AlertDialogCancel>
+											<AlertDialogAction onClick={handleDeleteImage}>
+												Yes, delete it
+											</AlertDialogAction>
+										</AlertDialogFooter>
+									</AlertDialogContent>
+								</AlertDialog>
 
 								<Dialog
 									open={isShareDialogOpen}
