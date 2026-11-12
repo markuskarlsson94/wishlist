@@ -6,6 +6,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import ItemInputType from "../types/ItemInputType";
 import { StatusCodes } from "http-status-codes";
 import { AxiosError } from "axios";
+import ItemUpdateType from "@/types/ItemUpdateType";
 
 export const useGetItem = (id: number | undefined) => {
 	const [item, setItem] = useState<ItemType | undefined>(undefined);
@@ -168,7 +169,7 @@ type UseUpdateItemConfig = {
 export const useUpdateItem = (config?: UseUpdateItemConfig) => {
 	const queryClient = useQueryClient();
 
-	const updateItemFn = async ({ id, data }: { id: number; data: ItemInputType }) => {
+	const updateItemFn = async ({ id, data }: { id: number; data: ItemUpdateType }) => {
 		await axiosInstance.patch(`/item/${id}`, data);
 		invalidateItem(queryClient, id);
 	};
@@ -187,7 +188,7 @@ export const useUpdateItem = (config?: UseUpdateItemConfig) => {
 		},
 	});
 
-	const updateItem = (id: number, data: ItemInputType) => {
+	const updateItem = (id: number, data: ItemUpdateType) => {
 		updateItemMutation.mutate({ id, data });
 	};
 
