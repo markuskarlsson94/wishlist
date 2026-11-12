@@ -165,12 +165,18 @@ const wishlistService = {
 				throw new ErrorMessage(errorMessages.unableToAddLessThanOneItem);
 			}
 
+			let image = null;
+			if (link) {
+				const img = await wishlistService.item.getURLImage(link);
+				if (img) image = img;
+			}
+
 			const maxAmount = 300;
 			const count = await db.wishlist.item.getCountByWishlistId(wishlist);
 			if (count >= maxAmount) throw new ErrorMessage(errorMessages.tooManyItems);
 
 			try {
-				return await db.wishlist.item.add(wishlist, title, description, link, amount);
+				return await db.wishlist.item.add(wishlist, title, description, link, amount, image);
 			} catch (error) {
 				logger.error(error.message);
 				throw new ErrorMessage(errorMessages.unableToAddItem);
