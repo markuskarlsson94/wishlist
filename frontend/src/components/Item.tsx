@@ -446,6 +446,10 @@ const Item = () => {
 							<p className="[overflow-wrap:anywhere]">{item.description}</p>
 						</div>
 
+						{item.image && (
+							<img src={item.image} height={200} width={200} alt="Item image" className="m-auto py-3" />
+						)}
+
 						{item.link && (
 							<div className="flex flex-col gap-y-3">
 								<Link
