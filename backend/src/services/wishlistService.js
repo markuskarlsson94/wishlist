@@ -7,6 +7,7 @@ import { publicType, allTypes, hiddenType, friendType, inviteType } from "../wis
 import { PostgresError } from "pg-error-enum";
 import { canManageUser, usersAreFriends } from "./userService.js";
 import notificationService from "./notificationService.js";
+import * as cheerio from "cheerio";
 
 const wishlistService = {
 	add: async (user, userId, title, description, type = publicType()) => {
@@ -288,6 +289,59 @@ const wishlistService = {
 			} catch (error) {
 				logger.error(error.message);
 				throw new ErrorMessage(errorMessages.serverError);
+			}
+		},
+
+		getURLImage: async (url) => {
+			try {
+				const response = await fetch(url, {
+					headers: {
+						"User-Agent":
+							"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+						Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
+						"Accept-Language": "en-US,en;q=0.9",
+						"Accept-Encoding": "gzip, deflate, br",
+						Connection: "keep-alive",
+						"Upgrade-Insecure-Requests": "1",
+						"Sec-Fetch-Dest": "document",
+						"Sec-Fetch-Mode": "navigate",
+						"Sec-Fetch-Site": "none",
+						"Sec-Fetch-User": "?1",
+						"Cache-Control": "max-age=0",
+					},
+				});
+
+				if (!response.ok) {
+					throw new ErrorMessage(errorMessages.unableToFetchImageFromURL);
+				}
+
+				const html = await response.text();
+				const $ = cheerio.load(html);
+
+				const ogImage = $('meta[property="og:image"]').attr("content");
+				if (ogImage) return ogImage;
+
+				let jsonLdImage = null;
+				$('script[type="application/ld+json"]').each((_, element) => {
+					if (jsonLdImage) return;
+
+					try {
+						const jsonData = JSON.parse($(element).html());
+						const items = Array.isArray(jsonData) ? jsonData : [jsonData];
+
+						for (const item of items) {
+							if (item && item["@type"] === "Product" && item.image) {
+								const img = item.image;
+								jsonLdImage = Array.isArray(img) ? img[0] : img;
+								break;
+							}
+						}
+					} catch (e) {}
+				});
+
+				return jsonLdImage;
+			} catch (error) {
+				return null;
 			}
 		},
 
