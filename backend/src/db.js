@@ -483,7 +483,7 @@ const db = {
 		},
 
 		item: {
-			add: async (wishlist, title, description, link, amount) => {
+			add: async (wishlist, title, description, link, amount, image) => {
 				return (
 					await dbClient(wishlistItemTable)
 						.insert({
@@ -492,6 +492,7 @@ const db = {
 							description,
 							link,
 							amount,
+							image,
 						})
 						.returning("id")
 				)[0].id;
