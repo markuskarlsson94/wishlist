@@ -32,7 +32,7 @@ const DeleteDialog = ({
 	const [disabled, setDisabled] = useState<boolean>(true);
 
 	useEffect(() => {
-		let timer: number;
+		let timer: ReturnType<typeof setTimeout>;
 		if (open) {
 			setDisabled(true);
 			timer = setTimeout(() => {
