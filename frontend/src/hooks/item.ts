@@ -32,7 +32,7 @@ export const useGetItem = (id: number | undefined) => {
 
 	useEffect(() => {
 		if (isSuccessItem && isSuccessOwner) {
-			const { id, title, description, link, wishlist, createdAt } = dataItem.data.item;
+			const { id, title, description, link, wishlist, image, createdAt } = dataItem.data.item;
 
 			setItem({
 				id,
@@ -40,6 +40,7 @@ export const useGetItem = (id: number | undefined) => {
 				description,
 				link,
 				wishlist,
+				image,
 				createdAt,
 				owner: dataOwner.data.owner,
 			});
