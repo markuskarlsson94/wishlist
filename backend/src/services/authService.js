@@ -77,7 +77,7 @@ const authService = {
 				throw new Error("Unable to store token");
 			}
 
-			logger.info(`User (id = ${user.id}) requested new tokens.`);
+			logger.info(`User (id = ${user.id}) requested new tokens`);
 
 			return {
 				accessToken,
